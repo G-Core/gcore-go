@@ -73,16 +73,16 @@ func (r *CDNMetrics) UnmarshalJSON(data []byte) error {
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfCDNMetricsValues]
+// will be valid: OfCDNMetricsValues OfCDNMetricsGroup]
 type CDNMetricsDataUnion struct {
 	// This field will be present if the value is a [CDNMetricsValues] instead of an
 	// object.
 	OfCDNMetricsValues CDNMetricsValues `json:",inline"`
-	// This field is from variant [CDNMetricsGroups].
-	Group CDNMetricsValues `json:"group"`
-	JSON  struct {
+	// This field will be present if the value is a [any] instead of an object.
+	OfCDNMetricsGroup any `json:",inline"`
+	JSON              struct {
 		OfCDNMetricsValues respjson.Field
-		Group              respjson.Field
+		OfCDNMetricsGroup  respjson.Field
 		raw                string
 	} `json:"-"`
 }
@@ -92,7 +92,7 @@ func (u CDNMetricsDataUnion) AsCDNMetricsValues() (v CDNMetricsValues) {
 	return
 }
 
-func (u CDNMetricsDataUnion) AsCDNMetricsGroups() (v CDNMetricsGroups) {
+func (u CDNMetricsDataUnion) AsAnyMap() (v CDNMetricsGroups) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -104,33 +104,16 @@ func (r *CDNMetricsDataUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CDNMetricsGroups struct {
-	// List of requested metrics sorted by timestamp in ascending order.
-	Group CDNMetricsValues `json:"group"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Group       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CDNMetricsGroups) RawJSON() string { return r.JSON.raw }
-func (r *CDNMetricsGroups) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
+type CDNMetricsGroups map[string]any
 
 type CDNMetricsValues []CDNMetricsValue
 
 type CDNMetricsValue struct {
-	// Metrics value.
-	Metric float64 `json:"metric"`
 	// Start timestamp of interval.
-	Timestamp int64 `json:"timestamp"`
+	Timestamp   int64                           `json:"timestamp"`
+	ExtraFields map[string]CDNMetricsValueUnion `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Metric      respjson.Field
 		Timestamp   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -140,6 +123,42 @@ type CDNMetricsValue struct {
 // Returns the unmodified JSON received from the API
 func (r CDNMetricsValue) RawJSON() string { return r.JSON.raw }
 func (r *CDNMetricsValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// CDNMetricsValueUnion contains all possible properties and values from [float64],
+// [map[string]string].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfFloat OfString]
+type CDNMetricsValueUnion struct {
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	JSON     struct {
+		OfFloat  respjson.Field
+		OfString respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u CDNMetricsValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u CDNMetricsValueUnion) AsStringMap() (v map[string]string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u CDNMetricsValueUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *CDNMetricsValueUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

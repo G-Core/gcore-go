@@ -509,22 +509,22 @@ func (r *LogsUploaderTargetConfigFtpConfig) UnmarshalJSON(data []byte) error {
 }
 
 type LogsUploaderTargetConfigSftpConfig struct {
-	Hostname       string `json:"hostname" api:"required"`
-	User           string `json:"user" api:"required"`
 	Directory      string `json:"directory" api:"nullable"`
+	Hostname       string `json:"hostname"`
 	KeyPassphrase  string `json:"key_passphrase" api:"nullable"`
 	Password       string `json:"password" api:"nullable"`
 	PrivateKey     string `json:"private_key" api:"nullable"`
 	TimeoutSeconds int64  `json:"timeout_seconds"`
+	User           string `json:"user"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Hostname       respjson.Field
-		User           respjson.Field
 		Directory      respjson.Field
+		Hostname       respjson.Field
 		KeyPassphrase  respjson.Field
 		Password       respjson.Field
 		PrivateKey     respjson.Field
 		TimeoutSeconds respjson.Field
+		User           respjson.Field
 		ExtraFields    map[string]respjson.Field
 		raw            string
 	} `json:"-"`
@@ -1136,32 +1136,32 @@ func (u LogsUploaderTargetNewParamsConfigUnion) GetRetry() *LogsUploaderTargetNe
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetNewParamsConfigUnion) GetAccountName() *string {
-	if vt := u.OfAzureBlobConfig; vt != nil {
-		return &vt.AccountName
+	if vt := u.OfAzureBlobConfig; vt != nil && vt.AccountName.Valid() {
+		return &vt.AccountName.Value
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetNewParamsConfigUnion) GetContainerName() *string {
-	if vt := u.OfAzureBlobConfig; vt != nil {
-		return &vt.ContainerName
+	if vt := u.OfAzureBlobConfig; vt != nil && vt.ContainerName.Valid() {
+		return &vt.ContainerName.Value
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetNewParamsConfigUnion) GetLogStore() *string {
-	if vt := u.OfSlsConfig; vt != nil {
-		return &vt.LogStore
+	if vt := u.OfSlsConfig; vt != nil && vt.LogStore.Valid() {
+		return &vt.LogStore.Value
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetNewParamsConfigUnion) GetProject() *string {
-	if vt := u.OfSlsConfig; vt != nil {
-		return &vt.Project
+	if vt := u.OfSlsConfig; vt != nil && vt.Project.Valid() {
+		return &vt.Project.Value
 	}
 	return nil
 }
@@ -1176,84 +1176,32 @@ func (u LogsUploaderTargetNewParamsConfigUnion) GetTopic() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetNewParamsConfigUnion) GetAccessKeyID() *string {
-	if vt := u.OfS3GcoreConfig; vt != nil {
-		return (*string)(&vt.AccessKeyID)
+	if vt := u.OfS3GcoreConfig; vt != nil && vt.AccessKeyID.Valid() {
+		return &vt.AccessKeyID.Value
 	} else if vt := u.OfS3AmazonConfig; vt != nil {
 		return (*string)(&vt.AccessKeyID)
-	} else if vt := u.OfS3OssConfig; vt != nil {
-		return (*string)(&vt.AccessKeyID)
-	} else if vt := u.OfS3OtherConfig; vt != nil {
-		return (*string)(&vt.AccessKeyID)
-	} else if vt := u.OfS3V1Config; vt != nil {
-		return (*string)(&vt.AccessKeyID)
+	} else if vt := u.OfS3OssConfig; vt != nil && vt.AccessKeyID.Valid() {
+		return &vt.AccessKeyID.Value
+	} else if vt := u.OfS3OtherConfig; vt != nil && vt.AccessKeyID.Valid() {
+		return &vt.AccessKeyID.Value
+	} else if vt := u.OfS3V1Config; vt != nil && vt.AccessKeyID.Valid() {
+		return &vt.AccessKeyID.Value
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetNewParamsConfigUnion) GetBucketName() *string {
-	if vt := u.OfS3GcoreConfig; vt != nil {
-		return (*string)(&vt.BucketName)
+	if vt := u.OfS3GcoreConfig; vt != nil && vt.BucketName.Valid() {
+		return &vt.BucketName.Value
 	} else if vt := u.OfS3AmazonConfig; vt != nil {
 		return (*string)(&vt.BucketName)
-	} else if vt := u.OfS3OssConfig; vt != nil {
-		return (*string)(&vt.BucketName)
-	} else if vt := u.OfS3OtherConfig; vt != nil {
-		return (*string)(&vt.BucketName)
-	} else if vt := u.OfS3V1Config; vt != nil {
-		return (*string)(&vt.BucketName)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u LogsUploaderTargetNewParamsConfigUnion) GetEndpoint() *string {
-	if vt := u.OfS3GcoreConfig; vt != nil {
-		return (*string)(&vt.Endpoint)
-	} else if vt := u.OfS3OssConfig; vt != nil && vt.Endpoint.Valid() {
-		return &vt.Endpoint.Value
-	} else if vt := u.OfS3OtherConfig; vt != nil {
-		return (*string)(&vt.Endpoint)
-	} else if vt := u.OfS3V1Config; vt != nil {
-		return (*string)(&vt.Endpoint)
-	} else if vt := u.OfAzureBlobConfig; vt != nil && vt.Endpoint.Valid() {
-		return &vt.Endpoint.Value
-	} else if vt := u.OfSlsConfig; vt != nil && vt.Endpoint.Valid() {
-		return &vt.Endpoint.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u LogsUploaderTargetNewParamsConfigUnion) GetRegion() *string {
-	if vt := u.OfS3GcoreConfig; vt != nil {
-		return (*string)(&vt.Region)
-	} else if vt := u.OfS3AmazonConfig; vt != nil {
-		return (*string)(&vt.Region)
-	} else if vt := u.OfS3OssConfig; vt != nil && vt.Region.Valid() {
-		return &vt.Region.Value
-	} else if vt := u.OfS3OtherConfig; vt != nil {
-		return (*string)(&vt.Region)
-	} else if vt := u.OfS3V1Config; vt != nil {
-		return (*string)(&vt.Region)
-	} else if vt := u.OfSlsConfig; vt != nil {
-		return (*string)(&vt.Region)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u LogsUploaderTargetNewParamsConfigUnion) GetSecretAccessKey() *string {
-	if vt := u.OfS3GcoreConfig; vt != nil {
-		return (*string)(&vt.SecretAccessKey)
-	} else if vt := u.OfS3AmazonConfig; vt != nil {
-		return (*string)(&vt.SecretAccessKey)
-	} else if vt := u.OfS3OssConfig; vt != nil {
-		return (*string)(&vt.SecretAccessKey)
-	} else if vt := u.OfS3OtherConfig; vt != nil {
-		return (*string)(&vt.SecretAccessKey)
-	} else if vt := u.OfS3V1Config; vt != nil {
-		return (*string)(&vt.SecretAccessKey)
+	} else if vt := u.OfS3OssConfig; vt != nil && vt.BucketName.Valid() {
+		return &vt.BucketName.Value
+	} else if vt := u.OfS3OtherConfig; vt != nil && vt.BucketName.Valid() {
+		return &vt.BucketName.Value
+	} else if vt := u.OfS3V1Config; vt != nil && vt.BucketName.Valid() {
+		return &vt.BucketName.Value
 	}
 	return nil
 }
@@ -1281,6 +1229,58 @@ func (u LogsUploaderTargetNewParamsConfigUnion) GetDirectory() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u LogsUploaderTargetNewParamsConfigUnion) GetEndpoint() *string {
+	if vt := u.OfS3GcoreConfig; vt != nil && vt.Endpoint.Valid() {
+		return &vt.Endpoint.Value
+	} else if vt := u.OfS3OssConfig; vt != nil && vt.Endpoint.Valid() {
+		return &vt.Endpoint.Value
+	} else if vt := u.OfS3OtherConfig; vt != nil && vt.Endpoint.Valid() {
+		return &vt.Endpoint.Value
+	} else if vt := u.OfS3V1Config; vt != nil && vt.Endpoint.Valid() {
+		return &vt.Endpoint.Value
+	} else if vt := u.OfAzureBlobConfig; vt != nil && vt.Endpoint.Valid() {
+		return &vt.Endpoint.Value
+	} else if vt := u.OfSlsConfig; vt != nil && vt.Endpoint.Valid() {
+		return &vt.Endpoint.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u LogsUploaderTargetNewParamsConfigUnion) GetRegion() *string {
+	if vt := u.OfS3GcoreConfig; vt != nil && vt.Region.Valid() {
+		return &vt.Region.Value
+	} else if vt := u.OfS3AmazonConfig; vt != nil {
+		return (*string)(&vt.Region)
+	} else if vt := u.OfS3OssConfig; vt != nil && vt.Region.Valid() {
+		return &vt.Region.Value
+	} else if vt := u.OfS3OtherConfig; vt != nil && vt.Region.Valid() {
+		return &vt.Region.Value
+	} else if vt := u.OfS3V1Config; vt != nil && vt.Region.Valid() {
+		return &vt.Region.Value
+	} else if vt := u.OfSlsConfig; vt != nil && vt.Region.Valid() {
+		return &vt.Region.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u LogsUploaderTargetNewParamsConfigUnion) GetSecretAccessKey() *string {
+	if vt := u.OfS3GcoreConfig; vt != nil && vt.SecretAccessKey.Valid() {
+		return &vt.SecretAccessKey.Value
+	} else if vt := u.OfS3AmazonConfig; vt != nil {
+		return (*string)(&vt.SecretAccessKey)
+	} else if vt := u.OfS3OssConfig; vt != nil && vt.SecretAccessKey.Valid() {
+		return &vt.SecretAccessKey.Value
+	} else if vt := u.OfS3OtherConfig; vt != nil && vt.SecretAccessKey.Valid() {
+		return &vt.SecretAccessKey.Value
+	} else if vt := u.OfS3V1Config; vt != nil && vt.SecretAccessKey.Valid() {
+		return &vt.SecretAccessKey.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetNewParamsConfigUnion) GetUsePathStyle() *bool {
 	if vt := u.OfS3GcoreConfig; vt != nil && vt.UsePathStyle.Valid() {
 		return &vt.UsePathStyle.Value
@@ -1294,30 +1294,20 @@ func (u LogsUploaderTargetNewParamsConfigUnion) GetUsePathStyle() *bool {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetNewParamsConfigUnion) GetHostname() *string {
-	if vt := u.OfFtpConfig; vt != nil {
-		return (*string)(&vt.Hostname)
-	} else if vt := u.OfSftpConfig; vt != nil {
-		return (*string)(&vt.Hostname)
+	if vt := u.OfFtpConfig; vt != nil && vt.Hostname.Valid() {
+		return &vt.Hostname.Value
+	} else if vt := u.OfSftpConfig; vt != nil && vt.Hostname.Valid() {
+		return &vt.Hostname.Value
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetNewParamsConfigUnion) GetPassword() *string {
-	if vt := u.OfFtpConfig; vt != nil {
-		return (*string)(&vt.Password)
+	if vt := u.OfFtpConfig; vt != nil && vt.Password.Valid() {
+		return &vt.Password.Value
 	} else if vt := u.OfSftpConfig; vt != nil && vt.Password.Valid() {
 		return &vt.Password.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u LogsUploaderTargetNewParamsConfigUnion) GetUser() *string {
-	if vt := u.OfFtpConfig; vt != nil {
-		return (*string)(&vt.User)
-	} else if vt := u.OfSftpConfig; vt != nil {
-		return (*string)(&vt.User)
 	}
 	return nil
 }
@@ -1328,6 +1318,16 @@ func (u LogsUploaderTargetNewParamsConfigUnion) GetTimeoutSeconds() *int64 {
 		return &vt.TimeoutSeconds.Value
 	} else if vt := u.OfSftpConfig; vt != nil && vt.TimeoutSeconds.Valid() {
 		return &vt.TimeoutSeconds.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u LogsUploaderTargetNewParamsConfigUnion) GetUser() *string {
+	if vt := u.OfFtpConfig; vt != nil && vt.User.Valid() {
+		return &vt.User.Value
+	} else if vt := u.OfSftpConfig; vt != nil && vt.User.Valid() {
+		return &vt.User.Value
 	}
 	return nil
 }
@@ -1456,15 +1456,13 @@ func (u logsUploaderTargetNewParamsConfigUnionAuthConfig) GetToken() *string {
 	return nil
 }
 
-// The properties AccessKeyID, BucketName, Endpoint, Region, SecretAccessKey are
-// required.
 type LogsUploaderTargetNewParamsConfigS3GcoreConfig struct {
-	AccessKeyID     string            `json:"access_key_id" api:"required"`
-	BucketName      string            `json:"bucket_name" api:"required"`
-	Endpoint        string            `json:"endpoint" api:"required"`
-	Region          string            `json:"region" api:"required"`
-	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
+	AccessKeyID     param.Opt[string] `json:"access_key_id,omitzero"`
+	BucketName      param.Opt[string] `json:"bucket_name,omitzero"`
+	Endpoint        param.Opt[string] `json:"endpoint,omitzero"`
+	Region          param.Opt[string] `json:"region,omitzero"`
+	SecretAccessKey param.Opt[string] `json:"secret_access_key,omitzero"`
 	UsePathStyle    param.Opt[bool]   `json:"use_path_style,omitzero"`
 	paramObj
 }
@@ -1495,14 +1493,13 @@ func (r *LogsUploaderTargetNewParamsConfigS3AmazonConfig) UnmarshalJSON(data []b
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The properties AccessKeyID, BucketName, SecretAccessKey are required.
 type LogsUploaderTargetNewParamsConfigS3OssConfig struct {
-	AccessKeyID     string            `json:"access_key_id" api:"required"`
-	BucketName      string            `json:"bucket_name" api:"required"`
-	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
 	Endpoint        param.Opt[string] `json:"endpoint,omitzero"`
 	Region          param.Opt[string] `json:"region,omitzero"`
+	AccessKeyID     param.Opt[string] `json:"access_key_id,omitzero"`
+	BucketName      param.Opt[string] `json:"bucket_name,omitzero"`
+	SecretAccessKey param.Opt[string] `json:"secret_access_key,omitzero"`
 	paramObj
 }
 
@@ -1514,15 +1511,13 @@ func (r *LogsUploaderTargetNewParamsConfigS3OssConfig) UnmarshalJSON(data []byte
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The properties AccessKeyID, BucketName, Endpoint, Region, SecretAccessKey are
-// required.
 type LogsUploaderTargetNewParamsConfigS3OtherConfig struct {
-	AccessKeyID     string            `json:"access_key_id" api:"required"`
-	BucketName      string            `json:"bucket_name" api:"required"`
-	Endpoint        string            `json:"endpoint" api:"required"`
-	Region          string            `json:"region" api:"required"`
-	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
+	AccessKeyID     param.Opt[string] `json:"access_key_id,omitzero"`
+	BucketName      param.Opt[string] `json:"bucket_name,omitzero"`
+	Endpoint        param.Opt[string] `json:"endpoint,omitzero"`
+	Region          param.Opt[string] `json:"region,omitzero"`
+	SecretAccessKey param.Opt[string] `json:"secret_access_key,omitzero"`
 	UsePathStyle    param.Opt[bool]   `json:"use_path_style,omitzero"`
 	paramObj
 }
@@ -1535,15 +1530,13 @@ func (r *LogsUploaderTargetNewParamsConfigS3OtherConfig) UnmarshalJSON(data []by
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The properties AccessKeyID, BucketName, Endpoint, Region, SecretAccessKey are
-// required.
 type LogsUploaderTargetNewParamsConfigS3V1Config struct {
-	AccessKeyID     string            `json:"access_key_id" api:"required"`
-	BucketName      string            `json:"bucket_name" api:"required"`
-	Endpoint        string            `json:"endpoint" api:"required"`
-	Region          string            `json:"region" api:"required"`
-	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
+	AccessKeyID     param.Opt[string] `json:"access_key_id,omitzero"`
+	BucketName      param.Opt[string] `json:"bucket_name,omitzero"`
+	Endpoint        param.Opt[string] `json:"endpoint,omitzero"`
+	Region          param.Opt[string] `json:"region,omitzero"`
+	SecretAccessKey param.Opt[string] `json:"secret_access_key,omitzero"`
 	UsePathStyle    param.Opt[bool]   `json:"use_path_style,omitzero"`
 	paramObj
 }
@@ -1556,13 +1549,12 @@ func (r *LogsUploaderTargetNewParamsConfigS3V1Config) UnmarshalJSON(data []byte)
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The properties Hostname, Password, User are required.
 type LogsUploaderTargetNewParamsConfigFtpConfig struct {
-	Hostname       string            `json:"hostname" api:"required"`
-	Password       string            `json:"password" api:"required"`
-	User           string            `json:"user" api:"required"`
 	Directory      param.Opt[string] `json:"directory,omitzero"`
+	Hostname       param.Opt[string] `json:"hostname,omitzero"`
+	Password       param.Opt[string] `json:"password,omitzero"`
 	TimeoutSeconds param.Opt[int64]  `json:"timeout_seconds,omitzero"`
+	User           param.Opt[string] `json:"user,omitzero"`
 	paramObj
 }
 
@@ -1574,15 +1566,14 @@ func (r *LogsUploaderTargetNewParamsConfigFtpConfig) UnmarshalJSON(data []byte) 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The properties Hostname, User are required.
 type LogsUploaderTargetNewParamsConfigSftpConfig struct {
-	Hostname       string            `json:"hostname" api:"required"`
-	User           string            `json:"user" api:"required"`
 	Directory      param.Opt[string] `json:"directory,omitzero"`
 	KeyPassphrase  param.Opt[string] `json:"key_passphrase,omitzero"`
 	Password       param.Opt[string] `json:"password,omitzero"`
 	PrivateKey     param.Opt[string] `json:"private_key,omitzero"`
+	Hostname       param.Opt[string] `json:"hostname,omitzero"`
 	TimeoutSeconds param.Opt[int64]  `json:"timeout_seconds,omitzero"`
+	User           param.Opt[string] `json:"user,omitzero"`
 	paramObj
 }
 
@@ -1806,17 +1797,16 @@ func init() {
 	)
 }
 
-// The properties AccountName, Auth, ContainerName are required.
 type LogsUploaderTargetNewParamsConfigAzureBlobConfig struct {
-	// Azure Blob Storage account name.
-	AccountName string                                               `json:"account_name" api:"required"`
-	Auth        LogsUploaderTargetNewParamsConfigAzureBlobConfigAuth `json:"auth,omitzero" api:"required"`
-	// Azure Blob Storage container name.
-	ContainerName string `json:"container_name" api:"required"`
 	// Directory path within the container.
 	Directory param.Opt[string] `json:"directory,omitzero"`
 	// Custom Azure Blob Storage endpoint URL.
 	Endpoint param.Opt[string] `json:"endpoint,omitzero"`
+	// Azure Blob Storage account name.
+	AccountName param.Opt[string] `json:"account_name,omitzero"`
+	// Azure Blob Storage container name.
+	ContainerName param.Opt[string]                                    `json:"container_name,omitzero"`
+	Auth          LogsUploaderTargetNewParamsConfigAzureBlobConfigAuth `json:"auth,omitzero"`
 	paramObj
 }
 
@@ -1924,21 +1914,20 @@ func (r *LogsUploaderTargetNewParamsConfigAzureBlobConfigAuthConfigToken) Unmars
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The properties Auth, LogStore, Project, Region are required.
 type LogsUploaderTargetNewParamsConfigSlsConfig struct {
-	Auth LogsUploaderTargetNewParamsConfigSlsConfigAuth `json:"auth,omitzero" api:"required"`
-	// SLS logstore name. 3-36 characters; lowercase letters, digits, hyphens, and
-	// underscores.
-	LogStore string `json:"log_store" api:"required"`
-	// SLS project name. 3-63 characters; lowercase letters, digits, and hyphens.
-	Project string `json:"project" api:"required"`
-	// SLS region (e.g. `eu-central-1`).
-	Region string `json:"region" api:"required"`
 	// SLS endpoint. Optional — derived from the region as `{region}.log.aliyuncs.com`
 	// when omitted.
 	Endpoint param.Opt[string] `json:"endpoint,omitzero"`
 	// Optional SLS topic (0-128 characters).
 	Topic param.Opt[string] `json:"topic,omitzero"`
+	// SLS logstore name. 3-36 characters; lowercase letters, digits, hyphens, and
+	// underscores.
+	LogStore param.Opt[string] `json:"log_store,omitzero"`
+	// SLS project name. 3-63 characters; lowercase letters, digits, and hyphens.
+	Project param.Opt[string] `json:"project,omitzero"`
+	// SLS region (e.g. `eu-central-1`).
+	Region param.Opt[string]                              `json:"region,omitzero"`
+	Auth   LogsUploaderTargetNewParamsConfigSlsConfigAuth `json:"auth,omitzero"`
 	paramObj
 }
 
@@ -2141,32 +2130,32 @@ func (u LogsUploaderTargetUpdateParamsConfigUnion) GetRetry() *LogsUploaderTarge
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetUpdateParamsConfigUnion) GetAccountName() *string {
-	if vt := u.OfAzureBlobConfig; vt != nil {
-		return &vt.AccountName
+	if vt := u.OfAzureBlobConfig; vt != nil && vt.AccountName.Valid() {
+		return &vt.AccountName.Value
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetUpdateParamsConfigUnion) GetContainerName() *string {
-	if vt := u.OfAzureBlobConfig; vt != nil {
-		return &vt.ContainerName
+	if vt := u.OfAzureBlobConfig; vt != nil && vt.ContainerName.Valid() {
+		return &vt.ContainerName.Value
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetUpdateParamsConfigUnion) GetLogStore() *string {
-	if vt := u.OfSlsConfig; vt != nil {
-		return &vt.LogStore
+	if vt := u.OfSlsConfig; vt != nil && vt.LogStore.Valid() {
+		return &vt.LogStore.Value
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetUpdateParamsConfigUnion) GetProject() *string {
-	if vt := u.OfSlsConfig; vt != nil {
-		return &vt.Project
+	if vt := u.OfSlsConfig; vt != nil && vt.Project.Valid() {
+		return &vt.Project.Value
 	}
 	return nil
 }
@@ -2181,84 +2170,32 @@ func (u LogsUploaderTargetUpdateParamsConfigUnion) GetTopic() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetUpdateParamsConfigUnion) GetAccessKeyID() *string {
-	if vt := u.OfS3GcoreConfig; vt != nil {
-		return (*string)(&vt.AccessKeyID)
+	if vt := u.OfS3GcoreConfig; vt != nil && vt.AccessKeyID.Valid() {
+		return &vt.AccessKeyID.Value
 	} else if vt := u.OfS3AmazonConfig; vt != nil {
 		return (*string)(&vt.AccessKeyID)
-	} else if vt := u.OfS3OssConfig; vt != nil {
-		return (*string)(&vt.AccessKeyID)
-	} else if vt := u.OfS3OtherConfig; vt != nil {
-		return (*string)(&vt.AccessKeyID)
-	} else if vt := u.OfS3V1Config; vt != nil {
-		return (*string)(&vt.AccessKeyID)
+	} else if vt := u.OfS3OssConfig; vt != nil && vt.AccessKeyID.Valid() {
+		return &vt.AccessKeyID.Value
+	} else if vt := u.OfS3OtherConfig; vt != nil && vt.AccessKeyID.Valid() {
+		return &vt.AccessKeyID.Value
+	} else if vt := u.OfS3V1Config; vt != nil && vt.AccessKeyID.Valid() {
+		return &vt.AccessKeyID.Value
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetUpdateParamsConfigUnion) GetBucketName() *string {
-	if vt := u.OfS3GcoreConfig; vt != nil {
-		return (*string)(&vt.BucketName)
+	if vt := u.OfS3GcoreConfig; vt != nil && vt.BucketName.Valid() {
+		return &vt.BucketName.Value
 	} else if vt := u.OfS3AmazonConfig; vt != nil {
 		return (*string)(&vt.BucketName)
-	} else if vt := u.OfS3OssConfig; vt != nil {
-		return (*string)(&vt.BucketName)
-	} else if vt := u.OfS3OtherConfig; vt != nil {
-		return (*string)(&vt.BucketName)
-	} else if vt := u.OfS3V1Config; vt != nil {
-		return (*string)(&vt.BucketName)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u LogsUploaderTargetUpdateParamsConfigUnion) GetEndpoint() *string {
-	if vt := u.OfS3GcoreConfig; vt != nil {
-		return (*string)(&vt.Endpoint)
-	} else if vt := u.OfS3OssConfig; vt != nil && vt.Endpoint.Valid() {
-		return &vt.Endpoint.Value
-	} else if vt := u.OfS3OtherConfig; vt != nil {
-		return (*string)(&vt.Endpoint)
-	} else if vt := u.OfS3V1Config; vt != nil {
-		return (*string)(&vt.Endpoint)
-	} else if vt := u.OfAzureBlobConfig; vt != nil && vt.Endpoint.Valid() {
-		return &vt.Endpoint.Value
-	} else if vt := u.OfSlsConfig; vt != nil && vt.Endpoint.Valid() {
-		return &vt.Endpoint.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u LogsUploaderTargetUpdateParamsConfigUnion) GetRegion() *string {
-	if vt := u.OfS3GcoreConfig; vt != nil {
-		return (*string)(&vt.Region)
-	} else if vt := u.OfS3AmazonConfig; vt != nil {
-		return (*string)(&vt.Region)
-	} else if vt := u.OfS3OssConfig; vt != nil && vt.Region.Valid() {
-		return &vt.Region.Value
-	} else if vt := u.OfS3OtherConfig; vt != nil {
-		return (*string)(&vt.Region)
-	} else if vt := u.OfS3V1Config; vt != nil {
-		return (*string)(&vt.Region)
-	} else if vt := u.OfSlsConfig; vt != nil {
-		return (*string)(&vt.Region)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u LogsUploaderTargetUpdateParamsConfigUnion) GetSecretAccessKey() *string {
-	if vt := u.OfS3GcoreConfig; vt != nil {
-		return (*string)(&vt.SecretAccessKey)
-	} else if vt := u.OfS3AmazonConfig; vt != nil {
-		return (*string)(&vt.SecretAccessKey)
-	} else if vt := u.OfS3OssConfig; vt != nil {
-		return (*string)(&vt.SecretAccessKey)
-	} else if vt := u.OfS3OtherConfig; vt != nil {
-		return (*string)(&vt.SecretAccessKey)
-	} else if vt := u.OfS3V1Config; vt != nil {
-		return (*string)(&vt.SecretAccessKey)
+	} else if vt := u.OfS3OssConfig; vt != nil && vt.BucketName.Valid() {
+		return &vt.BucketName.Value
+	} else if vt := u.OfS3OtherConfig; vt != nil && vt.BucketName.Valid() {
+		return &vt.BucketName.Value
+	} else if vt := u.OfS3V1Config; vt != nil && vt.BucketName.Valid() {
+		return &vt.BucketName.Value
 	}
 	return nil
 }
@@ -2286,6 +2223,58 @@ func (u LogsUploaderTargetUpdateParamsConfigUnion) GetDirectory() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u LogsUploaderTargetUpdateParamsConfigUnion) GetEndpoint() *string {
+	if vt := u.OfS3GcoreConfig; vt != nil && vt.Endpoint.Valid() {
+		return &vt.Endpoint.Value
+	} else if vt := u.OfS3OssConfig; vt != nil && vt.Endpoint.Valid() {
+		return &vt.Endpoint.Value
+	} else if vt := u.OfS3OtherConfig; vt != nil && vt.Endpoint.Valid() {
+		return &vt.Endpoint.Value
+	} else if vt := u.OfS3V1Config; vt != nil && vt.Endpoint.Valid() {
+		return &vt.Endpoint.Value
+	} else if vt := u.OfAzureBlobConfig; vt != nil && vt.Endpoint.Valid() {
+		return &vt.Endpoint.Value
+	} else if vt := u.OfSlsConfig; vt != nil && vt.Endpoint.Valid() {
+		return &vt.Endpoint.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u LogsUploaderTargetUpdateParamsConfigUnion) GetRegion() *string {
+	if vt := u.OfS3GcoreConfig; vt != nil && vt.Region.Valid() {
+		return &vt.Region.Value
+	} else if vt := u.OfS3AmazonConfig; vt != nil {
+		return (*string)(&vt.Region)
+	} else if vt := u.OfS3OssConfig; vt != nil && vt.Region.Valid() {
+		return &vt.Region.Value
+	} else if vt := u.OfS3OtherConfig; vt != nil && vt.Region.Valid() {
+		return &vt.Region.Value
+	} else if vt := u.OfS3V1Config; vt != nil && vt.Region.Valid() {
+		return &vt.Region.Value
+	} else if vt := u.OfSlsConfig; vt != nil && vt.Region.Valid() {
+		return &vt.Region.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u LogsUploaderTargetUpdateParamsConfigUnion) GetSecretAccessKey() *string {
+	if vt := u.OfS3GcoreConfig; vt != nil && vt.SecretAccessKey.Valid() {
+		return &vt.SecretAccessKey.Value
+	} else if vt := u.OfS3AmazonConfig; vt != nil {
+		return (*string)(&vt.SecretAccessKey)
+	} else if vt := u.OfS3OssConfig; vt != nil && vt.SecretAccessKey.Valid() {
+		return &vt.SecretAccessKey.Value
+	} else if vt := u.OfS3OtherConfig; vt != nil && vt.SecretAccessKey.Valid() {
+		return &vt.SecretAccessKey.Value
+	} else if vt := u.OfS3V1Config; vt != nil && vt.SecretAccessKey.Valid() {
+		return &vt.SecretAccessKey.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetUpdateParamsConfigUnion) GetUsePathStyle() *bool {
 	if vt := u.OfS3GcoreConfig; vt != nil && vt.UsePathStyle.Valid() {
 		return &vt.UsePathStyle.Value
@@ -2299,30 +2288,20 @@ func (u LogsUploaderTargetUpdateParamsConfigUnion) GetUsePathStyle() *bool {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetUpdateParamsConfigUnion) GetHostname() *string {
-	if vt := u.OfFtpConfig; vt != nil {
-		return (*string)(&vt.Hostname)
-	} else if vt := u.OfSftpConfig; vt != nil {
-		return (*string)(&vt.Hostname)
+	if vt := u.OfFtpConfig; vt != nil && vt.Hostname.Valid() {
+		return &vt.Hostname.Value
+	} else if vt := u.OfSftpConfig; vt != nil && vt.Hostname.Valid() {
+		return &vt.Hostname.Value
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetUpdateParamsConfigUnion) GetPassword() *string {
-	if vt := u.OfFtpConfig; vt != nil {
-		return (*string)(&vt.Password)
+	if vt := u.OfFtpConfig; vt != nil && vt.Password.Valid() {
+		return &vt.Password.Value
 	} else if vt := u.OfSftpConfig; vt != nil && vt.Password.Valid() {
 		return &vt.Password.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u LogsUploaderTargetUpdateParamsConfigUnion) GetUser() *string {
-	if vt := u.OfFtpConfig; vt != nil {
-		return (*string)(&vt.User)
-	} else if vt := u.OfSftpConfig; vt != nil {
-		return (*string)(&vt.User)
 	}
 	return nil
 }
@@ -2333,6 +2312,16 @@ func (u LogsUploaderTargetUpdateParamsConfigUnion) GetTimeoutSeconds() *int64 {
 		return &vt.TimeoutSeconds.Value
 	} else if vt := u.OfSftpConfig; vt != nil && vt.TimeoutSeconds.Valid() {
 		return &vt.TimeoutSeconds.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u LogsUploaderTargetUpdateParamsConfigUnion) GetUser() *string {
+	if vt := u.OfFtpConfig; vt != nil && vt.User.Valid() {
+		return &vt.User.Value
+	} else if vt := u.OfSftpConfig; vt != nil && vt.User.Valid() {
+		return &vt.User.Value
 	}
 	return nil
 }
@@ -2462,15 +2451,13 @@ func (u logsUploaderTargetUpdateParamsConfigUnionAuthConfig) GetToken() *string 
 	return nil
 }
 
-// The properties AccessKeyID, BucketName, Endpoint, Region, SecretAccessKey are
-// required.
 type LogsUploaderTargetUpdateParamsConfigS3GcoreConfig struct {
-	AccessKeyID     string            `json:"access_key_id" api:"required"`
-	BucketName      string            `json:"bucket_name" api:"required"`
-	Endpoint        string            `json:"endpoint" api:"required"`
-	Region          string            `json:"region" api:"required"`
-	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
+	AccessKeyID     param.Opt[string] `json:"access_key_id,omitzero"`
+	BucketName      param.Opt[string] `json:"bucket_name,omitzero"`
+	Endpoint        param.Opt[string] `json:"endpoint,omitzero"`
+	Region          param.Opt[string] `json:"region,omitzero"`
+	SecretAccessKey param.Opt[string] `json:"secret_access_key,omitzero"`
 	UsePathStyle    param.Opt[bool]   `json:"use_path_style,omitzero"`
 	paramObj
 }
@@ -2501,14 +2488,13 @@ func (r *LogsUploaderTargetUpdateParamsConfigS3AmazonConfig) UnmarshalJSON(data 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The properties AccessKeyID, BucketName, SecretAccessKey are required.
 type LogsUploaderTargetUpdateParamsConfigS3OssConfig struct {
-	AccessKeyID     string            `json:"access_key_id" api:"required"`
-	BucketName      string            `json:"bucket_name" api:"required"`
-	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
 	Endpoint        param.Opt[string] `json:"endpoint,omitzero"`
 	Region          param.Opt[string] `json:"region,omitzero"`
+	AccessKeyID     param.Opt[string] `json:"access_key_id,omitzero"`
+	BucketName      param.Opt[string] `json:"bucket_name,omitzero"`
+	SecretAccessKey param.Opt[string] `json:"secret_access_key,omitzero"`
 	paramObj
 }
 
@@ -2520,15 +2506,13 @@ func (r *LogsUploaderTargetUpdateParamsConfigS3OssConfig) UnmarshalJSON(data []b
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The properties AccessKeyID, BucketName, Endpoint, Region, SecretAccessKey are
-// required.
 type LogsUploaderTargetUpdateParamsConfigS3OtherConfig struct {
-	AccessKeyID     string            `json:"access_key_id" api:"required"`
-	BucketName      string            `json:"bucket_name" api:"required"`
-	Endpoint        string            `json:"endpoint" api:"required"`
-	Region          string            `json:"region" api:"required"`
-	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
+	AccessKeyID     param.Opt[string] `json:"access_key_id,omitzero"`
+	BucketName      param.Opt[string] `json:"bucket_name,omitzero"`
+	Endpoint        param.Opt[string] `json:"endpoint,omitzero"`
+	Region          param.Opt[string] `json:"region,omitzero"`
+	SecretAccessKey param.Opt[string] `json:"secret_access_key,omitzero"`
 	UsePathStyle    param.Opt[bool]   `json:"use_path_style,omitzero"`
 	paramObj
 }
@@ -2541,15 +2525,13 @@ func (r *LogsUploaderTargetUpdateParamsConfigS3OtherConfig) UnmarshalJSON(data [
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The properties AccessKeyID, BucketName, Endpoint, Region, SecretAccessKey are
-// required.
 type LogsUploaderTargetUpdateParamsConfigS3V1Config struct {
-	AccessKeyID     string            `json:"access_key_id" api:"required"`
-	BucketName      string            `json:"bucket_name" api:"required"`
-	Endpoint        string            `json:"endpoint" api:"required"`
-	Region          string            `json:"region" api:"required"`
-	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
+	AccessKeyID     param.Opt[string] `json:"access_key_id,omitzero"`
+	BucketName      param.Opt[string] `json:"bucket_name,omitzero"`
+	Endpoint        param.Opt[string] `json:"endpoint,omitzero"`
+	Region          param.Opt[string] `json:"region,omitzero"`
+	SecretAccessKey param.Opt[string] `json:"secret_access_key,omitzero"`
 	UsePathStyle    param.Opt[bool]   `json:"use_path_style,omitzero"`
 	paramObj
 }
@@ -2562,13 +2544,12 @@ func (r *LogsUploaderTargetUpdateParamsConfigS3V1Config) UnmarshalJSON(data []by
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The properties Hostname, Password, User are required.
 type LogsUploaderTargetUpdateParamsConfigFtpConfig struct {
-	Hostname       string            `json:"hostname" api:"required"`
-	Password       string            `json:"password" api:"required"`
-	User           string            `json:"user" api:"required"`
 	Directory      param.Opt[string] `json:"directory,omitzero"`
+	Hostname       param.Opt[string] `json:"hostname,omitzero"`
+	Password       param.Opt[string] `json:"password,omitzero"`
 	TimeoutSeconds param.Opt[int64]  `json:"timeout_seconds,omitzero"`
+	User           param.Opt[string] `json:"user,omitzero"`
 	paramObj
 }
 
@@ -2580,15 +2561,14 @@ func (r *LogsUploaderTargetUpdateParamsConfigFtpConfig) UnmarshalJSON(data []byt
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The properties Hostname, User are required.
 type LogsUploaderTargetUpdateParamsConfigSftpConfig struct {
-	Hostname       string            `json:"hostname" api:"required"`
-	User           string            `json:"user" api:"required"`
 	Directory      param.Opt[string] `json:"directory,omitzero"`
 	KeyPassphrase  param.Opt[string] `json:"key_passphrase,omitzero"`
 	Password       param.Opt[string] `json:"password,omitzero"`
 	PrivateKey     param.Opt[string] `json:"private_key,omitzero"`
+	Hostname       param.Opt[string] `json:"hostname,omitzero"`
 	TimeoutSeconds param.Opt[int64]  `json:"timeout_seconds,omitzero"`
+	User           param.Opt[string] `json:"user,omitzero"`
 	paramObj
 }
 
@@ -2812,17 +2792,16 @@ func init() {
 	)
 }
 
-// The properties AccountName, Auth, ContainerName are required.
 type LogsUploaderTargetUpdateParamsConfigAzureBlobConfig struct {
-	// Azure Blob Storage account name.
-	AccountName string                                                  `json:"account_name" api:"required"`
-	Auth        LogsUploaderTargetUpdateParamsConfigAzureBlobConfigAuth `json:"auth,omitzero" api:"required"`
-	// Azure Blob Storage container name.
-	ContainerName string `json:"container_name" api:"required"`
 	// Directory path within the container.
 	Directory param.Opt[string] `json:"directory,omitzero"`
 	// Custom Azure Blob Storage endpoint URL.
 	Endpoint param.Opt[string] `json:"endpoint,omitzero"`
+	// Azure Blob Storage account name.
+	AccountName param.Opt[string] `json:"account_name,omitzero"`
+	// Azure Blob Storage container name.
+	ContainerName param.Opt[string]                                       `json:"container_name,omitzero"`
+	Auth          LogsUploaderTargetUpdateParamsConfigAzureBlobConfigAuth `json:"auth,omitzero"`
 	paramObj
 }
 
@@ -2930,21 +2909,20 @@ func (r *LogsUploaderTargetUpdateParamsConfigAzureBlobConfigAuthConfigToken) Unm
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The properties Auth, LogStore, Project, Region are required.
 type LogsUploaderTargetUpdateParamsConfigSlsConfig struct {
-	Auth LogsUploaderTargetUpdateParamsConfigSlsConfigAuth `json:"auth,omitzero" api:"required"`
-	// SLS logstore name. 3-36 characters; lowercase letters, digits, hyphens, and
-	// underscores.
-	LogStore string `json:"log_store" api:"required"`
-	// SLS project name. 3-63 characters; lowercase letters, digits, and hyphens.
-	Project string `json:"project" api:"required"`
-	// SLS region (e.g. `eu-central-1`).
-	Region string `json:"region" api:"required"`
 	// SLS endpoint. Optional — derived from the region as `{region}.log.aliyuncs.com`
 	// when omitted.
 	Endpoint param.Opt[string] `json:"endpoint,omitzero"`
 	// Optional SLS topic (0-128 characters).
 	Topic param.Opt[string] `json:"topic,omitzero"`
+	// SLS logstore name. 3-36 characters; lowercase letters, digits, hyphens, and
+	// underscores.
+	LogStore param.Opt[string] `json:"log_store,omitzero"`
+	// SLS project name. 3-63 characters; lowercase letters, digits, and hyphens.
+	Project param.Opt[string] `json:"project,omitzero"`
+	// SLS region (e.g. `eu-central-1`).
+	Region param.Opt[string]                                 `json:"region,omitzero"`
+	Auth   LogsUploaderTargetUpdateParamsConfigSlsConfigAuth `json:"auth,omitzero"`
 	paramObj
 }
 
@@ -3168,32 +3146,32 @@ func (u LogsUploaderTargetReplaceParamsConfigUnion) GetRetry() *LogsUploaderTarg
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetReplaceParamsConfigUnion) GetAccountName() *string {
-	if vt := u.OfAzureBlobConfig; vt != nil {
-		return &vt.AccountName
+	if vt := u.OfAzureBlobConfig; vt != nil && vt.AccountName.Valid() {
+		return &vt.AccountName.Value
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetReplaceParamsConfigUnion) GetContainerName() *string {
-	if vt := u.OfAzureBlobConfig; vt != nil {
-		return &vt.ContainerName
+	if vt := u.OfAzureBlobConfig; vt != nil && vt.ContainerName.Valid() {
+		return &vt.ContainerName.Value
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetReplaceParamsConfigUnion) GetLogStore() *string {
-	if vt := u.OfSlsConfig; vt != nil {
-		return &vt.LogStore
+	if vt := u.OfSlsConfig; vt != nil && vt.LogStore.Valid() {
+		return &vt.LogStore.Value
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetReplaceParamsConfigUnion) GetProject() *string {
-	if vt := u.OfSlsConfig; vt != nil {
-		return &vt.Project
+	if vt := u.OfSlsConfig; vt != nil && vt.Project.Valid() {
+		return &vt.Project.Value
 	}
 	return nil
 }
@@ -3208,84 +3186,32 @@ func (u LogsUploaderTargetReplaceParamsConfigUnion) GetTopic() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetReplaceParamsConfigUnion) GetAccessKeyID() *string {
-	if vt := u.OfS3GcoreConfig; vt != nil {
-		return (*string)(&vt.AccessKeyID)
+	if vt := u.OfS3GcoreConfig; vt != nil && vt.AccessKeyID.Valid() {
+		return &vt.AccessKeyID.Value
 	} else if vt := u.OfS3AmazonConfig; vt != nil {
 		return (*string)(&vt.AccessKeyID)
-	} else if vt := u.OfS3OssConfig; vt != nil {
-		return (*string)(&vt.AccessKeyID)
-	} else if vt := u.OfS3OtherConfig; vt != nil {
-		return (*string)(&vt.AccessKeyID)
-	} else if vt := u.OfS3V1Config; vt != nil {
-		return (*string)(&vt.AccessKeyID)
+	} else if vt := u.OfS3OssConfig; vt != nil && vt.AccessKeyID.Valid() {
+		return &vt.AccessKeyID.Value
+	} else if vt := u.OfS3OtherConfig; vt != nil && vt.AccessKeyID.Valid() {
+		return &vt.AccessKeyID.Value
+	} else if vt := u.OfS3V1Config; vt != nil && vt.AccessKeyID.Valid() {
+		return &vt.AccessKeyID.Value
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetReplaceParamsConfigUnion) GetBucketName() *string {
-	if vt := u.OfS3GcoreConfig; vt != nil {
-		return (*string)(&vt.BucketName)
+	if vt := u.OfS3GcoreConfig; vt != nil && vt.BucketName.Valid() {
+		return &vt.BucketName.Value
 	} else if vt := u.OfS3AmazonConfig; vt != nil {
 		return (*string)(&vt.BucketName)
-	} else if vt := u.OfS3OssConfig; vt != nil {
-		return (*string)(&vt.BucketName)
-	} else if vt := u.OfS3OtherConfig; vt != nil {
-		return (*string)(&vt.BucketName)
-	} else if vt := u.OfS3V1Config; vt != nil {
-		return (*string)(&vt.BucketName)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u LogsUploaderTargetReplaceParamsConfigUnion) GetEndpoint() *string {
-	if vt := u.OfS3GcoreConfig; vt != nil {
-		return (*string)(&vt.Endpoint)
-	} else if vt := u.OfS3OssConfig; vt != nil && vt.Endpoint.Valid() {
-		return &vt.Endpoint.Value
-	} else if vt := u.OfS3OtherConfig; vt != nil {
-		return (*string)(&vt.Endpoint)
-	} else if vt := u.OfS3V1Config; vt != nil {
-		return (*string)(&vt.Endpoint)
-	} else if vt := u.OfAzureBlobConfig; vt != nil && vt.Endpoint.Valid() {
-		return &vt.Endpoint.Value
-	} else if vt := u.OfSlsConfig; vt != nil && vt.Endpoint.Valid() {
-		return &vt.Endpoint.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u LogsUploaderTargetReplaceParamsConfigUnion) GetRegion() *string {
-	if vt := u.OfS3GcoreConfig; vt != nil {
-		return (*string)(&vt.Region)
-	} else if vt := u.OfS3AmazonConfig; vt != nil {
-		return (*string)(&vt.Region)
-	} else if vt := u.OfS3OssConfig; vt != nil && vt.Region.Valid() {
-		return &vt.Region.Value
-	} else if vt := u.OfS3OtherConfig; vt != nil {
-		return (*string)(&vt.Region)
-	} else if vt := u.OfS3V1Config; vt != nil {
-		return (*string)(&vt.Region)
-	} else if vt := u.OfSlsConfig; vt != nil {
-		return (*string)(&vt.Region)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u LogsUploaderTargetReplaceParamsConfigUnion) GetSecretAccessKey() *string {
-	if vt := u.OfS3GcoreConfig; vt != nil {
-		return (*string)(&vt.SecretAccessKey)
-	} else if vt := u.OfS3AmazonConfig; vt != nil {
-		return (*string)(&vt.SecretAccessKey)
-	} else if vt := u.OfS3OssConfig; vt != nil {
-		return (*string)(&vt.SecretAccessKey)
-	} else if vt := u.OfS3OtherConfig; vt != nil {
-		return (*string)(&vt.SecretAccessKey)
-	} else if vt := u.OfS3V1Config; vt != nil {
-		return (*string)(&vt.SecretAccessKey)
+	} else if vt := u.OfS3OssConfig; vt != nil && vt.BucketName.Valid() {
+		return &vt.BucketName.Value
+	} else if vt := u.OfS3OtherConfig; vt != nil && vt.BucketName.Valid() {
+		return &vt.BucketName.Value
+	} else if vt := u.OfS3V1Config; vt != nil && vt.BucketName.Valid() {
+		return &vt.BucketName.Value
 	}
 	return nil
 }
@@ -3313,6 +3239,58 @@ func (u LogsUploaderTargetReplaceParamsConfigUnion) GetDirectory() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u LogsUploaderTargetReplaceParamsConfigUnion) GetEndpoint() *string {
+	if vt := u.OfS3GcoreConfig; vt != nil && vt.Endpoint.Valid() {
+		return &vt.Endpoint.Value
+	} else if vt := u.OfS3OssConfig; vt != nil && vt.Endpoint.Valid() {
+		return &vt.Endpoint.Value
+	} else if vt := u.OfS3OtherConfig; vt != nil && vt.Endpoint.Valid() {
+		return &vt.Endpoint.Value
+	} else if vt := u.OfS3V1Config; vt != nil && vt.Endpoint.Valid() {
+		return &vt.Endpoint.Value
+	} else if vt := u.OfAzureBlobConfig; vt != nil && vt.Endpoint.Valid() {
+		return &vt.Endpoint.Value
+	} else if vt := u.OfSlsConfig; vt != nil && vt.Endpoint.Valid() {
+		return &vt.Endpoint.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u LogsUploaderTargetReplaceParamsConfigUnion) GetRegion() *string {
+	if vt := u.OfS3GcoreConfig; vt != nil && vt.Region.Valid() {
+		return &vt.Region.Value
+	} else if vt := u.OfS3AmazonConfig; vt != nil {
+		return (*string)(&vt.Region)
+	} else if vt := u.OfS3OssConfig; vt != nil && vt.Region.Valid() {
+		return &vt.Region.Value
+	} else if vt := u.OfS3OtherConfig; vt != nil && vt.Region.Valid() {
+		return &vt.Region.Value
+	} else if vt := u.OfS3V1Config; vt != nil && vt.Region.Valid() {
+		return &vt.Region.Value
+	} else if vt := u.OfSlsConfig; vt != nil && vt.Region.Valid() {
+		return &vt.Region.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u LogsUploaderTargetReplaceParamsConfigUnion) GetSecretAccessKey() *string {
+	if vt := u.OfS3GcoreConfig; vt != nil && vt.SecretAccessKey.Valid() {
+		return &vt.SecretAccessKey.Value
+	} else if vt := u.OfS3AmazonConfig; vt != nil {
+		return (*string)(&vt.SecretAccessKey)
+	} else if vt := u.OfS3OssConfig; vt != nil && vt.SecretAccessKey.Valid() {
+		return &vt.SecretAccessKey.Value
+	} else if vt := u.OfS3OtherConfig; vt != nil && vt.SecretAccessKey.Valid() {
+		return &vt.SecretAccessKey.Value
+	} else if vt := u.OfS3V1Config; vt != nil && vt.SecretAccessKey.Valid() {
+		return &vt.SecretAccessKey.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetReplaceParamsConfigUnion) GetUsePathStyle() *bool {
 	if vt := u.OfS3GcoreConfig; vt != nil && vt.UsePathStyle.Valid() {
 		return &vt.UsePathStyle.Value
@@ -3326,30 +3304,20 @@ func (u LogsUploaderTargetReplaceParamsConfigUnion) GetUsePathStyle() *bool {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetReplaceParamsConfigUnion) GetHostname() *string {
-	if vt := u.OfFtpConfig; vt != nil {
-		return (*string)(&vt.Hostname)
-	} else if vt := u.OfSftpConfig; vt != nil {
-		return (*string)(&vt.Hostname)
+	if vt := u.OfFtpConfig; vt != nil && vt.Hostname.Valid() {
+		return &vt.Hostname.Value
+	} else if vt := u.OfSftpConfig; vt != nil && vt.Hostname.Valid() {
+		return &vt.Hostname.Value
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u LogsUploaderTargetReplaceParamsConfigUnion) GetPassword() *string {
-	if vt := u.OfFtpConfig; vt != nil {
-		return (*string)(&vt.Password)
+	if vt := u.OfFtpConfig; vt != nil && vt.Password.Valid() {
+		return &vt.Password.Value
 	} else if vt := u.OfSftpConfig; vt != nil && vt.Password.Valid() {
 		return &vt.Password.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u LogsUploaderTargetReplaceParamsConfigUnion) GetUser() *string {
-	if vt := u.OfFtpConfig; vt != nil {
-		return (*string)(&vt.User)
-	} else if vt := u.OfSftpConfig; vt != nil {
-		return (*string)(&vt.User)
 	}
 	return nil
 }
@@ -3360,6 +3328,16 @@ func (u LogsUploaderTargetReplaceParamsConfigUnion) GetTimeoutSeconds() *int64 {
 		return &vt.TimeoutSeconds.Value
 	} else if vt := u.OfSftpConfig; vt != nil && vt.TimeoutSeconds.Valid() {
 		return &vt.TimeoutSeconds.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u LogsUploaderTargetReplaceParamsConfigUnion) GetUser() *string {
+	if vt := u.OfFtpConfig; vt != nil && vt.User.Valid() {
+		return &vt.User.Value
+	} else if vt := u.OfSftpConfig; vt != nil && vt.User.Valid() {
+		return &vt.User.Value
 	}
 	return nil
 }
@@ -3489,15 +3467,13 @@ func (u logsUploaderTargetReplaceParamsConfigUnionAuthConfig) GetToken() *string
 	return nil
 }
 
-// The properties AccessKeyID, BucketName, Endpoint, Region, SecretAccessKey are
-// required.
 type LogsUploaderTargetReplaceParamsConfigS3GcoreConfig struct {
-	AccessKeyID     string            `json:"access_key_id" api:"required"`
-	BucketName      string            `json:"bucket_name" api:"required"`
-	Endpoint        string            `json:"endpoint" api:"required"`
-	Region          string            `json:"region" api:"required"`
-	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
+	AccessKeyID     param.Opt[string] `json:"access_key_id,omitzero"`
+	BucketName      param.Opt[string] `json:"bucket_name,omitzero"`
+	Endpoint        param.Opt[string] `json:"endpoint,omitzero"`
+	Region          param.Opt[string] `json:"region,omitzero"`
+	SecretAccessKey param.Opt[string] `json:"secret_access_key,omitzero"`
 	UsePathStyle    param.Opt[bool]   `json:"use_path_style,omitzero"`
 	paramObj
 }
@@ -3528,14 +3504,13 @@ func (r *LogsUploaderTargetReplaceParamsConfigS3AmazonConfig) UnmarshalJSON(data
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The properties AccessKeyID, BucketName, SecretAccessKey are required.
 type LogsUploaderTargetReplaceParamsConfigS3OssConfig struct {
-	AccessKeyID     string            `json:"access_key_id" api:"required"`
-	BucketName      string            `json:"bucket_name" api:"required"`
-	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
 	Endpoint        param.Opt[string] `json:"endpoint,omitzero"`
 	Region          param.Opt[string] `json:"region,omitzero"`
+	AccessKeyID     param.Opt[string] `json:"access_key_id,omitzero"`
+	BucketName      param.Opt[string] `json:"bucket_name,omitzero"`
+	SecretAccessKey param.Opt[string] `json:"secret_access_key,omitzero"`
 	paramObj
 }
 
@@ -3547,15 +3522,13 @@ func (r *LogsUploaderTargetReplaceParamsConfigS3OssConfig) UnmarshalJSON(data []
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The properties AccessKeyID, BucketName, Endpoint, Region, SecretAccessKey are
-// required.
 type LogsUploaderTargetReplaceParamsConfigS3OtherConfig struct {
-	AccessKeyID     string            `json:"access_key_id" api:"required"`
-	BucketName      string            `json:"bucket_name" api:"required"`
-	Endpoint        string            `json:"endpoint" api:"required"`
-	Region          string            `json:"region" api:"required"`
-	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
+	AccessKeyID     param.Opt[string] `json:"access_key_id,omitzero"`
+	BucketName      param.Opt[string] `json:"bucket_name,omitzero"`
+	Endpoint        param.Opt[string] `json:"endpoint,omitzero"`
+	Region          param.Opt[string] `json:"region,omitzero"`
+	SecretAccessKey param.Opt[string] `json:"secret_access_key,omitzero"`
 	UsePathStyle    param.Opt[bool]   `json:"use_path_style,omitzero"`
 	paramObj
 }
@@ -3568,15 +3541,13 @@ func (r *LogsUploaderTargetReplaceParamsConfigS3OtherConfig) UnmarshalJSON(data 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The properties AccessKeyID, BucketName, Endpoint, Region, SecretAccessKey are
-// required.
 type LogsUploaderTargetReplaceParamsConfigS3V1Config struct {
-	AccessKeyID     string            `json:"access_key_id" api:"required"`
-	BucketName      string            `json:"bucket_name" api:"required"`
-	Endpoint        string            `json:"endpoint" api:"required"`
-	Region          string            `json:"region" api:"required"`
-	SecretAccessKey string            `json:"secret_access_key" api:"required"`
 	Directory       param.Opt[string] `json:"directory,omitzero"`
+	AccessKeyID     param.Opt[string] `json:"access_key_id,omitzero"`
+	BucketName      param.Opt[string] `json:"bucket_name,omitzero"`
+	Endpoint        param.Opt[string] `json:"endpoint,omitzero"`
+	Region          param.Opt[string] `json:"region,omitzero"`
+	SecretAccessKey param.Opt[string] `json:"secret_access_key,omitzero"`
 	UsePathStyle    param.Opt[bool]   `json:"use_path_style,omitzero"`
 	paramObj
 }
@@ -3589,13 +3560,12 @@ func (r *LogsUploaderTargetReplaceParamsConfigS3V1Config) UnmarshalJSON(data []b
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The properties Hostname, Password, User are required.
 type LogsUploaderTargetReplaceParamsConfigFtpConfig struct {
-	Hostname       string            `json:"hostname" api:"required"`
-	Password       string            `json:"password" api:"required"`
-	User           string            `json:"user" api:"required"`
 	Directory      param.Opt[string] `json:"directory,omitzero"`
+	Hostname       param.Opt[string] `json:"hostname,omitzero"`
+	Password       param.Opt[string] `json:"password,omitzero"`
 	TimeoutSeconds param.Opt[int64]  `json:"timeout_seconds,omitzero"`
+	User           param.Opt[string] `json:"user,omitzero"`
 	paramObj
 }
 
@@ -3607,15 +3577,14 @@ func (r *LogsUploaderTargetReplaceParamsConfigFtpConfig) UnmarshalJSON(data []by
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The properties Hostname, User are required.
 type LogsUploaderTargetReplaceParamsConfigSftpConfig struct {
-	Hostname       string            `json:"hostname" api:"required"`
-	User           string            `json:"user" api:"required"`
 	Directory      param.Opt[string] `json:"directory,omitzero"`
 	KeyPassphrase  param.Opt[string] `json:"key_passphrase,omitzero"`
 	Password       param.Opt[string] `json:"password,omitzero"`
 	PrivateKey     param.Opt[string] `json:"private_key,omitzero"`
+	Hostname       param.Opt[string] `json:"hostname,omitzero"`
 	TimeoutSeconds param.Opt[int64]  `json:"timeout_seconds,omitzero"`
+	User           param.Opt[string] `json:"user,omitzero"`
 	paramObj
 }
 
@@ -3839,17 +3808,16 @@ func init() {
 	)
 }
 
-// The properties AccountName, Auth, ContainerName are required.
 type LogsUploaderTargetReplaceParamsConfigAzureBlobConfig struct {
-	// Azure Blob Storage account name.
-	AccountName string                                                   `json:"account_name" api:"required"`
-	Auth        LogsUploaderTargetReplaceParamsConfigAzureBlobConfigAuth `json:"auth,omitzero" api:"required"`
-	// Azure Blob Storage container name.
-	ContainerName string `json:"container_name" api:"required"`
 	// Directory path within the container.
 	Directory param.Opt[string] `json:"directory,omitzero"`
 	// Custom Azure Blob Storage endpoint URL.
 	Endpoint param.Opt[string] `json:"endpoint,omitzero"`
+	// Azure Blob Storage account name.
+	AccountName param.Opt[string] `json:"account_name,omitzero"`
+	// Azure Blob Storage container name.
+	ContainerName param.Opt[string]                                        `json:"container_name,omitzero"`
+	Auth          LogsUploaderTargetReplaceParamsConfigAzureBlobConfigAuth `json:"auth,omitzero"`
 	paramObj
 }
 
@@ -3957,21 +3925,20 @@ func (r *LogsUploaderTargetReplaceParamsConfigAzureBlobConfigAuthConfigToken) Un
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The properties Auth, LogStore, Project, Region are required.
 type LogsUploaderTargetReplaceParamsConfigSlsConfig struct {
-	Auth LogsUploaderTargetReplaceParamsConfigSlsConfigAuth `json:"auth,omitzero" api:"required"`
-	// SLS logstore name. 3-36 characters; lowercase letters, digits, hyphens, and
-	// underscores.
-	LogStore string `json:"log_store" api:"required"`
-	// SLS project name. 3-63 characters; lowercase letters, digits, and hyphens.
-	Project string `json:"project" api:"required"`
-	// SLS region (e.g. `eu-central-1`).
-	Region string `json:"region" api:"required"`
 	// SLS endpoint. Optional — derived from the region as `{region}.log.aliyuncs.com`
 	// when omitted.
 	Endpoint param.Opt[string] `json:"endpoint,omitzero"`
 	// Optional SLS topic (0-128 characters).
 	Topic param.Opt[string] `json:"topic,omitzero"`
+	// SLS logstore name. 3-36 characters; lowercase letters, digits, hyphens, and
+	// underscores.
+	LogStore param.Opt[string] `json:"log_store,omitzero"`
+	// SLS project name. 3-63 characters; lowercase letters, digits, and hyphens.
+	Project param.Opt[string] `json:"project,omitzero"`
+	// SLS region (e.g. `eu-central-1`).
+	Region param.Opt[string]                                  `json:"region,omitzero"`
+	Auth   LogsUploaderTargetReplaceParamsConfigSlsConfigAuth `json:"auth,omitzero"`
 	paramObj
 }
 

@@ -343,6 +343,8 @@ func (r *ShieldAggregatedStats) UnmarshalJSON(data []byte) error {
 type UsageSeriesStats []UsageSeriesStat
 
 type UsageSeriesStat struct {
+	// Identifier of the paid feature usage record.
+	ID int64 `json:"id"`
 	// Date and time when paid feature was enabled (ISO 8601/RFC 3339 format, UTC.)
 	ActiveFrom string `json:"active_from"`
 	// Date and time when paid feature was disabled (ISO 8601/RFC 3339 format, UTC.)
@@ -357,6 +359,7 @@ type UsageSeriesStat struct {
 	ResourceID int64 `json:"resource_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID          respjson.Field
 		ActiveFrom  respjson.Field
 		ActiveTo    respjson.Field
 		ClientID    respjson.Field

@@ -7714,6 +7714,12 @@ type CDNResourceListParams struct {
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Origin group ID.
 	OriginGroup param.Opt[int64] `query:"originGroup,omitzero" json:"-"`
+	// Origin group IDs. Values should be separated by a comma.
+	//
+	// Example:
+	//
+	// - ?`originGroup__in`=1,2,3
+	OriginGroupIn param.Opt[string] `query:"originGroup__in,omitzero" json:"-"`
 	// Rule name or pattern.
 	Rules param.Opt[string] `query:"rules,omitzero" json:"-"`
 	// Additional delivery domains (CNAMEs) of the CDN resource.

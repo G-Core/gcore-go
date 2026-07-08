@@ -678,6 +678,7 @@ func TestCDNResourceListWithOptionalParams(t *testing.T) {
 		Name:               gcore.String("name"),
 		Offset:             gcore.Int(0),
 		OriginGroup:        gcore.Int(0),
+		OriginGroupIn:      gcore.String("originGroup__in"),
 		OriginProtocol:     cdn.CDNResourceListParamsOriginProtocolHTTP,
 		Rules:              gcore.String("rules"),
 		SecondaryHostnames: gcore.String("secondaryHostnames"),

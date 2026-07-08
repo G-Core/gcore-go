@@ -29,12 +29,12 @@ func TestLogsUploaderTargetNewWithOptionalParams(t *testing.T) {
 	_, err := client.CDN.LogsUploader.Targets.New(context.TODO(), cdn.LogsUploaderTargetNewParams{
 		Config: cdn.LogsUploaderTargetNewParamsConfigUnion{
 			OfS3GcoreConfig: &cdn.LogsUploaderTargetNewParamsConfigS3GcoreConfig{
-				AccessKeyID:     "access_key_id",
-				BucketName:      "bucket_name",
-				Endpoint:        "endpoint",
-				Region:          "region",
-				SecretAccessKey: "secret_access_key",
+				AccessKeyID:     gcore.String("access_key_id"),
+				BucketName:      gcore.String("bucket_name"),
 				Directory:       gcore.String("directory"),
+				Endpoint:        gcore.String("endpoint"),
+				Region:          gcore.String("region"),
+				SecretAccessKey: gcore.String("secret_access_key"),
 				UsePathStyle:    gcore.Bool(true),
 			},
 		},
@@ -69,12 +69,12 @@ func TestLogsUploaderTargetUpdateWithOptionalParams(t *testing.T) {
 		cdn.LogsUploaderTargetUpdateParams{
 			Config: cdn.LogsUploaderTargetUpdateParamsConfigUnion{
 				OfS3GcoreConfig: &cdn.LogsUploaderTargetUpdateParamsConfigS3GcoreConfig{
-					AccessKeyID:     "access_key_id",
-					BucketName:      "bucket_name",
-					Endpoint:        "endpoint",
-					Region:          "region",
-					SecretAccessKey: "secret_access_key",
+					AccessKeyID:     gcore.String("access_key_id"),
+					BucketName:      gcore.String("bucket_name"),
 					Directory:       gcore.String("directory"),
+					Endpoint:        gcore.String("endpoint"),
+					Region:          gcore.String("region"),
+					SecretAccessKey: gcore.String("secret_access_key"),
 					UsePathStyle:    gcore.Bool(true),
 				},
 			},
@@ -181,12 +181,12 @@ func TestLogsUploaderTargetReplaceWithOptionalParams(t *testing.T) {
 		cdn.LogsUploaderTargetReplaceParams{
 			Config: cdn.LogsUploaderTargetReplaceParamsConfigUnion{
 				OfS3GcoreConfig: &cdn.LogsUploaderTargetReplaceParamsConfigS3GcoreConfig{
-					AccessKeyID:     "access_key_id",
-					BucketName:      "bucket_name",
-					Endpoint:        "endpoint",
-					Region:          "region",
-					SecretAccessKey: "secret_access_key",
+					AccessKeyID:     gcore.String("access_key_id"),
+					BucketName:      gcore.String("bucket_name"),
 					Directory:       gcore.String("directory"),
+					Endpoint:        gcore.String("endpoint"),
+					Region:          gcore.String("region"),
+					SecretAccessKey: gcore.String("secret_access_key"),
 					UsePathStyle:    gcore.Bool(true),
 				},
 			},
