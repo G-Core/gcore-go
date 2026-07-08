@@ -38,6 +38,10 @@ func NewShieldService(opts ...option.RequestOption) (r ShieldService) {
 
 // Get information about all origin shielding locations available in the account.
 func (r *ShieldService) List(ctx context.Context, query ShieldListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[ShieldListResponse], err error) {
+	// CUSTOM CODE: CDN API only envelopes when limit>=1; default so List always paginates.
+	if !query.Limit.Valid() {
+		query.Limit = param.NewOpt[int64](1000)
+	}
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)

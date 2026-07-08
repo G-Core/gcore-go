@@ -59,6 +59,10 @@ func (r *OriginGroupService) Update(ctx context.Context, originGroupID int64, bo
 
 // Get all origin groups and related origin sources.
 func (r *OriginGroupService) List(ctx context.Context, query OriginGroupListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[OriginGroupsUnion], err error) {
+	// CUSTOM CODE: CDN API only envelopes when limit>=1; default so List always paginates.
+	if !query.Limit.Valid() {
+		query.Limit = param.NewOpt[int64](1000)
+	}
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)

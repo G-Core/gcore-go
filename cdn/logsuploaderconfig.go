@@ -60,6 +60,10 @@ func (r *LogsUploaderConfigService) Update(ctx context.Context, id int64, body L
 
 // Get list of logs uploader configs.
 func (r *LogsUploaderConfigService) List(ctx context.Context, query LogsUploaderConfigListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[LogsUploaderConfig], err error) {
+	// CUSTOM CODE: CDN API only envelopes when limit>=1; default so List always paginates.
+	if !query.Limit.Valid() {
+		query.Limit = param.NewOpt[int64](1000)
+	}
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)

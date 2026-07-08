@@ -58,6 +58,10 @@ func (r *CDNResourceRuleService) Update(ctx context.Context, ruleID int64, param
 
 // Get rules list
 func (r *CDNResourceRuleService) List(ctx context.Context, resourceID int64, query CDNResourceRuleListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[CDNResourceRule], err error) {
+	// CUSTOM CODE: CDN API only envelopes when limit>=1; default so List always paginates.
+	if !query.Limit.Valid() {
+		query.Limit = param.NewOpt[int64](1000)
+	}
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)

@@ -124,6 +124,10 @@ func (r *CDNService) GetAvailableFeatures(ctx context.Context, opts ...option.Re
 
 // Get the list of Alibaba Cloud regions.
 func (r *CDNService) ListAlibabaRegions(ctx context.Context, query CDNListAlibabaRegionsParams, opts ...option.RequestOption) (res *pagination.OffsetPage[AlibabaRegionsResult], err error) {
+	// CUSTOM CODE: CDN API only envelopes when limit>=1; default so List always paginates.
+	if !query.Limit.Valid() {
+		query.Limit = param.NewOpt[int64](1000)
+	}
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -147,6 +151,10 @@ func (r *CDNService) ListAlibabaRegionsAutoPaging(ctx context.Context, query CDN
 
 // Get the list of Amazon AWS regions.
 func (r *CDNService) ListAwsRegions(ctx context.Context, query CDNListAwsRegionsParams, opts ...option.RequestOption) (res *pagination.OffsetPage[AwsRegionsResult], err error) {
+	// CUSTOM CODE: CDN API only envelopes when limit>=1; default so List always paginates.
+	if !query.Limit.Valid() {
+		query.Limit = param.NewOpt[int64](1000)
+	}
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -170,6 +178,10 @@ func (r *CDNService) ListAwsRegionsAutoPaging(ctx context.Context, query CDNList
 
 // Get purges history.
 func (r *CDNService) ListPurgeStatuses(ctx context.Context, query CDNListPurgeStatusesParams, opts ...option.RequestOption) (res *pagination.OffsetPage[PurgeStatus], err error) {
+	// CUSTOM CODE: CDN API only envelopes when limit>=1; default so List always paginates.
+	if !query.Limit.Valid() {
+		query.Limit = param.NewOpt[int64](1000)
+	}
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)

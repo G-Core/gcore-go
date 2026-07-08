@@ -63,6 +63,10 @@ func (r *CDNResourceService) Update(ctx context.Context, resourceID int64, body 
 
 // Get information about all CDN resources in your account.
 func (r *CDNResourceService) List(ctx context.Context, query CDNResourceListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[CDNResource], err error) {
+	// CUSTOM CODE: CDN API only envelopes when limit>=1; default so List always paginates.
+	if !query.Limit.Valid() {
+		query.Limit = param.NewOpt[int64](1000)
+	}
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)

@@ -59,6 +59,10 @@ func (r *CertificateService) New(ctx context.Context, body CertificateNewParams,
 
 // Get information about SSL certificates.
 func (r *CertificateService) List(ctx context.Context, query CertificateListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[SslDetail], err error) {
+	// CUSTOM CODE: CDN API only envelopes when limit>=1; default so List always paginates.
+	if !query.Limit.Valid() {
+		query.Limit = param.NewOpt[int64](1000)
+	}
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
