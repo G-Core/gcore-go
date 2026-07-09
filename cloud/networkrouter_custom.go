@@ -79,18 +79,19 @@ func (r *NetworkRouterService) UpdateAndPoll(ctx context.Context, routerID strin
 	getParams.ProjectID = params.ProjectID
 	getParams.RegionID = params.RegionID
 
-	if len(resource.Tasks) == 0 {
-		return nil, errors.New("expected at least one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	_, err = newTaskService(r.Options...).Poll(ctx, taskID, pollOpts...)
-	if err != nil {
-		return nil, err
+	// Depending on which fields were being updated the Update method might not create Tasks. For instance, if the user
+	// only updates tags no task will be created. Therefore, we only poll when there are tasks to poll for.
+	if len(resource.Tasks) > 0 {
+		taskID := resource.Tasks[0]
+		// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+		pollOpts := slices.Concat(
+			requestconfig.ExcludeResponseBodyInto(opts...),
+			[]option.RequestOption{requestconfig.WithoutRequestBody()},
+		)
+		_, err = newTaskService(r.Options...).Poll(ctx, taskID, pollOpts...)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	// Clear request body for Get
