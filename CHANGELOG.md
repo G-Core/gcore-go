@@ -1,5 +1,45 @@
 # Changelog
 
+## [0.51.0](https://github.com/G-Core/gcore-go/compare/v0.50.0...v0.51.0) (2026-07-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* **cloud:** refactor instance security groups, interfaces, and flavor/name models
+* **cdn:** recursive metrics response; optional logs-uploader target configs
+* **streaming:** consolidate AI task creation and restructure video schemas
+
+### Features
+
+* **cdn:** add resource list filters and paginated list response models ([4b607d2](https://github.com/G-Core/gcore-go/commit/4b607d279a72fae21568b148c202f1e4419789c1))
+* **cdn:** default limit=1000 on CDN list endpoints ([8d7d78a](https://github.com/G-Core/gcore-go/commit/8d7d78a2d6f2cd36c1c754cdc60784f186f07c4a))
+* **cdn:** recursive metrics response; optional logs-uploader target configs ([4664e04](https://github.com/G-Core/gcore-go/commit/4664e04398431a5467df33cc3537f2ffa7c188bd))
+* **cloud:** refactor instance security groups, interfaces, and flavor/name models ([0c935a1](https://github.com/G-Core/gcore-go/commit/0c935a1438b4086c5aa16f1e478005adeaa5cd27))
+* **cloud:** support gcore_cloud_quota data source ([29be802](https://github.com/G-Core/gcore-go/commit/29be8025054ab7b48003e1e990caf9184b87ef34))
+* enable offset/limit pagination for 7 list endpoints ([a43e85b](https://github.com/G-Core/gcore-go/commit/a43e85baba32c35cf136ba0c5e839e2b3e732080))
+* **streaming:** consolidate AI task creation and restructure video schemas ([b7a49a1](https://github.com/G-Core/gcore-go/commit/b7a49a119c2fb1b55b85d080d94e0195e604bfbc))
+* **terraform:** expose gcore_cdn_origin_shielding ([26f3035](https://github.com/G-Core/gcore-go/commit/26f30354d7d356d12e773ac7b84a23ab56215c38))
+* **waap:** add order_by to analytics stats and length limits to filter suggestions ([a86e4cd](https://github.com/G-Core/gcore-go/commit/a86e4cddacf8dd62acddfbc030a718c6c7193907))
+
+
+### Bug Fixes
+
+* **cdn:** use Results field instead of AsPlainList in trusted CA cert example ([d12b248](https://github.com/G-Core/gcore-go/commit/d12b248d623624811b9e8ec6b91ec0d14761e2b4))
+* **cloud:** handle no-op updates in UpdateAndPoll methods ([da561db](https://github.com/G-Core/gcore-go/commit/da561dbd3f5eab3228a0552a602f9ec0b99175dd))
+* **cloud:** update cloud examples for regenerated types ([60446d4](https://github.com/G-Core/gcore-go/commit/60446d4a7755ca4c7026d6d2cd12f14485a0a4b2))
+* **cloud:** update cloud quota example to renamed SDK types ([20276c1](https://github.com/G-Core/gcore-go/commit/20276c1a35c41fbfe85cd8b272a8f7b176810d9e))
+
+
+### Chores
+
+* **fastedge:** update fastedge OpenAPI spec ([0350d08](https://github.com/G-Core/gcore-go/commit/0350d080bae3586cc1d55ce4b6276ebf143752f6))
+* **storage:** add admin bucket search response schemas ([4417c3f](https://github.com/G-Core/gcore-go/commit/4417c3f3b3443a2170a7c56255f6b9acac08d688))
+
+
+### Refactors
+
+* **cloud:** isolate custom *AndPoll methods into _custom.go files ([c7fb46c](https://github.com/G-Core/gcore-go/commit/c7fb46c9cc48fd3371ca83ecdce83e36c989ec22))
+
 ## [0.50.0](https://github.com/G-Core/gcore-go/compare/v0.49.1...v0.50.0) (2026-07-01)
 
 
