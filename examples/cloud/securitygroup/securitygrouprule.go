@@ -44,7 +44,6 @@ func replaceSecurityGroupRule(client *gcore.Client, ruleID, groupID string) stri
 
 	rule, err := client.Cloud.SecurityGroups.Rules.Replace(context.Background(), ruleID, cloud.SecurityGroupRuleReplaceParams{
 		Direction:       cloud.SecurityGroupRuleReplaceParamsDirectionIngress,
-		SecurityGroupID: groupID,
 		Protocol:        cloud.SecurityGroupRuleReplaceParamsProtocolTcp,
 		Ethertype:       cloud.SecurityGroupRuleReplaceParamsEthertypeIPv4,
 		PortRangeMin:    gcore.Int(httpsPort),
