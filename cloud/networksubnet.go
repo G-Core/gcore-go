@@ -29,7 +29,6 @@ import (
 // the [NewNetworkSubnetService] method instead.
 type NetworkSubnetService struct {
 	Options []option.RequestOption
-	tasks   TaskService
 }
 
 // NewNetworkSubnetService generates a new service that applies the given options
@@ -38,7 +37,6 @@ type NetworkSubnetService struct {
 func NewNetworkSubnetService(opts ...option.RequestOption) (r NetworkSubnetService) {
 	r = NetworkSubnetService{}
 	r.Options = opts
-	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -62,49 +60,6 @@ func (r *NetworkSubnetService) New(ctx context.Context, params NetworkSubnetNewP
 	path := fmt.Sprintf("cloud/v1/subnets/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
-}
-
-// NewAndPoll creates a subnet and then polls the task until it's completed.
-func (r *NetworkSubnetService) NewAndPoll(ctx context.Context, params NetworkSubnetNewParams, opts ...option.RequestOption) (res *Subnet, err error) {
-	// Exclude WithResponseBodyInto for the action (New returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.New(ctx, params, actionOpts...)
-	if err != nil {
-		return
-	}
-
-	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
-	if err != nil {
-		return
-	}
-	var getParams NetworkSubnetGetParams
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	getParams.ProjectID = params.ProjectID
-	getParams.RegionID = params.RegionID
-
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	task, err := r.tasks.Poll(ctx, taskID, pollOpts...)
-	if err != nil {
-		return
-	}
-
-	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Subnets) != 1 {
-		return nil, errors.New("expected exactly one subnet to be created in a task")
-	}
-	resourceID := task.CreatedResources.Subnets[0]
-
-	// Clear request body for Get
-	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
-	return r.Get(ctx, resourceID, getParams, getOpts...)
 }
 
 // Update subnet
@@ -198,29 +153,6 @@ func (r *NetworkSubnetService) Delete(ctx context.Context, subnetID string, body
 	path := fmt.Sprintf("cloud/v1/subnets/%v/%v/%s", body.ProjectID.Value, body.RegionID.Value, subnetID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
-}
-
-// DeleteAndPoll deletes a network and polls for completion of the first task. Use the
-// [TaskService.Poll] method if you need to poll for all tasks.
-func (r *NetworkSubnetService) DeleteAndPoll(ctx context.Context, subnetID string, body NetworkSubnetDeleteParams, opts ...option.RequestOption) (err error) {
-	// Exclude WithResponseBodyInto for the action (Delete returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.Delete(ctx, subnetID, body, actionOpts...)
-	if err != nil {
-		return err
-	}
-
-	if len(resource.Tasks) == 0 {
-		return errors.New("expected at least one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
-	return err
 }
 
 // Get subnet

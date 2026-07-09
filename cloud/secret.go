@@ -31,7 +31,6 @@ import (
 // the [NewSecretService] method instead.
 type SecretService struct {
 	Options []option.RequestOption
-	tasks   TaskService
 }
 
 // NewSecretService generates a new service that applies the given options to each
@@ -40,7 +39,6 @@ type SecretService struct {
 func NewSecretService(opts ...option.RequestOption) (r SecretService) {
 	r = SecretService{}
 	r.Options = opts
-	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -107,29 +105,6 @@ func (r *SecretService) Delete(ctx context.Context, secretID string, body Secret
 	return res, err
 }
 
-// DeleteAndPoll deletes a secret and polls the corresponding task until it is completed.
-// Use the [TaskService.Poll] method if you need to poll for all tasks.
-func (r *SecretService) DeleteAndPoll(ctx context.Context, secretID string, params SecretDeleteParams, opts ...option.RequestOption) error {
-	// Exclude WithResponseBodyInto for the action (Delete returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.Delete(ctx, secretID, params, actionOpts...)
-	if err != nil {
-		return err
-	}
-
-	if len(resource.Tasks) == 0 {
-		return errors.New("expected at least one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
-	return err
-}
-
 // Get secret
 func (r *SecretService) Get(ctx context.Context, secretID string, query SecretGetParams, opts ...option.RequestOption) (res *Secret, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -176,49 +151,6 @@ func (r *SecretService) UploadTlsCertificate(ctx context.Context, params SecretU
 	path := fmt.Sprintf("cloud/v2/secrets/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
-}
-
-// Create secret and poll for the result
-func (r *SecretService) UploadTlsCertificateAndPoll(ctx context.Context, params SecretUploadTlsCertificateParams, opts ...option.RequestOption) (v *Secret, err error) {
-	// Exclude WithResponseBodyInto for the action (UploadTlsCertificate returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.UploadTlsCertificate(ctx, params, actionOpts...)
-	if err != nil {
-		return
-	}
-
-	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
-	if err != nil {
-		return
-	}
-	var getParams SecretGetParams
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	getParams.ProjectID = params.ProjectID
-	getParams.RegionID = params.RegionID
-
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	task, err := r.tasks.Poll(ctx, taskID, pollOpts...)
-	if err != nil {
-		return
-	}
-
-	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Secrets) != 1 {
-		return nil, errors.New("expected exactly one secret to be created in a task")
-	}
-	resourceID := task.CreatedResources.Secrets[0]
-
-	// Clear request body for Get
-	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
-	return r.Get(ctx, resourceID, getParams, getOpts...)
 }
 
 type Secret struct {

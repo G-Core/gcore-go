@@ -28,7 +28,6 @@ import (
 // the [NewGPUVirtualClusterServerService] method instead.
 type GPUVirtualClusterServerService struct {
 	Options []option.RequestOption
-	tasks   TaskService
 }
 
 // NewGPUVirtualClusterServerService generates a new service that applies the given
@@ -37,7 +36,6 @@ type GPUVirtualClusterServerService struct {
 func NewGPUVirtualClusterServerService(opts ...option.RequestOption) (r GPUVirtualClusterServerService) {
 	r = GPUVirtualClusterServerService{}
 	r.Options = opts
-	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -110,29 +108,6 @@ func (r *GPUVirtualClusterServerService) Delete(ctx context.Context, serverID st
 	path := fmt.Sprintf("cloud/v3/gpu/virtual/%v/%v/clusters/%s/servers/%s", params.ProjectID.Value, params.RegionID.Value, params.ClusterID, serverID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, params, &res, opts...)
 	return res, err
-}
-
-// DeleteAndPoll deletes a server from a virtual GPU cluster and polls for completion of the first task. Use the
-// [TaskService.Poll] method if you need to poll for all tasks.
-func (r *GPUVirtualClusterServerService) DeleteAndPoll(ctx context.Context, serverID string, params GPUVirtualClusterServerDeleteParams, opts ...option.RequestOption) error {
-	// Exclude WithResponseBodyInto for the action (Delete returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.Delete(ctx, serverID, params, actionOpts...)
-	if err != nil {
-		return err
-	}
-
-	if len(resource.Tasks) == 0 {
-		return errors.New("expected at least one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
-	return err
 }
 
 type GPUVirtualClusterServer struct {

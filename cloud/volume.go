@@ -32,7 +32,6 @@ import (
 // the [NewVolumeService] method instead.
 type VolumeService struct {
 	Options []option.RequestOption
-	tasks   TaskService
 }
 
 // NewVolumeService generates a new service that applies the given options to each
@@ -41,7 +40,6 @@ type VolumeService struct {
 func NewVolumeService(opts ...option.RequestOption) (r VolumeService) {
 	r = VolumeService{}
 	r.Options = opts
-	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -67,49 +65,6 @@ func (r *VolumeService) New(ctx context.Context, params VolumeNewParams, opts ..
 	path := fmt.Sprintf("cloud/v1/volumes/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
-}
-
-// NewAndPoll creates a new volume and polls the corresponding task until it is completed.
-func (r *VolumeService) NewAndPoll(ctx context.Context, params VolumeNewParams, opts ...option.RequestOption) (res *Volume, err error) {
-	// Exclude WithResponseBodyInto for the action (New returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.New(ctx, params, actionOpts...)
-	if err != nil {
-		return
-	}
-
-	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
-	if err != nil {
-		return
-	}
-	var getParams VolumeGetParams
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	getParams.ProjectID = params.ProjectID
-	getParams.RegionID = params.RegionID
-
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	task, err := r.tasks.Poll(ctx, taskID, pollOpts...)
-	if err != nil {
-		return
-	}
-
-	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Volumes) != 1 {
-		return nil, errors.New("expected exactly one network to be created in a task")
-	}
-	resourceID := task.CreatedResources.Volumes[0]
-
-	// Clear request body for Get
-	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
-	return r.Get(ctx, resourceID, getParams, getOpts...)
 }
 
 // Rename a volume or update tags
@@ -206,29 +161,6 @@ func (r *VolumeService) Delete(ctx context.Context, volumeID string, params Volu
 	return res, err
 }
 
-// DeleteAndPoll deletes a volume and polls the corresponding task until it is completed.
-// Use the [TaskService.Poll] method if you need to poll for all tasks.
-func (r *VolumeService) DeleteAndPoll(ctx context.Context, volumeID string, params VolumeDeleteParams, opts ...option.RequestOption) error {
-	// Exclude WithResponseBodyInto for the action (Delete returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.Delete(ctx, volumeID, params, actionOpts...)
-	if err != nil {
-		return err
-	}
-
-	if len(resource.Tasks) == 0 {
-		return errors.New("expected at least one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
-	return err
-}
-
 // Attach the volume to instance. Note: ultra volume can only be attached to an
 // instance with shared flavor
 func (r *VolumeService) AttachToInstance(ctx context.Context, volumeID string, params VolumeAttachToInstanceParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
@@ -254,29 +186,6 @@ func (r *VolumeService) AttachToInstance(ctx context.Context, volumeID string, p
 	path := fmt.Sprintf("cloud/v2/volumes/%v/%v/%s/attach", params.ProjectID.Value, params.RegionID.Value, volumeID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
-}
-
-// AttachToInstanceAndPoll attaches the volume to instance and polls the corresponding task until it is completed. Use the [TaskService.Poll]
-// method if you need to poll for all tasks.
-func (r *VolumeService) AttachToInstanceAndPoll(ctx context.Context, volumeID string, params VolumeAttachToInstanceParams, opts ...option.RequestOption) error {
-	// Exclude WithResponseBodyInto for the action (AttachToInstance returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.AttachToInstance(ctx, volumeID, params, actionOpts...)
-	if err != nil {
-		return err
-	}
-
-	if len(resource.Tasks) == 0 {
-		return errors.New("expected at least one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
-	return err
 }
 
 // Change the type of a volume. The volume must not have any snapshots to change
@@ -332,29 +241,6 @@ func (r *VolumeService) DetachFromInstance(ctx context.Context, volumeID string,
 	return res, err
 }
 
-// DetachFromInstanceAndPoll detaches the volume to instance and polls the corresponding task until it is completed.
-// Use the [TaskService.Poll] method if you need to poll for all tasks.
-func (r *VolumeService) DetachFromInstanceAndPoll(ctx context.Context, volumeID string, params VolumeDetachFromInstanceParams, opts ...option.RequestOption) error {
-	// Exclude WithResponseBodyInto for the action (DetachFromInstance returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.DetachFromInstance(ctx, volumeID, params, actionOpts...)
-	if err != nil {
-		return err
-	}
-
-	if len(resource.Tasks) == 0 {
-		return errors.New("expected at least one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
-	return err
-}
-
 // Retrieve detailed information about a specific volume.
 func (r *VolumeService) Get(ctx context.Context, volumeID string, query VolumeGetParams, opts ...option.RequestOption) (res *Volume, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -406,45 +292,6 @@ func (r *VolumeService) Resize(ctx context.Context, volumeID string, params Volu
 	path := fmt.Sprintf("cloud/v1/volumes/%v/%v/%s/extend", params.ProjectID.Value, params.RegionID.Value, volumeID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
-}
-
-// ResizeAndPoll increases the size of a volume and polls the corresponding task until it is completed. Use the [TaskService.Poll]
-// method if you need to poll for all tasks.
-func (r *VolumeService) ResizeAndPoll(ctx context.Context, volumeID string, params VolumeResizeParams, opts ...option.RequestOption) (res *Volume, err error) {
-	// Exclude WithResponseBodyInto for the action (Resize returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.Resize(ctx, volumeID, params, actionOpts...)
-	if err != nil {
-		return
-	}
-
-	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
-	if err != nil {
-		return
-	}
-	var getParams VolumeGetParams
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	getParams.ProjectID = params.ProjectID
-	getParams.RegionID = params.RegionID
-
-	if len(resource.Tasks) == 0 {
-		return nil, errors.New("expected at least one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
-	if err != nil {
-		return
-	}
-
-	// Clear request body for Get
-	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
-	return r.Get(ctx, volumeID, getParams, getOpts...)
 }
 
 // Revert a volume to its last snapshot. The volume must be in an available state

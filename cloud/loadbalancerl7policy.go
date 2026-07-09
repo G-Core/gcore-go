@@ -28,7 +28,6 @@ import (
 type LoadBalancerL7PolicyService struct {
 	Options []option.RequestOption
 	Rules   LoadBalancerL7PolicyRuleService
-	tasks   TaskService
 }
 
 // NewLoadBalancerL7PolicyService generates a new service that applies the given
@@ -38,7 +37,6 @@ func NewLoadBalancerL7PolicyService(opts ...option.RequestOption) (r LoadBalance
 	r = LoadBalancerL7PolicyService{}
 	r.Options = opts
 	r.Rules = NewLoadBalancerL7PolicyRuleService(opts...)
-	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -177,112 +175,6 @@ func (r *LoadBalancerL7PolicyService) Get(ctx context.Context, l7policyID string
 	path := fmt.Sprintf("cloud/v1/l7policies/%v/%v/%s", query.ProjectID.Value, query.RegionID.Value, l7policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
-}
-
-// NewAndPoll creates a new L7 policy and polls for completion
-func (r *LoadBalancerL7PolicyService) NewAndPoll(ctx context.Context, params LoadBalancerL7PolicyNewParams, opts ...option.RequestOption) (v *LoadBalancerL7Policy, err error) {
-	// Exclude WithResponseBodyInto for the action (New returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.New(ctx, params, actionOpts...)
-	if err != nil {
-		return
-	}
-
-	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
-	if err != nil {
-		return
-	}
-	var getParams LoadBalancerL7PolicyGetParams
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	getParams.ProjectID = params.ProjectID
-	getParams.RegionID = params.RegionID
-
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	task, err := r.tasks.Poll(ctx, taskID, pollOpts...)
-	if err != nil {
-		return
-	}
-
-	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.L7polices) != 1 {
-		return nil, errors.New("expected exactly one L7 policy to be created in a task")
-	}
-	resourceID := task.CreatedResources.L7polices[0]
-
-	// Clear request body for Get
-	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
-	return r.Get(ctx, resourceID, getParams, getOpts...)
-}
-
-// DeleteAndPoll deletes an L7 policy and polls for completion of the first task. Use the [TaskService.Poll] method if you
-// need to poll for all tasks.
-func (r *LoadBalancerL7PolicyService) DeleteAndPoll(ctx context.Context, l7policyID string, body LoadBalancerL7PolicyDeleteParams, opts ...option.RequestOption) error {
-	// Exclude WithResponseBodyInto for the action (Delete returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.Delete(ctx, l7policyID, body, actionOpts...)
-	if err != nil {
-		return err
-	}
-
-	if len(resource.Tasks) == 0 {
-		return errors.New("expected at least one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
-	return err
-}
-
-// UpdateAndPoll updates an L7 policy and polls for completion of the first task. Use the [TaskService.Poll] method if
-// you need to poll for all tasks.
-func (r *LoadBalancerL7PolicyService) UpdateAndPoll(ctx context.Context, l7policyID string, params LoadBalancerL7PolicyUpdateParams, opts ...option.RequestOption) (v *LoadBalancerL7Policy, err error) {
-	// Exclude WithResponseBodyInto for the action (Update returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.Update(ctx, l7policyID, params, actionOpts...)
-	if err != nil {
-		return
-	}
-
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return
-	}
-	var getParams LoadBalancerL7PolicyGetParams
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	getParams.ProjectID = params.ProjectID
-	getParams.RegionID = params.RegionID
-
-	if len(resource.Tasks) == 0 {
-		return nil, errors.New("expected at least one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
-	if err != nil {
-		return
-	}
-
-	// Clear request body for Get
-	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
-	return r.Get(ctx, l7policyID, getParams, getOpts...)
 }
 
 type LoadBalancerL7PolicyNewParams struct {

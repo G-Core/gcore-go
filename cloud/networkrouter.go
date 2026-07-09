@@ -32,7 +32,6 @@ import (
 // the [NewNetworkRouterService] method instead.
 type NetworkRouterService struct {
 	Options []option.RequestOption
-	tasks   TaskService
 }
 
 // NewNetworkRouterService generates a new service that applies the given options
@@ -41,7 +40,6 @@ type NetworkRouterService struct {
 func NewNetworkRouterService(opts ...option.RequestOption) (r NetworkRouterService) {
 	r = NetworkRouterService{}
 	r.Options = opts
-	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -65,51 +63,6 @@ func (r *NetworkRouterService) New(ctx context.Context, params NetworkRouterNewP
 	path := fmt.Sprintf("cloud/v1/routers/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
-}
-
-// NewAndPoll creates a router and polls for completion of the task, returning the
-// created Router. Use the [TaskService.Poll] method if you need more control over
-// task polling.
-func (r *NetworkRouterService) NewAndPoll(ctx context.Context, params NetworkRouterNewParams, opts ...option.RequestOption) (res *Router, err error) {
-	// Exclude WithResponseBodyInto for the action (New returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.New(ctx, params, actionOpts...)
-	if err != nil {
-		return
-	}
-
-	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
-	if err != nil {
-		return
-	}
-	var getParams NetworkRouterGetParams
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	getParams.ProjectID = params.ProjectID
-	getParams.RegionID = params.RegionID
-
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	task, err := r.tasks.Poll(ctx, taskID, pollOpts...)
-	if err != nil {
-		return
-	}
-
-	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Routers) != 1 {
-		return nil, errors.New("expected exactly one router to be created in a task")
-	}
-	resourceID := task.CreatedResources.Routers[0]
-
-	// Clear request body for Get
-	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
-	return r.Get(ctx, resourceID, getParams, getOpts...)
 }
 
 // Update the configuration of an existing router.
@@ -136,46 +89,6 @@ func (r *NetworkRouterService) Update(ctx context.Context, routerID string, para
 	path := fmt.Sprintf("cloud/v2/routers/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, routerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return res, err
-}
-
-// UpdateAndPoll updates a router and polls for completion of the first task. Use the [TaskService.Poll] method if
-// you need to poll for all tasks.
-func (r *NetworkRouterService) UpdateAndPoll(ctx context.Context, routerID string, params NetworkRouterUpdateParams, opts ...option.RequestOption) (res *Router, err error) {
-	// Exclude WithResponseBodyInto for the action (Update returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.Update(ctx, routerID, params, actionOpts...)
-	if err != nil {
-		return
-	}
-
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return
-	}
-	var getParams NetworkRouterGetParams
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	getParams.ProjectID = params.ProjectID
-	getParams.RegionID = params.RegionID
-
-	if len(resource.Tasks) == 0 {
-		return nil, errors.New("expected at least one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
-	if err != nil {
-		return nil, err
-	}
-
-	// Clear request body for Get
-	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
-	return r.Get(ctx, routerID, getParams, getOpts...)
 }
 
 // List all routers in the specified project and region.
@@ -239,29 +152,6 @@ func (r *NetworkRouterService) Delete(ctx context.Context, routerID string, body
 	path := fmt.Sprintf("cloud/v1/routers/%v/%v/%s", body.ProjectID.Value, body.RegionID.Value, routerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
-}
-
-// DeleteAndPoll deletes a router and polls for completion of the first task. Use the
-// [TaskService.Poll] method if you need to poll for all tasks.
-func (r *NetworkRouterService) DeleteAndPoll(ctx context.Context, routerID string, body NetworkRouterDeleteParams, opts ...option.RequestOption) error {
-	// Exclude WithResponseBodyInto for the action (Delete returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.Delete(ctx, routerID, body, actionOpts...)
-	if err != nil {
-		return err
-	}
-
-	if len(resource.Tasks) == 0 {
-		return errors.New("expected at least one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
-	return err
 }
 
 // Attach a subnet to an existing router.

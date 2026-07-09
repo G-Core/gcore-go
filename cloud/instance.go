@@ -40,7 +40,6 @@ type InstanceService struct {
 	// boot cloud instances.
 	Images  InstanceImageService
 	Metrics InstanceMetricService
-	tasks      TaskService
 }
 
 // NewInstanceService generates a new service that applies the given options to
@@ -53,7 +52,6 @@ func NewInstanceService(opts ...option.RequestOption) (r InstanceService) {
 	r.Interfaces = NewInstanceInterfaceService(opts...)
 	r.Images = NewInstanceImageService(opts...)
 	r.Metrics = NewInstanceMetricService(opts...)
-	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -98,49 +96,6 @@ func (r *InstanceService) New(ctx context.Context, params InstanceNewParams, opt
 	path := fmt.Sprintf("cloud/v2/instances/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
-}
-
-// NewAndPoll create instance and poll for the result
-func (r *InstanceService) NewAndPoll(ctx context.Context, params InstanceNewParams, opts ...option.RequestOption) (v *Instance, err error) {
-	// Exclude WithResponseBodyInto for the action (New returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.New(ctx, params, actionOpts...)
-	if err != nil {
-		return
-	}
-
-	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
-	if err != nil {
-		return
-	}
-	var getParams InstanceGetParams
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	getParams.ProjectID = params.ProjectID
-	getParams.RegionID = params.RegionID
-
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	task, err := r.tasks.Poll(ctx, taskID, pollOpts...)
-	if err != nil {
-		return
-	}
-
-	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Instances) != 1 {
-		return nil, errors.New("expected exactly one instance to be created in a task")
-	}
-	resourceID := task.CreatedResources.Instances[0]
-
-	// Clear request body for Get
-	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
-	return r.Get(ctx, resourceID, getParams, getOpts...)
 }
 
 // Rename instance or update tags
@@ -234,29 +189,6 @@ func (r *InstanceService) Delete(ctx context.Context, instanceID string, params 
 	return res, err
 }
 
-// DeleteAndPoll delete instance and poll for completion of the first task. Use the [TaskService.Poll] method if you
-// need to poll for all tasks.
-func (r *InstanceService) DeleteAndPoll(ctx context.Context, instanceID string, params InstanceDeleteParams, opts ...option.RequestOption) error {
-	// Exclude WithResponseBodyInto for the action (Delete returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.Delete(ctx, instanceID, params, actionOpts...)
-	if err != nil {
-		return err
-	}
-
-	if len(resource.Tasks) == 0 {
-		return errors.New("expected at least one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
-	return err
-}
-
 // The action can be one of: start, stop, reboot, powercycle, suspend or resume.
 // Suspend and resume are not available for bare metal instances.
 func (r *InstanceService) Action(ctx context.Context, instanceID string, params InstanceActionParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
@@ -284,44 +216,6 @@ func (r *InstanceService) Action(ctx context.Context, instanceID string, params 
 	return res, err
 }
 
-// ActionAndPoll perform an action on the instance and poll for completion
-func (r *InstanceService) ActionAndPoll(ctx context.Context, instanceID string, params InstanceActionParams, opts ...option.RequestOption) (v *Instance, err error) {
-	// Exclude WithResponseBodyInto for the action (Action returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.Action(ctx, instanceID, params, actionOpts...)
-	if err != nil {
-		return
-	}
-
-	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
-	if err != nil {
-		return
-	}
-	var getParams InstanceGetParams
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	getParams.ProjectID = params.ProjectID
-	getParams.RegionID = params.RegionID
-
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
-	if err != nil {
-		return
-	}
-
-	// Clear request body for Get
-	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
-	return r.Get(ctx, instanceID, getParams, getOpts...)
-}
-
 // Add an instance to a server group. The instance must not already be in a server
 // group. Bare metal servers do not support server groups.
 func (r *InstanceService) AddToPlacementGroup(ctx context.Context, instanceID string, params InstanceAddToPlacementGroupParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
@@ -347,45 +241,6 @@ func (r *InstanceService) AddToPlacementGroup(ctx context.Context, instanceID st
 	path := fmt.Sprintf("cloud/v1/instances/%v/%v/%s/put_into_servergroup", params.ProjectID.Value, params.RegionID.Value, instanceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
-}
-
-// AddToPlacementGroupAndPoll add instance to placement group and poll for completion of the first task. Use the
-// [TaskService.Poll] method if you need to poll for all tasks.
-func (r *InstanceService) AddToPlacementGroupAndPoll(ctx context.Context, instanceID string, params InstanceAddToPlacementGroupParams, opts ...option.RequestOption) (v *Instance, err error) {
-	// Exclude WithResponseBodyInto for the action (AddToPlacementGroup returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.AddToPlacementGroup(ctx, instanceID, params, actionOpts...)
-	if err != nil {
-		return
-	}
-
-	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
-	if err != nil {
-		return
-	}
-	var getParams InstanceGetParams
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	getParams.ProjectID = params.ProjectID
-	getParams.RegionID = params.RegionID
-
-	if len(resource.Tasks) == 0 {
-		return nil, errors.New("expected at least one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
-	if err != nil {
-		return
-	}
-
-	// Clear request body for Get
-	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
-	return r.Get(ctx, instanceID, getParams, getOpts...)
 }
 
 // Assign the security group to the server. To assign multiple security groups to
@@ -562,45 +417,6 @@ func (r *InstanceService) RemoveFromPlacementGroup(ctx context.Context, instance
 	return res, err
 }
 
-// RemoveFromPlacementGroupAndPoll remove instance from placement group and poll for completion of the first task. Use
-// the [TaskService.Poll] method if you need to poll for all tasks.
-func (r *InstanceService) RemoveFromPlacementGroupAndPoll(ctx context.Context, instanceID string, body InstanceRemoveFromPlacementGroupParams, opts ...option.RequestOption) (v *Instance, err error) {
-	// Exclude WithResponseBodyInto for the action (RemoveFromPlacementGroup returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.RemoveFromPlacementGroup(ctx, instanceID, body, actionOpts...)
-	if err != nil {
-		return
-	}
-
-	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
-	if err != nil {
-		return
-	}
-	var getParams InstanceGetParams
-	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	getParams.ProjectID = body.ProjectID
-	getParams.RegionID = body.RegionID
-
-	if len(resource.Tasks) == 0 {
-		return nil, errors.New("expected at least one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
-	if err != nil {
-		return
-	}
-
-	// Clear request body for Get
-	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
-	return r.Get(ctx, instanceID, getParams, getOpts...)
-}
-
 // Change flavor of the instance
 func (r *InstanceService) Resize(ctx context.Context, instanceID string, params InstanceResizeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -625,45 +441,6 @@ func (r *InstanceService) Resize(ctx context.Context, instanceID string, params 
 	path := fmt.Sprintf("cloud/v1/instances/%v/%v/%s/changeflavor", params.ProjectID.Value, params.RegionID.Value, instanceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
-}
-
-// ResizeAndPoll change flavor of the instance and poll for completion of the first task. Use the [TaskService.Poll]
-// method if you need to poll for all tasks.
-func (r *InstanceService) ResizeAndPoll(ctx context.Context, instanceID string, params InstanceResizeParams, opts ...option.RequestOption) (v *Instance, err error) {
-	// Exclude WithResponseBodyInto for the action (Resize returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.Resize(ctx, instanceID, params, actionOpts...)
-	if err != nil {
-		return
-	}
-
-	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
-	if err != nil {
-		return
-	}
-	var getParams InstanceGetParams
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	getParams.ProjectID = params.ProjectID
-	getParams.RegionID = params.RegionID
-
-	if len(resource.Tasks) == 0 {
-		return nil, errors.New("expected at least one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
-	if err != nil {
-		return
-	}
-
-	// Clear request body for Get
-	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
-	return r.Get(ctx, instanceID, getParams, getOpts...)
 }
 
 // Un-assign the security group to the server. To un-assign multiple security

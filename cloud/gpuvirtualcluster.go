@@ -39,7 +39,6 @@ type GPUVirtualClusterService struct {
 	Flavors    GPUVirtualClusterFlavorService
 	// GPU virtual images are custom boot images for virtual GPU cluster instances.
 	Images GPUVirtualClusterImageService
-	tasks  TaskService
 }
 
 // NewGPUVirtualClusterService generates a new service that applies the given
@@ -53,7 +52,6 @@ func NewGPUVirtualClusterService(opts ...option.RequestOption) (r GPUVirtualClus
 	r.Interfaces = NewGPUVirtualClusterInterfaceService(opts...)
 	r.Flavors = NewGPUVirtualClusterFlavorService(opts...)
 	r.Images = NewGPUVirtualClusterImageService(opts...)
-	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -226,112 +224,6 @@ func (r *GPUVirtualClusterService) Get(ctx context.Context, clusterID string, qu
 	path := fmt.Sprintf("cloud/v3/gpu/virtual/%v/%v/clusters/%s", query.ProjectID.Value, query.RegionID.Value, clusterID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
-}
-
-// NewAndPoll creates a new virtual GPU cluster and polls for completion. Use the [TaskService.Poll] method if you
-// need to poll for all tasks.
-func (r *GPUVirtualClusterService) NewAndPoll(ctx context.Context, params GPUVirtualClusterNewParams, opts ...option.RequestOption) (v *GPUVirtualCluster, err error) {
-	// Exclude WithResponseBodyInto for the action (New returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.New(ctx, params, actionOpts...)
-	if err != nil {
-		return
-	}
-
-	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
-	if err != nil {
-		return
-	}
-	var getParams GPUVirtualClusterGetParams
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	getParams.ProjectID = params.ProjectID
-	getParams.RegionID = params.RegionID
-
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	task, err := r.tasks.Poll(ctx, taskID, pollOpts...)
-	if err != nil {
-		return
-	}
-
-	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Clusters) != 1 {
-		return nil, errors.New("expected exactly one cluster to be created in a task")
-	}
-	clusterID := task.CreatedResources.Clusters[0]
-
-	// Clear request body for Get
-	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
-	return r.Get(ctx, clusterID, getParams, getOpts...)
-}
-
-// DeleteAndPoll deletes a virtual GPU cluster and polls for completion of the first task. Use the [TaskService.Poll] method if you
-// need to poll for all tasks.
-func (r *GPUVirtualClusterService) DeleteAndPoll(ctx context.Context, clusterID string, params GPUVirtualClusterDeleteParams, opts ...option.RequestOption) error {
-	// Exclude WithResponseBodyInto for the action (Delete returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.Delete(ctx, clusterID, params, actionOpts...)
-	if err != nil {
-		return err
-	}
-
-	if len(resource.Tasks) == 0 {
-		return errors.New("expected at least one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
-	return err
-}
-
-// ActionAndPoll performs an action on a virtual GPU cluster and polls for completion of the first task. Use the [TaskService.Poll]
-// method if you need to poll for all tasks.
-func (r *GPUVirtualClusterService) ActionAndPoll(ctx context.Context, clusterID string, params GPUVirtualClusterActionParams, opts ...option.RequestOption) (v *GPUVirtualCluster, err error) {
-	// Exclude WithResponseBodyInto for the action (Action returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.Action(ctx, clusterID, params, actionOpts...)
-	if err != nil {
-		return
-	}
-
-	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
-	if err != nil {
-		return
-	}
-	var getParams GPUVirtualClusterGetParams
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	getParams.ProjectID = params.ProjectID
-	getParams.RegionID = params.RegionID
-
-	if len(resource.Tasks) == 0 {
-		return nil, errors.New("expected at least one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
-	if err != nil {
-		return nil, err
-	}
-
-	// Clear request body for Get
-	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
-	return r.Get(ctx, clusterID, getParams, getOpts...)
 }
 
 type GPUVirtualCluster struct {

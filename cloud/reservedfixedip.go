@@ -33,7 +33,6 @@ import (
 type ReservedFixedIPService struct {
 	Options []option.RequestOption
 	Vip     ReservedFixedIPVipService
-	tasks   TaskService
 }
 
 // NewReservedFixedIPService generates a new service that applies the given options
@@ -43,7 +42,6 @@ func NewReservedFixedIPService(opts ...option.RequestOption) (r ReservedFixedIPS
 	r = ReservedFixedIPService{}
 	r.Options = opts
 	r.Vip = NewReservedFixedIPVipService(opts...)
-	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -67,49 +65,6 @@ func (r *ReservedFixedIPService) New(ctx context.Context, params ReservedFixedIP
 	path := fmt.Sprintf("cloud/v1/reserved_fixed_ips/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
-}
-
-// Create reserved fixed IP and poll for the result
-func (r *ReservedFixedIPService) NewAndPoll(ctx context.Context, params ReservedFixedIPNewParams, opts ...option.RequestOption) (v *ReservedFixedIP, err error) {
-	// Exclude WithResponseBodyInto for the action (New returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.New(ctx, params, actionOpts...)
-	if err != nil {
-		return
-	}
-
-	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
-	if err != nil {
-		return
-	}
-	var getParams ReservedFixedIPGetParams
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	getParams.ProjectID = params.ProjectID
-	getParams.RegionID = params.RegionID
-
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	task, err := r.tasks.Poll(ctx, taskID, pollOpts...)
-	if err != nil {
-		return
-	}
-
-	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.Ports) != 1 {
-		return nil, errors.New("expected exactly one port to be created in a task")
-	}
-	resourceID := task.CreatedResources.Ports[0]
-
-	// Clear request body for Get
-	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
-	return r.Get(ctx, resourceID, getParams, getOpts...)
 }
 
 // Update the VIP status of a reserved fixed IP.
@@ -199,29 +154,6 @@ func (r *ReservedFixedIPService) Delete(ctx context.Context, portID string, body
 	path := fmt.Sprintf("cloud/v1/reserved_fixed_ips/%v/%v/%s", body.ProjectID.Value, body.RegionID.Value, portID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
-}
-
-// DeleteAndPoll deletes a reserved fixed IP and polls for completion of the first task. Use the
-// [TaskService.Poll] method if you need to poll for all tasks.
-func (r *ReservedFixedIPService) DeleteAndPoll(ctx context.Context, portID string, body ReservedFixedIPDeleteParams, opts ...option.RequestOption) error {
-	// Exclude WithResponseBodyInto for the action (Delete returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.Delete(ctx, portID, body, actionOpts...)
-	if err != nil {
-		return err
-	}
-
-	if len(resource.Tasks) == 0 {
-		return errors.New("expected at least one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
-	return err
 }
 
 // Get detailed information about a specific reserved fixed IP.

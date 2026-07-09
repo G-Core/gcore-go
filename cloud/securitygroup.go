@@ -34,7 +34,6 @@ type SecurityGroupService struct {
 	// Security group rules define individual traffic permissions specifying protocol,
 	// port range, direction, and allowed sources.
 	Rules SecurityGroupRuleService
-	tasks TaskService
 }
 
 // NewSecurityGroupService generates a new service that applies the given options
@@ -44,7 +43,6 @@ func NewSecurityGroupService(opts ...option.RequestOption) (r SecurityGroupServi
 	r = SecurityGroupService{}
 	r.Options = opts
 	r.Rules = NewSecurityGroupRuleService(opts...)
-	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -70,50 +68,6 @@ func (r *SecurityGroupService) New(ctx context.Context, params SecurityGroupNewP
 	path := fmt.Sprintf("cloud/v2/security_groups/%v/%v", params.ProjectID.Value, params.RegionID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
-}
-
-// NewAndPoll creates a security group and polls for completion of the first task. Use the [TaskService.Poll] method if
-// you need to poll for all tasks.
-func (r *SecurityGroupService) NewAndPoll(ctx context.Context, params SecurityGroupNewParams, opts ...option.RequestOption) (res *SecurityGroup, err error) {
-	// Exclude WithResponseBodyInto for the action (New returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.New(ctx, params, actionOpts...)
-	if err != nil {
-		return
-	}
-
-	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
-	if err != nil {
-		return
-	}
-	var getParams SecurityGroupGetParams
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	getParams.ProjectID = params.ProjectID
-	getParams.RegionID = params.RegionID
-
-	if len(resource.Tasks) != 1 {
-		return nil, errors.New("expected exactly one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	task, err := r.tasks.Poll(ctx, taskID, pollOpts...)
-	if err != nil {
-		return
-	}
-
-	if !task.JSON.CreatedResources.Valid() || len(task.CreatedResources.SecurityGroups) != 1 {
-		return nil, errors.New("expected exactly one security group to be created in a task")
-	}
-	resourceID := task.CreatedResources.SecurityGroups[0]
-
-	// Clear request body for Get
-	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
-	return r.Get(ctx, resourceID, getParams, getOpts...)
 }
 
 // Updates the specified security group with the provided changes.
@@ -158,47 +112,6 @@ func (r *SecurityGroupService) Update(ctx context.Context, groupID string, param
 	path := fmt.Sprintf("cloud/v2/security_groups/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, groupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return res, err
-}
-
-// UpdateAndPoll updates a security group and polls for completion of the first task. Use the [TaskService.Poll] method if
-// you need to poll for all tasks.
-func (r *SecurityGroupService) UpdateAndPoll(ctx context.Context, groupID string, params SecurityGroupUpdateParams, opts ...option.RequestOption) (res *SecurityGroup, err error) {
-	// Exclude WithResponseBodyInto for the action (Update returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.Update(ctx, groupID, params, actionOpts...)
-	if err != nil {
-		return
-	}
-
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return
-	}
-	var getParams SecurityGroupGetParams
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	getParams.ProjectID = params.ProjectID
-	getParams.RegionID = params.RegionID
-
-	// Depending on which fields were being updated the Update method might not create Tasks. For instance, if the user
-	// only updates tags no task will be created. Therefore, we only poll when there are tasks to poll for.
-	if len(resource.Tasks) > 0 {
-		taskID := resource.Tasks[0]
-		// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-		pollOpts := slices.Concat(
-			requestconfig.ExcludeResponseBodyInto(opts...),
-			[]option.RequestOption{requestconfig.WithoutRequestBody()},
-		)
-		_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	// Clear request body for Get
-	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
-	return r.Get(ctx, groupID, getParams, getOpts...)
 }
 
 // List all security groups in the specified project and region.

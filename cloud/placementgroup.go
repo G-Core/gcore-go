@@ -29,7 +29,6 @@ import (
 // the [NewPlacementGroupService] method instead.
 type PlacementGroupService struct {
 	Options []option.RequestOption
-	tasks   TaskService
 }
 
 // NewPlacementGroupService generates a new service that applies the given options
@@ -38,7 +37,6 @@ type PlacementGroupService struct {
 func NewPlacementGroupService(opts ...option.RequestOption) (r PlacementGroupService) {
 	r = PlacementGroupService{}
 	r.Options = opts
-	r.tasks = NewTaskService(opts...)
 	return
 }
 
@@ -110,29 +108,6 @@ func (r *PlacementGroupService) Delete(ctx context.Context, groupID string, body
 	path := fmt.Sprintf("cloud/v1/servergroups/%v/%v/%s", body.ProjectID.Value, body.RegionID.Value, groupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
-}
-
-// DeleteAndPoll deletes a placement group and polls for completion of the first task. Use the
-// [TaskService.Poll] method if you need to poll for all tasks.
-func (r *PlacementGroupService) DeleteAndPoll(ctx context.Context, groupID string, body PlacementGroupDeleteParams, opts ...option.RequestOption) (err error) {
-	// Exclude WithResponseBodyInto for the action (Delete returns TaskIDList, must deserialize properly)
-	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
-	resource, err := r.Delete(ctx, groupID, body, actionOpts...)
-	if err != nil {
-		return err
-	}
-
-	if len(resource.Tasks) == 0 {
-		return errors.New("expected at least one task to be created")
-	}
-	taskID := resource.Tasks[0]
-	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
-	pollOpts := slices.Concat(
-		requestconfig.ExcludeResponseBodyInto(opts...),
-		[]option.RequestOption{requestconfig.WithoutRequestBody()},
-	)
-	_, err = r.tasks.Poll(ctx, taskID, pollOpts...)
-	return err
 }
 
 // Get placement group
