@@ -28,10 +28,10 @@ func TestGPUBaremetalClusterInterfaceList(t *testing.T) {
 	)
 	_, err := client.Cloud.GPUBaremetal.Clusters.Interfaces.List(
 		context.TODO(),
-		"cluster_id",
+		"1aaaab48-10d0-46d9-80cc-85209284ceb4",
 		cloud.GPUBaremetalClusterInterfaceListParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(7),
 		},
 	)
 	if err != nil {

@@ -67,9 +67,13 @@ func TestInstanceImageListWithOptionalParams(t *testing.T) {
 	_, err := client.Cloud.Instances.Images.List(context.TODO(), cloud.InstanceImageListParams{
 		ProjectID:     gcore.Int(1),
 		RegionID:      gcore.Int(7),
+		Architecture:  cloud.InstanceImageListParamsArchitectureX86_64,
 		IncludePrices: gcore.Bool(true),
 		Limit:         gcore.Int(1000),
+		Name:          gcore.String("ubuntu"),
 		Offset:        gcore.Int(0),
+		OsDistro:      gcore.String("ubuntu"),
+		OsVersion:     gcore.String("22.04"),
 		Private:       gcore.String("private"),
 		TagKey:        []string{"key1", "key2"},
 		TagKeyValue:   gcore.String("tag_key_value"),

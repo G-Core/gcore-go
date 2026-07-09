@@ -2052,8 +2052,10 @@ func (r *InstanceAddToPlacementGroupParams) UnmarshalJSON(data []byte) error {
 }
 
 type InstanceAssignSecurityGroupParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Security group name, applies to all ports
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Port security groups mapping
@@ -2069,8 +2071,6 @@ func (r *InstanceAssignSecurityGroupParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Port security group names
-//
 // The properties PortID, SecurityGroupNames are required.
 type InstanceAssignSecurityGroupParamsPortsSecurityGroupName struct {
 	// Port ID. If None, security groups will be applied to all ports
@@ -2152,8 +2152,10 @@ func (r *InstanceResizeParams) UnmarshalJSON(data []byte) error {
 }
 
 type InstanceUnassignSecurityGroupParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Security group name, applies to all ports
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Port security groups mapping
@@ -2169,8 +2171,6 @@ func (r *InstanceUnassignSecurityGroupParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Port security group names
-//
 // The properties PortID, SecurityGroupNames are required.
 type InstanceUnassignSecurityGroupParamsPortsSecurityGroupName struct {
 	// Port ID. If None, security groups will be applied to all ports

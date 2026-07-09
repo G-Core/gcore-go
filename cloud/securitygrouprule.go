@@ -228,34 +228,30 @@ type SecurityGroupRuleReplaceParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// Ingress or egress, which is the direction in which the security group rule is
-	// applied
+	// Ingress or egress, which is the direction in which the security group is applied
 	//
 	// Any of "egress", "ingress".
 	Direction SecurityGroupRuleReplaceParamsDirection `json:"direction,omitzero" api:"required"`
-	// Parent security group of this rule
-	SecurityGroupID string `json:"security_group_id" api:"required" format:"uuid4"`
 	// The maximum port number in the range that is matched by the security group rule
 	PortRangeMax param.Opt[int64] `json:"port_range_max,omitzero"`
 	// The minimum port number in the range that is matched by the security group rule
 	PortRangeMin param.Opt[int64] `json:"port_range_min,omitzero"`
-	// The remote group UUID to associate with this security group rule
+	// The remote group UUID to associate with this security group
 	RemoteGroupID param.Opt[string] `json:"remote_group_id,omitzero" format:"uuid4"`
 	// The remote IP prefix that is matched by this security group rule
 	RemoteIPPrefix param.Opt[string] `json:"remote_ip_prefix,omitzero" format:"ipvanynetwork"`
 	// Rule description
 	Description param.Opt[string] `json:"description,omitzero"`
-	// Must be IPv4 or IPv6, and addresses represented in CIDR must match the ingress
-	// or egress rules.
-	//
-	// Any of "IPv4", "IPv6".
-	Ethertype SecurityGroupRuleReplaceParamsEthertype `json:"ethertype,omitzero"`
 	// Protocol
 	//
 	// Any of "ah", "any", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap",
 	// "ipip", "ipv6-encap", "ipv6-frag", "ipv6-icmp", "ipv6-nonxt", "ipv6-opts",
 	// "ipv6-route", "ospf", "pgm", "rsvp", "sctp", "tcp", "udp", "udplite", "vrrp".
 	Protocol SecurityGroupRuleReplaceParamsProtocol `json:"protocol,omitzero"`
+	// Ether type
+	//
+	// Any of "IPv4", "IPv6".
+	Ethertype SecurityGroupRuleReplaceParamsEthertype `json:"ethertype,omitzero"`
 	paramObj
 }
 
@@ -267,8 +263,7 @@ func (r *SecurityGroupRuleReplaceParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Ingress or egress, which is the direction in which the security group rule is
-// applied
+// Ingress or egress, which is the direction in which the security group is applied
 type SecurityGroupRuleReplaceParamsDirection string
 
 const (
@@ -276,8 +271,7 @@ const (
 	SecurityGroupRuleReplaceParamsDirectionIngress SecurityGroupRuleReplaceParamsDirection = "ingress"
 )
 
-// Must be IPv4 or IPv6, and addresses represented in CIDR must match the ingress
-// or egress rules.
+// Ether type
 type SecurityGroupRuleReplaceParamsEthertype string
 
 const (

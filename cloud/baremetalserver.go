@@ -1440,6 +1440,9 @@ type BaremetalServerDeleteParams struct {
 	// True if it is required to delete floating IPs assigned to the instance. Can't be
 	// used with `floating_ip_ids`.
 	AllFloatingIPs param.Opt[bool] `query:"all_floating_ips,omitzero" json:"-"`
+	// True if it is required to delete reserved fixed IPs assigned to the instance.
+	// Can't be used with `reserved_fixed_ip_ids`.
+	AllReservedFixedIPs param.Opt[bool] `query:"all_reserved_fixed_ips,omitzero" json:"-"`
 	// Comma separated list of floating ids that should be deleted. Can't be used with
 	// `all_floating_ips`.
 	FloatingIPIDs param.Opt[string] `query:"floating_ip_ids,omitzero" json:"-"`

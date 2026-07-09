@@ -1162,7 +1162,7 @@ func (r *GPUBaremetalClusterNewParamsServersSettingsInterfaceExternalSecurityGro
 // The properties NetworkID, SubnetID, Type are required.
 type GPUBaremetalClusterNewParamsServersSettingsInterfaceSubnet struct {
 	// Network ID the subnet belongs to. Port will be plugged in this network
-	NetworkID string `json:"network_id" api:"required"`
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// Port is assigned an IP address from this subnet
 	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
 	// Interface name
@@ -1234,7 +1234,7 @@ func (r *GPUBaremetalClusterNewParamsServersSettingsInterfaceSubnetSecurityGroup
 // The properties NetworkID, Type are required.
 type GPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnet struct {
 	// Network ID the subnet belongs to. Port will be plugged in this network
-	NetworkID string `json:"network_id" api:"required"`
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// Interface name
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Controls port security for this interface. When omitted, the default applies

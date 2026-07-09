@@ -271,13 +271,23 @@ type BaremetalImageListParams struct {
 	IncludePrices param.Opt[bool] `query:"include_prices,omitzero" json:"-"`
 	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Filter by image name (case-insensitive substring match)
+	Name param.Opt[string] `query:"name,omitzero" json:"-"`
 	// Optional. Offset value is used to exclude the first set of records from the
 	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	// Filter by OS distribution (case-insensitive). E.g. `ubuntu`, `centos`, `debian`
+	OsDistro param.Opt[string] `query:"os_distro,omitzero" json:"-"`
+	// Filter by OS version (case-insensitive). E.g. `22.04`
+	OsVersion param.Opt[string] `query:"os_version,omitzero" json:"-"`
 	// Any value to show private images
 	Private param.Opt[string] `query:"private,omitzero" json:"-"`
 	// Optional. Filter by tag key-value pairs.
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
+	// Filter by image architecture.
+	//
+	// Any of "aarch64", "x86_64".
+	Architecture BaremetalImageListParamsArchitecture `query:"architecture,omitzero" json:"-"`
 	// Optional. Filter by tag keys. ?`tag_key`=key1&`tag_key`=key2
 	TagKey []string `query:"tag_key,omitzero" json:"-"`
 	// Image visibility. Globally visible images are public
@@ -295,6 +305,14 @@ func (r BaremetalImageListParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
 }
+
+// Filter by image architecture.
+type BaremetalImageListParamsArchitecture string
+
+const (
+	BaremetalImageListParamsArchitectureAarch64 BaremetalImageListParamsArchitecture = "aarch64"
+	BaremetalImageListParamsArchitectureX86_64  BaremetalImageListParamsArchitecture = "x86_64"
+)
 
 // Image visibility. Globally visible images are public
 type BaremetalImageListParamsVisibility string

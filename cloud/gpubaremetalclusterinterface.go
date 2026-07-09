@@ -4,6 +4,7 @@ package cloud
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -13,6 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/param"
+	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
 // GPUBaremetalClusterInterfaceService contains methods and other services that
@@ -35,7 +37,7 @@ func NewGPUBaremetalClusterInterfaceService(opts ...option.RequestOption) (r GPU
 }
 
 // Retrieve a list of network interfaces attached to the GPU cluster servers.
-func (r *GPUBaremetalClusterInterfaceService) List(ctx context.Context, clusterID string, query GPUBaremetalClusterInterfaceListParams, opts ...option.RequestOption) (res *NetworkInterfaceList, err error) {
+func (r *GPUBaremetalClusterInterfaceService) List(ctx context.Context, clusterID string, query GPUBaremetalClusterInterfaceListParams, opts ...option.RequestOption) (res *GPUBaremetalClusterInterfaceListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -112,9 +114,80 @@ func (r *GPUBaremetalClusterInterfaceService) Detach(ctx context.Context, instan
 	return res, err
 }
 
+type GPUBaremetalClusterInterfaceListResponse struct {
+	// Number of objects
+	Count int64 `json:"count" api:"required"`
+	// Objects
+	Results []GPUBaremetalClusterInterfaceListResponseResultUnion `json:"results" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GPUBaremetalClusterInterfaceListResponse) RawJSON() string { return r.JSON.raw }
+func (r *GPUBaremetalClusterInterfaceListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// GPUBaremetalClusterInterfaceListResponseResultUnion contains all possible
+// properties and values from [NetworkInterface], [InstanceInterface].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type GPUBaremetalClusterInterfaceListResponseResultUnion struct {
+	AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs"`
+	FloatingipDetails   []FloatingIP          `json:"floatingip_details"`
+	IPAssignments       []IPAssignment        `json:"ip_assignments"`
+	// This field is from variant [NetworkInterface].
+	NetworkDetails      NetworkDetails `json:"network_details"`
+	NetworkID           string         `json:"network_id"`
+	PortID              string         `json:"port_id"`
+	PortSecurityEnabled bool           `json:"port_security_enabled"`
+	// This field is from variant [NetworkInterface].
+	SubPorts      []NetworkInterfaceSubPort `json:"sub_ports"`
+	InterfaceName string                    `json:"interface_name"`
+	MacAddress    string                    `json:"mac_address"`
+	JSON          struct {
+		AllowedAddressPairs respjson.Field
+		FloatingipDetails   respjson.Field
+		IPAssignments       respjson.Field
+		NetworkDetails      respjson.Field
+		NetworkID           respjson.Field
+		PortID              respjson.Field
+		PortSecurityEnabled respjson.Field
+		SubPorts            respjson.Field
+		InterfaceName       respjson.Field
+		MacAddress          respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+func (u GPUBaremetalClusterInterfaceListResponseResultUnion) AsInstanceInterfaceTrunkSerializer() (v NetworkInterface) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u GPUBaremetalClusterInterfaceListResponseResultUnion) AsInstanceInterfaceSerializer() (v InstanceInterface) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u GPUBaremetalClusterInterfaceListResponseResultUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *GPUBaremetalClusterInterfaceListResponseResultUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type GPUBaremetalClusterInterfaceListParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 

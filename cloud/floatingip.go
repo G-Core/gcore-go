@@ -628,6 +628,9 @@ type FloatingIPListParams struct {
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Optional. Filter by tag key-value pairs.
 	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
+	// Optional. Filter by the port ID the floating IP is attached to. Repeat the
+	// parameter to filter by multiple ports (`?port_ids=id1&port_ids=id2`).
+	PortIDs []string `query:"port_ids,omitzero" format:"uuid4" json:"-"`
 	// Filter by floating IP status. DOWN - unassigned (available). ACTIVE - attached
 	// to a port (in use). ERROR - error state.
 	//

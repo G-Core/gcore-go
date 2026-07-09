@@ -168,11 +168,12 @@ func TestBaremetalServerDeleteWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"024a29e-b4b7-4c91-9a46-505be123d9f8",
 		cloud.BaremetalServerDeleteParams{
-			ProjectID:          gcore.Int(1),
-			RegionID:           gcore.Int(1),
-			AllFloatingIPs:     gcore.Bool(true),
-			FloatingIPIDs:      gcore.String("floating_ip_ids"),
-			ReservedFixedIPIDs: gcore.String("reserved_fixed_ip_ids"),
+			ProjectID:           gcore.Int(1),
+			RegionID:            gcore.Int(1),
+			AllFloatingIPs:      gcore.Bool(true),
+			AllReservedFixedIPs: gcore.Bool(true),
+			FloatingIPIDs:       gcore.String("floating_ip_ids"),
+			ReservedFixedIPIDs:  gcore.String("reserved_fixed_ip_ids"),
 		},
 	)
 	if err != nil {
