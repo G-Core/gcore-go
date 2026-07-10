@@ -2425,8 +2425,8 @@ type CDNResourceOptionsSni struct {
 	//
 	//   - **dynamic** - SNI hostname depends on `hostHeader` and `forward_host_header`
 	//     options. It has several possible combinations:
-	//   - If the `hostHeader` option is enabled and specified, SNI hostname matches the
-	//     Host header.
+	//   - If the `hostHeader` option is enabled and specified, SNI hostname matches
+	//     the Host header.
 	//   - If the `forward_host_header` option is enabled and has true value, SNI
 	//     hostname matches the Host header used in the request made to a CDN.
 	//   - If the `hostHeader` and `forward_host_header` options are disabled, SNI
@@ -4872,8 +4872,8 @@ type CDNResourceNewParamsOptionsSni struct {
 	//
 	//   - **dynamic** - SNI hostname depends on `hostHeader` and `forward_host_header`
 	//     options. It has several possible combinations:
-	//   - If the `hostHeader` option is enabled and specified, SNI hostname matches the
-	//     Host header.
+	//   - If the `hostHeader` option is enabled and specified, SNI hostname matches
+	//     the Host header.
 	//   - If the `forward_host_header` option is enabled and has true value, SNI
 	//     hostname matches the Host header used in the request made to a CDN.
 	//   - If the `hostHeader` and `forward_host_header` options are disabled, SNI
@@ -7229,8 +7229,8 @@ type CDNResourceUpdateParamsOptionsSni struct {
 	//
 	//   - **dynamic** - SNI hostname depends on `hostHeader` and `forward_host_header`
 	//     options. It has several possible combinations:
-	//   - If the `hostHeader` option is enabled and specified, SNI hostname matches the
-	//     Host header.
+	//   - If the `hostHeader` option is enabled and specified, SNI hostname matches
+	//     the Host header.
 	//   - If the `forward_host_header` option is enabled and has true value, SNI
 	//     hostname matches the Host header used in the request made to a CDN.
 	//   - If the `hostHeader` and `forward_host_header` options are disabled, SNI
@@ -9864,8 +9864,8 @@ type CDNResourceReplaceParamsOptionsSni struct {
 	//
 	//   - **dynamic** - SNI hostname depends on `hostHeader` and `forward_host_header`
 	//     options. It has several possible combinations:
-	//   - If the `hostHeader` option is enabled and specified, SNI hostname matches the
-	//     Host header.
+	//   - If the `hostHeader` option is enabled and specified, SNI hostname matches
+	//     the Host header.
 	//   - If the `forward_host_header` option is enabled and has true value, SNI
 	//     hostname matches the Host header used in the request made to a CDN.
 	//   - If the `hostHeader` and `forward_host_header` options are disabled, SNI
