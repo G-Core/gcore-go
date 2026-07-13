@@ -61,13 +61,15 @@ func (r *BaremetalFlavorService) List(ctx context.Context, params BaremetalFlavo
 }
 
 type BaremetalFlavorListParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// Flag for filtering disabled flavors in the region. Defaults to true
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Flag for filtering disabled flavors in the region
 	Disabled param.Opt[bool] `query:"disabled,omitzero" json:"-"`
-	// Set to true to exclude flavors dedicated to linux images. Default False
+	// Set to true to exclude flavors dedicated to linux images
 	ExcludeLinux param.Opt[bool] `query:"exclude_linux,omitzero" json:"-"`
-	// Set to true to exclude flavors dedicated to windows images. Default False
+	// Set to true to exclude flavors dedicated to windows images
 	ExcludeWindows param.Opt[bool] `query:"exclude_windows,omitzero" json:"-"`
 	// Set to true if the response should include flavor capacity
 	IncludeCapacity param.Opt[bool] `query:"include_capacity,omitzero" json:"-"`

@@ -2036,8 +2036,10 @@ func (r *InstanceActionParamsBodyBasicActionInstanceSerializer) UnmarshalJSON(da
 }
 
 type InstanceAddToPlacementGroupParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Anti-affinity or affinity or soft-anti-affinity server group ID.
 	ServergroupID string `json:"servergroup_id" api:"required"`
 	paramObj
@@ -2130,8 +2132,10 @@ func (r InstanceGetConsoleParams) URLQuery() (v url.Values, err error) {
 }
 
 type InstanceRemoveFromPlacementGroupParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 

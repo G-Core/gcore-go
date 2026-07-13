@@ -62,7 +62,7 @@ func (r *PlacementGroupService) New(ctx context.Context, params PlacementGroupNe
 	return res, err
 }
 
-// List placement groups
+// List all placement groups in the specified project and region.
 func (r *PlacementGroupService) List(ctx context.Context, params PlacementGroupListParams, opts ...option.RequestOption) (res *PlacementGroupList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -84,7 +84,7 @@ func (r *PlacementGroupService) List(ctx context.Context, params PlacementGroupL
 	return res, err
 }
 
-// Delete placement group
+// Delete a placement group by its ID.
 func (r *PlacementGroupService) Delete(ctx context.Context, groupID string, body PlacementGroupDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -110,7 +110,7 @@ func (r *PlacementGroupService) Delete(ctx context.Context, groupID string, body
 	return res, err
 }
 
-// Get placement group
+// Retrieve a single placement group by its ID.
 func (r *PlacementGroupService) Get(ctx context.Context, groupID string, query PlacementGroupGetParams, opts ...option.RequestOption) (res *PlacementGroup, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -213,8 +213,10 @@ func (r *PlacementGroupList) UnmarshalJSON(data []byte) error {
 }
 
 type PlacementGroupNewParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// The name of the server group.
 	Name string `json:"name" api:"required"`
 	// The server group policy.
@@ -242,11 +244,14 @@ const (
 )
 
 type PlacementGroupListParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// Limit the number of returned items
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Offset value is used to exclude the first set of records from the result
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
 }
@@ -261,13 +266,17 @@ func (r PlacementGroupListParams) URLQuery() (v url.Values, err error) {
 }
 
 type PlacementGroupDeleteParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type PlacementGroupGetParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }

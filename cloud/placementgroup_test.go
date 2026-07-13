@@ -27,8 +27,8 @@ func TestPlacementGroupNew(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.PlacementGroups.New(context.TODO(), cloud.PlacementGroupNewParams{
-		ProjectID: gcore.Int(0),
-		RegionID:  gcore.Int(0),
+		ProjectID: gcore.Int(1),
+		RegionID:  gcore.Int(1),
 		Name:      "my-server-group",
 		Policy:    cloud.PlacementGroupNewParamsPolicyAntiAffinity,
 	})
@@ -54,9 +54,9 @@ func TestPlacementGroupListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.PlacementGroups.List(context.TODO(), cloud.PlacementGroupListParams{
-		ProjectID: gcore.Int(0),
-		RegionID:  gcore.Int(0),
-		Limit:     gcore.Int(0),
+		ProjectID: gcore.Int(1),
+		RegionID:  gcore.Int(1),
+		Limit:     gcore.Int(1000),
 		Offset:    gcore.Int(0),
 	})
 	if err != nil {
@@ -82,10 +82,10 @@ func TestPlacementGroupDelete(t *testing.T) {
 	)
 	_, err := client.Cloud.PlacementGroups.Delete(
 		context.TODO(),
-		"group_id",
+		"47003067-550a-6f17-93b6-81ee16ba061e",
 		cloud.PlacementGroupDeleteParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {
@@ -111,10 +111,10 @@ func TestPlacementGroupGet(t *testing.T) {
 	)
 	_, err := client.Cloud.PlacementGroups.Get(
 		context.TODO(),
-		"group_id",
+		"47003067-550a-6f17-93b6-81ee16ba061e",
 		cloud.PlacementGroupGetParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {
