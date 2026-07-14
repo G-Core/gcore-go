@@ -4,6 +4,8 @@ package security
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 	"slices"
@@ -60,6 +62,18 @@ func (r *EventService) ListAutoPaging(ctx context.Context, query EventListParams
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
+// Event Log Detail View
+func (r *EventService) Get(ctx context.Context, eventLogID string, opts ...option.RequestOption) (res *EventLog, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if eventLogID == "" {
+		err = errors.New("missing required event_log_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("security/notifier/v1/event_logs/%s", eventLogID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
 type ClientView struct {
 	ID string `json:"id" api:"required" format:"uuid"`
 	// Any of "ddos_alert", "rtbh_alert".
@@ -98,6 +112,60 @@ type ClientViewAlertType string
 const (
 	ClientViewAlertTypeDDOSAlert ClientViewAlertType = "ddos_alert"
 	ClientViewAlertTypeRtbhAlert ClientViewAlertType = "rtbh_alert"
+)
+
+type EventLog struct {
+	ID string `json:"id" api:"required" format:"uuid"`
+	// Any of "ddos_alert", "rtbh_alert".
+	AlertType                  EventLogAlertType `json:"alert_type" api:"nullable"`
+	AttackPacketSizes          []map[string]any  `json:"attack_packet_sizes" api:"nullable"`
+	AttackPowerBps             float64           `json:"attack_power_bps" api:"nullable"`
+	AttackPowerPps             float64           `json:"attack_power_pps" api:"nullable"`
+	AttackStartTime            time.Time         `json:"attack_start_time" api:"nullable" format:"date-time"`
+	AttackTopDestinationPorts  []map[string]any  `json:"attack_top_destination_ports" api:"nullable"`
+	AttackTopProtocols         []map[string]any  `json:"attack_top_protocols" api:"nullable"`
+	AttackTopSourceCountries   []map[string]any  `json:"attack_top_source_countries" api:"nullable"`
+	AttackTopSourceIPs         []map[string]any  `json:"attack_top_source_ips" api:"nullable"`
+	AttackTopSourcePorts       []map[string]any  `json:"attack_top_source_ports" api:"nullable"`
+	AttackTraffic              []map[string]any  `json:"attack_traffic" api:"nullable"`
+	ClientID                   int64             `json:"client_id" api:"nullable"`
+	NotificationType           string            `json:"notification_type" api:"nullable"`
+	NumberOfIPInvolvedInAttack int64             `json:"number_of_ip_involved_in_attack" api:"nullable"`
+	TargetedIPAddresses        string            `json:"targeted_ip_addresses" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                         respjson.Field
+		AlertType                  respjson.Field
+		AttackPacketSizes          respjson.Field
+		AttackPowerBps             respjson.Field
+		AttackPowerPps             respjson.Field
+		AttackStartTime            respjson.Field
+		AttackTopDestinationPorts  respjson.Field
+		AttackTopProtocols         respjson.Field
+		AttackTopSourceCountries   respjson.Field
+		AttackTopSourceIPs         respjson.Field
+		AttackTopSourcePorts       respjson.Field
+		AttackTraffic              respjson.Field
+		ClientID                   respjson.Field
+		NotificationType           respjson.Field
+		NumberOfIPInvolvedInAttack respjson.Field
+		TargetedIPAddresses        respjson.Field
+		ExtraFields                map[string]respjson.Field
+		raw                        string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EventLog) RawJSON() string { return r.JSON.raw }
+func (r *EventLog) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type EventLogAlertType string
+
+const (
+	EventLogAlertTypeDDOSAlert EventLogAlertType = "ddos_alert"
+	EventLogAlertTypeRtbhAlert EventLogAlertType = "rtbh_alert"
 )
 
 type EventListParams struct {

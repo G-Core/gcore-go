@@ -5,10 +5,12 @@
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security">security</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security#ClientView">ClientView</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security">security</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security#EventLog">EventLog</a>
 
 Methods:
 
 - <code title="get /security/notifier/v1/event_logs">client.Security.Events.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security#EventService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security">security</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security#EventListParams">EventListParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination#OffsetPage">OffsetPage</a>[<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security">security</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security#ClientView">ClientView</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /security/notifier/v1/event_logs/{event_log_id}">client.Security.Events.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security#EventService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, eventLogID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security">security</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security#EventLog">EventLog</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## BgpAnnounces
 
