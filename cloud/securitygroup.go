@@ -46,9 +46,11 @@ func NewSecurityGroupService(opts ...option.RequestOption) (r SecurityGroupServi
 	return
 }
 
-// Creates a new security group with the specified configuration. If no egress
-// rules are provided, default set of egress rules will be applied If rules are
-// explicitly set to empty, no rules will be created.
+// Creates a new security group. Rule handling depends on the `rules` field:
+//
+// - omitted: the default template (ingress + egress allow-all) is applied;
+// - non-empty list: exactly those rules are created (nothing is appended);
+// - empty list `[]`: no rules are created.
 func (r *SecurityGroupService) New(ctx context.Context, params SecurityGroupNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -427,7 +429,8 @@ type SecurityGroupNewParams struct {
 	Name string `json:"name" api:"required"`
 	// Security group description
 	Description param.Opt[string] `json:"description,omitzero"`
-	// Security group rules
+	// Security group rules. Omit to apply the default template (ingress + egress);
+	// send [] to create no rules.
 	Rules []SecurityGroupNewParamsRule `json:"rules,omitzero"`
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
 	// can be associated with a resource, enabling efficient filtering and grouping for
