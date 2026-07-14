@@ -7,12 +7,15 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
+	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -82,6 +85,45 @@ func (r *VolumeSnapshotService) Update(ctx context.Context, snapshotID string, p
 	path := fmt.Sprintf("cloud/v1/snapshots/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, snapshotID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return res, err
+}
+
+// List all volume snapshots in the specified project and region. Results can be
+// filtered by volume, instance, schedule, or lifecycle policy.
+func (r *VolumeSnapshotService) List(ctx context.Context, params VolumeSnapshotListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Snapshot], err error) {
+	var raw *http.Response
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return nil, err
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return nil, err
+	}
+	if !params.RegionID.Valid() {
+		err = errors.New("missing required region_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("cloud/v1/snapshots/%v/%v", params.ProjectID.Value, params.RegionID.Value)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List all volume snapshots in the specified project and region. Results can be
+// filtered by volume, instance, schedule, or lifecycle policy.
+func (r *VolumeSnapshotService) ListAutoPaging(ctx context.Context, params VolumeSnapshotListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Snapshot] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete a specific snapshot.
@@ -284,6 +326,35 @@ func (r VolumeSnapshotUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *VolumeSnapshotUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type VolumeSnapshotListParams struct {
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Optional. Filter snapshots by the instance whose volumes were snapshotted
+	InstanceID param.Opt[string] `query:"instance_id,omitzero" json:"-"`
+	// Optional. Filter by lifecycle policy ID
+	LifecyclePolicyID param.Opt[int64] `query:"lifecycle_policy_id,omitzero" json:"-"`
+	// Limit of items on a single page
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Offset in results list
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	// Optional. Filter by schedule ID
+	ScheduleID param.Opt[string] `query:"schedule_id,omitzero" json:"-"`
+	// Optional. Filter by volume ID
+	VolumeID param.Opt[string] `query:"volume_id,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [VolumeSnapshotListParams]'s query parameters as
+// `url.Values`.
+func (r VolumeSnapshotListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
 }
 
 type VolumeSnapshotDeleteParams struct {

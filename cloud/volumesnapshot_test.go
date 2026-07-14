@@ -79,6 +79,37 @@ func TestVolumeSnapshotUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
+func TestVolumeSnapshotListWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Cloud.VolumeSnapshots.List(context.TODO(), cloud.VolumeSnapshotListParams{
+		ProjectID:         gcore.Int(1),
+		RegionID:          gcore.Int(1),
+		InstanceID:        gcore.String("550e8400-e29b-41d4-a716-446655440000"),
+		LifecyclePolicyID: gcore.Int(1),
+		Limit:             gcore.Int(1000),
+		Offset:            gcore.Int(0),
+		ScheduleID:        gcore.String("67baa7d1-08ea-4fc5-bef2-6b2465b7d227"),
+		VolumeID:          gcore.String("3ed9e2ce-f906-47fb-ba32-c25a3f63df4f"),
+	})
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestVolumeSnapshotDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
