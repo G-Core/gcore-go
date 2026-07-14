@@ -51,6 +51,10 @@ func NewPresetService(opts ...option.RequestOption) (r PresetService) {
 // A preset is a predefined set of CDN resource or rule settings that can be
 // applied to an object in one request.
 func (r *PresetService) List(ctx context.Context, query PresetListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[PresetDetail], err error) {
+	// Limit set with a default so List always paginates.
+	if !query.Limit.Valid() {
+		query.Limit = param.NewOpt[int64](1000)
+	}
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
