@@ -34,6 +34,10 @@ type CDNService struct {
 	// across multiple CDN resources for consistent caching, delivery, and security
 	// policies.
 	RuleTemplates RuleTemplateService
+	// CDN presets are predefined sets of CDN resource or rule settings that can be
+	// applied to an object in a single request, letting you configure caching,
+	// delivery, and security options consistently.
+	Presets PresetService
 	// CDN SSL certificates enable HTTPS content delivery, supporting both uploaded
 	// certificates and automated Let's Encrypt provisioning.
 	Certificates CertificateService
@@ -84,6 +88,7 @@ func NewCDNService(opts ...option.RequestOption) (r CDNService) {
 	r.Shields = NewShieldService(opts...)
 	r.OriginGroups = NewOriginGroupService(opts...)
 	r.RuleTemplates = NewRuleTemplateService(opts...)
+	r.Presets = NewPresetService(opts...)
 	r.Certificates = NewCertificateService(opts...)
 	r.TrustedCaCertificates = NewTrustedCaCertificateService(opts...)
 	r.AuditLogs = NewAuditLogService(opts...)

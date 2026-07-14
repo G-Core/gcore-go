@@ -167,6 +167,8 @@ TEST_PATHS=(
 	cdn/shield_test.go
 	cdn/origingroup_test.go
 	cdn/ruletemplate_test.go
+	cdn/preset_test.go
+	cdn/presetapplied_test.go
 	cdn/certificate_test.go
 	cdn/trustedcacertificate_test.go
 	cdn/auditlog_test.go
