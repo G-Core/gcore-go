@@ -406,7 +406,7 @@ type AnalyticsGetRequestsParams struct {
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Number of items to skip
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// Sort data by given field.
+	// Results sorting order.
 	Ordering param.Opt[string] `query:"ordering,omitzero" json:"-"`
 	// Filter data by a country code of the originating IP address in ISO 3166-1
 	// alpha-2 format.
