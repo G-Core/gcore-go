@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.52.0](https://github.com/G-Core/gcore-go/compare/v0.51.0...v0.52.0) (2026-07-14)
+
+
+### Features
+
+* **cdn:** add runnable Go examples for CDN presets ([33e9c4f](https://github.com/G-Core/gcore-go/commit/33e9c4fa8f1ac9b094b1ccb85d942f7bac48c306))
+* **cdn:** add support for CDN presets and applied presets ([44eb9ae](https://github.com/G-Core/gcore-go/commit/44eb9aeb391054b61632846a3b4dc740b4609e18))
+* **cdn:** support logs uploader targets in Terraform ([6dd2773](https://github.com/G-Core/gcore-go/commit/6dd277348ffa269f23d1032bb4d2fcfb9621333a))
+* **cloud:** enable list method for volume_snapshots ([6b1166b](https://github.com/G-Core/gcore-go/commit/6b1166bceeb6ffe6786db5384dfe59a155c7325e))
+* **examples:** add cloud volume snapshot example ([9b271c8](https://github.com/G-Core/gcore-go/commit/9b271c8cd129b467f3819503c4d868ce70dbc2d6))
+* **security:** add event log detail endpoint ([a429980](https://github.com/G-Core/gcore-go/commit/a429980bcb699c9bdf66ff8d1b6fa4549ae0553f))
+
+
+### Bug Fixes
+
+* **cdn:** default preset list limit to 1000 ([dd69cb9](https://github.com/G-Core/gcore-go/commit/dd69cb959109ce12cc76f5b371951daaf74bf695))
+
+
+### Chores
+
+* **cdn:** update cdn OpenAPI spec ([7709b48](https://github.com/G-Core/gcore-go/commit/7709b48388cee35ed9493ac38c8a0ee749a72cb1))
+* **cloud:** update cloud OpenAPI spec ([f4c5c4a](https://github.com/G-Core/gcore-go/commit/f4c5c4a080e06e642fa5ed405e00dbc6ebc886b1))
+* **cloud:** update cloud OpenAPI spec ([d590982](https://github.com/G-Core/gcore-go/commit/d590982290701637313a8a20fccdb3f4adf0a907))
+* **waap:** update waap OpenAPI spec ([1914b09](https://github.com/G-Core/gcore-go/commit/1914b09e2354bc49022423c3bbf4552e35d10627))
+
 ## [0.51.0](https://github.com/G-Core/gcore-go/compare/v0.50.0...v0.51.0) (2026-07-09)
 
 
