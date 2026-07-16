@@ -8,7 +8,7 @@ import (
 	"github.com/G-Core/gcore-go/cloud"
 )
 
-func listGPUBaremetalClusterInterfaces(client *gcore.Client, clusterID string) []cloud.GPUBaremetalClusterInterfaceListResponseResultUnion {
+func listGPUBaremetalClusterInterfaces(client *gcore.Client, clusterID string) []cloud.GPUBaremetalClusterInterfaceListResponseUnion {
 	fmt.Println("\n=== LIST GPU BAREMETAL CLUSTER INTERFACES ===")
 
 	params := cloud.GPUBaremetalClusterInterfaceListParams{}
