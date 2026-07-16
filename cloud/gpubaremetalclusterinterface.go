@@ -8,11 +8,14 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
+	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -37,19 +40,21 @@ func NewGPUBaremetalClusterInterfaceService(opts ...option.RequestOption) (r GPU
 }
 
 // Retrieve a list of network interfaces attached to the GPU cluster servers.
-func (r *GPUBaremetalClusterInterfaceService) List(ctx context.Context, clusterID string, query GPUBaremetalClusterInterfaceListParams, opts ...option.RequestOption) (res *GPUBaremetalClusterInterfaceListResponse, err error) {
+func (r *GPUBaremetalClusterInterfaceService) List(ctx context.Context, clusterID string, params GPUBaremetalClusterInterfaceListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[GPUBaremetalClusterInterfaceListResponseUnion], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
 	}
-	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.Valid() {
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return nil, err
 	}
-	if !query.RegionID.Valid() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return nil, err
 	}
@@ -57,9 +62,22 @@ func (r *GPUBaremetalClusterInterfaceService) List(ctx context.Context, clusterI
 		err = errors.New("missing required cluster_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("cloud/v1/ai/clusters/%v/%v/%s/interfaces", query.ProjectID.Value, query.RegionID.Value, clusterID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
+	path := fmt.Sprintf("cloud/v1/ai/clusters/%v/%v/%s/interfaces", params.ProjectID.Value, params.RegionID.Value, clusterID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a list of network interfaces attached to the GPU cluster servers.
+func (r *GPUBaremetalClusterInterfaceService) ListAutoPaging(ctx context.Context, clusterID string, params GPUBaremetalClusterInterfaceListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[GPUBaremetalClusterInterfaceListResponseUnion] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, clusterID, params, opts...))
 }
 
 // Attach interface to bare metal GPU cluster server
@@ -114,31 +132,11 @@ func (r *GPUBaremetalClusterInterfaceService) Detach(ctx context.Context, instan
 	return res, err
 }
 
-type GPUBaremetalClusterInterfaceListResponse struct {
-	// Number of objects
-	Count int64 `json:"count" api:"required"`
-	// Objects
-	Results []GPUBaremetalClusterInterfaceListResponseResultUnion `json:"results" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r GPUBaremetalClusterInterfaceListResponse) RawJSON() string { return r.JSON.raw }
-func (r *GPUBaremetalClusterInterfaceListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// GPUBaremetalClusterInterfaceListResponseResultUnion contains all possible
-// properties and values from [NetworkInterface], [InstanceInterface].
+// GPUBaremetalClusterInterfaceListResponseUnion contains all possible properties
+// and values from [NetworkInterface], [InstanceInterface].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
-type GPUBaremetalClusterInterfaceListResponseResultUnion struct {
+type GPUBaremetalClusterInterfaceListResponseUnion struct {
 	AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs"`
 	FloatingipDetails   []FloatingIP          `json:"floatingip_details"`
 	IPAssignments       []IPAssignment        `json:"ip_assignments"`
@@ -166,20 +164,20 @@ type GPUBaremetalClusterInterfaceListResponseResultUnion struct {
 	} `json:"-"`
 }
 
-func (u GPUBaremetalClusterInterfaceListResponseResultUnion) AsInstanceInterfaceTrunkSerializer() (v NetworkInterface) {
+func (u GPUBaremetalClusterInterfaceListResponseUnion) AsInstanceInterfaceTrunkSerializer() (v NetworkInterface) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u GPUBaremetalClusterInterfaceListResponseResultUnion) AsInstanceInterfaceSerializer() (v InstanceInterface) {
+func (u GPUBaremetalClusterInterfaceListResponseUnion) AsInstanceInterfaceSerializer() (v InstanceInterface) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u GPUBaremetalClusterInterfaceListResponseResultUnion) RawJSON() string { return u.JSON.raw }
+func (u GPUBaremetalClusterInterfaceListResponseUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *GPUBaremetalClusterInterfaceListResponseResultUnion) UnmarshalJSON(data []byte) error {
+func (r *GPUBaremetalClusterInterfaceListResponseUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -188,7 +186,20 @@ type GPUBaremetalClusterInterfaceListParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Limit of items on a single page
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Offset in results list
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
+}
+
+// URLQuery serializes [GPUBaremetalClusterInterfaceListParams]'s query parameters
+// as `url.Values`.
+func (r GPUBaremetalClusterInterfaceListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
 }
 
 type GPUBaremetalClusterInterfaceAttachParams struct {
