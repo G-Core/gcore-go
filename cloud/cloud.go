@@ -1906,7 +1906,56 @@ func (r *NetworkDetails) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type NetworkInterface struct {
+// NetworkInterfaceUnion contains all possible properties and values from
+// [NetworkInterfaceInstanceInterfaceTrunkSerializer], [InstanceInterface].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type NetworkInterfaceUnion struct {
+	AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs"`
+	FloatingipDetails   []FloatingIP          `json:"floatingip_details"`
+	IPAssignments       []IPAssignment        `json:"ip_assignments"`
+	// This field is from variant [NetworkInterfaceInstanceInterfaceTrunkSerializer].
+	NetworkDetails      NetworkDetails `json:"network_details"`
+	NetworkID           string         `json:"network_id"`
+	PortID              string         `json:"port_id"`
+	PortSecurityEnabled bool           `json:"port_security_enabled"`
+	// This field is from variant [NetworkInterfaceInstanceInterfaceTrunkSerializer].
+	SubPorts      []NetworkInterfaceInstanceInterfaceTrunkSerializerSubPort `json:"sub_ports"`
+	InterfaceName string                                                    `json:"interface_name"`
+	MacAddress    string                                                    `json:"mac_address"`
+	JSON          struct {
+		AllowedAddressPairs respjson.Field
+		FloatingipDetails   respjson.Field
+		IPAssignments       respjson.Field
+		NetworkDetails      respjson.Field
+		NetworkID           respjson.Field
+		PortID              respjson.Field
+		PortSecurityEnabled respjson.Field
+		SubPorts            respjson.Field
+		InterfaceName       respjson.Field
+		MacAddress          respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+func (u NetworkInterfaceUnion) AsInstanceInterfaceTrunkSerializer() (v NetworkInterfaceInstanceInterfaceTrunkSerializer) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u NetworkInterfaceUnion) AsInstanceInterfaceSerializer() (v InstanceInterface) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u NetworkInterfaceUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *NetworkInterfaceUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NetworkInterfaceInstanceInterfaceTrunkSerializer struct {
 	// Group of subnet masks and/or IP addresses that share the current IP as VIP
 	AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs" api:"required"`
 	// Bodies of floating IPs that are NAT-ing IPs of this port
@@ -1922,7 +1971,7 @@ type NetworkInterface struct {
 	// Port security status
 	PortSecurityEnabled bool `json:"port_security_enabled" api:"required"`
 	// body of ports that are included into trunk port
-	SubPorts []NetworkInterfaceSubPort `json:"sub_ports" api:"required"`
+	SubPorts []NetworkInterfaceInstanceInterfaceTrunkSerializerSubPort `json:"sub_ports" api:"required"`
 	// Interface name
 	InterfaceName string `json:"interface_name" api:"nullable"`
 	// MAC address of the virtual port
@@ -1945,12 +1994,12 @@ type NetworkInterface struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r NetworkInterface) RawJSON() string { return r.JSON.raw }
-func (r *NetworkInterface) UnmarshalJSON(data []byte) error {
+func (r NetworkInterfaceInstanceInterfaceTrunkSerializer) RawJSON() string { return r.JSON.raw }
+func (r *NetworkInterfaceInstanceInterfaceTrunkSerializer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type NetworkInterfaceSubPort struct {
+type NetworkInterfaceInstanceInterfaceTrunkSerializerSubPort struct {
 	// Group of subnet masks and/or IP addresses that share the current IP as VIP
 	AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs" api:"required"`
 	// Bodies of floating IPs that are NAT-ing IPs of this port
@@ -1992,28 +2041,8 @@ type NetworkInterfaceSubPort struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r NetworkInterfaceSubPort) RawJSON() string { return r.JSON.raw }
-func (r *NetworkInterfaceSubPort) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type NetworkInterfaceList struct {
-	// Number of objects
-	Count int64 `json:"count" api:"required"`
-	// Objects
-	Results []NetworkInterface `json:"results" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r NetworkInterfaceList) RawJSON() string { return r.JSON.raw }
-func (r *NetworkInterfaceList) UnmarshalJSON(data []byte) error {
+func (r NetworkInterfaceInstanceInterfaceTrunkSerializerSubPort) RawJSON() string { return r.JSON.raw }
+func (r *NetworkInterfaceInstanceInterfaceTrunkSerializerSubPort) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

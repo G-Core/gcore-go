@@ -6,10 +6,9 @@ import (
 
 	"github.com/G-Core/gcore-go"
 	"github.com/G-Core/gcore-go/cloud"
-	"github.com/G-Core/gcore-go/packages/param"
 )
 
-func listInterfaces(client *gcore.Client, instanceID string) []cloud.NetworkInterface {
+func listInterfaces(client *gcore.Client, instanceID string) []cloud.NetworkInterfaceUnion {
 	fmt.Println("\n=== LIST INTERFACES ===")
 
 	interfaces, err := client.Cloud.Instances.Interfaces.List(context.Background(), instanceID, cloud.InstanceInterfaceListParams{})
@@ -26,26 +25,27 @@ func listInterfaces(client *gcore.Client, instanceID string) []cloud.NetworkInte
 	return interfaces.Results
 }
 
-func attachInterface(client *gcore.Client, instanceID string, networkID string) []cloud.NetworkInterface {
+func attachInterface(client *gcore.Client, instanceID string, networkID string) []cloud.NetworkInterfaceUnion {
 	fmt.Println("\n=== ATTACH INTERFACE ===")
 
 	// Attach interface to any available subnet in the specified network
 	params := cloud.InstanceInterfaceAttachParams{
-		OfNewInterfaceAnySubnetSchema: &cloud.InstanceInterfaceAttachParamsBodyNewInterfaceAnySubnetSchema{
-			Type:      param.Opt[string]{Value: "any_subnet"},
+		OfAnySubnet: &cloud.InstanceInterfaceAttachParamsBodyAnySubnet{
+			Type:      "any_subnet",
 			NetworkID: networkID,
 		},
 	}
 
-	interfaces, err := client.Cloud.Instances.Interfaces.AttachAndPoll(context.Background(), instanceID, params)
-	if err != nil {
+	if err := client.Cloud.Instances.Interfaces.AttachAndPoll(context.Background(), instanceID, params); err != nil {
 		fmt.Printf("Error attaching interface to any subnet in network %s: %v\n", networkID, err)
 		return nil
 	}
 
 	fmt.Printf("Attached interface to any available subnet in network %s (instance: %s)\n", networkID, instanceID)
 	fmt.Println("========================")
-	return interfaces.Results
+
+	// AttachAndPoll returns only tasks; list the interfaces to read the current state.
+	return listInterfaces(client, instanceID)
 }
 
 func detachInterface(client *gcore.Client, instanceID, ipAddress, portID string) {
@@ -56,8 +56,7 @@ func detachInterface(client *gcore.Client, instanceID, ipAddress, portID string)
 		PortID:    portID,
 	}
 
-	_, err := client.Cloud.Instances.Interfaces.DetachAndPoll(context.Background(), instanceID, params)
-	if err != nil {
+	if err := client.Cloud.Instances.Interfaces.DetachAndPoll(context.Background(), instanceID, params); err != nil {
 		fmt.Printf("Error detaching interface (IP: %s, Port: %s): %v\n", ipAddress, portID, err)
 		return
 	}

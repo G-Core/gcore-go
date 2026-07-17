@@ -28,11 +28,11 @@ func TestInstanceInterfaceListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.Instances.Interfaces.List(
 		context.TODO(),
-		"instance_id",
+		"bf325375-9af6-4c8b-a2fc-7f6f4ca02e2e",
 		cloud.InstanceInterfaceListParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
-			Limit:     gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
+			Limit:     gcore.Int(1000),
 			Offset:    gcore.Int(0),
 		},
 	)
@@ -59,32 +59,27 @@ func TestInstanceInterfaceAttachWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.Instances.Interfaces.Attach(
 		context.TODO(),
-		"instance_id",
+		"bf325375-9af6-4c8b-a2fc-7f6f4ca02e2e",
 		cloud.InstanceInterfaceAttachParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
-			OfNewInterfaceExternalExtendSchemaWithDDOS: &cloud.InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOS{
-				DDOSProfile: cloud.InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfile{
-					ProfileTemplate: 29,
-					Fields: []cloud.InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfileField{{
-						BaseField: 10,
-						FieldValue: []float64{
-							45046,
-							45047,
-						},
-						Value: gcore.String("value"),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
+			OfExternal: &cloud.InstanceInterfaceAttachParamsBodyExternal{
+				DDOSProfile: cloud.InstanceInterfaceAttachParamsBodyExternalDDOSProfile{
+					ProfileTemplate: 0,
+					Fields: []cloud.InstanceInterfaceAttachParamsBodyExternalDDOSProfileField{{
+						BaseField:  0,
+						FieldValue: map[string]any{},
+						Value:      gcore.String("value"),
 					}},
 					ProfileTemplateName: gcore.String("profile_template_name"),
 				},
 				InterfaceName: gcore.String("interface_name"),
-				IPFamily:      "dual",
+				IPFamily:      cloud.InterfaceIPFamilyDual,
 				PortGroup:     gcore.Int(0),
-				SecurityGroups: []cloud.InstanceInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSSecurityGroup{{
-					ID: "4536dba1-93b1-492e-b3df-270b6b9f3650",
-				}, {
-					ID: "cee2ca1f-507a-4a31-b714-f6c1ffb4bdfa",
+				SecurityGroups: []cloud.InstanceInterfaceAttachParamsBodyExternalSecurityGroup{{
+					ID: "ae74714c-c380-48b4-87f8-758d656cdad6",
 				}},
-				Type: gcore.String("external"),
+				Type: "external",
 			},
 		},
 	)
@@ -111,12 +106,12 @@ func TestInstanceInterfaceDetach(t *testing.T) {
 	)
 	_, err := client.Cloud.Instances.Interfaces.Detach(
 		context.TODO(),
-		"instance_id",
+		"bf325375-9af6-4c8b-a2fc-7f6f4ca02e2e",
 		cloud.InstanceInterfaceDetachParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
-			IPAddress: "192.168.123.20",
-			PortID:    "351b0dd7-ca09-431c-be53-935db3785067",
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
+			IPAddress: "ip_address",
+			PortID:    "port_id",
 		},
 	)
 	if err != nil {

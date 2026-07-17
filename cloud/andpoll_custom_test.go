@@ -303,12 +303,10 @@ var andPollMethods = []struct {
 		return err
 	}},
 	{"InstanceInterface.AttachAndPoll", func(ctx context.Context, client gcore.Client) error {
-		_, err := client.Cloud.Instances.Interfaces.AttachAndPoll(ctx, "id", cloud.InstanceInterfaceAttachParams{})
-		return err
+		return client.Cloud.Instances.Interfaces.AttachAndPoll(ctx, "id", cloud.InstanceInterfaceAttachParams{})
 	}},
 	{"InstanceInterface.DetachAndPoll", func(ctx context.Context, client gcore.Client) error {
-		_, err := client.Cloud.Instances.Interfaces.DetachAndPoll(ctx, "id", cloud.InstanceInterfaceDetachParams{})
-		return err
+		return client.Cloud.Instances.Interfaces.DetachAndPoll(ctx, "id", cloud.InstanceInterfaceDetachParams{})
 	}},
 	{"K8SCluster.DeleteAndPoll", func(ctx context.Context, client gcore.Client) error {
 		return client.Cloud.K8S.Clusters.DeleteAndPoll(ctx, "id", cloud.K8SClusterDeleteParams{})

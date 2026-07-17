@@ -4,7 +4,6 @@ package cloud
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -17,7 +16,6 @@ import (
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
-	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
 // GPUBaremetalClusterInterfaceService contains methods and other services that
@@ -40,7 +38,7 @@ func NewGPUBaremetalClusterInterfaceService(opts ...option.RequestOption) (r GPU
 }
 
 // Retrieve a list of network interfaces attached to the GPU cluster servers.
-func (r *GPUBaremetalClusterInterfaceService) List(ctx context.Context, clusterID string, params GPUBaremetalClusterInterfaceListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[GPUBaremetalClusterInterfaceListResponseUnion], err error) {
+func (r *GPUBaremetalClusterInterfaceService) List(ctx context.Context, clusterID string, params GPUBaremetalClusterInterfaceListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[NetworkInterfaceUnion], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -76,7 +74,7 @@ func (r *GPUBaremetalClusterInterfaceService) List(ctx context.Context, clusterI
 }
 
 // Retrieve a list of network interfaces attached to the GPU cluster servers.
-func (r *GPUBaremetalClusterInterfaceService) ListAutoPaging(ctx context.Context, clusterID string, params GPUBaremetalClusterInterfaceListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[GPUBaremetalClusterInterfaceListResponseUnion] {
+func (r *GPUBaremetalClusterInterfaceService) ListAutoPaging(ctx context.Context, clusterID string, params GPUBaremetalClusterInterfaceListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[NetworkInterfaceUnion] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, clusterID, params, opts...))
 }
 
@@ -130,55 +128,6 @@ func (r *GPUBaremetalClusterInterfaceService) Detach(ctx context.Context, instan
 	path := fmt.Sprintf("cloud/v1/ai/clusters/%v/%v/%s/detach_interface", params.ProjectID.Value, params.RegionID.Value, instanceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
-}
-
-// GPUBaremetalClusterInterfaceListResponseUnion contains all possible properties
-// and values from [NetworkInterface], [InstanceInterface].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-type GPUBaremetalClusterInterfaceListResponseUnion struct {
-	AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs"`
-	FloatingipDetails   []FloatingIP          `json:"floatingip_details"`
-	IPAssignments       []IPAssignment        `json:"ip_assignments"`
-	// This field is from variant [NetworkInterface].
-	NetworkDetails      NetworkDetails `json:"network_details"`
-	NetworkID           string         `json:"network_id"`
-	PortID              string         `json:"port_id"`
-	PortSecurityEnabled bool           `json:"port_security_enabled"`
-	// This field is from variant [NetworkInterface].
-	SubPorts      []NetworkInterfaceSubPort `json:"sub_ports"`
-	InterfaceName string                    `json:"interface_name"`
-	MacAddress    string                    `json:"mac_address"`
-	JSON          struct {
-		AllowedAddressPairs respjson.Field
-		FloatingipDetails   respjson.Field
-		IPAssignments       respjson.Field
-		NetworkDetails      respjson.Field
-		NetworkID           respjson.Field
-		PortID              respjson.Field
-		PortSecurityEnabled respjson.Field
-		SubPorts            respjson.Field
-		InterfaceName       respjson.Field
-		MacAddress          respjson.Field
-		raw                 string
-	} `json:"-"`
-}
-
-func (u GPUBaremetalClusterInterfaceListResponseUnion) AsInstanceInterfaceTrunkSerializer() (v NetworkInterface) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u GPUBaremetalClusterInterfaceListResponseUnion) AsInstanceInterfaceSerializer() (v InstanceInterface) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u GPUBaremetalClusterInterfaceListResponseUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *GPUBaremetalClusterInterfaceListResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type GPUBaremetalClusterInterfaceListParams struct {
