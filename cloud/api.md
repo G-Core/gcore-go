@@ -605,11 +605,10 @@ Methods:
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BaremetalImage">BaremetalImage</a>
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BaremetalImageList">BaremetalImageList</a>
 
 Methods:
 
-- <code title="get /cloud/v1/bmimages/{project_id}/{region_id}">client.Cloud.Baremetal.Images.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BaremetalImageService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BaremetalImageListParams">BaremetalImageListParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BaremetalImageList">BaremetalImageList</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /cloud/v1/bmimages/{project_id}/{region_id}">client.Cloud.Baremetal.Images.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BaremetalImageService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BaremetalImageListParams">BaremetalImageListParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination#OffsetPage">OffsetPage</a>[<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BaremetalImage">BaremetalImage</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ### Flavors
 

@@ -15,10 +15,14 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Bare metal images are operating system images used to boot bare metal servers,
+// filterable by name, visibility, OS distribution, and architecture.
+//
 // BaremetalImageService contains methods and other services that help with
 // interacting with the gcore API.
 //
@@ -41,8 +45,10 @@ func NewBaremetalImageService(opts ...option.RequestOption) (r BaremetalImageSer
 // Retrieve a list of available images for bare metal servers. The list can be
 // filtered by visibility, tags, and other parameters. Returned entities may or may
 // not be owned by the project.
-func (r *BaremetalImageService) List(ctx context.Context, params BaremetalImageListParams, opts ...option.RequestOption) (res *BaremetalImageList, err error) {
+func (r *BaremetalImageService) List(ctx context.Context, params BaremetalImageListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[BaremetalImage], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
@@ -58,8 +64,23 @@ func (r *BaremetalImageService) List(ctx context.Context, params BaremetalImageL
 		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/bmimages/%v/%v", params.ProjectID.Value, params.RegionID.Value)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a list of available images for bare metal servers. The list can be
+// filtered by visibility, tags, and other parameters. Returned entities may or may
+// not be owned by the project.
+func (r *BaremetalImageService) ListAutoPaging(ctx context.Context, params BaremetalImageListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[BaremetalImage] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
 type BaremetalImage struct {
@@ -241,26 +262,6 @@ const (
 	BaremetalImageSSHKeyDeny     BaremetalImageSSHKey = "deny"
 	BaremetalImageSSHKeyRequired BaremetalImageSSHKey = "required"
 )
-
-type BaremetalImageList struct {
-	// Number of objects
-	Count int64 `json:"count" api:"required"`
-	// Objects
-	Results []BaremetalImage `json:"results" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BaremetalImageList) RawJSON() string { return r.JSON.raw }
-func (r *BaremetalImageList) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 type BaremetalImageListParams struct {
 	// Project ID

@@ -14,6 +14,8 @@ import (
 // the [NewBaremetalService] method instead.
 type BaremetalService struct {
 	Options []option.RequestOption
+	// Bare metal images are operating system images used to boot bare metal servers,
+	// filterable by name, visibility, OS distribution, and architecture.
 	Images  BaremetalImageService
 	Flavors BaremetalFlavorService
 	// Bare metal servers are dedicated physical machines with direct hardware access,
