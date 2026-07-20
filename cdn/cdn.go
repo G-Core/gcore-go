@@ -24,9 +24,9 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewCDNService] method instead.
 type CDNService struct {
-	Options      []option.RequestOption
-	CDNResources CDNResourceService
-	Shields      ShieldService
+	Options           []option.RequestOption
+	CDNResources      CDNResourceService
+	ShieldingLocation ShieldingLocationService
 	// CDN origin groups aggregate one or more origin servers with failover and load
 	// balancing for content delivery.
 	OriginGroups OriginGroupService
@@ -85,7 +85,7 @@ func NewCDNService(opts ...option.RequestOption) (r CDNService) {
 	r = CDNService{}
 	r.Options = opts
 	r.CDNResources = NewCDNResourceService(opts...)
-	r.Shields = NewShieldService(opts...)
+	r.ShieldingLocation = NewShieldingLocationService(opts...)
 	r.OriginGroups = NewOriginGroupService(opts...)
 	r.RuleTemplates = NewRuleTemplateService(opts...)
 	r.Presets = NewPresetService(opts...)

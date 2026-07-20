@@ -70,15 +70,16 @@ Methods:
 - <code title="get /cdn/resources/{resource_id}/rules/{rule_id}">client.CDN.CDNResources.Rules.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#CDNResourceRuleService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, ruleID <a href="https://pkg.go.dev/builtin#int64">int64</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#CDNResourceRuleGetParams">CDNResourceRuleGetParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#CDNResourceRule">CDNResourceRule</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="put /cdn/resources/{resource_id}/rules/{rule_id}">client.CDN.CDNResources.Rules.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#CDNResourceRuleService.Replace">Replace</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, ruleID <a href="https://pkg.go.dev/builtin#int64">int64</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#CDNResourceRuleReplaceParams">CDNResourceRuleReplaceParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#CDNResourceRule">CDNResourceRule</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
-## Shields
+## ShieldingLocation
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#ShieldListResponse">ShieldListResponse</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#ShieldingLocation">ShieldingLocation</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#ShieldingLocationList">ShieldingLocationList</a>
 
 Methods:
 
-- <code title="get /cdn/shieldingpop_v2">client.CDN.Shields.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#ShieldService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#ShieldListParams">ShieldListParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination#OffsetPage">OffsetPage</a>[<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#ShieldListResponse">ShieldListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /cdn/shieldingpop_v2">client.CDN.ShieldingLocation.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#ShieldingLocationService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#ShieldingLocationListParams">ShieldingLocationListParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination#OffsetPage">OffsetPage</a>[<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn">cdn</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cdn#ShieldingLocation">ShieldingLocation</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## OriginGroups
 

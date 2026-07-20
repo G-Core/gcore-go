@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/option"
 )
 
-func TestShieldListWithOptionalParams(t *testing.T) {
+func TestShieldingLocationListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,7 +26,7 @@ func TestShieldListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.CDN.Shields.List(context.TODO(), cdn.ShieldListParams{
+	_, err := client.CDN.ShieldingLocation.List(context.TODO(), cdn.ShieldingLocationListParams{
 		Limit:  gcore.Int(1),
 		Offset: gcore.Int(0),
 	})
