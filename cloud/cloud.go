@@ -1538,6 +1538,8 @@ type LoadBalancer struct {
 	Flavor LoadBalancerFlavor `json:"flavor" api:"nullable"`
 	// List of assigned floating IPs
 	FloatingIPs []FloatingIP `json:"floating_ips"`
+	// Load balancer listeners
+	Listeners []LoadBalancerListener `json:"listeners"`
 	// Logging configuration
 	Logging Logging `json:"logging" api:"nullable"`
 	// Preferred option to establish connectivity between load balancer and its pools
@@ -1582,6 +1584,7 @@ type LoadBalancer struct {
 		DDOSProfile           respjson.Field
 		Flavor                respjson.Field
 		FloatingIPs           respjson.Field
+		Listeners             respjson.Field
 		Logging               respjson.Field
 		PreferredConnectivity respjson.Field
 		Stats                 respjson.Field
@@ -1647,6 +1650,23 @@ type LoadBalancerFlavor struct {
 // Returns the unmodified JSON received from the API
 func (r LoadBalancerFlavor) RawJSON() string { return r.JSON.raw }
 func (r *LoadBalancerFlavor) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LoadBalancerListener struct {
+	// Listener ID
+	ID string `json:"id" api:"required" format:"uuid4"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LoadBalancerListener) RawJSON() string { return r.JSON.raw }
+func (r *LoadBalancerListener) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
