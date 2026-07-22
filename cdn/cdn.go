@@ -24,8 +24,11 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewCDNService] method instead.
 type CDNService struct {
-	Options           []option.RequestOption
-	CDNResources      CDNResourceService
+	Options      []option.RequestOption
+	CDNResources CDNResourceService
+	// CDN origin shielding locations are the available shield (precache) points of
+	// presence that can be referenced when configuring origin shielding for a CDN
+	// resource.
 	ShieldingLocation ShieldingLocationService
 	// CDN origin groups aggregate one or more origin servers with failover and load
 	// balancing for content delivery.

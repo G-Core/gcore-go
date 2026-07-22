@@ -17,6 +17,10 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// CDN origin shielding locations are the available shield (precache) points of
+// presence that can be referenced when configuring origin shielding for a CDN
+// resource.
+//
 // ShieldingLocationService contains methods and other services that help with
 // interacting with the gcore API.
 //
