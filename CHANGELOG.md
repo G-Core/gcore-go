@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.53.0](https://github.com/G-Core/gcore-go/compare/v0.52.0...v0.53.0) (2026-07-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* **cloud:** update cloud spec and paginate gpu baremetal interfaces list
+
+### Features
+
+* **cloud:** expose bare metal images as a terraform data source ([ad21ce6](https://github.com/G-Core/gcore-go/commit/ad21ce632d6028c0f314c56ef2b779b72bdc483b))
+* **cloud:** update cloud spec and paginate gpu baremetal interfaces list ([35fba05](https://github.com/G-Core/gcore-go/commit/35fba0529a68b69e71ffa96996d85bc4ebc0fe66))
+
+
+### Bug Fixes
+
+* **cloud:** make load balancer inline listeners create-only in terraform ([693cd6b](https://github.com/G-Core/gcore-go/commit/693cd6beef4fda703c93d8a6cdb75d4f5da6c0ec))
+* **cloud:** mark volume snapshot tags as computed_optional in terraform ([9d2c571](https://github.com/G-Core/gcore-go/commit/9d2c571380331618abfa2a1403dada66ab27c932))
+* **cloud:** revert non-target-scoped listeners removeProperties transform ([0e8bcb8](https://github.com/G-Core/gcore-go/commit/0e8bcb898385071d5964b50b7924b6abc5821a55))
+* **cloud:** update gpu baremetal interfaces example for paginated list ([2c92f9c](https://github.com/G-Core/gcore-go/commit/2c92f9c42150476552637768ab210df67a0c22e8))
+
 ## [0.52.0](https://github.com/G-Core/gcore-go/compare/v0.51.0...v0.52.0) (2026-07-14)
 
 
