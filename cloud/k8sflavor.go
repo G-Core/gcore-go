@@ -13,6 +13,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 )
 
@@ -38,8 +39,10 @@ func NewK8SFlavorService(opts ...option.RequestOption) (r K8SFlavorService) {
 // Retrieve a list of flavors for k8s pool. When the `include_prices` query
 // parameter is specified, the list shows prices. A client in trial mode gets all
 // price values as 0. If you get Pricing Error contact the support
-func (r *K8SFlavorService) List(ctx context.Context, params K8SFlavorListParams, opts ...option.RequestOption) (res *BaremetalFlavorList, err error) {
+func (r *K8SFlavorService) List(ctx context.Context, params K8SFlavorListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[BaremetalFlavor], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
@@ -55,8 +58,23 @@ func (r *K8SFlavorService) List(ctx context.Context, params K8SFlavorListParams,
 		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/k8s/%v/%v/flavors", params.ProjectID.Value, params.RegionID.Value)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a list of flavors for k8s pool. When the `include_prices` query
+// parameter is specified, the list shows prices. A client in trial mode gets all
+// price values as 0. If you get Pricing Error contact the support
+func (r *K8SFlavorService) ListAutoPaging(ctx context.Context, params K8SFlavorListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[BaremetalFlavor] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
 type K8SFlavorListParams struct {

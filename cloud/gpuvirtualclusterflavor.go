@@ -15,6 +15,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -39,8 +40,10 @@ func NewGPUVirtualClusterFlavorService(opts ...option.RequestOption) (r GPUVirtu
 }
 
 // List virtual GPU flavors
-func (r *GPUVirtualClusterFlavorService) List(ctx context.Context, params GPUVirtualClusterFlavorListParams, opts ...option.RequestOption) (res *GPUVirtualFlavorList, err error) {
+func (r *GPUVirtualClusterFlavorService) List(ctx context.Context, params GPUVirtualClusterFlavorListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[GPUVirtualFlavorUnion], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
@@ -56,8 +59,21 @@ func (r *GPUVirtualClusterFlavorService) List(ctx context.Context, params GPUVir
 		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/virtual/%v/%v/flavors", params.ProjectID.Value, params.RegionID.Value)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List virtual GPU flavors
+func (r *GPUVirtualClusterFlavorService) ListAutoPaging(ctx context.Context, params GPUVirtualClusterFlavorListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[GPUVirtualFlavorUnion] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
 // GPUVirtualFlavorUnion contains all possible properties and values from

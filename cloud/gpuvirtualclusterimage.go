@@ -14,6 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 )
 
@@ -39,8 +40,10 @@ func NewGPUVirtualClusterImageService(opts ...option.RequestOption) (r GPUVirtua
 }
 
 // List virtual GPU images
-func (r *GPUVirtualClusterImageService) List(ctx context.Context, params GPUVirtualClusterImageListParams, opts ...option.RequestOption) (res *GPUImageList, err error) {
+func (r *GPUVirtualClusterImageService) List(ctx context.Context, params GPUVirtualClusterImageListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[GPUImage], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
@@ -56,8 +59,21 @@ func (r *GPUVirtualClusterImageService) List(ctx context.Context, params GPUVirt
 		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/virtual/%v/%v/images", params.ProjectID.Value, params.RegionID.Value)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List virtual GPU images
+func (r *GPUVirtualClusterImageService) ListAutoPaging(ctx context.Context, params GPUVirtualClusterImageListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[GPUImage] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete virtual GPU image

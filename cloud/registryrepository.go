@@ -15,6 +15,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -39,8 +40,10 @@ func NewRegistryRepositoryService(opts ...option.RequestOption) (r RegistryRepos
 }
 
 // List all repositories in the container registry.
-func (r *RegistryRepositoryService) List(ctx context.Context, registryID int64, params RegistryRepositoryListParams, opts ...option.RequestOption) (res *RegistryRepositoryList, err error) {
+func (r *RegistryRepositoryService) List(ctx context.Context, registryID int64, params RegistryRepositoryListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[RegistryRepository], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
@@ -56,8 +59,21 @@ func (r *RegistryRepositoryService) List(ctx context.Context, registryID int64, 
 		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/registries/%v/%v/%v/repositories", params.ProjectID.Value, params.RegionID.Value, registryID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List all repositories in the container registry.
+func (r *RegistryRepositoryService) ListAutoPaging(ctx context.Context, registryID int64, params RegistryRepositoryListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[RegistryRepository] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, registryID, params, opts...))
 }
 
 // Delete a specific repository from the container registry.

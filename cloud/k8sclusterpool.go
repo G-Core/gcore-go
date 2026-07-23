@@ -14,6 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -96,8 +97,10 @@ func (r *K8SClusterPoolService) Update(ctx context.Context, poolName string, par
 }
 
 // List k8s cluster pools
-func (r *K8SClusterPoolService) List(ctx context.Context, clusterName string, params K8SClusterPoolListParams, opts ...option.RequestOption) (res *K8SClusterPoolList, err error) {
+func (r *K8SClusterPoolService) List(ctx context.Context, clusterName string, params K8SClusterPoolListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[K8SClusterPool], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
@@ -117,8 +120,21 @@ func (r *K8SClusterPoolService) List(ctx context.Context, clusterName string, pa
 		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v/%s/pools", params.ProjectID.Value, params.RegionID.Value, clusterName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List k8s cluster pools
+func (r *K8SClusterPoolService) ListAutoPaging(ctx context.Context, clusterName string, params K8SClusterPoolListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[K8SClusterPool] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, clusterName, params, opts...))
 }
 
 // Delete k8s cluster pool

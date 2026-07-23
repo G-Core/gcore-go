@@ -15,6 +15,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -39,8 +40,10 @@ func NewRegistryArtifactService(opts ...option.RequestOption) (r RegistryArtifac
 }
 
 // List all artifacts in a specific repository.
-func (r *RegistryArtifactService) List(ctx context.Context, repositoryName string, params RegistryArtifactListParams, opts ...option.RequestOption) (res *RegistryArtifactList, err error) {
+func (r *RegistryArtifactService) List(ctx context.Context, repositoryName string, params RegistryArtifactListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[RegistryArtifact], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
@@ -60,8 +63,21 @@ func (r *RegistryArtifactService) List(ctx context.Context, repositoryName strin
 		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/registries/%v/%v/%v/repositories/%s/artifacts", params.ProjectID.Value, params.RegionID.Value, params.RegistryID, repositoryName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List all artifacts in a specific repository.
+func (r *RegistryArtifactService) ListAutoPaging(ctx context.Context, repositoryName string, params RegistryArtifactListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[RegistryArtifact] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, repositoryName, params, opts...))
 }
 
 // Delete a specific artifact from a repository.

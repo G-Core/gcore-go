@@ -14,6 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -44,8 +45,10 @@ func NewK8SService(opts ...option.RequestOption) (r K8SService) {
 }
 
 // List available k8s cluster versions for creation
-func (r *K8SService) ListVersions(ctx context.Context, params K8SListVersionsParams, opts ...option.RequestOption) (res *K8SClusterVersionList, err error) {
+func (r *K8SService) ListVersions(ctx context.Context, params K8SListVersionsParams, opts ...option.RequestOption) (res *pagination.OffsetPage[K8SClusterVersion], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
@@ -61,8 +64,21 @@ func (r *K8SService) ListVersions(ctx context.Context, params K8SListVersionsPar
 		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v2/k8s/%v/%v/create_versions", params.ProjectID.Value, params.RegionID.Value)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List available k8s cluster versions for creation
+func (r *K8SService) ListVersionsAutoPaging(ctx context.Context, params K8SListVersionsParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[K8SClusterVersion] {
+	return pagination.NewOffsetPageAutoPager(r.ListVersions(ctx, params, opts...))
 }
 
 type K8SClusterVersion struct {

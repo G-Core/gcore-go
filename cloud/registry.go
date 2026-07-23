@@ -15,6 +15,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -69,8 +70,10 @@ func (r *RegistryService) New(ctx context.Context, params RegistryNewParams, opt
 }
 
 // List all container registries in the specified project and region.
-func (r *RegistryService) List(ctx context.Context, params RegistryListParams, opts ...option.RequestOption) (res *RegistryList, err error) {
+func (r *RegistryService) List(ctx context.Context, params RegistryListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Registry], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
@@ -86,8 +89,21 @@ func (r *RegistryService) List(ctx context.Context, params RegistryListParams, o
 		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/registries/%v/%v", params.ProjectID.Value, params.RegionID.Value)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List all container registries in the specified project and region.
+func (r *RegistryService) ListAutoPaging(ctx context.Context, params RegistryListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Registry] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete a specific container registry and all its associated resources.

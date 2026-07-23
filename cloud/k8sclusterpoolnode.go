@@ -13,6 +13,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 )
 
@@ -36,8 +37,10 @@ func NewK8SClusterPoolNodeService(opts ...option.RequestOption) (r K8SClusterPoo
 }
 
 // List k8s cluster pool nodes
-func (r *K8SClusterPoolNodeService) List(ctx context.Context, poolName string, params K8SClusterPoolNodeListParams, opts ...option.RequestOption) (res *InstanceList, err error) {
+func (r *K8SClusterPoolNodeService) List(ctx context.Context, poolName string, params K8SClusterPoolNodeListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Instance], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
@@ -61,8 +64,21 @@ func (r *K8SClusterPoolNodeService) List(ctx context.Context, poolName string, p
 		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v2/k8s/clusters/%v/%v/%s/pools/%s/instances", params.ProjectID.Value, params.RegionID.Value, params.ClusterName, poolName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List k8s cluster pool nodes
+func (r *K8SClusterPoolNodeService) ListAutoPaging(ctx context.Context, poolName string, params K8SClusterPoolNodeListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Instance] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, poolName, params, opts...))
 }
 
 // After deletion, the node will be automatically recreated to maintain the desired

@@ -15,6 +15,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -39,8 +40,10 @@ func NewGPUVirtualClusterInterfaceService(opts ...option.RequestOption) (r GPUVi
 }
 
 // List all network interfaces for servers in a virtual GPU cluster.
-func (r *GPUVirtualClusterInterfaceService) List(ctx context.Context, clusterID string, params GPUVirtualClusterInterfaceListParams, opts ...option.RequestOption) (res *GPUVirtualInterfaceList, err error) {
+func (r *GPUVirtualClusterInterfaceService) List(ctx context.Context, clusterID string, params GPUVirtualClusterInterfaceListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[GPUVirtualInterface], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
@@ -60,8 +63,21 @@ func (r *GPUVirtualClusterInterfaceService) List(ctx context.Context, clusterID 
 		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v3/gpu/virtual/%v/%v/clusters/%s/interfaces", params.ProjectID.Value, params.RegionID.Value, clusterID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List all network interfaces for servers in a virtual GPU cluster.
+func (r *GPUVirtualClusterInterfaceService) ListAutoPaging(ctx context.Context, clusterID string, params GPUVirtualClusterInterfaceListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[GPUVirtualInterface] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, clusterID, params, opts...))
 }
 
 type GPUVirtualInterface struct {

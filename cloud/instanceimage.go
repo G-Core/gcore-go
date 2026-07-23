@@ -15,6 +15,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -70,8 +71,10 @@ func (r *InstanceImageService) Update(ctx context.Context, imageID string, param
 // Retrieve a list of available images in the project and region. The list can be
 // filtered by visibility, tags, and other parameters. Returned entities are owned
 // by the project or are public/shared with the client.
-func (r *InstanceImageService) List(ctx context.Context, params InstanceImageListParams, opts ...option.RequestOption) (res *ImageList, err error) {
+func (r *InstanceImageService) List(ctx context.Context, params InstanceImageListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Image], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
@@ -87,8 +90,23 @@ func (r *InstanceImageService) List(ctx context.Context, params InstanceImageLis
 		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/images/%v/%v", params.ProjectID.Value, params.RegionID.Value)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a list of available images in the project and region. The list can be
+// filtered by visibility, tags, and other parameters. Returned entities are owned
+// by the project or are public/shared with the client.
+func (r *InstanceImageService) ListAutoPaging(ctx context.Context, params InstanceImageListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Image] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
 // Delete a specific image. The image cannot be deleted if it is used by protected

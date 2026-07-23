@@ -15,6 +15,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -44,8 +45,10 @@ func NewInstanceFlavorService(opts ...option.RequestOption) (r InstanceFlavorSer
 // Retrieve a list of available instance flavors in the project and region. When
 // `include_prices` is specified, the list includes pricing information. Trial mode
 // clients see all prices as 0. Contact support for pricing errors.
-func (r *InstanceFlavorService) List(ctx context.Context, params InstanceFlavorListParams, opts ...option.RequestOption) (res *InstanceFlavorList, err error) {
+func (r *InstanceFlavorService) List(ctx context.Context, params InstanceFlavorListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[InstanceFlavorDetailedUnion], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
@@ -61,8 +64,23 @@ func (r *InstanceFlavorService) List(ctx context.Context, params InstanceFlavorL
 		return nil, err
 	}
 	path := fmt.Sprintf("cloud/v1/flavors/%v/%v", params.ProjectID.Value, params.RegionID.Value)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a list of available instance flavors in the project and region. When
+// `include_prices` is specified, the list includes pricing information. Trial mode
+// clients see all prices as 0. Contact support for pricing errors.
+func (r *InstanceFlavorService) ListAutoPaging(ctx context.Context, params InstanceFlavorListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[InstanceFlavorDetailedUnion] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
 // InstanceFlavorDetailedUnion contains all possible properties and values from
