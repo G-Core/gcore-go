@@ -70,15 +70,13 @@ func (r *NetworkService) New(ctx context.Context, params NetworkNewParams, opts 
 	return res, err
 }
 
-// Rename network and/or update network tags. The request will only process the
-// fields that are provided in the request body. Any fields that are not included
-// will remain unchanged.
-//
-// **Deprecated**: Use `PATCH /v2/networks/{project_id}/{region_id}/{network_id}`
-// instead.
-//
-// Deprecated: deprecated
-func (r *NetworkService) Update(ctx context.Context, networkID string, params NetworkUpdateParams, opts ...option.RequestOption) (res *Network, err error) {
+// Rename network and/or update network tags in a background task. Returns a task
+// ID and uses a network task lock, so concurrent update/delete task creation fails
+// with conflict. The request will only process the fields that are provided in the
+// request body. Any fields that are not included will remain unchanged. If a
+// provided field already matches the current network state it is skipped, and when
+// no field changes anything no task is created and an empty task list is returned.
+func (r *NetworkService) Update(ctx context.Context, networkID string, params NetworkUpdateParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -98,7 +96,7 @@ func (r *NetworkService) Update(ctx context.Context, networkID string, params Ne
 		err = errors.New("missing required network_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("cloud/v1/networks/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, networkID)
+	path := fmt.Sprintf("cloud/v2/networks/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, networkID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return res, err
 }
