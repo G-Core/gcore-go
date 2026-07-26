@@ -100,7 +100,7 @@ func updateNetwork(client *gcore.Client, networkID string) {
 		Name: param.NewOpt(newName),
 	}
 
-	network, err := client.Cloud.Networks.Update(context.Background(), networkID, params)
+	network, err := client.Cloud.Networks.UpdateAndPoll(context.Background(), networkID, params)
 	if err != nil {
 		log.Fatalf("Error updating network: %v", err)
 	}
