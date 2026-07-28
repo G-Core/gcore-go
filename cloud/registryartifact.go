@@ -149,26 +149,6 @@ func (r *RegistryArtifact) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RegistryArtifactList struct {
-	// Number of objects
-	Count int64 `json:"count" api:"required"`
-	// Objects
-	Results []RegistryArtifact `json:"results" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r RegistryArtifactList) RawJSON() string { return r.JSON.raw }
-func (r *RegistryArtifactList) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type RegistryArtifactListParams struct {
 	ProjectID  param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	RegionID   param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`

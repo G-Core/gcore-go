@@ -210,26 +210,6 @@ const (
 	BaremetalFlavorPriceStatusShow  BaremetalFlavorPriceStatus = "show"
 )
 
-type BaremetalFlavorList struct {
-	// Number of objects
-	Count int64 `json:"count" api:"required"`
-	// Objects
-	Results []BaremetalFlavor `json:"results" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BaremetalFlavorList) RawJSON() string { return r.JSON.raw }
-func (r *BaremetalFlavorList) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type BlackholePort struct {
 	// A date-time string giving the time that the alarm ended. If not yet ended, time
 	// will be given as 0001-01-01T00:00:00Z

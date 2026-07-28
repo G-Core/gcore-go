@@ -17,7 +17,6 @@ Response Types:
 
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#AllowedAddressPairs">AllowedAddressPairs</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BaremetalFlavor">BaremetalFlavor</a>
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BaremetalFlavorList">BaremetalFlavorList</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BlackholePort">BlackholePort</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#Console">Console</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#DDOSProfile">DDOSProfile</a>
@@ -638,7 +637,6 @@ Methods:
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#Registry">Registry</a>
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#RegistryList">RegistryList</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#RegistryTag">RegistryTag</a>
 
 Methods:
@@ -654,7 +652,6 @@ Methods:
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#RegistryRepository">RegistryRepository</a>
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#RegistryRepositoryList">RegistryRepositoryList</a>
 
 Methods:
 
@@ -666,7 +663,6 @@ Methods:
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#RegistryArtifact">RegistryArtifact</a>
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#RegistryArtifactList">RegistryArtifactList</a>
 
 Methods:
 
@@ -685,7 +681,6 @@ Response Types:
 
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#RegistryUser">RegistryUser</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#RegistryUserCreated">RegistryUserCreated</a>
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#RegistryUserList">RegistryUserList</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#RegistryUserRefreshSecretResponse">RegistryUserRefreshSecretResponse</a>
 
 Methods:
@@ -788,7 +783,6 @@ Methods:
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#GPUBaremetalFlavorUnion">GPUBaremetalFlavorUnion</a>
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#GPUBaremetalFlavorList">GPUBaremetalFlavorList</a>
 
 Methods:
 
@@ -837,7 +831,6 @@ Methods:
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#GPUVirtualClusterVolume">GPUVirtualClusterVolume</a>
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#GPUVirtualClusterVolumeList">GPUVirtualClusterVolumeList</a>
 
 Methods:
 
@@ -848,7 +841,6 @@ Methods:
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#GPUVirtualInterface">GPUVirtualInterface</a>
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#GPUVirtualInterfaceList">GPUVirtualInterfaceList</a>
 
 Methods:
 
@@ -859,7 +851,6 @@ Methods:
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#GPUVirtualFlavorUnion">GPUVirtualFlavorUnion</a>
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#GPUVirtualFlavorList">GPUVirtualFlavorList</a>
 
 Methods:
 
@@ -998,7 +989,6 @@ Methods:
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#K8SClusterPool">K8SClusterPool</a>
-- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#K8SClusterPoolList">K8SClusterPoolList</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#K8SClusterPoolQuota">K8SClusterPoolQuota</a>
 
 Methods:

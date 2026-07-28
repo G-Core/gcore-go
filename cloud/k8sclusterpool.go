@@ -326,26 +326,6 @@ func (r *K8SClusterPool) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type K8SClusterPoolList struct {
-	// Number of objects
-	Count int64 `json:"count" api:"required"`
-	// Objects
-	Results []K8SClusterPool `json:"results" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r K8SClusterPoolList) RawJSON() string { return r.JSON.raw }
-func (r *K8SClusterPoolList) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Response schema for K8s cluster quota check.
 //
 // Returns quota fields that are exceeded. Fields are only included when regional

@@ -157,26 +157,6 @@ const (
 	GPUVirtualClusterVolumeStatusUploading        GPUVirtualClusterVolumeStatus = "uploading"
 )
 
-type GPUVirtualClusterVolumeList struct {
-	// Number of objects
-	Count int64 `json:"count" api:"required"`
-	// Objects
-	Results []GPUVirtualClusterVolume `json:"results" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r GPUVirtualClusterVolumeList) RawJSON() string { return r.JSON.raw }
-func (r *GPUVirtualClusterVolumeList) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type GPUVirtualClusterVolumeListParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
