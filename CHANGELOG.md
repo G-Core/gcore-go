@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.54.0](https://github.com/G-Core/gcore-go/compare/v0.53.0...v0.54.0) (2026-07-28)
+
+
+### Features
+
+* **cdn:** add origin shielding locations terraform data source ([c48a173](https://github.com/G-Core/gcore-go/commit/c48a1738fde3c8a4a88929b29197b2c0eff56546))
+* **cloud:** add NetworkService.UpdateAndPoll convenience method ([5fc8da3](https://github.com/G-Core/gcore-go/commit/5fc8da35b4db175a1b399a87eb75ab09d8ce8c01))
+* **cloud:** enable pagination for paginable cloud list endpoints ([cac53cb](https://github.com/G-Core/gcore-go/commit/cac53cb9727ab0ecc4e835899c909d07407e3478))
+* **cloud:** enable Terraform list data sources for paginated cloud resources ([7d6616d](https://github.com/G-Core/gcore-go/commit/7d6616d67c02469b83d673aed144acc45fb77098))
+* **cloud:** migrate network update to v2 endpoint ([1827a9b](https://github.com/G-Core/gcore-go/commit/1827a9b24f88b5487d6197f9679bc96494868e78))
+
+
+### Bug Fixes
+
+* **cloud:** make volume size computed_optional to stop perpetual plan drift ([7807e0b](https://github.com/G-Core/gcore-go/commit/7807e0bc5acda5fdff81b7dfac95025c7a195b73))
+* **cloud:** mark k8s pool security_group_ids computed_optional in Terraform ([e9392a5](https://github.com/G-Core/gcore-go/commit/e9392a5c0783f1279e9114cad0097107624660c5))
+
+
+### Chores
+
+* **cloud:** update cloud OpenAPI spec ([f94654e](https://github.com/G-Core/gcore-go/commit/f94654e95c9b124c641df1c2c766784bc09eb3f8))
+* **dns:** update dns OpenAPI spec ([56d985c](https://github.com/G-Core/gcore-go/commit/56d985cbaa598030ba1fdb63ee255e8b566d2393))
+
 ## [0.53.0](https://github.com/G-Core/gcore-go/compare/v0.52.0...v0.53.0) (2026-07-22)
 
 
