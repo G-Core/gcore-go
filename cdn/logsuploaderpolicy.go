@@ -146,9 +146,16 @@ type LogsUploaderPolicy struct {
 	EscapeSpecialCharacters bool `json:"escape_special_characters"`
 	// Field delimiter for logs.
 	FieldDelimiter string `json:"field_delimiter"`
+	// Per-field output-name remap for exported logs. Maps a canonical Gcore field name
+	// (from `/cdn/logs_uploader/policies/fields`, and must be present in `fields`) to
+	// the field name it should have in the exported logs. Unmapped fields keep their
+	// canonical name. Output names (after remapping) must be unique.
+	FieldRemap map[string]string `json:"field_remap"`
 	// Field separator for logs.
 	FieldSeparator string `json:"field_separator"`
-	// List of fields to include in logs.
+	// List of fields to include in logs. Duplicate names are allowed for plain text
+	// output, but rejected when `format_type` is `json` or a `field_remap` is set
+	// (each field becomes a distinct output key).
 	Fields []string `json:"fields"`
 	// Template for log file name.
 	FileNameTemplate string `json:"file_name_template"`
@@ -201,6 +208,7 @@ type LogsUploaderPolicy struct {
 		Description             respjson.Field
 		EscapeSpecialCharacters respjson.Field
 		FieldDelimiter          respjson.Field
+		FieldRemap              respjson.Field
 		FieldSeparator          respjson.Field
 		Fields                  respjson.Field
 		FileNameTemplate        respjson.Field
@@ -310,7 +318,14 @@ type LogsUploaderPolicyNewParams struct {
 	RotateIntervalMinutes param.Opt[int64] `json:"rotate_interval_minutes,omitzero"`
 	// Threshold in lines to rotate logs.
 	RotateThresholdLines param.Opt[int64] `json:"rotate_threshold_lines,omitzero"`
-	// List of fields to include in logs.
+	// Per-field output-name remap for exported logs. Maps a canonical Gcore field name
+	// (from `/cdn/logs_uploader/policies/fields`, and must be present in `fields`) to
+	// the field name it should have in the exported logs. Unmapped fields keep their
+	// canonical name. Output names (after remapping) must be unique.
+	FieldRemap map[string]string `json:"field_remap,omitzero"`
+	// List of fields to include in logs. Duplicate names are allowed for plain text
+	// output, but rejected when `format_type` is `json` or a `field_remap` is set
+	// (each field becomes a distinct output key).
 	Fields []string `json:"fields,omitzero"`
 	// Format type for logs.
 	//
@@ -395,7 +410,14 @@ type LogsUploaderPolicyUpdateParams struct {
 	RotateIntervalMinutes param.Opt[int64] `json:"rotate_interval_minutes,omitzero"`
 	// Threshold in lines to rotate logs.
 	RotateThresholdLines param.Opt[int64] `json:"rotate_threshold_lines,omitzero"`
-	// List of fields to include in logs.
+	// Per-field output-name remap for exported logs. Maps a canonical Gcore field name
+	// (from `/cdn/logs_uploader/policies/fields`, and must be present in `fields`) to
+	// the field name it should have in the exported logs. Unmapped fields keep their
+	// canonical name. Output names (after remapping) must be unique.
+	FieldRemap map[string]string `json:"field_remap,omitzero"`
+	// List of fields to include in logs. Duplicate names are allowed for plain text
+	// output, but rejected when `format_type` is `json` or a `field_remap` is set
+	// (each field becomes a distinct output key).
 	Fields []string `json:"fields,omitzero"`
 	// Format type for logs.
 	//
@@ -501,7 +523,14 @@ type LogsUploaderPolicyReplaceParams struct {
 	RotateIntervalMinutes param.Opt[int64] `json:"rotate_interval_minutes,omitzero"`
 	// Threshold in lines to rotate logs.
 	RotateThresholdLines param.Opt[int64] `json:"rotate_threshold_lines,omitzero"`
-	// List of fields to include in logs.
+	// Per-field output-name remap for exported logs. Maps a canonical Gcore field name
+	// (from `/cdn/logs_uploader/policies/fields`, and must be present in `fields`) to
+	// the field name it should have in the exported logs. Unmapped fields keep their
+	// canonical name. Output names (after remapping) must be unique.
+	FieldRemap map[string]string `json:"field_remap,omitzero"`
+	// List of fields to include in logs. Duplicate names are allowed for plain text
+	// output, but rejected when `format_type` is `json` or a `field_remap` is set
+	// (each field becomes a distinct output key).
 	Fields []string `json:"fields,omitzero"`
 	// Format type for logs.
 	//
