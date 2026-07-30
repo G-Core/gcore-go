@@ -177,9 +177,9 @@ func (r *NotificationThresholdLastMessageGlobalQuotas) UnmarshalJSON(data []byte
 
 // Inference CPU millicore count limit
 type NotificationThresholdLastMessageGlobalQuotasInferenceCPUMillicoreCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -200,9 +200,9 @@ func (r *NotificationThresholdLastMessageGlobalQuotasInferenceCPUMillicoreCountL
 
 // Inference CPU millicore count usage
 type NotificationThresholdLastMessageGlobalQuotasInferenceCPUMillicoreCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -223,9 +223,9 @@ func (r *NotificationThresholdLastMessageGlobalQuotasInferenceCPUMillicoreCountU
 
 // Inference GPU A100 Count limit
 type NotificationThresholdLastMessageGlobalQuotasInferenceGPUA100CountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -246,9 +246,9 @@ func (r *NotificationThresholdLastMessageGlobalQuotasInferenceGPUA100CountLimit)
 
 // Inference GPU A100 Count usage
 type NotificationThresholdLastMessageGlobalQuotasInferenceGPUA100CountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -269,9 +269,9 @@ func (r *NotificationThresholdLastMessageGlobalQuotasInferenceGPUA100CountUsage)
 
 // Inference GPU H100 Count limit
 type NotificationThresholdLastMessageGlobalQuotasInferenceGPUH100CountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -292,9 +292,9 @@ func (r *NotificationThresholdLastMessageGlobalQuotasInferenceGPUH100CountLimit)
 
 // Inference GPU H100 Count usage
 type NotificationThresholdLastMessageGlobalQuotasInferenceGPUH100CountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -315,9 +315,9 @@ func (r *NotificationThresholdLastMessageGlobalQuotasInferenceGPUH100CountUsage)
 
 // Inference GPU L40s Count limit
 type NotificationThresholdLastMessageGlobalQuotasInferenceGPUL40sCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -338,9 +338,9 @@ func (r *NotificationThresholdLastMessageGlobalQuotasInferenceGPUL40sCountLimit)
 
 // Inference GPU L40s Count usage
 type NotificationThresholdLastMessageGlobalQuotasInferenceGPUL40sCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -361,9 +361,9 @@ func (r *NotificationThresholdLastMessageGlobalQuotasInferenceGPUL40sCountUsage)
 
 // Inference instance count limit
 type NotificationThresholdLastMessageGlobalQuotasInferenceInstanceCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -384,9 +384,9 @@ func (r *NotificationThresholdLastMessageGlobalQuotasInferenceInstanceCountLimit
 
 // Inference instance count usage
 type NotificationThresholdLastMessageGlobalQuotasInferenceInstanceCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -407,9 +407,9 @@ func (r *NotificationThresholdLastMessageGlobalQuotasInferenceInstanceCountUsage
 
 // Public model API keys count limit
 type NotificationThresholdLastMessageGlobalQuotasInferencePublicModelAPIKeyCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -430,9 +430,9 @@ func (r *NotificationThresholdLastMessageGlobalQuotasInferencePublicModelAPIKeyC
 
 // Public model API keys count usage
 type NotificationThresholdLastMessageGlobalQuotasInferencePublicModelAPIKeyCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -453,9 +453,9 @@ func (r *NotificationThresholdLastMessageGlobalQuotasInferencePublicModelAPIKeyC
 
 // SSH Keys Count limit
 type NotificationThresholdLastMessageGlobalQuotasKeypairCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -476,9 +476,9 @@ func (r *NotificationThresholdLastMessageGlobalQuotasKeypairCountLimit) Unmarsha
 
 // SSH Keys Count usage
 type NotificationThresholdLastMessageGlobalQuotasKeypairCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -499,9 +499,9 @@ func (r *NotificationThresholdLastMessageGlobalQuotasKeypairCountUsage) Unmarsha
 
 // Projects Count limit
 type NotificationThresholdLastMessageGlobalQuotasProjectCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -522,9 +522,9 @@ func (r *NotificationThresholdLastMessageGlobalQuotasProjectCountLimit) Unmarsha
 
 // Projects Count usage
 type NotificationThresholdLastMessageGlobalQuotasProjectCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -865,9 +865,9 @@ func (r *NotificationThresholdLastMessageRegionalQuota) UnmarshalJSON(data []byt
 
 // Basic bare metal servers count limit
 type NotificationThresholdLastMessageRegionalQuotaBaremetalBasicCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -888,9 +888,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaBaremetalBasicCountLimit) 
 
 // Basic bare metal servers count usage
 type NotificationThresholdLastMessageRegionalQuotaBaremetalBasicCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -911,9 +911,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaBaremetalBasicCountUsage) 
 
 // Bare metal A100 GPU server count limit
 type NotificationThresholdLastMessageRegionalQuotaBaremetalGPUA100CountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -934,9 +934,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaBaremetalGPUA100CountLimit
 
 // Bare metal A100 GPU server count usage
 type NotificationThresholdLastMessageRegionalQuotaBaremetalGPUA100CountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -957,9 +957,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaBaremetalGPUA100CountUsage
 
 // Bare metal H100 GPU server count limit
 type NotificationThresholdLastMessageRegionalQuotaBaremetalGPUH100CountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -980,9 +980,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaBaremetalGPUH100CountLimit
 
 // Bare metal H100 GPU server count usage
 type NotificationThresholdLastMessageRegionalQuotaBaremetalGPUH100CountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1003,9 +1003,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaBaremetalGPUH100CountUsage
 
 // Bare metal H200 GPU server count limit
 type NotificationThresholdLastMessageRegionalQuotaBaremetalGPUH200CountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1026,9 +1026,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaBaremetalGPUH200CountLimit
 
 // Bare metal H200 GPU server count usage
 type NotificationThresholdLastMessageRegionalQuotaBaremetalGPUH200CountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1049,9 +1049,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaBaremetalGPUH200CountUsage
 
 // Bare metal L40S GPU server count limit
 type NotificationThresholdLastMessageRegionalQuotaBaremetalGPUL40sCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1072,9 +1072,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaBaremetalGPUL40sCountLimit
 
 // Bare metal L40S GPU server count usage
 type NotificationThresholdLastMessageRegionalQuotaBaremetalGPUL40sCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1095,9 +1095,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaBaremetalGPUL40sCountUsage
 
 // High-frequency bare metal servers count limit
 type NotificationThresholdLastMessageRegionalQuotaBaremetalHfCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1118,9 +1118,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaBaremetalHfCountLimit) Unm
 
 // High-frequency bare metal servers count usage
 type NotificationThresholdLastMessageRegionalQuotaBaremetalHfCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1141,9 +1141,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaBaremetalHfCountUsage) Unm
 
 // Infrastructure bare metal servers count limit
 type NotificationThresholdLastMessageRegionalQuotaBaremetalInfrastructureCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1164,9 +1164,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaBaremetalInfrastructureCou
 
 // Infrastructure bare metal servers count usage
 type NotificationThresholdLastMessageRegionalQuotaBaremetalInfrastructureCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1187,9 +1187,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaBaremetalInfrastructureCou
 
 // Bare metal Network Count limit
 type NotificationThresholdLastMessageRegionalQuotaBaremetalNetworkCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1210,9 +1210,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaBaremetalNetworkCountLimit
 
 // Bare metal Network Count usage
 type NotificationThresholdLastMessageRegionalQuotaBaremetalNetworkCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1233,9 +1233,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaBaremetalNetworkCountUsage
 
 // Storage bare metal servers count limit
 type NotificationThresholdLastMessageRegionalQuotaBaremetalStorageCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1256,9 +1256,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaBaremetalStorageCountLimit
 
 // Storage bare metal servers count usage
 type NotificationThresholdLastMessageRegionalQuotaBaremetalStorageCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1279,9 +1279,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaBaremetalStorageCountUsage
 
 // Containers count limit
 type NotificationThresholdLastMessageRegionalQuotaCaasContainerCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1302,9 +1302,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaCaasContainerCountLimit) U
 
 // Containers count usage
 type NotificationThresholdLastMessageRegionalQuotaCaasContainerCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1325,9 +1325,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaCaasContainerCountUsage) U
 
 // mCPU count for containers limit
 type NotificationThresholdLastMessageRegionalQuotaCaasCPUCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1348,9 +1348,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaCaasCPUCountLimit) Unmarsh
 
 // mCPU count for containers usage
 type NotificationThresholdLastMessageRegionalQuotaCaasCPUCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1371,9 +1371,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaCaasCPUCountUsage) Unmarsh
 
 // Containers gpu count limit
 type NotificationThresholdLastMessageRegionalQuotaCaasGPUCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1394,9 +1394,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaCaasGPUCountLimit) Unmarsh
 
 // Containers gpu count usage
 type NotificationThresholdLastMessageRegionalQuotaCaasGPUCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1417,9 +1417,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaCaasGPUCountUsage) Unmarsh
 
 // MiB memory count for containers limit
 type NotificationThresholdLastMessageRegionalQuotaCaasRamSizeLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1440,9 +1440,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaCaasRamSizeLimit) Unmarsha
 
 // MiB memory count for containers usage
 type NotificationThresholdLastMessageRegionalQuotaCaasRamSizeUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1463,9 +1463,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaCaasRamSizeUsage) Unmarsha
 
 // K8s clusters count limit
 type NotificationThresholdLastMessageRegionalQuotaClusterCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1486,9 +1486,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaClusterCountLimit) Unmarsh
 
 // K8s clusters count usage
 type NotificationThresholdLastMessageRegionalQuotaClusterCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1509,9 +1509,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaClusterCountUsage) Unmarsh
 
 // vCPU Count limit
 type NotificationThresholdLastMessageRegionalQuotaCPUCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1532,9 +1532,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaCPUCountLimit) UnmarshalJS
 
 // vCPU Count usage
 type NotificationThresholdLastMessageRegionalQuotaCPUCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1555,9 +1555,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaCPUCountUsage) UnmarshalJS
 
 // DBaaS cluster count limit
 type NotificationThresholdLastMessageRegionalQuotaDbaasPostgresClusterCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1578,9 +1578,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaDbaasPostgresClusterCountL
 
 // DBaaS cluster count usage
 type NotificationThresholdLastMessageRegionalQuotaDbaasPostgresClusterCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1601,9 +1601,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaDbaasPostgresClusterCountU
 
 // External IP Count limit
 type NotificationThresholdLastMessageRegionalQuotaExternalIPCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1624,9 +1624,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaExternalIPCountLimit) Unma
 
 // External IP Count usage
 type NotificationThresholdLastMessageRegionalQuotaExternalIPCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1647,9 +1647,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaExternalIPCountUsage) Unma
 
 // mCPU count for functions limit
 type NotificationThresholdLastMessageRegionalQuotaFaasCPUCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1670,9 +1670,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaFaasCPUCountLimit) Unmarsh
 
 // mCPU count for functions usage
 type NotificationThresholdLastMessageRegionalQuotaFaasCPUCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1693,9 +1693,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaFaasCPUCountUsage) Unmarsh
 
 // Functions count limit
 type NotificationThresholdLastMessageRegionalQuotaFaasFunctionCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1716,9 +1716,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaFaasFunctionCountLimit) Un
 
 // Functions count usage
 type NotificationThresholdLastMessageRegionalQuotaFaasFunctionCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1739,9 +1739,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaFaasFunctionCountUsage) Un
 
 // Functions namespace count limit
 type NotificationThresholdLastMessageRegionalQuotaFaasNamespaceCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1762,9 +1762,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaFaasNamespaceCountLimit) U
 
 // Functions namespace count usage
 type NotificationThresholdLastMessageRegionalQuotaFaasNamespaceCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1785,9 +1785,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaFaasNamespaceCountUsage) U
 
 // MiB memory count for functions limit
 type NotificationThresholdLastMessageRegionalQuotaFaasRamSizeLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1808,9 +1808,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaFaasRamSizeLimit) Unmarsha
 
 // MiB memory count for functions usage
 type NotificationThresholdLastMessageRegionalQuotaFaasRamSizeUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1831,9 +1831,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaFaasRamSizeUsage) Unmarsha
 
 // Firewalls Count limit
 type NotificationThresholdLastMessageRegionalQuotaFirewallCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1854,9 +1854,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaFirewallCountLimit) Unmars
 
 // Firewalls Count usage
 type NotificationThresholdLastMessageRegionalQuotaFirewallCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1877,9 +1877,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaFirewallCountUsage) Unmars
 
 // Floating IP Count limit
 type NotificationThresholdLastMessageRegionalQuotaFloatingCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1900,9 +1900,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaFloatingCountLimit) Unmars
 
 // Floating IP Count usage
 type NotificationThresholdLastMessageRegionalQuotaFloatingCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1923,9 +1923,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaFloatingCountUsage) Unmars
 
 // GPU Count limit
 type NotificationThresholdLastMessageRegionalQuotaGPUCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1946,9 +1946,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaGPUCountLimit) UnmarshalJS
 
 // GPU Count usage
 type NotificationThresholdLastMessageRegionalQuotaGPUCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1969,9 +1969,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaGPUCountUsage) UnmarshalJS
 
 // Virtual A100 GPU card count limit
 type NotificationThresholdLastMessageRegionalQuotaGPUVirtualA100CountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1992,9 +1992,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaGPUVirtualA100CountLimit) 
 
 // Virtual A100 GPU card count usage
 type NotificationThresholdLastMessageRegionalQuotaGPUVirtualA100CountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2015,9 +2015,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaGPUVirtualA100CountUsage) 
 
 // Virtual H100 GPU card count limit
 type NotificationThresholdLastMessageRegionalQuotaGPUVirtualH100CountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2038,9 +2038,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaGPUVirtualH100CountLimit) 
 
 // Virtual H100 GPU card count usage
 type NotificationThresholdLastMessageRegionalQuotaGPUVirtualH100CountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2061,9 +2061,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaGPUVirtualH100CountUsage) 
 
 // Virtual H200 GPU card count limit
 type NotificationThresholdLastMessageRegionalQuotaGPUVirtualH200CountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2084,9 +2084,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaGPUVirtualH200CountLimit) 
 
 // Virtual H200 GPU card count usage
 type NotificationThresholdLastMessageRegionalQuotaGPUVirtualH200CountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2107,9 +2107,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaGPUVirtualH200CountUsage) 
 
 // Virtual L40S GPU card count limit
 type NotificationThresholdLastMessageRegionalQuotaGPUVirtualL40sCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2130,9 +2130,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaGPUVirtualL40sCountLimit) 
 
 // Virtual L40S GPU card count usage
 type NotificationThresholdLastMessageRegionalQuotaGPUVirtualL40sCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2153,9 +2153,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaGPUVirtualL40sCountUsage) 
 
 // Images Count limit
 type NotificationThresholdLastMessageRegionalQuotaImageCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2176,9 +2176,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaImageCountLimit) Unmarshal
 
 // Images Count usage
 type NotificationThresholdLastMessageRegionalQuotaImageCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2199,9 +2199,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaImageCountUsage) Unmarshal
 
 // Images Size, bytes limit
 type NotificationThresholdLastMessageRegionalQuotaImageSizeLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2222,9 +2222,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaImageSizeLimit) UnmarshalJ
 
 // Images Size, bytes usage
 type NotificationThresholdLastMessageRegionalQuotaImageSizeUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2245,9 +2245,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaImageSizeUsage) UnmarshalJ
 
 // IPU Count limit
 type NotificationThresholdLastMessageRegionalQuotaIpuCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2268,9 +2268,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaIpuCountLimit) UnmarshalJS
 
 // IPU Count usage
 type NotificationThresholdLastMessageRegionalQuotaIpuCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2291,9 +2291,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaIpuCountUsage) UnmarshalJS
 
 // LaaS Topics Count limit
 type NotificationThresholdLastMessageRegionalQuotaLaasTopicCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2314,9 +2314,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaLaasTopicCountLimit) Unmar
 
 // LaaS Topics Count usage
 type NotificationThresholdLastMessageRegionalQuotaLaasTopicCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2337,9 +2337,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaLaasTopicCountUsage) Unmar
 
 // Load Balancers Count limit
 type NotificationThresholdLastMessageRegionalQuotaLoadbalancerCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2360,9 +2360,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaLoadbalancerCountLimit) Un
 
 // Load Balancers Count usage
 type NotificationThresholdLastMessageRegionalQuotaLoadbalancerCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2383,9 +2383,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaLoadbalancerCountUsage) Un
 
 // Networks Count limit
 type NotificationThresholdLastMessageRegionalQuotaNetworkCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2406,9 +2406,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaNetworkCountLimit) Unmarsh
 
 // Networks Count usage
 type NotificationThresholdLastMessageRegionalQuotaNetworkCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2429,9 +2429,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaNetworkCountUsage) Unmarsh
 
 // RAM Size, MiB limit
 type NotificationThresholdLastMessageRegionalQuotaRamLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2450,9 +2450,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaRamLimit) UnmarshalJSON(da
 
 // RAM Size, MiB usage
 type NotificationThresholdLastMessageRegionalQuotaRamUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2471,9 +2471,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaRamUsage) UnmarshalJSON(da
 
 // Registries count limit
 type NotificationThresholdLastMessageRegionalQuotaRegistryCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2494,9 +2494,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaRegistryCountLimit) Unmars
 
 // Registries count usage
 type NotificationThresholdLastMessageRegionalQuotaRegistryCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2517,9 +2517,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaRegistryCountUsage) Unmars
 
 // Registries volume usage, GiB limit
 type NotificationThresholdLastMessageRegionalQuotaRegistryStorageLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2540,9 +2540,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaRegistryStorageLimit) Unma
 
 // Registries volume usage, GiB usage
 type NotificationThresholdLastMessageRegionalQuotaRegistryStorageUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2563,9 +2563,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaRegistryStorageUsage) Unma
 
 // Routers Count limit
 type NotificationThresholdLastMessageRegionalQuotaRouterCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2586,9 +2586,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaRouterCountLimit) Unmarsha
 
 // Routers Count usage
 type NotificationThresholdLastMessageRegionalQuotaRouterCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2609,9 +2609,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaRouterCountUsage) Unmarsha
 
 // Secret Count limit
 type NotificationThresholdLastMessageRegionalQuotaSecretCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2632,9 +2632,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaSecretCountLimit) Unmarsha
 
 // Secret Count usage
 type NotificationThresholdLastMessageRegionalQuotaSecretCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2655,9 +2655,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaSecretCountUsage) Unmarsha
 
 // Placement Group Count limit
 type NotificationThresholdLastMessageRegionalQuotaServergroupCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2678,9 +2678,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaServergroupCountLimit) Unm
 
 // Placement Group Count usage
 type NotificationThresholdLastMessageRegionalQuotaServergroupCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2701,9 +2701,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaServergroupCountUsage) Unm
 
 // Shared file system Count limit
 type NotificationThresholdLastMessageRegionalQuotaSfsCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2724,9 +2724,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaSfsCountLimit) UnmarshalJS
 
 // Shared file system Count usage
 type NotificationThresholdLastMessageRegionalQuotaSfsCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2747,9 +2747,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaSfsCountUsage) UnmarshalJS
 
 // Shared file system Size, GiB limit
 type NotificationThresholdLastMessageRegionalQuotaSfsSizeLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2770,9 +2770,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaSfsSizeLimit) UnmarshalJSO
 
 // Shared file system Size, GiB usage
 type NotificationThresholdLastMessageRegionalQuotaSfsSizeUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2793,9 +2793,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaSfsSizeUsage) UnmarshalJSO
 
 // Basic VMs Count limit
 type NotificationThresholdLastMessageRegionalQuotaSharedVmCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2816,9 +2816,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaSharedVmCountLimit) Unmars
 
 // Basic VMs Count usage
 type NotificationThresholdLastMessageRegionalQuotaSharedVmCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2839,9 +2839,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaSharedVmCountUsage) Unmars
 
 // Snapshot Schedules Count limit
 type NotificationThresholdLastMessageRegionalQuotaSnapshotScheduleCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2862,9 +2862,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaSnapshotScheduleCountLimit
 
 // Snapshot Schedules Count usage
 type NotificationThresholdLastMessageRegionalQuotaSnapshotScheduleCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2885,9 +2885,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaSnapshotScheduleCountUsage
 
 // Subnets Count limit
 type NotificationThresholdLastMessageRegionalQuotaSubnetCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2908,9 +2908,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaSubnetCountLimit) Unmarsha
 
 // Subnets Count usage
 type NotificationThresholdLastMessageRegionalQuotaSubnetCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2931,9 +2931,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaSubnetCountUsage) Unmarsha
 
 // Instances Dedicated Count limit
 type NotificationThresholdLastMessageRegionalQuotaVmCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2954,9 +2954,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaVmCountLimit) UnmarshalJSO
 
 // Instances Dedicated Count usage
 type NotificationThresholdLastMessageRegionalQuotaVmCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2977,9 +2977,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaVmCountUsage) UnmarshalJSO
 
 // Volumes Count limit
 type NotificationThresholdLastMessageRegionalQuotaVolumeCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -3000,9 +3000,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaVolumeCountLimit) Unmarsha
 
 // Volumes Count usage
 type NotificationThresholdLastMessageRegionalQuotaVolumeCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -3023,9 +3023,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaVolumeCountUsage) Unmarsha
 
 // Volumes Size, GiB limit
 type NotificationThresholdLastMessageRegionalQuotaVolumeSizeLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -3046,9 +3046,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaVolumeSizeLimit) Unmarshal
 
 // Volumes Size, GiB usage
 type NotificationThresholdLastMessageRegionalQuotaVolumeSizeUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -3069,9 +3069,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaVolumeSizeUsage) Unmarshal
 
 // Snapshots Count limit
 type NotificationThresholdLastMessageRegionalQuotaVolumeSnapshotsCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -3092,9 +3092,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaVolumeSnapshotsCountLimit)
 
 // Snapshots Count usage
 type NotificationThresholdLastMessageRegionalQuotaVolumeSnapshotsCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -3115,9 +3115,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaVolumeSnapshotsCountUsage)
 
 // Snapshots Size, GiB limit
 type NotificationThresholdLastMessageRegionalQuotaVolumeSnapshotsSizeLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -3138,9 +3138,9 @@ func (r *NotificationThresholdLastMessageRegionalQuotaVolumeSnapshotsSizeLimit) 
 
 // Snapshots Size, GiB usage
 type NotificationThresholdLastMessageRegionalQuotaVolumeSnapshotsSizeUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -3245,9 +3245,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotas) Unmarsha
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceCPUMillicoreCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3264,9 +3264,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceC
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceCPUMillicoreCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3283,9 +3283,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceC
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceGPUA100CountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3302,9 +3302,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceG
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceGPUA100CountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3321,9 +3321,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceG
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceGPUH100CountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3340,9 +3340,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceG
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceGPUH100CountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3359,9 +3359,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceG
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceGPUL40sCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3378,9 +3378,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceG
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceGPUL40sCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3397,9 +3397,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceG
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceInstanceCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3416,9 +3416,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceI
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceInstanceCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3435,9 +3435,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceI
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferencePublicModelAPIKeyCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3454,9 +3454,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceP
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferencePublicModelAPIKeyCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3473,9 +3473,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasInferenceP
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasKeypairCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3492,9 +3492,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasKeypairCou
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasKeypairCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3511,9 +3511,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasKeypairCou
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasProjectCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3530,9 +3530,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasProjectCou
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageGlobalQuotasProjectCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3766,9 +3766,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuota) Unmarsh
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalBasicCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3785,9 +3785,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetal
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalBasicCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3804,9 +3804,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetal
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalGPUA100CountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3823,9 +3823,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetal
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalGPUA100CountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3842,9 +3842,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetal
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalGPUH100CountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3861,9 +3861,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetal
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalGPUH100CountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3880,9 +3880,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetal
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalGPUH200CountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3899,9 +3899,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetal
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalGPUH200CountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3918,9 +3918,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetal
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalGPUL40sCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3937,9 +3937,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetal
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalGPUL40sCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3956,9 +3956,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetal
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalHfCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3975,9 +3975,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetal
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalHfCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -3994,9 +3994,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetal
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalInfrastructureCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4013,9 +4013,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetal
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalInfrastructureCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4032,9 +4032,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetal
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalNetworkCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4051,9 +4051,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetal
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalNetworkCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4070,9 +4070,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetal
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalStorageCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4089,9 +4089,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetal
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalStorageCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4108,9 +4108,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetal
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaCaasContainerCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4127,9 +4127,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaCaasConta
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaCaasContainerCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4146,9 +4146,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaCaasConta
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaCaasCPUCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4165,9 +4165,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaCaasCPUCo
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaCaasCPUCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4184,9 +4184,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaCaasCPUCo
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaCaasGPUCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4203,9 +4203,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaCaasGPUCo
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaCaasGPUCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4222,9 +4222,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaCaasGPUCo
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaCaasRamSizeLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4241,9 +4241,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaCaasRamSi
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaCaasRamSizeUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4260,9 +4260,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaCaasRamSi
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaClusterCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4279,9 +4279,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaClusterCo
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaClusterCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4298,9 +4298,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaClusterCo
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaCPUCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4317,9 +4317,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaCPUCountL
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaCPUCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4336,9 +4336,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaCPUCountU
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaDbaasPostgresClusterCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4355,9 +4355,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaDbaasPost
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaDbaasPostgresClusterCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4374,9 +4374,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaDbaasPost
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaExternalIPCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4393,9 +4393,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaExternalI
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaExternalIPCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4412,9 +4412,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaExternalI
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaFaasCPUCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4431,9 +4431,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaFaasCPUCo
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaFaasCPUCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4450,9 +4450,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaFaasCPUCo
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaFaasFunctionCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4469,9 +4469,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaFaasFunct
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaFaasFunctionCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4488,9 +4488,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaFaasFunct
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaFaasNamespaceCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4507,9 +4507,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaFaasNames
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaFaasNamespaceCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4526,9 +4526,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaFaasNames
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaFaasRamSizeLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4545,9 +4545,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaFaasRamSi
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaFaasRamSizeUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4564,9 +4564,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaFaasRamSi
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaFirewallCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4583,9 +4583,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaFirewallC
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaFirewallCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4602,9 +4602,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaFirewallC
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaFloatingCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4621,9 +4621,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaFloatingC
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaFloatingCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4640,9 +4640,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaFloatingC
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaGPUCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4659,9 +4659,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaGPUCountL
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaGPUCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4678,9 +4678,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaGPUCountU
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaGPUVirtualA100CountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4697,9 +4697,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaGPUVirtua
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaGPUVirtualA100CountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4716,9 +4716,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaGPUVirtua
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaGPUVirtualH100CountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4735,9 +4735,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaGPUVirtua
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaGPUVirtualH100CountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4754,9 +4754,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaGPUVirtua
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaGPUVirtualH200CountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4773,9 +4773,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaGPUVirtua
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaGPUVirtualH200CountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4792,9 +4792,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaGPUVirtua
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaGPUVirtualL40sCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4811,9 +4811,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaGPUVirtua
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaGPUVirtualL40sCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4830,9 +4830,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaGPUVirtua
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaImageCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4849,9 +4849,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaImageCoun
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaImageCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4868,9 +4868,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaImageCoun
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaImageSizeLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4887,9 +4887,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaImageSize
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaImageSizeUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4906,9 +4906,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaImageSize
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaIpuCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4925,9 +4925,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaIpuCountL
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaIpuCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4944,9 +4944,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaIpuCountU
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaLaasTopicCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4963,9 +4963,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaLaasTopic
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaLaasTopicCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -4982,9 +4982,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaLaasTopic
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaLoadbalancerCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5001,9 +5001,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaLoadbalan
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaLoadbalancerCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5020,9 +5020,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaLoadbalan
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaNetworkCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5039,9 +5039,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaNetworkCo
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaNetworkCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5058,9 +5058,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaNetworkCo
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaRamLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5077,9 +5077,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaRamLimit)
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaRamUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5096,9 +5096,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaRamUsage)
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaRegistryCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5115,9 +5115,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaRegistryC
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaRegistryCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5134,9 +5134,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaRegistryC
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaRegistryStorageLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5153,9 +5153,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaRegistryS
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaRegistryStorageUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5172,9 +5172,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaRegistryS
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaRouterCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5191,9 +5191,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaRouterCou
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaRouterCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5210,9 +5210,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaRouterCou
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSecretCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5229,9 +5229,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSecretCou
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSecretCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5248,9 +5248,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSecretCou
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaServergroupCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5267,9 +5267,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaServergro
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaServergroupCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5286,9 +5286,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaServergro
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSfsCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5305,9 +5305,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSfsCountL
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSfsCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5324,9 +5324,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSfsCountU
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSfsSizeLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5343,9 +5343,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSfsSizeLi
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSfsSizeUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5362,9 +5362,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSfsSizeUs
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSharedVmCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5381,9 +5381,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSharedVmC
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSharedVmCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5400,9 +5400,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSharedVmC
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSnapshotScheduleCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5419,9 +5419,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSnapshotS
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSnapshotScheduleCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5438,9 +5438,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSnapshotS
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSubnetCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5457,9 +5457,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSubnetCou
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSubnetCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5476,9 +5476,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSubnetCou
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaVmCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5495,9 +5495,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaVmCountLi
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaVmCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5514,9 +5514,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaVmCountUs
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaVolumeCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5533,9 +5533,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaVolumeCou
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaVolumeCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5552,9 +5552,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaVolumeCou
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaVolumeSizeLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5571,9 +5571,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaVolumeSiz
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaVolumeSizeUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5590,9 +5590,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaVolumeSiz
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaVolumeSnapshotsCountLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5609,9 +5609,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaVolumeSna
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaVolumeSnapshotsCountUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5628,9 +5628,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaVolumeSna
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaVolumeSnapshotsSizeLimit struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }
@@ -5647,9 +5647,9 @@ func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaVolumeSna
 //
 // The properties Limit, Usage are required.
 type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaVolumeSnapshotsSizeUsage struct {
-	// Сurrent quota limit
+	// Current quota limit
 	Limit int64 `json:"limit" api:"required"`
-	// Сurrent amount of resource used
+	// Current amount of resource used
 	Usage int64 `json:"usage" api:"required"`
 	paramObj
 }

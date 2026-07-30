@@ -266,11 +266,11 @@ type FileShare struct {
 	TaskID string `json:"task_id" api:"required" format:"uuid4"`
 	// File share type name
 	//
-	// Any of "standard", "vast".
+	// Any of "ddn", "standard", "vast".
 	TypeName FileShareTypeName `json:"type_name" api:"required"`
 	// Deprecated. Use `type_name` instead. File share disk type
 	//
-	// Any of "default_share_type", "vast_share_type".
+	// Any of "ddn_share_type", "default_share_type", "vast_share_type".
 	//
 	// Deprecated: deprecated
 	VolumeType FileShareVolumeType `json:"volume_type" api:"required"`
@@ -309,14 +309,21 @@ func (r *FileShare) UnmarshalJSON(data []byte) error {
 }
 
 // FileShareShareSettingsUnion contains all possible properties and values from
-// [FileShareShareSettingsStandard], [FileShareShareSettingsVast].
+// [FileShareShareSettingsStandard], [FileShareShareSettingsDdn],
+// [FileShareShareSettingsVast].
 //
 // Use the [FileShareShareSettingsUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type FileShareShareSettingsUnion struct {
-	// Any of "standard", "vast".
+	// Any of "standard", "ddn", "vast".
 	TypeName string `json:"type_name"`
+	// This field is from variant [FileShareShareSettingsDdn].
+	Gid int64 `json:"gid"`
+	// This field is from variant [FileShareShareSettingsDdn].
+	Projid int64 `json:"projid"`
+	// This field is from variant [FileShareShareSettingsDdn].
+	Uid int64 `json:"uid"`
 	// This field is from variant [FileShareShareSettingsVast].
 	AllowedCharacters string `json:"allowed_characters"`
 	// This field is from variant [FileShareShareSettingsVast].
@@ -325,6 +332,9 @@ type FileShareShareSettingsUnion struct {
 	RootSquash bool `json:"root_squash"`
 	JSON       struct {
 		TypeName          respjson.Field
+		Gid               respjson.Field
+		Projid            respjson.Field
+		Uid               respjson.Field
 		AllowedCharacters respjson.Field
 		PathLength        respjson.Field
 		RootSquash        respjson.Field
@@ -340,12 +350,14 @@ type anyFileShareShareSettings interface {
 }
 
 func (FileShareShareSettingsStandard) implFileShareShareSettingsUnion() {}
+func (FileShareShareSettingsDdn) implFileShareShareSettingsUnion()      {}
 func (FileShareShareSettingsVast) implFileShareShareSettingsUnion()     {}
 
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := FileShareShareSettingsUnion.AsAny().(type) {
 //	case cloud.FileShareShareSettingsStandard:
+//	case cloud.FileShareShareSettingsDdn:
 //	case cloud.FileShareShareSettingsVast:
 //	default:
 //	  fmt.Errorf("no variant present")
@@ -354,6 +366,8 @@ func (u FileShareShareSettingsUnion) AsAny() anyFileShareShareSettings {
 	switch u.TypeName {
 	case "standard":
 		return u.AsStandard()
+	case "ddn":
+		return u.AsDdn()
 	case "vast":
 		return u.AsVast()
 	}
@@ -361,6 +375,11 @@ func (u FileShareShareSettingsUnion) AsAny() anyFileShareShareSettings {
 }
 
 func (u FileShareShareSettingsUnion) AsStandard() (v FileShareShareSettingsStandard) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u FileShareShareSettingsUnion) AsDdn() (v FileShareShareSettingsDdn) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -391,6 +410,32 @@ type FileShareShareSettingsStandard struct {
 // Returns the unmodified JSON received from the API
 func (r FileShareShareSettingsStandard) RawJSON() string { return r.JSON.raw }
 func (r *FileShareShareSettingsStandard) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type FileShareShareSettingsDdn struct {
+	// Group ID being owner of the share
+	Gid int64 `json:"gid" api:"required"`
+	// Exascaler project ID
+	Projid int64 `json:"projid" api:"required"`
+	// DDN file share type
+	TypeName constant.Ddn `json:"type_name" default:"ddn"`
+	// User ID being owner of the share
+	Uid int64 `json:"uid" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Gid         respjson.Field
+		Projid      respjson.Field
+		TypeName    respjson.Field
+		Uid         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileShareShareSettingsDdn) RawJSON() string { return r.JSON.raw }
+func (r *FileShareShareSettingsDdn) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -463,6 +508,7 @@ const (
 type FileShareTypeName string
 
 const (
+	FileShareTypeNameDdn      FileShareTypeName = "ddn"
 	FileShareTypeNameStandard FileShareTypeName = "standard"
 	FileShareTypeNameVast     FileShareTypeName = "vast"
 )
@@ -471,6 +517,7 @@ const (
 type FileShareVolumeType string
 
 const (
+	FileShareVolumeTypeDdnShareType     FileShareVolumeType = "ddn_share_type"
 	FileShareVolumeTypeDefaultShareType FileShareVolumeType = "default_share_type"
 	FileShareVolumeTypeVastShareType    FileShareVolumeType = "vast_share_type"
 )
@@ -488,13 +535,15 @@ type FileShareNewParams struct {
 	// This field is a request body variant, only one variant field can be set.
 	OfCreateStandardFileShareSerializer *FileShareNewParamsBodyCreateStandardFileShareSerializer `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
+	OfCreateDdnFileShareSerializer *FileShareNewParamsBodyCreateDdnFileShareSerializer `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
 	OfCreateVastFileShareSerializer *FileShareNewParamsBodyCreateVastFileShareSerializer `json:",inline"`
 
 	paramObj
 }
 
 func (u FileShareNewParams) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfCreateStandardFileShareSerializer, u.OfCreateVastFileShareSerializer)
+	return param.MarshalUnion(u, u.OfCreateStandardFileShareSerializer, u.OfCreateDdnFileShareSerializer, u.OfCreateVastFileShareSerializer)
 }
 func (r *FileShareNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
@@ -593,6 +642,72 @@ func init() {
 	apijson.RegisterFieldValidator[FileShareNewParamsBodyCreateStandardFileShareSerializerAccess](
 		"access_mode", "ro", "rw",
 	)
+}
+
+// The properties Name, Protocol, Size are required.
+type FileShareNewParamsBodyCreateDdnFileShareSerializer struct {
+	// File share name
+	Name string `json:"name" api:"required"`
+	// File share size in GiB
+	Size int64 `json:"size" api:"required"`
+	// Configuration settings for the share
+	ShareSettings FileShareNewParamsBodyCreateDdnFileShareSerializerShareSettings `json:"share_settings,omitzero"`
+	// Key-value tags to associate with the resource. A tag is a key-value pair that
+	// can be associated with a resource, enabling efficient filtering and grouping for
+	// better organization and management. Both tag keys and values have a maximum
+	// length of 255 characters. Some tags are read-only and cannot be modified by the
+	// user. Tags are also integrated with cost reports, allowing cost data to be
+	// filtered based on tag keys or values.
+	Tags map[string]string `json:"tags,omitzero"`
+	// DDN file share type
+	//
+	// Any of "ddn".
+	TypeName string `json:"type_name,omitzero"`
+	// Deprecated. Use `type_name` instead.
+	//
+	// Any of "ddn_share_type".
+	//
+	// Deprecated: deprecated
+	VolumeType string `json:"volume_type,omitzero"`
+	// File share protocol
+	//
+	// This field can be elided, and will marshal its zero value as "LUSTRE".
+	Protocol constant.Lustre `json:"protocol" default:"LUSTRE"`
+	paramObj
+}
+
+func (r FileShareNewParamsBodyCreateDdnFileShareSerializer) MarshalJSON() (data []byte, err error) {
+	type shadow FileShareNewParamsBodyCreateDdnFileShareSerializer
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *FileShareNewParamsBodyCreateDdnFileShareSerializer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[FileShareNewParamsBodyCreateDdnFileShareSerializer](
+		"type_name", "ddn",
+	)
+	apijson.RegisterFieldValidator[FileShareNewParamsBodyCreateDdnFileShareSerializer](
+		"volume_type", "ddn_share_type",
+	)
+}
+
+// Configuration settings for the share
+type FileShareNewParamsBodyCreateDdnFileShareSerializerShareSettings struct {
+	// When set created file share will be owned by user with given GID
+	Gid param.Opt[int64] `json:"gid,omitzero"`
+	// When set created file share will be owned by group with given UID
+	Uid param.Opt[int64] `json:"uid,omitzero"`
+	paramObj
+}
+
+func (r FileShareNewParamsBodyCreateDdnFileShareSerializerShareSettings) MarshalJSON() (data []byte, err error) {
+	type shadow FileShareNewParamsBodyCreateDdnFileShareSerializerShareSettings
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *FileShareNewParamsBodyCreateDdnFileShareSerializerShareSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties Name, Protocol, Size are required.
@@ -702,7 +817,7 @@ type FileShareUpdateParams struct {
 	// Name
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Configuration settings for the share
-	ShareSettings FileShareUpdateParamsShareSettings `json:"share_settings,omitzero"`
+	ShareSettings FileShareUpdateParamsShareSettingsUnion `json:"share_settings,omitzero"`
 	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
 	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
 	// Unspecified tags remain unchanged. Read-only tags are always preserved and
@@ -736,8 +851,48 @@ func (r *FileShareUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Configuration settings for the share
-type FileShareUpdateParamsShareSettings struct {
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type FileShareUpdateParamsShareSettingsUnion struct {
+	OfDdnFileShareSettingsInputSerializer  *FileShareUpdateParamsShareSettingsDdnFileShareSettingsInputSerializer  `json:",omitzero,inline"`
+	OfVastFileShareSettingsInputSerializer *FileShareUpdateParamsShareSettingsVastFileShareSettingsInputSerializer `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u FileShareUpdateParamsShareSettingsUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfDdnFileShareSettingsInputSerializer, u.OfVastFileShareSettingsInputSerializer)
+}
+func (u *FileShareUpdateParamsShareSettingsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *FileShareUpdateParamsShareSettingsUnion) asAny() any {
+	if !param.IsOmitted(u.OfDdnFileShareSettingsInputSerializer) {
+		return u.OfDdnFileShareSettingsInputSerializer
+	} else if !param.IsOmitted(u.OfVastFileShareSettingsInputSerializer) {
+		return u.OfVastFileShareSettingsInputSerializer
+	}
+	return nil
+}
+
+type FileShareUpdateParamsShareSettingsDdnFileShareSettingsInputSerializer struct {
+	// When set created file share will be owned by user with given GID
+	Gid param.Opt[int64] `json:"gid,omitzero"`
+	// When set created file share will be owned by group with given UID
+	Uid param.Opt[int64] `json:"uid,omitzero"`
+	paramObj
+}
+
+func (r FileShareUpdateParamsShareSettingsDdnFileShareSettingsInputSerializer) MarshalJSON() (data []byte, err error) {
+	type shadow FileShareUpdateParamsShareSettingsDdnFileShareSettingsInputSerializer
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *FileShareUpdateParamsShareSettingsDdnFileShareSettingsInputSerializer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type FileShareUpdateParamsShareSettingsVastFileShareSettingsInputSerializer struct {
 	// Enables or disables root squash for NFS clients.
 	//
 	//   - If `true` (default), root squash is enabled: the root user is mapped to nobody
@@ -769,19 +924,19 @@ type FileShareUpdateParamsShareSettings struct {
 	paramObj
 }
 
-func (r FileShareUpdateParamsShareSettings) MarshalJSON() (data []byte, err error) {
-	type shadow FileShareUpdateParamsShareSettings
+func (r FileShareUpdateParamsShareSettingsVastFileShareSettingsInputSerializer) MarshalJSON() (data []byte, err error) {
+	type shadow FileShareUpdateParamsShareSettingsVastFileShareSettingsInputSerializer
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileShareUpdateParamsShareSettings) UnmarshalJSON(data []byte) error {
+func (r *FileShareUpdateParamsShareSettingsVastFileShareSettingsInputSerializer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[FileShareUpdateParamsShareSettings](
+	apijson.RegisterFieldValidator[FileShareUpdateParamsShareSettingsVastFileShareSettingsInputSerializer](
 		"allowed_characters", "LCD", "NPL",
 	)
-	apijson.RegisterFieldValidator[FileShareUpdateParamsShareSettings](
+	apijson.RegisterFieldValidator[FileShareUpdateParamsShareSettingsVastFileShareSettingsInputSerializer](
 		"path_length", "LCD", "NPL",
 	)
 }
@@ -800,7 +955,7 @@ type FileShareListParams struct {
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// File share type name
 	//
-	// Any of "standard", "vast".
+	// Any of "ddn", "standard", "vast".
 	TypeName FileShareListParamsTypeName `query:"type_name,omitzero" json:"-"`
 	paramObj
 }
@@ -817,6 +972,7 @@ func (r FileShareListParams) URLQuery() (v url.Values, err error) {
 type FileShareListParamsTypeName string
 
 const (
+	FileShareListParamsTypeNameDdn      FileShareListParamsTypeName = "ddn"
 	FileShareListParamsTypeNameStandard FileShareListParamsTypeName = "standard"
 	FileShareListParamsTypeNameVast     FileShareListParamsTypeName = "vast"
 )

@@ -304,6 +304,9 @@ type GPUBaremetalClusterServer struct {
 	TaskID string `json:"task_id" api:"required" format:"uuid4"`
 	// Server update date and time
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
+	// True if user data (cloud-init) was applied when this server was last created or
+	// rebuilt.
+	UserDataApplied bool `json:"user_data_applied" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                     respjson.Field
@@ -320,6 +323,7 @@ type GPUBaremetalClusterServer struct {
 		Tags                   respjson.Field
 		TaskID                 respjson.Field
 		UpdatedAt              respjson.Field
+		UserDataApplied        respjson.Field
 		ExtraFields            map[string]respjson.Field
 		raw                    string
 	} `json:"-"`
@@ -788,11 +792,13 @@ const (
 )
 
 type GPUBaremetalClusterServerDeleteParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	ClusterID string           `path:"cluster_id" api:"required" json:"-"`
-	// Set False if you do not want to delete assigned floating IPs. By default, it's
-	// True.
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// GPU cluster ID
+	ClusterID string `path:"cluster_id" api:"required" format:"uuid4" json:"-"`
+	// Set False if you do not want to delete assigned floating IPs
 	DeleteFloatings param.Opt[bool] `query:"delete_floatings,omitzero" json:"-"`
 	paramObj
 }

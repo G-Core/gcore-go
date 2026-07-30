@@ -67,11 +67,11 @@ func TestGPUBaremetalClusterServerDeleteWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.GPUBaremetal.Clusters.Servers.Delete(
 		context.TODO(),
-		"instance_id",
+		"faab46fd-26fd-4321-9876-abcdef012345",
 		cloud.GPUBaremetalClusterServerDeleteParams{
-			ProjectID:       gcore.Int(0),
-			RegionID:        gcore.Int(0),
-			ClusterID:       "cluster_id",
+			ProjectID:       gcore.Int(1),
+			RegionID:        gcore.Int(1),
+			ClusterID:       "faab46fd-26fd-4321-9876-abcdef012345",
 			DeleteFloatings: gcore.Bool(true),
 		},
 	)

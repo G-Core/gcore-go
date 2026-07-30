@@ -280,7 +280,7 @@ type LoadBalancerL7PolicyRuleDeleteParams struct {
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// L7 policy ID
-	L7policyID string `path:"l7policy_id" api:"required" json:"-"`
+	L7policyID string `path:"l7policy_id" api:"required" format:"uuid4" json:"-"`
 	paramObj
 }
 
@@ -290,7 +290,7 @@ type LoadBalancerL7PolicyRuleGetParams struct {
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// L7 policy ID
-	L7policyID string `path:"l7policy_id" api:"required" json:"-"`
+	L7policyID string `path:"l7policy_id" api:"required" format:"uuid4" json:"-"`
 	paramObj
 }
 
@@ -300,7 +300,7 @@ type LoadBalancerL7PolicyRuleReplaceParams struct {
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// L7 policy ID
-	L7policyID string `path:"l7policy_id" api:"required" json:"-"`
+	L7policyID string `path:"l7policy_id" api:"required" format:"uuid4" json:"-"`
 	// When true the logic of the rule is inverted.
 	Invert param.Opt[bool] `json:"invert,omitzero"`
 	// The key to use for the comparison. Required for COOKIE and HEADER `type` only.

@@ -37,11 +37,11 @@ func NewIPRangeService(opts ...option.RequestOption) (r IPRangeService) {
 //
 // Typical reasons to call this endpoint:
 //
-//   - Host-file delivery workflows – You upload images or other assets to the Cloud
+//   - Host-file delivery workflows - You upload images or other assets to the Cloud
 //     and share a download link that points to your own infrastructure. Add these
 //     egress prefixes to your firewall or object-storage allow-list so our clients
 //     can fetch the files without being blocked.
-//   - Push integrations / webhooks – You subscribe to the user-actions event log and
+//   - Push integrations / webhooks - You subscribe to the user-actions event log and
 //     Cloud pushes events to your listener endpoint. Whitelisting the egress IP
 //     ranges lets you accept only traffic that originates from us.
 //   - General security controls, audit tooling, or SIEM rules that need to verify

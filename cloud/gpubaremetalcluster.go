@@ -1718,8 +1718,10 @@ type GPUBaremetalClusterRebuildParams struct {
 }
 
 type GPUBaremetalClusterResizeParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Resized (total) number of instances
 	InstancesCount int64 `json:"instances_count" api:"required"`
 	paramObj

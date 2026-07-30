@@ -352,10 +352,10 @@ func TestGPUBaremetalClusterResize(t *testing.T) {
 	)
 	_, err := client.Cloud.GPUBaremetal.Clusters.Resize(
 		context.TODO(),
-		"cluster_id",
+		"faab46fd-26fd-4321-9876-abcdef012345",
 		cloud.GPUBaremetalClusterResizeParams{
-			ProjectID:      gcore.Int(0),
-			RegionID:       gcore.Int(0),
+			ProjectID:      gcore.Int(1),
+			RegionID:       gcore.Int(1),
 			InstancesCount: 1,
 		},
 	)

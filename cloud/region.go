@@ -111,7 +111,7 @@ type Region struct {
 	ExternalNetworkID string `json:"external_network_id" api:"required"`
 	// List of available file share types
 	//
-	// Any of "standard", "vast".
+	// Any of "ddn", "standard", "vast".
 	FileShareTypes []string `json:"file_share_types" api:"required"`
 	// Region has AI capability
 	HasAI bool `json:"has_ai" api:"required"`

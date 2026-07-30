@@ -146,6 +146,9 @@ type GPUVirtualClusterServer struct {
 	TaskID string `json:"task_id" api:"required" format:"uuid4"`
 	// Server update date and time
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
+	// True if user data (cloud-init) was applied when this server was last created or
+	// rebuilt.
+	UserDataApplied bool `json:"user_data_applied" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                     respjson.Field
@@ -162,6 +165,7 @@ type GPUVirtualClusterServer struct {
 		Tags                   respjson.Field
 		TaskID                 respjson.Field
 		UpdatedAt              respjson.Field
+		UserDataApplied        respjson.Field
 		ExtraFields            map[string]respjson.Field
 		raw                    string
 	} `json:"-"`

@@ -32,6 +32,7 @@ type DbaasPostgreSQLCPU string              // Always "dbaas_postgresql_cpu"
 type DbaasPostgreSQLMemory string           // Always "dbaas_postgresql_memory"
 type DbaasPostgreSQLPublicNetwork string    // Always "dbaas_postgresql_public_network"
 type DbaasPostgreSQLVolume string           // Always "dbaas_postgresql_volume"
+type Ddn string                             // Always "ddn"
 type EgressTraffic string                   // Always "egress_traffic"
 type Existing string                        // Always "existing"
 type ExistingVolume string                  // Always "existing-volume"
@@ -55,6 +56,7 @@ type Instance string                        // Always "instance"
 type IPAddress string                       // Always "ip_address"
 type LoadBalancer string                    // Always "load_balancer"
 type LogIndex string                        // Always "log_index"
+type Lustre string                          // Always "LUSTRE"
 type Minutes string                         // Always "minutes"
 type Mls string                             // Always "MLS"
 type New string                             // Always "new"
@@ -95,6 +97,7 @@ func (c DbaasPostgreSQLPublicNetwork) Default() DbaasPostgreSQLPublicNetwork {
 	return "dbaas_postgresql_public_network"
 }
 func (c DbaasPostgreSQLVolume) Default() DbaasPostgreSQLVolume { return "dbaas_postgresql_volume" }
+func (c Ddn) Default() Ddn                                     { return "ddn" }
 func (c EgressTraffic) Default() EgressTraffic                 { return "egress_traffic" }
 func (c Existing) Default() Existing                           { return "existing" }
 func (c ExistingVolume) Default() ExistingVolume               { return "existing-volume" }
@@ -118,6 +121,7 @@ func (c Instance) Default() Instance                           { return "instanc
 func (c IPAddress) Default() IPAddress                         { return "ip_address" }
 func (c LoadBalancer) Default() LoadBalancer                   { return "load_balancer" }
 func (c LogIndex) Default() LogIndex                           { return "log_index" }
+func (c Lustre) Default() Lustre                               { return "LUSTRE" }
 func (c Minutes) Default() Minutes                             { return "minutes" }
 func (c Mls) Default() Mls                                     { return "MLS" }
 func (c New) Default() New                                     { return "new" }
@@ -154,6 +158,7 @@ func (c DbaasPostgreSQLCPU) MarshalJSON() ([]byte, error)              { return 
 func (c DbaasPostgreSQLMemory) MarshalJSON() ([]byte, error)           { return marshalString(c) }
 func (c DbaasPostgreSQLPublicNetwork) MarshalJSON() ([]byte, error)    { return marshalString(c) }
 func (c DbaasPostgreSQLVolume) MarshalJSON() ([]byte, error)           { return marshalString(c) }
+func (c Ddn) MarshalJSON() ([]byte, error)                             { return marshalString(c) }
 func (c EgressTraffic) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
 func (c Existing) MarshalJSON() ([]byte, error)                        { return marshalString(c) }
 func (c ExistingVolume) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
@@ -177,6 +182,7 @@ func (c Instance) MarshalJSON() ([]byte, error)                        { return 
 func (c IPAddress) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
 func (c LoadBalancer) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
 func (c LogIndex) MarshalJSON() ([]byte, error)                        { return marshalString(c) }
+func (c Lustre) MarshalJSON() ([]byte, error)                          { return marshalString(c) }
 func (c Minutes) MarshalJSON() ([]byte, error)                         { return marshalString(c) }
 func (c Mls) MarshalJSON() ([]byte, error)                             { return marshalString(c) }
 func (c New) MarshalJSON() ([]byte, error)                             { return marshalString(c) }
