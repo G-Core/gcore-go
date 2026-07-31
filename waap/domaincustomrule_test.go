@@ -111,16 +111,6 @@ func TestDomainCustomRuleNewWithOptionalParams(t *testing.T) {
 					IPs:            []string{"string"},
 					UserDefinedTag: gcore.String("SQfNklznVLBBpr"),
 				},
-				ResponseHeader: waap.DomainCustomRuleNewParamsConditionResponseHeader{
-					Header:    "header",
-					Value:     "value",
-					MatchType: "Exact",
-					Negation:  gcore.Bool(true),
-				},
-				ResponseHeaderExists: waap.DomainCustomRuleNewParamsConditionResponseHeaderExists{
-					Header:   "header",
-					Negation: gcore.Bool(true),
-				},
 				SessionRequestCount: waap.DomainCustomRuleNewParamsConditionSessionRequestCount{
 					RequestCount: 1,
 					Negation:     gcore.Bool(true),
@@ -255,16 +245,6 @@ func TestDomainCustomRuleUpdateWithOptionalParams(t *testing.T) {
 					HTTPMethods:    []string{"CONNECT"},
 					IPs:            []string{"string"},
 					UserDefinedTag: gcore.String("SQfNklznVLBBpr"),
-				},
-				ResponseHeader: waap.DomainCustomRuleUpdateParamsConditionResponseHeader{
-					Header:    "header",
-					Value:     "value",
-					MatchType: "Exact",
-					Negation:  gcore.Bool(true),
-				},
-				ResponseHeaderExists: waap.DomainCustomRuleUpdateParamsConditionResponseHeaderExists{
-					Header:   "header",
-					Negation: gcore.Bool(true),
 				},
 				SessionRequestCount: waap.DomainCustomRuleUpdateParamsConditionSessionRequestCount{
 					RequestCount: 1,

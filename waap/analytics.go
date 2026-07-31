@@ -85,7 +85,11 @@ func (r *AnalyticsService) GetFiltersAutoPaging(ctx context.Context, type_ Analy
 }
 
 // Retrieve request log data over account's domains. The log records every request
-// passing through WAAP towards the origin server.
+// passing through WAAP towards the origin server. Deprecated. Use
+// [GET /v2/analytics/events](/docs/api-reference/waap/analytics/get-security-events)
+// instead.
+//
+// Deprecated: deprecated
 func (r *AnalyticsService) GetRequests(ctx context.Context, query AnalyticsGetRequestsParams, opts ...option.RequestOption) (res *pagination.OffsetPage[WaapRequestSummary], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -104,7 +108,11 @@ func (r *AnalyticsService) GetRequests(ctx context.Context, query AnalyticsGetRe
 }
 
 // Retrieve request log data over account's domains. The log records every request
-// passing through WAAP towards the origin server.
+// passing through WAAP towards the origin server. Deprecated. Use
+// [GET /v2/analytics/events](/docs/api-reference/waap/analytics/get-security-events)
+// instead.
+//
+// Deprecated: deprecated
 func (r *AnalyticsService) GetRequestsAutoPaging(ctx context.Context, query AnalyticsGetRequestsParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[WaapRequestSummary] {
 	return pagination.NewOffsetPageAutoPager(r.GetRequests(ctx, query, opts...))
 }

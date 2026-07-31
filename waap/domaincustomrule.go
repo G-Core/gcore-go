@@ -229,8 +229,9 @@ func (r *WaapCustomRuleActionTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The criteria of an incoming web request and the models of the various values
-// those criteria can take
+// The full set of custom rule condition types, including
+// ResponseHeader/ResponseHeaderExists conditions that may exist on rules already
+// stored in Lime but cannot be created or updated through the API.
 type WaapCustomRuleCondition struct {
 	// Match the requested Content-Type
 	ContentType WaapCustomRuleConditionContentType `json:"content_type"`
@@ -888,7 +889,11 @@ func (r *DomainCustomRuleNewParamsActionTag) UnmarshalJSON(data []byte) error {
 }
 
 // The criteria of an incoming web request and the models of the various values
-// those criteria can take
+// those criteria can take.
+//
+// Used for creating and updating custom rules. Does not include the
+// ResponseHeader/ ResponseHeaderExists condition types, which are only readable on
+// existing rules (see CustomRuleConditionResponse).
 type DomainCustomRuleNewParamsCondition struct {
 	// Match the requested Content-Type
 	ContentType DomainCustomRuleNewParamsConditionContentType `json:"content_type,omitzero"`
@@ -918,10 +923,6 @@ type DomainCustomRuleNewParamsCondition struct {
 	OwnerTypes DomainCustomRuleNewParamsConditionOwnerTypes `json:"owner_types,omitzero"`
 	// Match the rate at which requests come in that match certain conditions
 	RequestRate DomainCustomRuleNewParamsConditionRequestRate `json:"request_rate,omitzero"`
-	// Match a response header
-	ResponseHeader DomainCustomRuleNewParamsConditionResponseHeader `json:"response_header,omitzero"`
-	// Match when a response header is present
-	ResponseHeaderExists DomainCustomRuleNewParamsConditionResponseHeaderExists `json:"response_header_exists,omitzero"`
 	// Match the number of dynamic page requests made in a WAAP session
 	SessionRequestCount DomainCustomRuleNewParamsConditionSessionRequestCount `json:"session_request_count,omitzero"`
 	// Matches requests based on specified tags
@@ -1232,56 +1233,6 @@ func (r *DomainCustomRuleNewParamsConditionRequestRate) UnmarshalJSON(data []byt
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Match a response header
-//
-// The properties Header, Value are required.
-type DomainCustomRuleNewParamsConditionResponseHeader struct {
-	// The response header name
-	Header string `json:"header" api:"required"`
-	// The response header value
-	Value string `json:"value" api:"required"`
-	// Whether or not to apply a boolean NOT operation to the rule's condition
-	Negation param.Opt[bool] `json:"negation,omitzero"`
-	// The type of matching condition for header and value.
-	//
-	// Any of "Exact", "Contains".
-	MatchType string `json:"match_type,omitzero"`
-	paramObj
-}
-
-func (r DomainCustomRuleNewParamsConditionResponseHeader) MarshalJSON() (data []byte, err error) {
-	type shadow DomainCustomRuleNewParamsConditionResponseHeader
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *DomainCustomRuleNewParamsConditionResponseHeader) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[DomainCustomRuleNewParamsConditionResponseHeader](
-		"match_type", "Exact", "Contains",
-	)
-}
-
-// Match when a response header is present
-//
-// The property Header is required.
-type DomainCustomRuleNewParamsConditionResponseHeaderExists struct {
-	// The response header name
-	Header string `json:"header" api:"required"`
-	// Whether or not to apply a boolean NOT operation to the rule's condition
-	Negation param.Opt[bool] `json:"negation,omitzero"`
-	paramObj
-}
-
-func (r DomainCustomRuleNewParamsConditionResponseHeaderExists) MarshalJSON() (data []byte, err error) {
-	type shadow DomainCustomRuleNewParamsConditionResponseHeaderExists
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *DomainCustomRuleNewParamsConditionResponseHeaderExists) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Match the number of dynamic page requests made in a WAAP session
 //
 // The property RequestCount is required.
@@ -1501,7 +1452,11 @@ func (r *DomainCustomRuleUpdateParamsActionTag) UnmarshalJSON(data []byte) error
 }
 
 // The criteria of an incoming web request and the models of the various values
-// those criteria can take
+// those criteria can take.
+//
+// Used for creating and updating custom rules. Does not include the
+// ResponseHeader/ ResponseHeaderExists condition types, which are only readable on
+// existing rules (see CustomRuleConditionResponse).
 type DomainCustomRuleUpdateParamsCondition struct {
 	// Match the requested Content-Type
 	ContentType DomainCustomRuleUpdateParamsConditionContentType `json:"content_type,omitzero"`
@@ -1531,10 +1486,6 @@ type DomainCustomRuleUpdateParamsCondition struct {
 	OwnerTypes DomainCustomRuleUpdateParamsConditionOwnerTypes `json:"owner_types,omitzero"`
 	// Match the rate at which requests come in that match certain conditions
 	RequestRate DomainCustomRuleUpdateParamsConditionRequestRate `json:"request_rate,omitzero"`
-	// Match a response header
-	ResponseHeader DomainCustomRuleUpdateParamsConditionResponseHeader `json:"response_header,omitzero"`
-	// Match when a response header is present
-	ResponseHeaderExists DomainCustomRuleUpdateParamsConditionResponseHeaderExists `json:"response_header_exists,omitzero"`
 	// Match the number of dynamic page requests made in a WAAP session
 	SessionRequestCount DomainCustomRuleUpdateParamsConditionSessionRequestCount `json:"session_request_count,omitzero"`
 	// Matches requests based on specified tags
@@ -1842,56 +1793,6 @@ func (r DomainCustomRuleUpdateParamsConditionRequestRate) MarshalJSON() (data []
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *DomainCustomRuleUpdateParamsConditionRequestRate) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Match a response header
-//
-// The properties Header, Value are required.
-type DomainCustomRuleUpdateParamsConditionResponseHeader struct {
-	// The response header name
-	Header string `json:"header" api:"required"`
-	// The response header value
-	Value string `json:"value" api:"required"`
-	// Whether or not to apply a boolean NOT operation to the rule's condition
-	Negation param.Opt[bool] `json:"negation,omitzero"`
-	// The type of matching condition for header and value.
-	//
-	// Any of "Exact", "Contains".
-	MatchType string `json:"match_type,omitzero"`
-	paramObj
-}
-
-func (r DomainCustomRuleUpdateParamsConditionResponseHeader) MarshalJSON() (data []byte, err error) {
-	type shadow DomainCustomRuleUpdateParamsConditionResponseHeader
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *DomainCustomRuleUpdateParamsConditionResponseHeader) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[DomainCustomRuleUpdateParamsConditionResponseHeader](
-		"match_type", "Exact", "Contains",
-	)
-}
-
-// Match when a response header is present
-//
-// The property Header is required.
-type DomainCustomRuleUpdateParamsConditionResponseHeaderExists struct {
-	// The response header name
-	Header string `json:"header" api:"required"`
-	// Whether or not to apply a boolean NOT operation to the rule's condition
-	Negation param.Opt[bool] `json:"negation,omitzero"`
-	paramObj
-}
-
-func (r DomainCustomRuleUpdateParamsConditionResponseHeaderExists) MarshalJSON() (data []byte, err error) {
-	type shadow DomainCustomRuleUpdateParamsConditionResponseHeaderExists
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *DomainCustomRuleUpdateParamsConditionResponseHeaderExists) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
