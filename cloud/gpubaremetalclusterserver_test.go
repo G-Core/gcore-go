@@ -84,7 +84,7 @@ func TestGPUBaremetalClusterServerDeleteWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestGPUBaremetalClusterServerGetConsole(t *testing.T) {
+func TestGPUBaremetalClusterServerGetConsoleWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -98,10 +98,11 @@ func TestGPUBaremetalClusterServerGetConsole(t *testing.T) {
 	)
 	_, err := client.Cloud.GPUBaremetal.Clusters.Servers.GetConsole(
 		context.TODO(),
-		"instance_id",
+		"faab46fd-26fd-4321-9876-abcdef012345",
 		cloud.GPUBaremetalClusterServerGetConsoleParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID:   gcore.Int(1),
+			RegionID:    gcore.Int(1),
+			ConsoleType: cloud.GPUBaremetalClusterServerGetConsoleParamsConsoleTypeNovnc,
 		},
 	)
 	if err != nil {
@@ -127,10 +128,10 @@ func TestGPUBaremetalClusterServerPowercycle(t *testing.T) {
 	)
 	_, err := client.Cloud.GPUBaremetal.Clusters.Servers.Powercycle(
 		context.TODO(),
-		"instance_id",
+		"faab46fd-26fd-4321-9876-abcdef012345",
 		cloud.GPUBaremetalClusterServerPowercycleParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {
@@ -156,10 +157,10 @@ func TestGPUBaremetalClusterServerReboot(t *testing.T) {
 	)
 	_, err := client.Cloud.GPUBaremetal.Clusters.Servers.Reboot(
 		context.TODO(),
-		"instance_id",
+		"faab46fd-26fd-4321-9876-abcdef012345",
 		cloud.GPUBaremetalClusterServerRebootParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {

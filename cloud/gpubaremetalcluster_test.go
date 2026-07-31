@@ -265,10 +265,10 @@ func TestGPUBaremetalClusterPowercycleAllServers(t *testing.T) {
 	)
 	_, err := client.Cloud.GPUBaremetal.Clusters.PowercycleAllServers(
 		context.TODO(),
-		"cluster_id",
+		"faab46fd-26fd-4321-9876-abcdef012345",
 		cloud.GPUBaremetalClusterPowercycleAllServersParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {
@@ -294,10 +294,10 @@ func TestGPUBaremetalClusterRebootAllServers(t *testing.T) {
 	)
 	_, err := client.Cloud.GPUBaremetal.Clusters.RebootAllServers(
 		context.TODO(),
-		"cluster_id",
+		"faab46fd-26fd-4321-9876-abcdef012345",
 		cloud.GPUBaremetalClusterRebootAllServersParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {

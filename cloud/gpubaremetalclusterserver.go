@@ -115,19 +115,19 @@ func (r *GPUBaremetalClusterServerService) Delete(ctx context.Context, instanceI
 }
 
 // Get bare metal GPU cluster server console URL
-func (r *GPUBaremetalClusterServerService) GetConsole(ctx context.Context, instanceID string, query GPUBaremetalClusterServerGetConsoleParams, opts ...option.RequestOption) (res *Console, err error) {
+func (r *GPUBaremetalClusterServerService) GetConsole(ctx context.Context, instanceID string, params GPUBaremetalClusterServerGetConsoleParams, opts ...option.RequestOption) (res *Console, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
 	}
-	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
-	if !query.ProjectID.Valid() {
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return nil, err
 	}
-	if !query.RegionID.Valid() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return nil, err
 	}
@@ -135,12 +135,12 @@ func (r *GPUBaremetalClusterServerService) GetConsole(ctx context.Context, insta
 		err = errors.New("missing required instance_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("cloud/v1/ai/clusters/%v/%v/%s/get_console", query.ProjectID.Value, query.RegionID.Value, instanceID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	path := fmt.Sprintf("cloud/v1/ai/clusters/%v/%v/%s/get_console", params.ProjectID.Value, params.RegionID.Value, instanceID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return res, err
 }
 
-// Stops and then starts the server, effectively performing a hard reboot.
+// Stops and then starts the server, performing a hard reboot.
 func (r *GPUBaremetalClusterServerService) Powercycle(ctx context.Context, instanceID string, body GPUBaremetalClusterServerPowercycleParams, opts ...option.RequestOption) (res *GPUBaremetalClusterServerV1, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -813,20 +813,49 @@ func (r GPUBaremetalClusterServerDeleteParams) URLQuery() (v url.Values, err err
 }
 
 type GPUBaremetalClusterServerGetConsoleParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Console type
+	//
+	// Any of "novnc", "serial", "spice", "vnc".
+	ConsoleType GPUBaremetalClusterServerGetConsoleParamsConsoleType `query:"console_type,omitzero" json:"-"`
 	paramObj
 }
 
+// URLQuery serializes [GPUBaremetalClusterServerGetConsoleParams]'s query
+// parameters as `url.Values`.
+func (r GPUBaremetalClusterServerGetConsoleParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+// Console type
+type GPUBaremetalClusterServerGetConsoleParamsConsoleType string
+
+const (
+	GPUBaremetalClusterServerGetConsoleParamsConsoleTypeNovnc  GPUBaremetalClusterServerGetConsoleParamsConsoleType = "novnc"
+	GPUBaremetalClusterServerGetConsoleParamsConsoleTypeSerial GPUBaremetalClusterServerGetConsoleParamsConsoleType = "serial"
+	GPUBaremetalClusterServerGetConsoleParamsConsoleTypeSpice  GPUBaremetalClusterServerGetConsoleParamsConsoleType = "spice"
+	GPUBaremetalClusterServerGetConsoleParamsConsoleTypeVnc    GPUBaremetalClusterServerGetConsoleParamsConsoleType = "vnc"
+)
+
 type GPUBaremetalClusterServerPowercycleParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
 type GPUBaremetalClusterServerRebootParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 
