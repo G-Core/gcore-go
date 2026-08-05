@@ -185,6 +185,38 @@ func TestBaremetalServerDeleteWithOptionalParams(t *testing.T) {
 	}
 }
 
+func TestBaremetalServerActionWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Cloud.Baremetal.Servers.Action(
+		context.TODO(),
+		"024a29e-b4b7-4c91-9a46-505be123d9f8",
+		cloud.BaremetalServerActionParams{
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
+			OfStartActionInstanceSerializer: &cloud.BaremetalServerActionParamsBodyStartActionInstanceSerializer{
+				ActivateProfile: gcore.Bool(true),
+			},
+		},
+	)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestBaremetalServerGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {

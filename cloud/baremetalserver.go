@@ -179,6 +179,32 @@ func (r *BaremetalServerService) Delete(ctx context.Context, serverID string, pa
 	return res, err
 }
 
+// The action can be one of: start, stop, reboot or `reboot_hard`.
+func (r *BaremetalServerService) Action(ctx context.Context, serverID string, params BaremetalServerActionParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return nil, err
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return nil, err
+	}
+	if !params.RegionID.Valid() {
+		err = errors.New("missing required region_id parameter")
+		return nil, err
+	}
+	if serverID == "" {
+		err = errors.New("missing required server_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("cloud/v2/baremetal/%v/%v/%s/action", params.ProjectID.Value, params.RegionID.Value, serverID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	return res, err
+}
+
 // Retrieve detailed information about a specific baremetal instance. This endpoint
 // always returns `ddos_profile` (if present) and therefore always requires
 // `DDOS_READ`.
@@ -1458,6 +1484,73 @@ func (r BaremetalServerDeleteParams) URLQuery() (v url.Values, err error) {
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
+}
+
+type BaremetalServerActionParams struct {
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+
+	//
+	// Request body variants
+	//
+
+	// This field is a request body variant, only one variant field can be set.
+	OfStartActionInstanceSerializer *BaremetalServerActionParamsBodyStartActionInstanceSerializer `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	OfBasicBareMetalActionInstanceSerializer *BaremetalServerActionParamsBodyBasicBareMetalActionInstanceSerializer `json:",inline"`
+
+	paramObj
+}
+
+func (u BaremetalServerActionParams) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfStartActionInstanceSerializer, u.OfBasicBareMetalActionInstanceSerializer)
+}
+func (r *BaremetalServerActionParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Action is required.
+type BaremetalServerActionParamsBodyStartActionInstanceSerializer struct {
+	// Used on start instance to activate Advanced DDoS profile
+	ActivateProfile param.Opt[bool] `json:"activate_profile,omitzero"`
+	// Instance action name
+	//
+	// This field can be elided, and will marshal its zero value as "start".
+	Action constant.Start `json:"action" default:"start"`
+	paramObj
+}
+
+func (r BaremetalServerActionParamsBodyStartActionInstanceSerializer) MarshalJSON() (data []byte, err error) {
+	type shadow BaremetalServerActionParamsBodyStartActionInstanceSerializer
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BaremetalServerActionParamsBodyStartActionInstanceSerializer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Action is required.
+type BaremetalServerActionParamsBodyBasicBareMetalActionInstanceSerializer struct {
+	// Instance action name
+	//
+	// Any of "reboot", "reboot_hard", "stop".
+	Action string `json:"action,omitzero" api:"required"`
+	paramObj
+}
+
+func (r BaremetalServerActionParamsBodyBasicBareMetalActionInstanceSerializer) MarshalJSON() (data []byte, err error) {
+	type shadow BaremetalServerActionParamsBodyBasicBareMetalActionInstanceSerializer
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BaremetalServerActionParamsBodyBasicBareMetalActionInstanceSerializer) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[BaremetalServerActionParamsBodyBasicBareMetalActionInstanceSerializer](
+		"action", "reboot", "reboot_hard", "stop",
+	)
 }
 
 type BaremetalServerGetParams struct {
