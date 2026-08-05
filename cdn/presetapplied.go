@@ -4,7 +4,6 @@ package cdn
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"slices"
@@ -54,7 +53,7 @@ func (r *PresetAppliedService) Apply(ctx context.Context, presetID int64, body P
 // Get the list of objects the preset is currently applied to.
 //
 // Non-staff users only see objects that belong to their account.
-func (r *PresetAppliedService) GetObjects(ctx context.Context, presetID int64, opts ...option.RequestOption) (res *AppliedPresetUnion, err error) {
+func (r *PresetAppliedService) GetObjects(ctx context.Context, presetID int64, opts ...option.RequestOption) (res *AppliedPreset, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/presets/%v/applied", presetID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -89,66 +88,22 @@ func (r *PresetAppliedService) Unapply(ctx context.Context, objectID int64, body
 	return err
 }
 
-// AppliedPresetUnion contains all possible properties and values from
-// [AppliedPresetAppliedObjects], [AppliedPresetNoAppliedObjects].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-type AppliedPresetUnion struct {
-	// This field is from variant [AppliedPresetAppliedObjects].
-	ObjectIDs []int64 `json:"object_ids"`
-	// This field is from variant [AppliedPresetAppliedObjects].
-	ObjectType string `json:"object_type"`
-	// This field is from variant [AppliedPresetNoAppliedObjects].
-	Message string `json:"message"`
-	JSON    struct {
-		ObjectIDs  respjson.Field
-		ObjectType respjson.Field
-		Message    respjson.Field
-		raw        string
-	} `json:"-"`
-}
-
-func (u AppliedPresetUnion) AsAppliedObjects() (v AppliedPresetAppliedObjects) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u AppliedPresetUnion) AsNoAppliedObjects() (v AppliedPresetNoAppliedObjects) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u AppliedPresetUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *AppliedPresetUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AppliedPresetAppliedObjects struct {
-	// IDs of the objects the preset is currently applied to.
-	ObjectIDs []int64 `json:"object_ids"`
+type AppliedPreset struct {
+	// IDs of the objects the preset is currently applied to. Empty when the preset is
+	// not applied to anything.
+	ObjectIDs []int64 `json:"object_ids" api:"required"`
 	// Type of objects the preset is applied to.
-	ObjectType string `json:"object_type"`
+	ObjectType string `json:"object_type" api:"required"`
+	// Deprecated. Present only when `object_ids` is empty. Check `object_ids` instead.
+	// This field is kept for backward compatibility and will be removed in a future
+	// version.
+	//
+	// Deprecated: deprecated
+	Message string `json:"message"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ObjectIDs   respjson.Field
 		ObjectType  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AppliedPresetAppliedObjects) RawJSON() string { return r.JSON.raw }
-func (r *AppliedPresetAppliedObjects) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AppliedPresetNoAppliedObjects struct {
-	Message string `json:"message"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
 		Message     respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -156,8 +111,8 @@ type AppliedPresetNoAppliedObjects struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AppliedPresetNoAppliedObjects) RawJSON() string { return r.JSON.raw }
-func (r *AppliedPresetNoAppliedObjects) UnmarshalJSON(data []byte) error {
+func (r AppliedPreset) RawJSON() string { return r.JSON.raw }
+func (r *AppliedPreset) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -191,9 +146,21 @@ func (r *AppliedPresetFields) UnmarshalJSON(data []byte) error {
 }
 
 type PresetAppliedApplyResponse struct {
+	// ID of the object (CDN resource or rule, according to the preset `object_type`)
+	// the preset is applied to.
+	ObjectID int64 `json:"object_id" api:"required"`
+	// ID of the preset that is applied to the object. Matches the `preset_id` path
+	// parameter.
+	PresetID int64 `json:"preset_id" api:"required"`
+	// Deprecated. Use `preset_id` and `object_id` instead. This field is kept for
+	// backward compatibility and will be removed in a future version.
+	//
+	// Deprecated: deprecated
 	Message string `json:"message"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ObjectID    respjson.Field
+		PresetID    respjson.Field
 		Message     respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
