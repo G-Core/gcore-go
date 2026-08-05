@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.55.0](https://github.com/G-Core/gcore-go/compare/v0.54.0...v0.55.0) (2026-08-05)
+
+
+### Features
+
+* **cdn:** add logs uploader field remapping ([a1c5490](https://github.com/G-Core/gcore-go/commit/a1c549079ef16ce86df83f967b39d060f20d3a1a))
+* **cloud:** add console_type parameter to GPU cluster server console endpoint ([5e43a58](https://github.com/G-Core/gcore-go/commit/5e43a58c3b88abd66ab221c8976aec88eaeb29e5))
+* **cloud:** expose bare metal server action endpoint ([07913c8](https://github.com/G-Core/gcore-go/commit/07913c8cb5fce7e3bbfc9b556fdb17cc77e8c2f4))
+* **cloud:** update cloud OpenAPI spec ([ad3bdf0](https://github.com/G-Core/gcore-go/commit/ad3bdf042945b2f29d006f73a69876b23368f490))
+
+
+### Bug Fixes
+
+* **cdn:** update applied-preset example for flattened response model ([82ebb35](https://github.com/G-Core/gcore-go/commit/82ebb354621140b00384e543986b5a6e47d152d0))
+
+
+### Chores
+
+* **cdn:** update cdn OpenAPI spec ([ef7efc9](https://github.com/G-Core/gcore-go/commit/ef7efc9b3ce9bfd89cdeb8ad33f8e56fad382d2e))
+* **dns:** update dns OpenAPI spec ([ef84622](https://github.com/G-Core/gcore-go/commit/ef846224ea5c8711ce466f11f5c5f9c480050cbe))
+* **waap:** update waap OpenAPI spec ([d6f4e3b](https://github.com/G-Core/gcore-go/commit/d6f4e3b8e4ee2792f360e5703570cec607650116))
+
 ## [0.54.0](https://github.com/G-Core/gcore-go/compare/v0.53.0...v0.54.0) (2026-07-28)
 
 
