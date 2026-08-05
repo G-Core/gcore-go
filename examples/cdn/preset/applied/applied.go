@@ -164,12 +164,12 @@ func getAppliedObjects(client *gcore.Client, presetID int64) {
 		log.Fatalf("Error getting applied objects: %v", err)
 	}
 
-	if applied := result.AsAppliedObjects(); len(applied.ObjectIDs) > 0 {
+	if len(result.ObjectIDs) > 0 {
 		fmt.Printf("Preset %d is applied to %s objects: %v\n",
-			presetID, applied.ObjectType, applied.ObjectIDs)
+			presetID, result.ObjectType, result.ObjectIDs)
 	} else {
 		fmt.Printf("Preset %d is not applied to any objects: %s\n",
-			presetID, result.AsNoAppliedObjects().Message)
+			presetID, result.Message)
 	}
 	fmt.Println("===========================")
 }
