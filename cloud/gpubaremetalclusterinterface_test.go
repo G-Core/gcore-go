@@ -59,32 +59,27 @@ func TestGPUBaremetalClusterInterfaceAttachWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.GPUBaremetal.Clusters.Interfaces.Attach(
 		context.TODO(),
-		"instance_id",
+		"faab46fd-26fd-4321-9876-abcdef012345",
 		cloud.GPUBaremetalClusterInterfaceAttachParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
-			OfNewInterfaceExternalExtendSchemaWithDDOS: &cloud.GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOS{
-				DDOSProfile: cloud.GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfile{
-					ProfileTemplate: 29,
-					Fields: []cloud.GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfileField{{
-						BaseField: 10,
-						FieldValue: []float64{
-							45046,
-							45047,
-						},
-						Value: gcore.String("value"),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
+			OfExternal: &cloud.GPUBaremetalClusterInterfaceAttachParamsBodyExternal{
+				DDOSProfile: cloud.GPUBaremetalClusterInterfaceAttachParamsBodyExternalDDOSProfile{
+					ProfileTemplate: 0,
+					Fields: []cloud.GPUBaremetalClusterInterfaceAttachParamsBodyExternalDDOSProfileField{{
+						BaseField:  0,
+						FieldValue: map[string]any{},
+						Value:      gcore.String("value"),
 					}},
 					ProfileTemplateName: gcore.String("profile_template_name"),
 				},
 				InterfaceName: gcore.String("interface_name"),
-				IPFamily:      "dual",
+				IPFamily:      cloud.InterfaceIPFamilyDual,
 				PortGroup:     gcore.Int(0),
-				SecurityGroups: []cloud.GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSSecurityGroup{{
-					ID: "4536dba1-93b1-492e-b3df-270b6b9f3650",
-				}, {
-					ID: "cee2ca1f-507a-4a31-b714-f6c1ffb4bdfa",
+				SecurityGroups: []cloud.GPUBaremetalClusterInterfaceAttachParamsBodyExternalSecurityGroup{{
+					ID: "ae74714c-c380-48b4-87f8-758d656cdad6",
 				}},
-				Type: gcore.String("external"),
+				Type: "external",
 			},
 		},
 	)
@@ -111,12 +106,12 @@ func TestGPUBaremetalClusterInterfaceDetach(t *testing.T) {
 	)
 	_, err := client.Cloud.GPUBaremetal.Clusters.Interfaces.Detach(
 		context.TODO(),
-		"instance_id",
+		"faab46fd-26fd-4321-9876-abcdef012345",
 		cloud.GPUBaremetalClusterInterfaceDetachParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
-			IPAddress: "192.168.123.20",
-			PortID:    "351b0dd7-ca09-431c-be53-935db3785067",
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
+			IPAddress: "ip_address",
+			PortID:    "port_id",
 		},
 	)
 	if err != nil {

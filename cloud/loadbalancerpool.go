@@ -423,6 +423,9 @@ type LoadBalancerPoolUpdateParams struct {
 	Healthmonitor LoadBalancerPoolUpdateParamsHealthmonitor `json:"healthmonitor,omitzero"`
 	// New sequence of load balancer pool members. If members are the same (by
 	// address + port), they will be kept as is without recreation and downtime.
+	// Deprecated. Use
+	// `PUT /v1/loadbalancers/{project_id}/{region_id}/pools/{pool_id}/members`
+	// instead.
 	Members []LoadBalancerPoolUpdateParamsMember `json:"members,omitzero"`
 	// New session persistence settings
 	SessionPersistence LoadBalancerPoolUpdateParamsSessionPersistence `json:"session_persistence,omitzero"`

@@ -96,10 +96,10 @@ func TestInstanceUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.Instances.Update(
 		context.TODO(),
-		"instance_id",
+		"b5b4d65d-945f-4b98-ab6f-332319c724ef",
 		cloud.InstanceUpdateParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 			Name:      gcore.String("instance_name"),
 			Tags: cloud.TagUpdateMap{
 				"my-tag":           gcore.Ptr("my-tag-value"),
@@ -181,10 +181,10 @@ func TestInstanceDeleteWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.Instances.Delete(
 		context.TODO(),
-		"instance_id",
+		"b5b4d65d-945f-4b98-ab6f-332319c724ef",
 		cloud.InstanceDeleteParams{
-			ProjectID:        gcore.Int(0),
-			RegionID:         gcore.Int(0),
+			ProjectID:        gcore.Int(1),
+			RegionID:         gcore.Int(1),
 			DeleteFloatings:  gcore.Bool(true),
 			Floatings:        gcore.String("floatings"),
 			ReservedFixedIPs: gcore.String("reserved_fixed_ips"),
@@ -214,10 +214,10 @@ func TestInstanceActionWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.Instances.Action(
 		context.TODO(),
-		"instance_id",
+		"b5b4d65d-945f-4b98-ab6f-332319c724ef",
 		cloud.InstanceActionParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 			OfStartActionInstanceSerializer: &cloud.InstanceActionParamsBodyStartActionInstanceSerializer{
 				ActivateProfile: gcore.Bool(true),
 			},
@@ -246,10 +246,10 @@ func TestInstanceAddToPlacementGroup(t *testing.T) {
 	)
 	_, err := client.Cloud.Instances.AddToPlacementGroup(
 		context.TODO(),
-		"instance_id",
+		"b5b4d65d-945f-4b98-ab6f-332319c724ef",
 		cloud.InstanceAddToPlacementGroupParams{
-			ProjectID:     gcore.Int(0),
-			RegionID:      gcore.Int(0),
+			ProjectID:     gcore.Int(1),
+			RegionID:      gcore.Int(1),
 			ServergroupID: "47003067-550a-6f17-93b6-81ee16ba061e",
 		},
 	)
@@ -276,10 +276,10 @@ func TestInstanceAssignSecurityGroupWithOptionalParams(t *testing.T) {
 	)
 	err := client.Cloud.Instances.AssignSecurityGroup(
 		context.TODO(),
-		"instance_id",
+		"b5b4d65d-945f-4b98-ab6f-332319c724ef",
 		cloud.InstanceAssignSecurityGroupParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 			Name:      gcore.String("some_name"),
 			PortsSecurityGroupNames: []cloud.InstanceAssignSecurityGroupParamsPortsSecurityGroupName{{
 				PortID:             param.Null[string](),
@@ -371,10 +371,10 @@ func TestInstanceGet(t *testing.T) {
 	)
 	_, err := client.Cloud.Instances.Get(
 		context.TODO(),
-		"instance_id",
+		"b5b4d65d-945f-4b98-ab6f-332319c724ef",
 		cloud.InstanceGetParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {
@@ -400,11 +400,11 @@ func TestInstanceGetConsoleWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.Instances.GetConsole(
 		context.TODO(),
-		"instance_id",
+		"b5b4d65d-945f-4b98-ab6f-332319c724ef",
 		cloud.InstanceGetConsoleParams{
-			ProjectID:   gcore.Int(0),
-			RegionID:    gcore.Int(0),
-			ConsoleType: gcore.String("console_type"),
+			ProjectID:   gcore.Int(1),
+			RegionID:    gcore.Int(1),
+			ConsoleType: cloud.InstanceGetConsoleParamsConsoleTypeNovnc,
 		},
 	)
 	if err != nil {
@@ -430,10 +430,10 @@ func TestInstanceRemoveFromPlacementGroup(t *testing.T) {
 	)
 	_, err := client.Cloud.Instances.RemoveFromPlacementGroup(
 		context.TODO(),
-		"instance_id",
+		"b5b4d65d-945f-4b98-ab6f-332319c724ef",
 		cloud.InstanceRemoveFromPlacementGroupParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {
@@ -459,10 +459,10 @@ func TestInstanceResize(t *testing.T) {
 	)
 	_, err := client.Cloud.Instances.Resize(
 		context.TODO(),
-		"instance_id",
+		"b5b4d65d-945f-4b98-ab6f-332319c724ef",
 		cloud.InstanceResizeParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 			FlavorID:  "g1s-shared-1-0.5",
 		},
 	)
@@ -489,10 +489,10 @@ func TestInstanceUnassignSecurityGroupWithOptionalParams(t *testing.T) {
 	)
 	err := client.Cloud.Instances.UnassignSecurityGroup(
 		context.TODO(),
-		"instance_id",
+		"b5b4d65d-945f-4b98-ab6f-332319c724ef",
 		cloud.InstanceUnassignSecurityGroupParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 			Name:      gcore.String("some_name"),
 			PortsSecurityGroupNames: []cloud.InstanceUnassignSecurityGroupParamsPortsSecurityGroupName{{
 				PortID:             param.Null[string](),

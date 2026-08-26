@@ -78,7 +78,7 @@ func (r *GPUBaremetalClusterInterfaceService) ListAutoPaging(ctx context.Context
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, clusterID, params, opts...))
 }
 
-// Attach interface to bare metal GPU cluster server
+// Attach interface to bare metal GPU cluster server.
 func (r *GPUBaremetalClusterInterfaceService) Attach(ctx context.Context, instanceID string, params GPUBaremetalClusterInterfaceAttachParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -104,7 +104,7 @@ func (r *GPUBaremetalClusterInterfaceService) Attach(ctx context.Context, instan
 	return res, err
 }
 
-// Detach interface from bare metal GPU cluster server
+// Detach interface from bare metal GPU cluster server.
 func (r *GPUBaremetalClusterInterfaceService) Detach(ctx context.Context, instanceID string, params GPUBaremetalClusterInterfaceDetachParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -152,399 +152,388 @@ func (r GPUBaremetalClusterInterfaceListParams) URLQuery() (v url.Values, err er
 }
 
 type GPUBaremetalClusterInterfaceAttachParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 
 	//
 	// Request body variants
 	//
 
 	// This field is a request body variant, only one variant field can be set.
-	// Instance will be attached to default external network
-	OfNewInterfaceExternalExtendSchemaWithDDOS *GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOS `json:",inline"`
+	OfExternal *GPUBaremetalClusterInterfaceAttachParamsBodyExternal `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	// Instance will be attached to specified subnet
-	OfNewInterfaceSpecificSubnetSchema *GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchema `json:",inline"`
+	OfSubnet *GPUBaremetalClusterInterfaceAttachParamsBodySubnet `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	// Instance will be attached to the network subnet with the largest count of
-	// available ips
-	OfNewInterfaceAnySubnetSchema *GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceAnySubnetSchema `json:",inline"`
+	OfAnySubnet *GPUBaremetalClusterInterfaceAttachParamsBodyAnySubnet `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	// Instance will be attached to the given port. Floating IP will be created and
-	// attached to that IP
-	OfNewInterfaceReservedFixedIPSchema *GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchema `json:",inline"`
+	OfReservedFixedIP *GPUBaremetalClusterInterfaceAttachParamsBodyReservedFixedIP `json:",inline"`
 
 	paramObj
 }
 
 func (u GPUBaremetalClusterInterfaceAttachParams) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfNewInterfaceExternalExtendSchemaWithDDOS, u.OfNewInterfaceSpecificSubnetSchema, u.OfNewInterfaceAnySubnetSchema, u.OfNewInterfaceReservedFixedIPSchema)
+	return param.MarshalUnion(u, u.OfExternal, u.OfSubnet, u.OfAnySubnet, u.OfReservedFixedIP)
 }
 func (r *GPUBaremetalClusterInterfaceAttachParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Instance will be attached to default external network
-type GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOS struct {
-	// Interface name
+type GPUBaremetalClusterInterfaceAttachParamsBodyExternal struct {
+	// Interface name.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// Each group will be added to the separate trunk.
+	// Each group will be added to a separate trunk.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// Must be 'external'. Union tag
-	Type param.Opt[string] `json:"type,omitzero"`
 	// Advanced DDoS protection.
-	DDOSProfile GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfile `json:"ddos_profile,omitzero"`
-	// Which subnets should be selected: IPv4, IPv6 or use dual stack.
-	//
+	DDOSProfile GPUBaremetalClusterInterfaceAttachParamsBodyExternalDDOSProfile `json:"ddos_profile,omitzero"`
+	// List of security group IDs.
+	SecurityGroups []GPUBaremetalClusterInterfaceAttachParamsBodyExternalSecurityGroup `json:"security_groups,omitzero"`
 	// Any of "dual", "ipv4", "ipv6".
-	IPFamily string `json:"ip_family,omitzero"`
-	// List of security group IDs
-	SecurityGroups []GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSSecurityGroup `json:"security_groups,omitzero"`
+	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
+	// Any of "external".
+	Type string `json:"type,omitzero"`
 	paramObj
 }
 
-func (r GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOS) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOS
+func (r GPUBaremetalClusterInterfaceAttachParamsBodyExternal) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyExternal
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOS) UnmarshalJSON(data []byte) error {
+func (r *GPUBaremetalClusterInterfaceAttachParamsBodyExternal) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOS](
-		"ip_family", "dual", "ipv4", "ipv6",
+	apijson.RegisterFieldValidator[GPUBaremetalClusterInterfaceAttachParamsBodyExternal](
+		"type", "external",
 	)
 }
 
 // Advanced DDoS protection.
 //
 // The property ProfileTemplate is required.
-type GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfile struct {
+type GPUBaremetalClusterInterfaceAttachParamsBodyExternalDDOSProfile struct {
 	// DDoS profile template ID.
 	ProfileTemplate int64 `json:"profile_template" api:"required"`
 	// DDoS profile template name.
 	ProfileTemplateName param.Opt[string] `json:"profile_template_name,omitzero"`
 	// Protection parameters.
-	Fields []GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfileField `json:"fields,omitzero"`
+	Fields []GPUBaremetalClusterInterfaceAttachParamsBodyExternalDDOSProfileField `json:"fields,omitzero"`
 	paramObj
 }
 
-func (r GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfile) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfile
+func (r GPUBaremetalClusterInterfaceAttachParamsBodyExternalDDOSProfile) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyExternalDDOSProfile
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfile) UnmarshalJSON(data []byte) error {
+func (r *GPUBaremetalClusterInterfaceAttachParamsBodyExternalDDOSProfile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property BaseField is required.
-type GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfileField struct {
-	// ID of DDoS profile field
+type GPUBaremetalClusterInterfaceAttachParamsBodyExternalDDOSProfileField struct {
+	// ID of DDoS profile field.
 	BaseField int64 `json:"base_field" api:"required"`
-	// Basic type value. Only one of 'value' or 'field_value' must be specified.
+	// Basic type value.
 	Value param.Opt[string] `json:"value,omitzero"`
-	// Complex value for the DDoS profile field
+	// Complex value for the DDoS profile field.
 	FieldValue any `json:"field_value,omitzero"`
 	paramObj
 }
 
-func (r GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfileField) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfileField
+func (r GPUBaremetalClusterInterfaceAttachParamsBodyExternalDDOSProfileField) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyExternalDDOSProfileField
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSDDOSProfileField) UnmarshalJSON(data []byte) error {
+func (r *GPUBaremetalClusterInterfaceAttachParamsBodyExternalDDOSProfileField) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// MandatoryIdSchema schema
-//
 // The property ID is required.
-type GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSSecurityGroup struct {
+type GPUBaremetalClusterInterfaceAttachParamsBodyExternalSecurityGroup struct {
 	// Resource ID
-	ID string `json:"id" api:"required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	paramObj
 }
 
-func (r GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSSecurityGroup
+func (r GPUBaremetalClusterInterfaceAttachParamsBodyExternalSecurityGroup) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyExternalSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceExternalExtendSchemaWithDDOSSecurityGroup) UnmarshalJSON(data []byte) error {
+func (r *GPUBaremetalClusterInterfaceAttachParamsBodyExternalSecurityGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Instance will be attached to specified subnet
-//
 // The property SubnetID is required.
-type GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchema struct {
-	// Port will get an IP address from this subnet
-	SubnetID string `json:"subnet_id" api:"required"`
-	// Interface name
+type GPUBaremetalClusterInterfaceAttachParamsBodySubnet struct {
+	// Port will get an IP address from this subnet.
+	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
+	// Interface name.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// Each group will be added to the separate trunk.
+	// Each group will be added to a separate trunk.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// Must be 'subnet'
-	Type param.Opt[string] `json:"type,omitzero"`
 	// Advanced DDoS protection.
-	DDOSProfile GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfile `json:"ddos_profile,omitzero"`
-	// List of security group IDs
-	SecurityGroups []GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaSecurityGroup `json:"security_groups,omitzero"`
+	DDOSProfile GPUBaremetalClusterInterfaceAttachParamsBodySubnetDDOSProfile `json:"ddos_profile,omitzero"`
+	// List of security group IDs.
+	SecurityGroups []GPUBaremetalClusterInterfaceAttachParamsBodySubnetSecurityGroup `json:"security_groups,omitzero"`
+	// Any of "subnet".
+	Type string `json:"type,omitzero"`
 	paramObj
 }
 
-func (r GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchema) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchema
+func (r GPUBaremetalClusterInterfaceAttachParamsBodySubnet) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterInterfaceAttachParamsBodySubnet
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchema) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Advanced DDoS protection.
-//
-// The property ProfileTemplate is required.
-type GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfile struct {
-	// DDoS profile template ID.
-	ProfileTemplate int64 `json:"profile_template" api:"required"`
-	// DDoS profile template name.
-	ProfileTemplateName param.Opt[string] `json:"profile_template_name,omitzero"`
-	// Protection parameters.
-	Fields []GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfileField `json:"fields,omitzero"`
-	paramObj
-}
-
-func (r GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfile) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfile
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfile) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The property BaseField is required.
-type GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfileField struct {
-	// ID of DDoS profile field
-	BaseField int64 `json:"base_field" api:"required"`
-	// Basic type value. Only one of 'value' or 'field_value' must be specified.
-	Value param.Opt[string] `json:"value,omitzero"`
-	// Complex value for the DDoS profile field
-	FieldValue any `json:"field_value,omitzero"`
-	paramObj
-}
-
-func (r GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfileField) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfileField
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaDDOSProfileField) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// MandatoryIdSchema schema
-//
-// The property ID is required.
-type GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaSecurityGroup struct {
-	// Resource ID
-	ID string `json:"id" api:"required" format:"uuid"`
-	paramObj
-}
-
-func (r GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaSecurityGroup
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceSpecificSubnetSchemaSecurityGroup) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Instance will be attached to the network subnet with the largest count of
-// available ips
-//
-// The property NetworkID is required.
-type GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceAnySubnetSchema struct {
-	// Port will get an IP address in this network subnet
-	NetworkID string `json:"network_id" api:"required"`
-	// Interface name
-	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// Each group will be added to the separate trunk.
-	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// Must be 'any_subnet'
-	Type param.Opt[string] `json:"type,omitzero"`
-	// Advanced DDoS protection.
-	DDOSProfile GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfile `json:"ddos_profile,omitzero"`
-	// Which subnets should be selected: IPv4, IPv6 or use dual stack.
-	//
-	// Any of "dual", "ipv4", "ipv6".
-	IPFamily string `json:"ip_family,omitzero"`
-	// List of security group IDs
-	SecurityGroups []GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaSecurityGroup `json:"security_groups,omitzero"`
-	paramObj
-}
-
-func (r GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceAnySubnetSchema) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceAnySubnetSchema
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceAnySubnetSchema) UnmarshalJSON(data []byte) error {
+func (r *GPUBaremetalClusterInterfaceAttachParamsBodySubnet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceAnySubnetSchema](
-		"ip_family", "dual", "ipv4", "ipv6",
+	apijson.RegisterFieldValidator[GPUBaremetalClusterInterfaceAttachParamsBodySubnet](
+		"type", "subnet",
 	)
 }
 
 // Advanced DDoS protection.
 //
 // The property ProfileTemplate is required.
-type GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfile struct {
+type GPUBaremetalClusterInterfaceAttachParamsBodySubnetDDOSProfile struct {
 	// DDoS profile template ID.
 	ProfileTemplate int64 `json:"profile_template" api:"required"`
 	// DDoS profile template name.
 	ProfileTemplateName param.Opt[string] `json:"profile_template_name,omitzero"`
 	// Protection parameters.
-	Fields []GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfileField `json:"fields,omitzero"`
+	Fields []GPUBaremetalClusterInterfaceAttachParamsBodySubnetDDOSProfileField `json:"fields,omitzero"`
 	paramObj
 }
 
-func (r GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfile) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfile
+func (r GPUBaremetalClusterInterfaceAttachParamsBodySubnetDDOSProfile) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterInterfaceAttachParamsBodySubnetDDOSProfile
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfile) UnmarshalJSON(data []byte) error {
+func (r *GPUBaremetalClusterInterfaceAttachParamsBodySubnetDDOSProfile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property BaseField is required.
-type GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfileField struct {
-	// ID of DDoS profile field
+type GPUBaremetalClusterInterfaceAttachParamsBodySubnetDDOSProfileField struct {
+	// ID of DDoS profile field.
 	BaseField int64 `json:"base_field" api:"required"`
-	// Basic type value. Only one of 'value' or 'field_value' must be specified.
+	// Basic type value.
 	Value param.Opt[string] `json:"value,omitzero"`
-	// Complex value for the DDoS profile field
+	// Complex value for the DDoS profile field.
 	FieldValue any `json:"field_value,omitzero"`
 	paramObj
 }
 
-func (r GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfileField) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfileField
+func (r GPUBaremetalClusterInterfaceAttachParamsBodySubnetDDOSProfileField) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterInterfaceAttachParamsBodySubnetDDOSProfileField
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaDDOSProfileField) UnmarshalJSON(data []byte) error {
+func (r *GPUBaremetalClusterInterfaceAttachParamsBodySubnetDDOSProfileField) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// MandatoryIdSchema schema
-//
 // The property ID is required.
-type GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaSecurityGroup struct {
+type GPUBaremetalClusterInterfaceAttachParamsBodySubnetSecurityGroup struct {
 	// Resource ID
-	ID string `json:"id" api:"required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	paramObj
 }
 
-func (r GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaSecurityGroup
+func (r GPUBaremetalClusterInterfaceAttachParamsBodySubnetSecurityGroup) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterInterfaceAttachParamsBodySubnetSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceAnySubnetSchemaSecurityGroup) UnmarshalJSON(data []byte) error {
+func (r *GPUBaremetalClusterInterfaceAttachParamsBodySubnetSecurityGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Instance will be attached to the given port. Floating IP will be created and
-// attached to that IP
-//
-// The property PortID is required.
-type GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchema struct {
-	// Port ID
-	PortID string `json:"port_id" api:"required"`
-	// Interface name
+// The property NetworkID is required.
+type GPUBaremetalClusterInterfaceAttachParamsBodyAnySubnet struct {
+	// Port will get an IP address in this network subnet.
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
+	// Interface name.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// Each group will be added to the separate trunk.
+	// Each group will be added to a separate trunk.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// Must be 'reserved_fixed_ip'. Union tag
-	Type param.Opt[string] `json:"type,omitzero"`
 	// Advanced DDoS protection.
-	DDOSProfile GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfile `json:"ddos_profile,omitzero"`
-	// List of security group IDs
-	SecurityGroups []GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaSecurityGroup `json:"security_groups,omitzero"`
+	DDOSProfile GPUBaremetalClusterInterfaceAttachParamsBodyAnySubnetDDOSProfile `json:"ddos_profile,omitzero"`
+	// List of security group IDs.
+	SecurityGroups []GPUBaremetalClusterInterfaceAttachParamsBodyAnySubnetSecurityGroup `json:"security_groups,omitzero"`
+	// Any of "dual", "ipv4", "ipv6".
+	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
+	// Any of "any_subnet".
+	Type string `json:"type,omitzero"`
 	paramObj
 }
 
-func (r GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchema) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchema
+func (r GPUBaremetalClusterInterfaceAttachParamsBodyAnySubnet) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyAnySubnet
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchema) UnmarshalJSON(data []byte) error {
+func (r *GPUBaremetalClusterInterfaceAttachParamsBodyAnySubnet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[GPUBaremetalClusterInterfaceAttachParamsBodyAnySubnet](
+		"type", "any_subnet",
+	)
 }
 
 // Advanced DDoS protection.
 //
 // The property ProfileTemplate is required.
-type GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfile struct {
+type GPUBaremetalClusterInterfaceAttachParamsBodyAnySubnetDDOSProfile struct {
 	// DDoS profile template ID.
 	ProfileTemplate int64 `json:"profile_template" api:"required"`
 	// DDoS profile template name.
 	ProfileTemplateName param.Opt[string] `json:"profile_template_name,omitzero"`
 	// Protection parameters.
-	Fields []GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfileField `json:"fields,omitzero"`
+	Fields []GPUBaremetalClusterInterfaceAttachParamsBodyAnySubnetDDOSProfileField `json:"fields,omitzero"`
 	paramObj
 }
 
-func (r GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfile) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfile
+func (r GPUBaremetalClusterInterfaceAttachParamsBodyAnySubnetDDOSProfile) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyAnySubnetDDOSProfile
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfile) UnmarshalJSON(data []byte) error {
+func (r *GPUBaremetalClusterInterfaceAttachParamsBodyAnySubnetDDOSProfile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property BaseField is required.
-type GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfileField struct {
-	// ID of DDoS profile field
+type GPUBaremetalClusterInterfaceAttachParamsBodyAnySubnetDDOSProfileField struct {
+	// ID of DDoS profile field.
 	BaseField int64 `json:"base_field" api:"required"`
-	// Basic type value. Only one of 'value' or 'field_value' must be specified.
+	// Basic type value.
 	Value param.Opt[string] `json:"value,omitzero"`
-	// Complex value for the DDoS profile field
+	// Complex value for the DDoS profile field.
 	FieldValue any `json:"field_value,omitzero"`
 	paramObj
 }
 
-func (r GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfileField) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfileField
+func (r GPUBaremetalClusterInterfaceAttachParamsBodyAnySubnetDDOSProfileField) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyAnySubnetDDOSProfileField
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaDDOSProfileField) UnmarshalJSON(data []byte) error {
+func (r *GPUBaremetalClusterInterfaceAttachParamsBodyAnySubnetDDOSProfileField) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// MandatoryIdSchema schema
-//
 // The property ID is required.
-type GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaSecurityGroup struct {
+type GPUBaremetalClusterInterfaceAttachParamsBodyAnySubnetSecurityGroup struct {
 	// Resource ID
-	ID string `json:"id" api:"required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid4"`
 	paramObj
 }
 
-func (r GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaSecurityGroup
+func (r GPUBaremetalClusterInterfaceAttachParamsBodyAnySubnetSecurityGroup) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyAnySubnetSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *GPUBaremetalClusterInterfaceAttachParamsBodyNewInterfaceReservedFixedIPSchemaSecurityGroup) UnmarshalJSON(data []byte) error {
+func (r *GPUBaremetalClusterInterfaceAttachParamsBodyAnySubnetSecurityGroup) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property PortID is required.
+type GPUBaremetalClusterInterfaceAttachParamsBodyReservedFixedIP struct {
+	// Port ID.
+	PortID string `json:"port_id" api:"required" format:"uuid4"`
+	// Interface name.
+	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
+	// Each group will be added to a separate trunk.
+	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
+	// Advanced DDoS protection.
+	DDOSProfile GPUBaremetalClusterInterfaceAttachParamsBodyReservedFixedIPDDOSProfile `json:"ddos_profile,omitzero"`
+	// List of security group IDs.
+	SecurityGroups []GPUBaremetalClusterInterfaceAttachParamsBodyReservedFixedIPSecurityGroup `json:"security_groups,omitzero"`
+	// Any of "reserved_fixed_ip".
+	Type string `json:"type,omitzero"`
+	paramObj
+}
+
+func (r GPUBaremetalClusterInterfaceAttachParamsBodyReservedFixedIP) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyReservedFixedIP
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterInterfaceAttachParamsBodyReservedFixedIP) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[GPUBaremetalClusterInterfaceAttachParamsBodyReservedFixedIP](
+		"type", "reserved_fixed_ip",
+	)
+}
+
+// Advanced DDoS protection.
+//
+// The property ProfileTemplate is required.
+type GPUBaremetalClusterInterfaceAttachParamsBodyReservedFixedIPDDOSProfile struct {
+	// DDoS profile template ID.
+	ProfileTemplate int64 `json:"profile_template" api:"required"`
+	// DDoS profile template name.
+	ProfileTemplateName param.Opt[string] `json:"profile_template_name,omitzero"`
+	// Protection parameters.
+	Fields []GPUBaremetalClusterInterfaceAttachParamsBodyReservedFixedIPDDOSProfileField `json:"fields,omitzero"`
+	paramObj
+}
+
+func (r GPUBaremetalClusterInterfaceAttachParamsBodyReservedFixedIPDDOSProfile) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyReservedFixedIPDDOSProfile
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterInterfaceAttachParamsBodyReservedFixedIPDDOSProfile) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property BaseField is required.
+type GPUBaremetalClusterInterfaceAttachParamsBodyReservedFixedIPDDOSProfileField struct {
+	// ID of DDoS profile field.
+	BaseField int64 `json:"base_field" api:"required"`
+	// Basic type value.
+	Value param.Opt[string] `json:"value,omitzero"`
+	// Complex value for the DDoS profile field.
+	FieldValue any `json:"field_value,omitzero"`
+	paramObj
+}
+
+func (r GPUBaremetalClusterInterfaceAttachParamsBodyReservedFixedIPDDOSProfileField) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyReservedFixedIPDDOSProfileField
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterInterfaceAttachParamsBodyReservedFixedIPDDOSProfileField) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property ID is required.
+type GPUBaremetalClusterInterfaceAttachParamsBodyReservedFixedIPSecurityGroup struct {
+	// Resource ID
+	ID string `json:"id" api:"required" format:"uuid4"`
+	paramObj
+}
+
+func (r GPUBaremetalClusterInterfaceAttachParamsBodyReservedFixedIPSecurityGroup) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterInterfaceAttachParamsBodyReservedFixedIPSecurityGroup
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterInterfaceAttachParamsBodyReservedFixedIPSecurityGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type GPUBaremetalClusterInterfaceDetachParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// IP address
-	IPAddress string `json:"ip_address" api:"required"`
+	IPAddress string `json:"ip_address" api:"required" format:"ipvanyaddress"`
 	// ID of the port
-	PortID string `json:"port_id" api:"required"`
+	PortID string `json:"port_id" api:"required" format:"uuid4"`
 	paramObj
 }
 

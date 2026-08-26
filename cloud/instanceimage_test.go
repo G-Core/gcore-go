@@ -39,7 +39,8 @@ func TestInstanceImageUpdateWithOptionalParams(t *testing.T) {
 			OsType:         cloud.InstanceImageUpdateParamsOsTypeLinux,
 			SSHKey:         cloud.InstanceImageUpdateParamsSSHKeyAllow,
 			Tags: cloud.TagUpdateMap{
-				"my-tag": gcore.Ptr("my-tag-value"),
+				"my-tag":           gcore.Ptr("my-tag-value"),
+				"my-tag-to-remove": nil,
 			},
 		},
 	)

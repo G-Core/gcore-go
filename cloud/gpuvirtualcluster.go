@@ -1478,9 +1478,11 @@ func (r *GPUVirtualClusterUpdateParams) UnmarshalJSON(data []byte) error {
 
 // Configuration settings for the servers in the cluster
 type GPUVirtualClusterUpdateParamsServersSettings struct {
-	// Optional custom user data (Base64-encoded)
+	// Optional custom user data (Base64-encoded). Omit the field to leave it
+	// unchanged, or set it to `null` to clear the currently stored value.
 	UserData param.Opt[string] `json:"user_data,omitzero"`
-	// Optional server access credentials
+	// Optional server access credentials. Omit the field to leave it unchanged, or set
+	// it to `null` to clear the currently stored value.
 	Credentials GPUVirtualClusterUpdateParamsServersSettingsCredentials `json:"credentials,omitzero"`
 	// List of volumes
 	Volumes []GPUVirtualClusterUpdateParamsServersSettingsVolumeUnion `json:"volumes,omitzero"`
@@ -1495,7 +1497,8 @@ func (r *GPUVirtualClusterUpdateParamsServersSettings) UnmarshalJSON(data []byte
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Optional server access credentials
+// Optional server access credentials. Omit the field to leave it unchanged, or set
+// it to `null` to clear the currently stored value.
 type GPUVirtualClusterUpdateParamsServersSettingsCredentials struct {
 	// Specifies the name of the SSH keypair, created via the
 	// [/v1/`ssh_keys` endpoint](/docs/api-reference/cloud/ssh-keys/add-or-generate-ssh-key).

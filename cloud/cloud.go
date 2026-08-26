@@ -218,15 +218,7 @@ type BlackholePort struct {
 	AlarmStart time.Time `json:"AlarmStart" api:"required" format:"date-time"`
 	// Current state of alarm
 	//
-	// Any of "ACK_REQ", "ALARM", "ALARM_FAIL", "ARCHIVED", "CLEAR", "CLEARING",
-	// "CLEARING_FAIL", "CLEAR_FAIL", "END_GRACE", "END_WAIT", "MANUAL_CLEAR",
-	// "MANUAL_CLEARING", "MANUAL_CLEARING_FAIL", "MANUAL_CLEAR_FAIL",
-	// "MANUAL_MITIGATING", "MANUAL_START", "MANUAL_STARTING", "MANUAL_STARTING_FAIL",
-	// "MANUAL_START_FAIL", "MITIGATING", "STARTING", "STARTING_FAIL", "START_WAIT",
-	// "ack_req", "alarm", "archived", "clear", "clearing", "clearing_fail",
-	// "end_grace", "end_wait", "manual_clear", "manual_clearing",
-	// "manual_clearing_fail", "manual_mitigating", "manual_starting",
-	// "manual_starting_fail", "mitigating", "start_wait", "starting", "starting_fail".
+	// Any of "ALARM", "CLEAR", "MANUAL_CLEAR", "MANUAL_START".
 	AlarmState BlackholePortAlarmState `json:"AlarmState" api:"required"`
 	// Total alert duration
 	AlertDuration string `json:"AlertDuration" api:"required"`
@@ -256,47 +248,10 @@ func (r *BlackholePort) UnmarshalJSON(data []byte) error {
 type BlackholePortAlarmState string
 
 const (
-	BlackholePortAlarmStateAckReqUppercase             BlackholePortAlarmState = "ACK_REQ"
-	BlackholePortAlarmStateAlarmUppercase              BlackholePortAlarmState = "ALARM"
-	BlackholePortAlarmStateAlarmFail                   BlackholePortAlarmState = "ALARM_FAIL"
-	BlackholePortAlarmStateArchivedUppercase           BlackholePortAlarmState = "ARCHIVED"
-	BlackholePortAlarmStateClearUppercase              BlackholePortAlarmState = "CLEAR"
-	BlackholePortAlarmStateClearingUppercase           BlackholePortAlarmState = "CLEARING"
-	BlackholePortAlarmStateClearingFailUppercase       BlackholePortAlarmState = "CLEARING_FAIL"
-	BlackholePortAlarmStateClearFail                   BlackholePortAlarmState = "CLEAR_FAIL"
-	BlackholePortAlarmStateEndGraceUppercase           BlackholePortAlarmState = "END_GRACE"
-	BlackholePortAlarmStateEndWaitUppercase            BlackholePortAlarmState = "END_WAIT"
-	BlackholePortAlarmStateManualClearUppercase        BlackholePortAlarmState = "MANUAL_CLEAR"
-	BlackholePortAlarmStateManualClearingUppercase     BlackholePortAlarmState = "MANUAL_CLEARING"
-	BlackholePortAlarmStateManualClearingFailUppercase BlackholePortAlarmState = "MANUAL_CLEARING_FAIL"
-	BlackholePortAlarmStateManualClearFail             BlackholePortAlarmState = "MANUAL_CLEAR_FAIL"
-	BlackholePortAlarmStateManualMitigatingUppercase   BlackholePortAlarmState = "MANUAL_MITIGATING"
-	BlackholePortAlarmStateManualStart                 BlackholePortAlarmState = "MANUAL_START"
-	BlackholePortAlarmStateManualStartingUppercase     BlackholePortAlarmState = "MANUAL_STARTING"
-	BlackholePortAlarmStateManualStartingFailUppercase BlackholePortAlarmState = "MANUAL_STARTING_FAIL"
-	BlackholePortAlarmStateManualStartFail             BlackholePortAlarmState = "MANUAL_START_FAIL"
-	BlackholePortAlarmStateMitigatingUppercase         BlackholePortAlarmState = "MITIGATING"
-	BlackholePortAlarmStateStartingUppercase           BlackholePortAlarmState = "STARTING"
-	BlackholePortAlarmStateStartingFailUppercase       BlackholePortAlarmState = "STARTING_FAIL"
-	BlackholePortAlarmStateStartWaitUppercase          BlackholePortAlarmState = "START_WAIT"
-	BlackholePortAlarmStateAckReq                      BlackholePortAlarmState = "ack_req"
-	BlackholePortAlarmStateAlarm                       BlackholePortAlarmState = "alarm"
-	BlackholePortAlarmStateArchived                    BlackholePortAlarmState = "archived"
-	BlackholePortAlarmStateClear                       BlackholePortAlarmState = "clear"
-	BlackholePortAlarmStateClearing                    BlackholePortAlarmState = "clearing"
-	BlackholePortAlarmStateClearingFail                BlackholePortAlarmState = "clearing_fail"
-	BlackholePortAlarmStateEndGrace                    BlackholePortAlarmState = "end_grace"
-	BlackholePortAlarmStateEndWait                     BlackholePortAlarmState = "end_wait"
-	BlackholePortAlarmStateManualClear                 BlackholePortAlarmState = "manual_clear"
-	BlackholePortAlarmStateManualClearing              BlackholePortAlarmState = "manual_clearing"
-	BlackholePortAlarmStateManualClearingFail          BlackholePortAlarmState = "manual_clearing_fail"
-	BlackholePortAlarmStateManualMitigating            BlackholePortAlarmState = "manual_mitigating"
-	BlackholePortAlarmStateManualStarting              BlackholePortAlarmState = "manual_starting"
-	BlackholePortAlarmStateManualStartingFail          BlackholePortAlarmState = "manual_starting_fail"
-	BlackholePortAlarmStateMitigating                  BlackholePortAlarmState = "mitigating"
-	BlackholePortAlarmStateStartWait                   BlackholePortAlarmState = "start_wait"
-	BlackholePortAlarmStateStarting                    BlackholePortAlarmState = "starting"
-	BlackholePortAlarmStateStartingFail                BlackholePortAlarmState = "starting_fail"
+	BlackholePortAlarmStateAlarm       BlackholePortAlarmState = "ALARM"
+	BlackholePortAlarmStateClear       BlackholePortAlarmState = "CLEAR"
+	BlackholePortAlarmStateManualClear BlackholePortAlarmState = "MANUAL_CLEAR"
+	BlackholePortAlarmStateManualStart BlackholePortAlarmState = "MANUAL_START"
 )
 
 type Console struct {

@@ -184,6 +184,7 @@ func TestK8SClusterPoolCheckQuotaWithOptionalParams(t *testing.T) {
 		RegionID:          gcore.Int(7),
 		FlavorID:          "g1-standard-1-2",
 		BootVolumeSize:    gcore.Int(50),
+		IsPublicIpv4:      gcore.Bool(true),
 		MaxNodeCount:      gcore.Int(5),
 		MinNodeCount:      gcore.Int(3),
 		Name:              gcore.String("test"),

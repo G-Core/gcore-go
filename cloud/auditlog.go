@@ -80,14 +80,15 @@ type AuditLogEntry struct {
 	ActionType AuditLogEntryActionType `json:"action_type" api:"required"`
 	// API group
 	//
-	// Any of "ai_cluster", "caas_container", "caas_key", "caas_pull_secret",
-	// "dbaas_postgres", "ddos_profile", "faas_function", "faas_key", "faas_namespace",
-	// "file_shares", "floating_ip", "image", "inference_at_the_edge", "instance",
-	// "instance_isolation", "k8s_cluster", "k8s_cluster_template", "k8s_pool", "laas",
-	// "laas_topic", "lb_health_monitor", "lb_l7policy", "lb_l7rule", "lblistener",
-	// "lbpool", "lbpool_member", "lifecycle_policy", "lifecycle_policy_volume_member",
-	// "loadbalancer", "network", "port", "project", "quota_limit_request", "registry",
-	// "reservation", "reserved_fixed_ip", "role", "router", "secret", "securitygroup",
+	// Any of "ai_cluster", "baremetal", "basic_vm", "caas_container", "caas_key",
+	// "caas_pull_secret", "dbaas_postgres", "ddos_profile", "faas_function",
+	// "faas_key", "faas_namespace", "file_shares", "floating_ip", "image",
+	// "inference_at_the_edge", "instance", "instance_isolation", "k8s_cluster",
+	// "k8s_cluster_template", "k8s_pool", "laas", "laas_topic", "lb_health_monitor",
+	// "lb_l7policy", "lb_l7rule", "lblistener", "lbpool", "lbpool_member",
+	// "lifecycle_policy", "lifecycle_policy_volume_member", "loadbalancer", "network",
+	// "port", "project", "quota_limit_request", "registry", "reservation",
+	// "reserved_fixed_ip", "role", "router", "rtbh", "secret", "securitygroup",
 	// "securitygrouprule", "servergroup", "shared_flavor", "shared_image",
 	// "shared_network", "snapshot", "snapshot_schedule", "ssh_key", "subnet", "user",
 	// "vip_ip_addresses", "volume".
@@ -200,6 +201,8 @@ type AuditLogEntryAPIGroup string
 
 const (
 	AuditLogEntryAPIGroupAICluster                   AuditLogEntryAPIGroup = "ai_cluster"
+	AuditLogEntryAPIGroupBaremetal                   AuditLogEntryAPIGroup = "baremetal"
+	AuditLogEntryAPIGroupBasicVm                     AuditLogEntryAPIGroup = "basic_vm"
 	AuditLogEntryAPIGroupCaasContainer               AuditLogEntryAPIGroup = "caas_container"
 	AuditLogEntryAPIGroupCaasKey                     AuditLogEntryAPIGroup = "caas_key"
 	AuditLogEntryAPIGroupCaasPullSecret              AuditLogEntryAPIGroup = "caas_pull_secret"
@@ -237,6 +240,7 @@ const (
 	AuditLogEntryAPIGroupReservedFixedIP             AuditLogEntryAPIGroup = "reserved_fixed_ip"
 	AuditLogEntryAPIGroupRole                        AuditLogEntryAPIGroup = "role"
 	AuditLogEntryAPIGroupRouter                      AuditLogEntryAPIGroup = "router"
+	AuditLogEntryAPIGroupRtbh                        AuditLogEntryAPIGroup = "rtbh"
 	AuditLogEntryAPIGroupSecret                      AuditLogEntryAPIGroup = "secret"
 	AuditLogEntryAPIGroupSecuritygroup               AuditLogEntryAPIGroup = "securitygroup"
 	AuditLogEntryAPIGroupSecuritygrouprule           AuditLogEntryAPIGroup = "securitygrouprule"
@@ -258,21 +262,22 @@ type AuditLogEntryResource struct {
 	ResourceID string `json:"resource_id" api:"required"`
 	// Resource type
 	//
-	// Any of "caas_container", "caas_key", "caas_pull_secret", "dbaas_postgres",
-	// "ddos_profile", "external_ip", "faas_function", "faas_key", "faas_namespace",
-	// "file_shares", "floating_ip", "gpu_baremetal_server", "gpu_virtual_server",
-	// "gpuai_cluster", "image", "inference_api_key", "inference_application",
-	// "inference_instance", "inference_registry_credentials", "inference_secret",
-	// "instance", "ipu_cluster", "k8s_cluster", "k8s_cluster_template", "k8s_pool",
-	// "laas", "laas_topic", "lb_health_monitor", "lb_l7policy", "lb_l7rule",
-	// "lblistener", "lbpool", "lbpool_member", "lifecycle_policy",
-	// "lifecycle_policy_volume_member", "loadbalancer", "network", "port", "project",
-	// "quota_limit_request", "registry", "registry_repository",
-	// "registry_repository_artifact", "registry_repository_tag", "registry_user",
-	// "registry_user_sercret", "reservation", "role", "router", "secret",
-	// "securitygroup", "securitygrouprule", "servergroup", "shared_flavor",
-	// "shared_image", "shared_network", "snapshot", "snapshot_schedule", "ssh_key",
-	// "subnet", "token", "user", "virtual_gpu_cluster", "volume".
+	// Any of "baremetal_server", "basic_vm", "caas_container", "caas_key",
+	// "caas_pull_secret", "dbaas_postgres", "ddos_profile", "external_ip",
+	// "faas_function", "faas_key", "faas_namespace", "file_shares", "floating_ip",
+	// "gpu_baremetal_server", "gpu_virtual_server", "gpuai_cluster", "image",
+	// "inference_api_key", "inference_application", "inference_instance",
+	// "inference_registry_credentials", "inference_secret", "instance", "ipu_cluster",
+	// "k8s_cluster", "k8s_cluster_template", "k8s_pool", "laas", "laas_topic",
+	// "lb_health_monitor", "lb_l7policy", "lb_l7rule", "lblistener", "lbpool",
+	// "lbpool_member", "lifecycle_policy", "lifecycle_policy_volume_member",
+	// "loadbalancer", "network", "port", "project", "quota_limit_request", "registry",
+	// "registry_repository", "registry_repository_artifact",
+	// "registry_repository_tag", "registry_user", "registry_user_sercret",
+	// "reservation", "role", "router", "secret", "securitygroup", "securitygrouprule",
+	// "servergroup", "shared_flavor", "shared_image", "shared_network", "snapshot",
+	// "snapshot_schedule", "ssh_key", "subnet", "token", "user",
+	// "virtual_gpu_cluster", "volume".
 	ResourceType string `json:"resource_type" api:"required"`
 	// Free-form object, resource body.
 	ResourceBody map[string]any `json:"resource_body" api:"nullable"`
@@ -353,14 +358,15 @@ type AuditLogListParams struct {
 	ActionType []string `query:"action_type,omitzero" json:"-"`
 	// API group that requested action belongs to. Several options can be specified.
 	//
-	// Any of "ai_cluster", "caas_container", "caas_key", "caas_pull_secret",
-	// "dbaas_postgres", "ddos_profile", "faas_function", "faas_key", "faas_namespace",
-	// "file_shares", "floating_ip", "image", "inference_at_the_edge", "instance",
-	// "instance_isolation", "k8s_cluster", "k8s_cluster_template", "k8s_pool", "laas",
-	// "laas_topic", "lb_health_monitor", "lb_l7policy", "lb_l7rule", "lblistener",
-	// "lbpool", "lbpool_member", "lifecycle_policy", "lifecycle_policy_volume_member",
-	// "loadbalancer", "network", "port", "project", "quota_limit_request", "registry",
-	// "reservation", "reserved_fixed_ip", "role", "router", "secret", "securitygroup",
+	// Any of "ai_cluster", "baremetal", "basic_vm", "caas_container", "caas_key",
+	// "caas_pull_secret", "dbaas_postgres", "ddos_profile", "faas_function",
+	// "faas_key", "faas_namespace", "file_shares", "floating_ip", "image",
+	// "inference_at_the_edge", "instance", "instance_isolation", "k8s_cluster",
+	// "k8s_cluster_template", "k8s_pool", "laas", "laas_topic", "lb_health_monitor",
+	// "lb_l7policy", "lb_l7rule", "lblistener", "lbpool", "lbpool_member",
+	// "lifecycle_policy", "lifecycle_policy_volume_member", "loadbalancer", "network",
+	// "port", "project", "quota_limit_request", "registry", "reservation",
+	// "reserved_fixed_ip", "role", "router", "rtbh", "secret", "securitygroup",
 	// "securitygrouprule", "servergroup", "shared_flavor", "shared_image",
 	// "shared_network", "snapshot", "snapshot_schedule", "ssh_key", "subnet", "user",
 	// "vip_ip_addresses", "volume".

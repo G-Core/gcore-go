@@ -65,7 +65,9 @@ func (r *NetworkRouterService) New(ctx context.Context, params NetworkRouterNewP
 	return res, err
 }
 
-// Update the configuration of an existing router.
+// Update the configuration of an existing router. Fields that already match the
+// current router state are skipped. If no fields change, no task is created and an
+// empty task list is returned.
 func (r *NetworkRouterService) Update(ctx context.Context, routerID string, params NetworkRouterUpdateParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)

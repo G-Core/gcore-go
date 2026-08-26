@@ -37,7 +37,11 @@ func NewLoadBalancerPoolMemberService(opts ...option.RequestOption) (r LoadBalan
 	return
 }
 
-// Create load balancer pool member
+// **Deprecated**: Use
+// `POST /v1/loadbalancers/{project_id}/{region_id}/pools/{pool_id}/members`
+// instead.
+//
+// Deprecated: deprecated
 func (r *LoadBalancerPoolMemberService) New(ctx context.Context, poolID string, params LoadBalancerPoolMemberNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -63,7 +67,11 @@ func (r *LoadBalancerPoolMemberService) New(ctx context.Context, poolID string, 
 	return res, err
 }
 
-// Delete load balancer pool member
+// **Deprecated**: Use
+// `DELETE /v1/loadbalancers/{project_id}/{region_id}/pools/{pool_id}/members/{member_id}`
+// instead.
+//
+// Deprecated: deprecated
 func (r *LoadBalancerPoolMemberService) Delete(ctx context.Context, memberID string, body LoadBalancerPoolMemberDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)

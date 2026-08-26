@@ -28,10 +28,10 @@ func TestInstanceMetricListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.Instances.Metrics.List(
 		context.TODO(),
-		"instance_id",
+		"b5b4d65d-945f-4b98-ab6f-332319c724ef",
 		cloud.InstanceMetricListParams{
-			ProjectID:    gcore.Int(0),
-			RegionID:     gcore.Int(0),
+			ProjectID:    gcore.Int(1),
+			RegionID:     gcore.Int(1),
 			TimeInterval: 6,
 			TimeUnit:     cloud.InstanceMetricsTimeUnitHour,
 			Limit:        gcore.Int(1000),

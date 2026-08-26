@@ -267,8 +267,8 @@ func (r *VolumeService) Get(ctx context.Context, volumeID string, query VolumeGe
 	return res, err
 }
 
-// Increase the size of a volume. The new size must be greater than the current
-// size.
+// Increase the size of a volume. The volume must be in an available or in-use
+// state to be extended. The new size must be greater than the current size.
 func (r *VolumeService) Resize(ctx context.Context, volumeID string, params VolumeResizeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)

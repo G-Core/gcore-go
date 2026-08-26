@@ -169,8 +169,9 @@ func (r *K8SClusterPoolService) Delete(ctx context.Context, poolName string, bod
 
 // Calculate quota requirements for a new cluster pool before creation. Returns
 // exceeded quotas if regional limits would be violated. Use before pool creation
-// to validate resource availability. Checks: CPU, RAM, volumes, VMs, GPUs, and
-// baremetal quotas depending on flavor type.
+// to validate resource availability. Checks: CPU, RAM, volumes, VMs, GPUs,
+// external IPs (for pools with `is_public_ipv4`), and baremetal quotas depending
+// on flavor type.
 func (r *K8SClusterPoolService) CheckQuota(ctx context.Context, params K8SClusterPoolCheckQuotaParams, opts ...option.RequestOption) (res *K8SClusterPoolQuota, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -373,6 +374,12 @@ type K8SClusterPoolQuota struct {
 	CPUCountRequested int64 `json:"cpu_count_requested"`
 	// vCPU Count usage
 	CPUCountUsage int64 `json:"cpu_count_usage"`
+	// External IP Count limit
+	ExternalIPCountLimit int64 `json:"external_ip_count_limit"`
+	// External IP Count requested
+	ExternalIPCountRequested int64 `json:"external_ip_count_requested"`
+	// External IP Count usage
+	ExternalIPCountUsage int64 `json:"external_ip_count_usage"`
 	// Firewalls Count limit
 	FirewallCountLimit int64 `json:"firewall_count_limit"`
 	// Firewalls Count requested
@@ -480,6 +487,9 @@ type K8SClusterPoolQuota struct {
 		CPUCountLimit                  respjson.Field
 		CPUCountRequested              respjson.Field
 		CPUCountUsage                  respjson.Field
+		ExternalIPCountLimit           respjson.Field
+		ExternalIPCountRequested       respjson.Field
+		ExternalIPCountUsage           respjson.Field
 		FirewallCountLimit             respjson.Field
 		FirewallCountRequested         respjson.Field
 		FirewallCountUsage             respjson.Field
@@ -684,6 +694,9 @@ type K8SClusterPoolCheckQuotaParams struct {
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Maximum node count
 	NodeCount param.Opt[int64] `json:"node_count,omitzero"`
+	// Enable public IPv4 address for pool nodes. Each node consumes one external IP
+	// quota unit
+	IsPublicIpv4 param.Opt[bool] `json:"is_public_ipv4,omitzero"`
 	// Server group policy: anti-affinity, soft-anti-affinity or affinity
 	//
 	// Any of "affinity", "anti-affinity", "soft-anti-affinity".

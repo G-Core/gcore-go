@@ -1060,7 +1060,11 @@ type LoadBalancerPool struct {
 	Listeners []LoadBalancerPoolListener `json:"listeners" api:"required"`
 	// Load balancers IDs
 	Loadbalancers []LoadBalancerPoolLoadbalancer `json:"loadbalancers" api:"required"`
-	// Pool members
+	// Pool members. Deprecated. Use
+	// `GET /v1/loadbalancers/{project_id}/{region_id}/pools/{pool_id}/members`
+	// instead.
+	//
+	// Deprecated: deprecated
 	Members []Member `json:"members" api:"required"`
 	// Pool name
 	Name string `json:"name" api:"required"`
@@ -1203,7 +1207,11 @@ type LoadBalancerPoolListResult struct {
 	Listeners []LoadBalancerPoolListResultListener `json:"listeners" api:"required"`
 	// Load balancers IDs
 	Loadbalancers []LoadBalancerPoolListResultLoadbalancer `json:"loadbalancers" api:"required"`
-	// Pool members
+	// Pool members. Deprecated. Use
+	// `GET /v1/loadbalancers/{project_id}/{region_id}/pools/{pool_id}/members`
+	// instead.
+	//
+	// Deprecated: deprecated
 	Members []LoadBalancerPoolListResultMemberUnion `json:"members" api:"required"`
 	// Pool name
 	Name string `json:"name" api:"required"`
@@ -1316,6 +1324,10 @@ type LoadBalancerPoolListResultMemberUnion struct {
 	// This field is from variant [Member].
 	Backup bool `json:"backup"`
 	// This field is from variant [Member].
+	MonitorAddress string `json:"monitor_address"`
+	// This field is from variant [Member].
+	MonitorPort int64 `json:"monitor_port"`
+	// This field is from variant [Member].
 	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status"`
 	// This field is from variant [Member].
 	ProtocolPort int64 `json:"protocol_port"`
@@ -1325,22 +1337,18 @@ type LoadBalancerPoolListResultMemberUnion struct {
 	SubnetID string `json:"subnet_id"`
 	// This field is from variant [Member].
 	Weight int64 `json:"weight"`
-	// This field is from variant [Member].
-	MonitorAddress string `json:"monitor_address"`
-	// This field is from variant [Member].
-	MonitorPort int64 `json:"monitor_port"`
-	JSON        struct {
+	JSON   struct {
 		ID                 respjson.Field
 		Address            respjson.Field
 		AdminStateUp       respjson.Field
 		Backup             respjson.Field
+		MonitorAddress     respjson.Field
+		MonitorPort        respjson.Field
 		OperatingStatus    respjson.Field
 		ProtocolPort       respjson.Field
 		ProvisioningStatus respjson.Field
 		SubnetID           respjson.Field
 		Weight             respjson.Field
-		MonitorAddress     respjson.Field
-		MonitorPort        respjson.Field
 		raw                string
 	} `json:"-"`
 }
@@ -1454,6 +1462,12 @@ type Member struct {
 	// realize ACTIVE-BACKUP load balancing without thinking about VRRP and VIP
 	// configuration. Default is false
 	Backup bool `json:"backup" api:"required"`
+	// An alternate IP address used for health monitoring of a backend member. Default
+	// is null which monitors the member address.
+	MonitorAddress string `json:"monitor_address" api:"required" format:"ipvanyaddress"`
+	// An alternate protocol port used for health monitoring of a backend member.
+	// Default is null which monitors the member `protocol_port`.
+	MonitorPort int64 `json:"monitor_port" api:"required"`
 	// Member operating status of the entity
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
@@ -1484,25 +1498,19 @@ type Member struct {
 	//     weights 2 vs 1 = roughly two-thirds of distinct client IPs map to the
 	//     higher-weight member.
 	Weight int64 `json:"weight" api:"required"`
-	// An alternate IP address used for health monitoring of a backend member. Default
-	// is null which monitors the member address.
-	MonitorAddress string `json:"monitor_address" api:"nullable" format:"ipvanyaddress"`
-	// An alternate protocol port used for health monitoring of a backend member.
-	// Default is null which monitors the member `protocol_port`.
-	MonitorPort int64 `json:"monitor_port" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
 		Address            respjson.Field
 		AdminStateUp       respjson.Field
 		Backup             respjson.Field
+		MonitorAddress     respjson.Field
+		MonitorPort        respjson.Field
 		OperatingStatus    respjson.Field
 		ProtocolPort       respjson.Field
 		ProvisioningStatus respjson.Field
 		SubnetID           respjson.Field
 		Weight             respjson.Field
-		MonitorAddress     respjson.Field
-		MonitorPort        respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`

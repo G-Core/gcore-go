@@ -189,7 +189,7 @@ func (r *InstanceService) Delete(ctx context.Context, instanceID string, params 
 	return res, err
 }
 
-// The action can be one of: start, stop, reboot, powercycle, suspend or resume.
+// The action can be one of: start, stop, reboot, `reboot_hard`, suspend or resume.
 // Suspend and resume are not available for bare metal instances.
 func (r *InstanceService) Action(ctx context.Context, instanceID string, params InstanceActionParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -364,7 +364,9 @@ func (r *InstanceService) Get(ctx context.Context, instanceID string, query Inst
 	return res, err
 }
 
-// Get instance console URL
+// Returns a URL to access the remote console for an instance. Supported console
+// types depend on instance type: novnc and spice for virtual instances, vnc and
+// serial for bare metal instances.
 func (r *InstanceService) GetConsole(ctx context.Context, instanceID string, params InstanceGetConsoleParams, opts ...option.RequestOption) (res *Console, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -417,7 +419,7 @@ func (r *InstanceService) RemoveFromPlacementGroup(ctx context.Context, instance
 	return res, err
 }
 
-// Change flavor of the instance
+// Change flavor of the instance.
 func (r *InstanceService) Resize(ctx context.Context, instanceID string, params InstanceResizeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -1977,8 +1979,10 @@ func (r InstanceDeleteParams) URLQuery() (v url.Values, err error) {
 }
 
 type InstanceActionParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 
 	//
 	// Request body variants
@@ -2115,10 +2119,14 @@ type InstanceGetParams struct {
 }
 
 type InstanceGetConsoleParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Console type
-	ConsoleType param.Opt[string] `query:"console_type,omitzero" json:"-"`
+	//
+	// Any of "novnc", "serial", "spice", "vnc".
+	ConsoleType InstanceGetConsoleParamsConsoleType `query:"console_type,omitzero" json:"-"`
 	paramObj
 }
 
@@ -2131,6 +2139,16 @@ func (r InstanceGetConsoleParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
+// Console type
+type InstanceGetConsoleParamsConsoleType string
+
+const (
+	InstanceGetConsoleParamsConsoleTypeNovnc  InstanceGetConsoleParamsConsoleType = "novnc"
+	InstanceGetConsoleParamsConsoleTypeSerial InstanceGetConsoleParamsConsoleType = "serial"
+	InstanceGetConsoleParamsConsoleTypeSpice  InstanceGetConsoleParamsConsoleType = "spice"
+	InstanceGetConsoleParamsConsoleTypeVnc    InstanceGetConsoleParamsConsoleType = "vnc"
+)
+
 type InstanceRemoveFromPlacementGroupParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
@@ -2140,8 +2158,10 @@ type InstanceRemoveFromPlacementGroupParams struct {
 }
 
 type InstanceResizeParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Flavor ID
 	FlavorID string `json:"flavor_id" api:"required"`
 	paramObj

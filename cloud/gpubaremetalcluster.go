@@ -1407,9 +1407,11 @@ func (r *GPUBaremetalClusterUpdateParams) UnmarshalJSON(data []byte) error {
 
 // Configuration settings for the servers in the cluster
 type GPUBaremetalClusterUpdateParamsServersSettings struct {
-	// Optional custom user data (Base64-encoded)
+	// Optional custom user data (Base64-encoded). Omit the field to leave it
+	// unchanged, or set it to `null` to clear the currently stored value.
 	UserData param.Opt[string] `json:"user_data,omitzero"`
-	// Optional server access credentials
+	// Optional server access credentials. Omit the field to leave it unchanged, or set
+	// it to `null` to clear the currently stored value.
 	Credentials GPUBaremetalClusterUpdateParamsServersSettingsCredentials `json:"credentials,omitzero"`
 	paramObj
 }
@@ -1422,7 +1424,8 @@ func (r *GPUBaremetalClusterUpdateParamsServersSettings) UnmarshalJSON(data []by
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Optional server access credentials
+// Optional server access credentials. Omit the field to leave it unchanged, or set
+// it to `null` to clear the currently stored value.
 type GPUBaremetalClusterUpdateParamsServersSettingsCredentials struct {
 	// Specifies the name of the SSH keypair, created via the
 	// [/v1/`ssh_keys` endpoint](/docs/api-reference/cloud/ssh-keys/add-or-generate-ssh-key).
@@ -1761,9 +1764,11 @@ func (r *GPUBaremetalClusterUpdateServersSettingsParams) UnmarshalJSON(data []by
 
 // Configuration settings for the servers in the cluster
 type GPUBaremetalClusterUpdateServersSettingsParamsServersSettings struct {
-	// Optional custom user data (Base64-encoded)
+	// Optional custom user data (Base64-encoded). Omit the field to leave it
+	// unchanged, or set it to `null` to clear the currently stored value.
 	UserData param.Opt[string] `json:"user_data,omitzero"`
-	// Optional server access credentials
+	// Optional server access credentials. Omit the field to leave it unchanged, or set
+	// it to `null` to clear the currently stored value.
 	Credentials GPUBaremetalClusterUpdateServersSettingsParamsServersSettingsCredentials `json:"credentials,omitzero"`
 	paramObj
 }
@@ -1776,7 +1781,8 @@ func (r *GPUBaremetalClusterUpdateServersSettingsParamsServersSettings) Unmarsha
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Optional server access credentials
+// Optional server access credentials. Omit the field to leave it unchanged, or set
+// it to `null` to clear the currently stored value.
 type GPUBaremetalClusterUpdateServersSettingsParamsServersSettingsCredentials struct {
 	// Specifies the name of the SSH keypair, created via the
 	// [/v1/`ssh_keys` endpoint](/docs/api-reference/cloud/ssh-keys/add-or-generate-ssh-key).
