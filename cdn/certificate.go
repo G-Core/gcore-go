@@ -241,9 +241,12 @@ type SslRequestStatus struct {
 	// 8601/RFC 3339 format, UTC).
 	//
 	// The field is **null** if the issuing process is not finished.
-	Finished string `json:"finished"`
+	Finished string `json:"finished" api:"nullable"`
 	// Detailed information about last attempt to issue a Let's Encrypt certificate.
-	LatestStatus SslRequestStatusLatestStatus `json:"latest_status"`
+	//
+	// The field is **null** until the first attempt of the issuing process has been
+	// recorded.
+	LatestStatus SslRequestStatusLatestStatus `json:"latest_status" api:"nullable"`
 	// Time of the next scheduled attempt to issue the Let's Encrypt certificate (ISO
 	// 8601/RFC 3339 format, UTC).
 	NextAttemptTime string `json:"next_attempt_time" api:"nullable"`
@@ -277,6 +280,9 @@ func (r *SslRequestStatus) UnmarshalJSON(data []byte) error {
 }
 
 // Detailed information about last attempt to issue a Let's Encrypt certificate.
+//
+// The field is **null** until the first attempt of the issuing process has been
+// recorded.
 type SslRequestStatusLatestStatus struct {
 	// ID of the attempt to issue the Let's Encrypt certificate.
 	ID int64 `json:"id"`

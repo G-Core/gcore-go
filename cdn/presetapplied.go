@@ -51,8 +51,6 @@ func (r *PresetAppliedService) Apply(ctx context.Context, presetID int64, body P
 }
 
 // Get the list of objects the preset is currently applied to.
-//
-// Non-staff users only see objects that belong to their account.
 func (r *PresetAppliedService) GetObjects(ctx context.Context, presetID int64, opts ...option.RequestOption) (res *AppliedPreset, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/presets/%v/applied", presetID)

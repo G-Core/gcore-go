@@ -91,9 +91,9 @@ func (r *LogService) Download(ctx context.Context, query LogDownloadParams, opts
 
 type CDNLogEntry struct {
 	// Contains requested logs.
-	Data []CDNLogEntryData `json:"data"`
+	Data []CDNLogEntryData `json:"data" api:"required"`
 	// Contains meta-information.
-	Meta CDNLogEntryMeta `json:"meta"`
+	Meta CDNLogEntryMeta `json:"meta" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -170,7 +170,7 @@ func (r *CDNLogEntryData) UnmarshalJSON(data []byte) error {
 // Contains meta-information.
 type CDNLogEntryMeta struct {
 	// Total number of records which match given parameters.
-	Count int64 `json:"count"`
+	Count int64 `json:"count" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
