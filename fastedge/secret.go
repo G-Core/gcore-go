@@ -15,6 +15,7 @@ import (
 	shimjson "github.com/G-Core/gcore-go/internal/encoding/json"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -60,11 +61,27 @@ func (r *SecretService) Update(ctx context.Context, secretID int64, body SecretU
 
 // Retrieve encrypted secrets available to the authenticated client. Secrets can be
 // filtered by application ID or name. Values are encrypted and require decryption.
-func (r *SecretService) List(ctx context.Context, query SecretListParams, opts ...option.RequestOption) (res *SecretListResponse, err error) {
+func (r *SecretService) List(ctx context.Context, query SecretListParams, opts ...option.RequestOption) (res *pagination.OffsetPageFastedgeSecrets[SecretShort], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "fastedge/v1/secrets"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve encrypted secrets available to the authenticated client. Secrets can be
+// filtered by application ID or name. Values are encrypted and require decryption.
+func (r *SecretService) ListAutoPaging(ctx context.Context, query SecretListParams, opts ...option.RequestOption) *pagination.OffsetPageFastedgeSecretsAutoPager[SecretShort] {
+	return pagination.NewOffsetPageFastedgeSecretsAutoPager(r.List(ctx, query, opts...))
 }
 
 // Permanently delete a secret and all its slot values. Secrets in use by
@@ -234,25 +251,6 @@ func (r *SecretNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type SecretListResponse struct {
-	// Total number of secrets matching the filters
-	Count   int64         `json:"count" api:"required"`
-	Secrets []SecretShort `json:"secrets" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Secrets     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SecretListResponse) RawJSON() string { return r.JSON.raw }
-func (r *SecretListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type SecretNewParams struct {
 	Secret SecretParam
 	paramObj
@@ -280,6 +278,12 @@ func (r *SecretUpdateParams) UnmarshalJSON(data []byte) error {
 type SecretListParams struct {
 	// App ID
 	AppID param.Opt[int64] `query:"app_id,omitzero" json:"-"`
+	// Maximum number of secrets to return per page
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Number of secrets to skip for pagination
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	// Search term for secret names
+	Search param.Opt[string] `query:"search,omitzero" json:"-"`
 	// Secret name
 	SecretName param.Opt[string] `query:"secret_name,omitzero" json:"-"`
 	paramObj

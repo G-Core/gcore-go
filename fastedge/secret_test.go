@@ -94,6 +94,9 @@ func TestSecretListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Fastedge.Secrets.List(context.TODO(), fastedge.SecretListParams{
 		AppID:      gcore.Int(1),
+		Limit:      gcore.Int(1),
+		Offset:     gcore.Int(0),
+		Search:     gcore.String("x"),
 		SecretName: gcore.String("x"),
 	})
 	if err != nil {

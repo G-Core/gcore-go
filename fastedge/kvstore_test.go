@@ -61,6 +61,7 @@ func TestKvStoreListWithOptionalParams(t *testing.T) {
 		AppID:  gcore.Int(1),
 		Limit:  gcore.Int(1),
 		Offset: gcore.Int(0),
+		Search: gcore.String("x"),
 	})
 	if err != nil {
 		var apierr *gcore.Error

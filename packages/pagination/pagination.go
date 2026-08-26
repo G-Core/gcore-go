@@ -1317,3 +1317,112 @@ func (r *OffsetPageFastedgeKvStoresAutoPager[T]) Err() error {
 func (r *OffsetPageFastedgeKvStoresAutoPager[T]) Index() int {
 	return r.run
 }
+
+type OffsetPageFastedgeSecrets[T any] struct {
+	Secrets []T   `json:"secrets"`
+	Count   int64 `json:"count" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Secrets     respjson.Field
+		Count       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	cfg *requestconfig.RequestConfig
+	res *http.Response
+}
+
+// Returns the unmodified JSON received from the API
+func (r OffsetPageFastedgeSecrets[T]) RawJSON() string { return r.JSON.raw }
+func (r *OffsetPageFastedgeSecrets[T]) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// GetNextPage returns the next page as defined by this pagination style. When
+// there is no next page, this function will return a 'nil' for the page value, but
+// will not return an error
+func (r *OffsetPageFastedgeSecrets[T]) GetNextPage() (res *OffsetPageFastedgeSecrets[T], err error) {
+	if len(r.Secrets) == 0 {
+		return nil, nil
+	}
+	cfg := r.cfg.Clone(r.cfg.Context)
+
+	q := cfg.Request.URL.Query()
+	offset, err := strconv.ParseInt(q.Get("offset"), 10, 64)
+	if err != nil {
+		offset = 0
+	}
+	length := int64(len(r.Secrets))
+	next := offset + length
+
+	if next < r.Count && next != 0 {
+		err = cfg.Apply(option.WithQuery("offset", strconv.FormatInt(next, 10)))
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		return nil, nil
+	}
+	var raw *http.Response
+	cfg.ResponseInto = &raw
+	cfg.ResponseBodyInto = &res
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+func (r *OffsetPageFastedgeSecrets[T]) SetPageConfig(cfg *requestconfig.RequestConfig, res *http.Response) {
+	if r == nil {
+		r = &OffsetPageFastedgeSecrets[T]{}
+	}
+	r.cfg = cfg
+	r.res = res
+}
+
+type OffsetPageFastedgeSecretsAutoPager[T any] struct {
+	page *OffsetPageFastedgeSecrets[T]
+	cur  T
+	idx  int
+	run  int
+	err  error
+	paramObj
+}
+
+func NewOffsetPageFastedgeSecretsAutoPager[T any](page *OffsetPageFastedgeSecrets[T], err error) *OffsetPageFastedgeSecretsAutoPager[T] {
+	return &OffsetPageFastedgeSecretsAutoPager[T]{
+		page: page,
+		err:  err,
+	}
+}
+
+func (r *OffsetPageFastedgeSecretsAutoPager[T]) Next() bool {
+	if r.page == nil || len(r.page.Secrets) == 0 {
+		return false
+	}
+	if r.idx >= len(r.page.Secrets) {
+		r.idx = 0
+		r.page, r.err = r.page.GetNextPage()
+		if r.err != nil || r.page == nil || len(r.page.Secrets) == 0 {
+			return false
+		}
+	}
+	r.cur = r.page.Secrets[r.idx]
+	r.run += 1
+	r.idx += 1
+	return true
+}
+
+func (r *OffsetPageFastedgeSecretsAutoPager[T]) Current() T {
+	return r.cur
+}
+
+func (r *OffsetPageFastedgeSecretsAutoPager[T]) Err() error {
+	return r.err
+}
+
+func (r *OffsetPageFastedgeSecretsAutoPager[T]) Index() int {
+	return r.run
+}

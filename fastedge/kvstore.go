@@ -273,6 +273,8 @@ type KvStoreListParams struct {
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Number of stores to skip for pagination
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	// Search term for store names
+	Search param.Opt[string] `query:"search,omitzero" json:"-"`
 	paramObj
 }
 
