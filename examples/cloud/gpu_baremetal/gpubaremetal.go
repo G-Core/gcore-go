@@ -71,11 +71,13 @@ func main() {
 	// Server operations
 	serverID := listGPUBaremetalClusterServers(&client, clusterID)
 	if serverID != "" {
-		rebuildGPUBaremetalClusterServer(&client, clusterID, serverID)
+		// base64 of "#!/bin/bash\necho updated\n"
+		updateGPUBaremetalClusterServersSettings(&client, clusterID, "IyEvYmluL2Jhc2gKZWNobyB1cGRhdGVkCg==")
+		applySettingsToGPUBaremetalClusterServer(&client, clusterID, serverID)
 		serverID = replaceGPUBaremetalClusterServer(&client, clusterID, serverID)
 	}
-	rebootAllServers(&client, clusterID)
-	powercycleAllServers(&client, clusterID)
+	softRebootAllServers(&client, clusterID)
+	hardRebootAllServers(&client, clusterID)
 
 	// Interface operations (if we have a server)
 	//
@@ -89,7 +91,9 @@ func main() {
 
 	// Cluster operations
 	resizeGPUBaremetalCluster(&client, clusterID, 2)
-	rebuildGPUBaremetalCluster(&client, clusterID)
+	// a DIFFERENT payload: base64 of "#!/bin/bash\necho reapplied\n"
+	updateGPUBaremetalClusterServersSettings(&client, clusterID, "IyEvYmluL2Jhc2gKZWNobyByZWFwcGxpZWQK")
+	applySettingsToGPUBaremetalCluster(&client, clusterID)
 	updateGPUBaremetalClusterTags(&client, clusterID)
 	updateGPUBaremetalClusterName(&client, clusterID, "gcore-go-gpu-baremetal-renamed")
 
@@ -233,51 +237,76 @@ func resizeGPUBaremetalCluster(client *gcore.Client, clusterID string, newSize i
 	fmt.Println("===============================")
 }
 
-func rebuildGPUBaremetalCluster(client *gcore.Client, clusterID string) {
-	fmt.Println("\n=== REBUILD GPU BAREMETAL CLUSTER ===")
+func updateGPUBaremetalClusterServersSettings(client *gcore.Client, clusterID string, userData string) {
+	fmt.Println("\n=== UPDATE GPU BAREMETAL CLUSTER SERVER SETTINGS ===")
 
-	params := cloud.GPUBaremetalClusterRebuildParams{}
-	rebuiltCluster, err := client.Cloud.GPUBaremetal.Clusters.RebuildAndPoll(context.Background(), clusterID, params)
+	// ApplySettings only rolls out settings that differ from what the servers already
+	// run, so the template has to be patched here first. The value must actually change:
+	// re-patching an identical one leaves nothing pending and ApplySettings then fails
+	// with "Server settings are already up to date, there is nothing to apply."
+	params := cloud.GPUBaremetalClusterUpdateParams{
+		ServersSettings: cloud.GPUBaremetalClusterUpdateParamsServersSettings{
+			UserData: param.NewOpt(userData),
+		},
+	}
+	cluster, err := client.Cloud.GPUBaremetal.Clusters.Update(context.Background(), clusterID, params)
 	if err != nil {
-		fmt.Printf("Error rebuilding GPU baremetal cluster: %v\n", err)
+		fmt.Printf("Error updating GPU baremetal cluster servers settings: %v\n", err)
 		return
 	}
 
-	fmt.Printf("Rebuilt GPU baremetal cluster: ID=%s, name=%s\n", rebuiltCluster.ID, rebuiltCluster.Name)
+	fmt.Printf("Patched cluster servers_settings: ID=%s\n", cluster.ID)
 	fmt.Println("===============================")
 }
 
-func rebootAllServers(client *gcore.Client, clusterID string) {
-	fmt.Println("\n=== REBOOT ALL SERVERS ===")
+func applySettingsToGPUBaremetalCluster(client *gcore.Client, clusterID string) {
+	fmt.Println("\n=== APPLY SETTINGS TO GPU BAREMETAL CLUSTER ===")
 
-	params := cloud.GPUBaremetalClusterRebootAllServersParams{}
-	servers, err := client.Cloud.GPUBaremetal.Clusters.RebootAllServers(context.Background(), clusterID, params)
+	// Requires the cluster template to have been patched first (see
+	// updateGPUBaremetalClusterServersSettings). This re-images every server, so
+	// max_disruption must be "rebuild" — the default "none" always fails validation.
+	params := cloud.GPUBaremetalClusterApplySettingsParams{
+		MaxDisruption: cloud.GPUBaremetalClusterApplySettingsParamsMaxDisruptionRebuild,
+	}
+	cluster, err := client.Cloud.GPUBaremetal.Clusters.ApplySettingsAndPoll(context.Background(), clusterID, params)
 	if err != nil {
-		fmt.Printf("Error rebooting all servers: %v\n", err)
+		fmt.Printf("Error applying settings to GPU baremetal cluster: %v\n", err)
 		return
 	}
 
-	fmt.Printf("Rebooted %d servers in cluster %s\n", len(servers.Results), clusterID)
-	for i, server := range servers.Results {
-		fmt.Printf("  %d. Server ID: %s, Status: %s\n", i+1, server.ID, server.Status)
-	}
+	fmt.Printf("Applied settings to GPU baremetal cluster: ID=%s, name=%s\n", cluster.ID, cluster.Name)
 	fmt.Println("===============================")
 }
 
-func powercycleAllServers(client *gcore.Client, clusterID string) {
-	fmt.Println("\n=== POWERCYCLE ALL SERVERS ===")
+func softRebootAllServers(client *gcore.Client, clusterID string) {
+	fmt.Println("\n=== SOFT REBOOT ALL SERVERS ===")
 
-	params := cloud.GPUBaremetalClusterPowercycleAllServersParams{}
-	servers, err := client.Cloud.GPUBaremetal.Clusters.PowercycleAllServers(context.Background(), clusterID, params)
+	params := cloud.GPUBaremetalClusterActionParams{
+		OfSoftReboot: &cloud.GPUBaremetalClusterActionParamsBodySoftReboot{},
+	}
+	cluster, err := client.Cloud.GPUBaremetal.Clusters.ActionAndPoll(context.Background(), clusterID, params)
 	if err != nil {
-		fmt.Printf("Error powercycling all servers: %v\n", err)
+		fmt.Printf("Error soft rebooting all servers: %v\n", err)
 		return
 	}
 
-	fmt.Printf("Powercycled %d servers in cluster %s\n", len(servers.Results), clusterID)
-	for i, server := range servers.Results {
-		fmt.Printf("  %d. Server ID: %s, Status: %s\n", i+1, server.ID, server.Status)
+	fmt.Printf("Soft rebooted cluster %s: status=%s, servers=%d\n", cluster.ID, cluster.Status, cluster.ServersCount)
+	fmt.Println("===============================")
+}
+
+func hardRebootAllServers(client *gcore.Client, clusterID string) {
+	fmt.Println("\n=== HARD REBOOT ALL SERVERS ===")
+
+	params := cloud.GPUBaremetalClusterActionParams{
+		OfHardReboot: &cloud.GPUBaremetalClusterActionParamsBodyHardReboot{},
 	}
+	cluster, err := client.Cloud.GPUBaremetal.Clusters.ActionAndPoll(context.Background(), clusterID, params)
+	if err != nil {
+		fmt.Printf("Error hard rebooting all servers: %v\n", err)
+		return
+	}
+
+	fmt.Printf("Hard rebooted cluster %s: status=%s, servers=%d\n", cluster.ID, cluster.Status, cluster.ServersCount)
 	fmt.Println("===============================")
 }
 

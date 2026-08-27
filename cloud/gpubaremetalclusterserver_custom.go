@@ -36,6 +36,68 @@ func (r *GPUBaremetalClusterServerService) DeleteAndPoll(ctx context.Context, in
 	return err
 }
 
+// ApplySettingsAndPoll applies the cluster's server settings to a single server and polls for completion of the first
+// task. Use the [TaskService.Poll] method if you need to poll for all tasks.
+//
+// Patch the cluster settings first with [GPUBaremetalClusterService.Update], then call this to roll them out to this
+// server. Applying settings re-images the server, so body.MaxDisruption must be set to
+// [GPUBaremetalClusterServerApplySettingsParamsMaxDisruptionRebuild] for the request to proceed.
+func (r *GPUBaremetalClusterServerService) ApplySettingsAndPoll(ctx context.Context, serverID string, body GPUBaremetalClusterServerApplySettingsParams, opts ...option.RequestOption) (v *GPUBaremetalClusterServer, err error) {
+	// Exclude WithResponseBodyInto for the action (ApplySettings returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.ApplySettings(ctx, serverID, body, actionOpts...)
+	if err != nil {
+		return
+	}
+
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
+	if err != nil {
+		return
+	}
+
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = newTaskService(r.Options...).Poll(ctx, taskID, pollOpts...)
+	if err != nil {
+		return
+	}
+
+	// Use List to find the updated server
+	var listParams GPUBaremetalClusterServerListParams
+	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
+	listParams.ProjectID = body.ProjectID
+	listParams.RegionID = body.RegionID
+	listParams.Uuids = []string{serverID}
+
+	// Exclude WithResponseBodyInto and clear request body for List
+	listOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	page, err := r.List(ctx, body.ClusterID, listParams, listOpts...)
+	if err != nil {
+		return
+	}
+
+	if len(page.Results) == 0 {
+		return nil, errors.New("server not found after applying settings")
+	}
+
+	if err := requestconfig.WriteResponseBodyInto(opts, []byte(page.Results[0].RawJSON())); err != nil {
+		return nil, err
+	}
+
+	return &page.Results[0], nil
+}
+
 // RebuildAndPoll rebuilds a bare metal GPU cluster server and polls for completion of the first task. Use the
 // [TaskService.Poll] method if you need to poll for all tasks.
 func (r *GPUBaremetalClusterServerService) RebuildAndPoll(ctx context.Context, serverID string, body GPUBaremetalClusterServerRebuildParams, opts ...option.RequestOption) (v *GPUBaremetalClusterServer, err error) {

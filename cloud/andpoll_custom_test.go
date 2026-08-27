@@ -204,8 +204,16 @@ var andPollMethods = []struct {
 		_, err := client.Cloud.GPUBaremetal.Clusters.NewAndPoll(ctx, cloud.GPUBaremetalClusterNewParams{})
 		return err
 	}},
+	{"GPUBaremetalCluster.ActionAndPoll", func(ctx context.Context, client gcore.Client) error {
+		_, err := client.Cloud.GPUBaremetal.Clusters.ActionAndPoll(ctx, "id", cloud.GPUBaremetalClusterActionParams{})
+		return err
+	}},
+	{"GPUBaremetalCluster.ApplySettingsAndPoll", func(ctx context.Context, client gcore.Client) error {
+		_, err := client.Cloud.GPUBaremetal.Clusters.ApplySettingsAndPoll(ctx, "id", cloud.GPUBaremetalClusterApplySettingsParams{})
+		return err
+	}},
 	{"GPUBaremetalCluster.RebuildAndPoll", func(ctx context.Context, client gcore.Client) error {
-		_, err := client.Cloud.GPUBaremetal.Clusters.RebuildAndPoll(ctx, "id", cloud.GPUBaremetalClusterRebuildParams{})
+		_, err := client.Cloud.GPUBaremetal.Clusters.RebuildAndPoll(ctx, "id", cloud.GPUBaremetalClusterRebuildParams{}) //nolint:staticcheck // exercises the deprecated helper until it is removed
 		return err
 	}},
 	{"GPUBaremetalCluster.ResizeAndPoll", func(ctx context.Context, client gcore.Client) error {
@@ -227,6 +235,10 @@ var andPollMethods = []struct {
 	}},
 	{"GPUBaremetalClusterServer.DeleteAndPoll", func(ctx context.Context, client gcore.Client) error {
 		return client.Cloud.GPUBaremetal.Clusters.Servers.DeleteAndPoll(ctx, "id", cloud.GPUBaremetalClusterServerDeleteParams{ClusterID: "id"})
+	}},
+	{"GPUBaremetalClusterServer.ApplySettingsAndPoll", func(ctx context.Context, client gcore.Client) error {
+		_, err := client.Cloud.GPUBaremetal.Clusters.Servers.ApplySettingsAndPoll(ctx, "id", cloud.GPUBaremetalClusterServerApplySettingsParams{ClusterID: "id"})
+		return err
 	}},
 	{"GPUBaremetalClusterServer.RebuildAndPoll", func(ctx context.Context, client gcore.Client) error {
 		_, err := client.Cloud.GPUBaremetal.Clusters.Servers.RebuildAndPoll(ctx, "id", cloud.GPUBaremetalClusterServerRebuildParams{ClusterID: "id"})
@@ -507,7 +519,7 @@ func TestAndPollMethodsSucceed(t *testing.T) {
 // TestAndPollMethodsCount is a canary: if codegen or a spec change adds/removes
 // an *AndPoll method, this reminds us to keep the table in sync.
 func TestAndPollMethodsCount(t *testing.T) {
-	const want = 93
+	const want = 96
 	if got := len(andPollMethods); got != want {
 		t.Fatalf("andPollMethods has %d entries, want %d; update the table in this file", got, want)
 	}

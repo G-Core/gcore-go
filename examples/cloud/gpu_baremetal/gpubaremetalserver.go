@@ -56,20 +56,24 @@ func getGPUBaremetalClusterServerConsole(client *gcore.Client, serverID string) 
 	fmt.Println("===============================")
 }
 
-func rebuildGPUBaremetalClusterServer(client *gcore.Client, clusterID string, serverID string) {
-	fmt.Println("\n=== REBUILD GPU BAREMETAL CLUSTER SERVER ===")
+func applySettingsToGPUBaremetalClusterServer(client *gcore.Client, clusterID string, serverID string) {
+	fmt.Println("\n=== APPLY SETTINGS TO GPU BAREMETAL CLUSTER SERVER ===")
 
-	params := cloud.GPUBaremetalClusterServerRebuildParams{
-		ClusterID: clusterID,
+	// Rolls the cluster's current server settings out to this one server. It re-images
+	// the server, so max_disruption must be "rebuild" — the default "none" always fails
+	// validation.
+	params := cloud.GPUBaremetalClusterServerApplySettingsParams{
+		ClusterID:     clusterID,
+		MaxDisruption: cloud.GPUBaremetalClusterServerApplySettingsParamsMaxDisruptionRebuild,
 	}
 
-	server, err := client.Cloud.GPUBaremetal.Clusters.Servers.RebuildAndPoll(context.Background(), serverID, params)
+	server, err := client.Cloud.GPUBaremetal.Clusters.Servers.ApplySettingsAndPoll(context.Background(), serverID, params)
 	if err != nil {
-		fmt.Printf("Error rebuilding GPU baremetal server: %v\n", err)
+		fmt.Printf("Error applying settings to GPU baremetal server: %v\n", err)
 		return
 	}
 
-	fmt.Printf("Rebuilt GPU baremetal server: ID=%s, name=%s, status=%s\n", server.ID, server.Name, server.Status)
+	fmt.Printf("Applied settings to GPU baremetal server: ID=%s, name=%s, status=%s\n", server.ID, server.Name, server.Status)
 	fmt.Println("===============================")
 }
 
