@@ -27,6 +27,7 @@ type Baremetal string                       // Always "baremetal"
 type BasicVm string                         // Always "basic_vm"
 type Bytes string                           // Always "bytes"
 type Containers string                      // Always "containers"
+type Cron string                            // Always "cron"
 type DbaasPostgreSQLConnectionPooler string // Always "dbaas_postgresql_connection_pooler"
 type DbaasPostgreSQLCPU string              // Always "dbaas_postgresql_cpu"
 type DbaasPostgreSQLMemory string           // Always "dbaas_postgresql_memory"
@@ -53,6 +54,7 @@ type HardReboot string                      // Always "hard_reboot"
 type Image string                           // Always "image"
 type Inference string                       // Always "inference"
 type Instance string                        // Always "instance"
+type Interval string                        // Always "interval"
 type IPAddress string                       // Always "ip_address"
 type LoadBalancer string                    // Always "load_balancer"
 type LogIndex string                        // Always "log_index"
@@ -88,6 +90,7 @@ func (c Baremetal) Default() Baremetal               { return "baremetal" }
 func (c BasicVm) Default() BasicVm                   { return "basic_vm" }
 func (c Bytes) Default() Bytes                       { return "bytes" }
 func (c Containers) Default() Containers             { return "containers" }
+func (c Cron) Default() Cron                         { return "cron" }
 func (c DbaasPostgreSQLConnectionPooler) Default() DbaasPostgreSQLConnectionPooler {
 	return "dbaas_postgresql_connection_pooler"
 }
@@ -118,6 +121,7 @@ func (c HardReboot) Default() HardReboot                       { return "hard_re
 func (c Image) Default() Image                                 { return "image" }
 func (c Inference) Default() Inference                         { return "inference" }
 func (c Instance) Default() Instance                           { return "instance" }
+func (c Interval) Default() Interval                           { return "interval" }
 func (c IPAddress) Default() IPAddress                         { return "ip_address" }
 func (c LoadBalancer) Default() LoadBalancer                   { return "load_balancer" }
 func (c LogIndex) Default() LogIndex                           { return "log_index" }
@@ -153,6 +157,7 @@ func (c Baremetal) MarshalJSON() ([]byte, error)                       { return 
 func (c BasicVm) MarshalJSON() ([]byte, error)                         { return marshalString(c) }
 func (c Bytes) MarshalJSON() ([]byte, error)                           { return marshalString(c) }
 func (c Containers) MarshalJSON() ([]byte, error)                      { return marshalString(c) }
+func (c Cron) MarshalJSON() ([]byte, error)                            { return marshalString(c) }
 func (c DbaasPostgreSQLConnectionPooler) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c DbaasPostgreSQLCPU) MarshalJSON() ([]byte, error)              { return marshalString(c) }
 func (c DbaasPostgreSQLMemory) MarshalJSON() ([]byte, error)           { return marshalString(c) }
@@ -179,6 +184,7 @@ func (c HardReboot) MarshalJSON() ([]byte, error)                      { return 
 func (c Image) MarshalJSON() ([]byte, error)                           { return marshalString(c) }
 func (c Inference) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
 func (c Instance) MarshalJSON() ([]byte, error)                        { return marshalString(c) }
+func (c Interval) MarshalJSON() ([]byte, error)                        { return marshalString(c) }
 func (c IPAddress) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
 func (c LoadBalancer) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
 func (c LogIndex) MarshalJSON() ([]byte, error)                        { return marshalString(c) }

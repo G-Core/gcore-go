@@ -72,13 +72,18 @@ type CloudService struct {
 	GPUVirtual          GPUVirtualService
 	// Instances are cloud virtual machines with configurable CPU, memory, storage, and
 	// networking, supporting various operating systems and workloads.
-	Instances       InstanceService
-	K8S             K8SService
-	AuditLogs       AuditLogService
-	CostReports     CostReportService
-	UsageReports    UsageReportService
-	Databases       DatabaseService
-	VolumeSnapshots VolumeSnapshotService
+	Instances    InstanceService
+	K8S          K8SService
+	AuditLogs    AuditLogService
+	CostReports  CostReportService
+	UsageReports UsageReportService
+	Databases    DatabaseService
+	// Snapshot schedule policies describe when volume snapshots are taken and which
+	// volumes they cover. Volume membership is owned by the policy: attach and detach
+	// are policy-side operations, so a volume can join or leave a policy without being
+	// recreated.
+	LifecyclePolicies LifecyclePolicyService
+	VolumeSnapshots   VolumeSnapshotService
 }
 
 // NewCloudService generates a new service that applies the given options to each
@@ -115,6 +120,7 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r.CostReports = NewCostReportService(opts...)
 	r.UsageReports = NewUsageReportService(opts...)
 	r.Databases = NewDatabaseService(opts...)
+	r.LifecyclePolicies = NewLifecyclePolicyService(opts...)
 	r.VolumeSnapshots = NewVolumeSnapshotService(opts...)
 	return
 }
