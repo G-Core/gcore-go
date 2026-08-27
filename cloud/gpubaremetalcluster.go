@@ -172,6 +172,63 @@ func (r *GPUBaremetalClusterService) Delete(ctx context.Context, clusterID strin
 	return res, err
 }
 
+// Immediately perform a specific action on all instances in baremetal GPU cluster.
+// Available actions: start, stop, soft reboot, hard reboot.
+func (r *GPUBaremetalClusterService) Action(ctx context.Context, clusterID string, params GPUBaremetalClusterActionParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return nil, err
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return nil, err
+	}
+	if !params.RegionID.Valid() {
+		err = errors.New("missing required region_id parameter")
+		return nil, err
+	}
+	if clusterID == "" {
+		err = errors.New("missing required cluster_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("cloud/v3/gpu/baremetal/%v/%v/clusters/%s/action", params.ProjectID.Value, params.RegionID.Value, clusterID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	return res, err
+}
+
+// Apply updated server settings to all servers in a bare metal GPU cluster. During
+// this process, the servers receive a new image, SSH key, and user data.
+// Important: Before applying settings, the cluster must have updated server
+// settings. These cluster settings must be patched using the following endpoint:
+// PATCH '/v3/gpu/baremetal/{`project_id`}/{`region_id`}/clusters/{`cluster_id`}'
+func (r *GPUBaremetalClusterService) ApplySettings(ctx context.Context, clusterID string, params GPUBaremetalClusterApplySettingsParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return nil, err
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return nil, err
+	}
+	if !params.RegionID.Valid() {
+		err = errors.New("missing required region_id parameter")
+		return nil, err
+	}
+	if clusterID == "" {
+		err = errors.New("missing required cluster_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("cloud/v3/gpu/baremetal/%v/%v/clusters/%s/apply_settings", params.ProjectID.Value, params.RegionID.Value, clusterID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	return res, err
+}
+
 // Get detailed information about a specific bare metal GPU cluster.
 func (r *GPUBaremetalClusterService) Get(ctx context.Context, clusterID string, query GPUBaremetalClusterGetParams, opts ...option.RequestOption) (res *GPUBaremetalCluster, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -1691,6 +1748,157 @@ func (r GPUBaremetalClusterDeleteParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
 }
+
+type GPUBaremetalClusterActionParams struct {
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+
+	//
+	// Request body variants
+	//
+
+	// This field is a request body variant, only one variant field can be set.
+	OfStart *GPUBaremetalClusterActionParamsBodyStart `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	OfStop *GPUBaremetalClusterActionParamsBodyStop `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	OfSoftReboot *GPUBaremetalClusterActionParamsBodySoftReboot `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	OfHardReboot *GPUBaremetalClusterActionParamsBodyHardReboot `json:",inline"`
+
+	paramObj
+}
+
+func (u GPUBaremetalClusterActionParams) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfStart, u.OfStop, u.OfSoftReboot, u.OfHardReboot)
+}
+func (r *GPUBaremetalClusterActionParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func NewGPUBaremetalClusterActionParamsBodyStart() GPUBaremetalClusterActionParamsBodyStart {
+	return GPUBaremetalClusterActionParamsBodyStart{
+		Action: "start",
+	}
+}
+
+// This struct has a constant value, construct it with
+// [NewGPUBaremetalClusterActionParamsBodyStart].
+type GPUBaremetalClusterActionParamsBodyStart struct {
+	// Action name
+	Action constant.Start `json:"action" default:"start"`
+	paramObj
+}
+
+func (r GPUBaremetalClusterActionParamsBodyStart) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterActionParamsBodyStart
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterActionParamsBodyStart) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func NewGPUBaremetalClusterActionParamsBodyStop() GPUBaremetalClusterActionParamsBodyStop {
+	return GPUBaremetalClusterActionParamsBodyStop{
+		Action: "stop",
+	}
+}
+
+// This struct has a constant value, construct it with
+// [NewGPUBaremetalClusterActionParamsBodyStop].
+type GPUBaremetalClusterActionParamsBodyStop struct {
+	// Action name
+	Action constant.Stop `json:"action" default:"stop"`
+	paramObj
+}
+
+func (r GPUBaremetalClusterActionParamsBodyStop) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterActionParamsBodyStop
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterActionParamsBodyStop) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func NewGPUBaremetalClusterActionParamsBodySoftReboot() GPUBaremetalClusterActionParamsBodySoftReboot {
+	return GPUBaremetalClusterActionParamsBodySoftReboot{
+		Action: "soft_reboot",
+	}
+}
+
+// This struct has a constant value, construct it with
+// [NewGPUBaremetalClusterActionParamsBodySoftReboot].
+type GPUBaremetalClusterActionParamsBodySoftReboot struct {
+	// Action name
+	Action constant.SoftReboot `json:"action" default:"soft_reboot"`
+	paramObj
+}
+
+func (r GPUBaremetalClusterActionParamsBodySoftReboot) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterActionParamsBodySoftReboot
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterActionParamsBodySoftReboot) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func NewGPUBaremetalClusterActionParamsBodyHardReboot() GPUBaremetalClusterActionParamsBodyHardReboot {
+	return GPUBaremetalClusterActionParamsBodyHardReboot{
+		Action: "hard_reboot",
+	}
+}
+
+// This struct has a constant value, construct it with
+// [NewGPUBaremetalClusterActionParamsBodyHardReboot].
+type GPUBaremetalClusterActionParamsBodyHardReboot struct {
+	// Action name
+	Action constant.HardReboot `json:"action" default:"hard_reboot"`
+	paramObj
+}
+
+func (r GPUBaremetalClusterActionParamsBodyHardReboot) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterActionParamsBodyHardReboot
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterActionParamsBodyHardReboot) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type GPUBaremetalClusterApplySettingsParams struct {
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// The most disruptive operation the request is permitted to perform on existing
+	// servers. Applying settings re-images the servers, so this must be set to
+	// 'rebuild' to proceed. The default 'none' always fails with a validation error
+	// and exists only to prevent accidental destructive applies.
+	//
+	// Any of "none", "rebuild".
+	MaxDisruption GPUBaremetalClusterApplySettingsParamsMaxDisruption `json:"max_disruption,omitzero"`
+	paramObj
+}
+
+func (r GPUBaremetalClusterApplySettingsParams) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterApplySettingsParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterApplySettingsParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The most disruptive operation the request is permitted to perform on existing
+// servers. Applying settings re-images the servers, so this must be set to
+// 'rebuild' to proceed. The default 'none' always fails with a validation error
+// and exists only to prevent accidental destructive applies.
+type GPUBaremetalClusterApplySettingsParamsMaxDisruption string
+
+const (
+	GPUBaremetalClusterApplySettingsParamsMaxDisruptionNone    GPUBaremetalClusterApplySettingsParamsMaxDisruption = "none"
+	GPUBaremetalClusterApplySettingsParamsMaxDisruptionRebuild GPUBaremetalClusterApplySettingsParamsMaxDisruption = "rebuild"
+)
 
 type GPUBaremetalClusterGetParams struct {
 	// Project ID

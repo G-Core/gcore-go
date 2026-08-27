@@ -114,6 +114,40 @@ func (r *GPUBaremetalClusterServerService) Delete(ctx context.Context, instanceI
 	return res, err
 }
 
+// Apply updated server settings to a specific server in a bare metal GPU cluster.
+// During this process, the server receives a new image, SSH key, and user data.
+// Important: Before applying settings, the cluster must have updated server
+// settings. These cluster settings must be patched using the following endpoint:
+// PATCH '/v3/gpu/baremetal/{`project_id`}/{`region_id`}/clusters/{`cluster_id`}'
+func (r *GPUBaremetalClusterServerService) ApplySettings(ctx context.Context, serverID string, params GPUBaremetalClusterServerApplySettingsParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return nil, err
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return nil, err
+	}
+	if !params.RegionID.Valid() {
+		err = errors.New("missing required region_id parameter")
+		return nil, err
+	}
+	if params.ClusterID == "" {
+		err = errors.New("missing required cluster_id parameter")
+		return nil, err
+	}
+	if serverID == "" {
+		err = errors.New("missing required server_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("cloud/v3/gpu/baremetal/%v/%v/clusters/%s/servers/%s/apply_settings", params.ProjectID.Value, params.RegionID.Value, params.ClusterID, serverID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	return res, err
+}
+
 // Get bare metal GPU cluster server console URL
 func (r *GPUBaremetalClusterServerService) GetConsole(ctx context.Context, instanceID string, params GPUBaremetalClusterServerGetConsoleParams, opts ...option.RequestOption) (res *Console, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -811,6 +845,42 @@ func (r GPUBaremetalClusterServerDeleteParams) URLQuery() (v url.Values, err err
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
 }
+
+type GPUBaremetalClusterServerApplySettingsParams struct {
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Cluster unique identifier
+	ClusterID string `path:"cluster_id" api:"required" format:"uuid4" json:"-"`
+	// The most disruptive operation the request is permitted to perform on existing
+	// servers. Applying settings re-images the servers, so this must be set to
+	// 'rebuild' to proceed. The default 'none' always fails with a validation error
+	// and exists only to prevent accidental destructive applies.
+	//
+	// Any of "none", "rebuild".
+	MaxDisruption GPUBaremetalClusterServerApplySettingsParamsMaxDisruption `json:"max_disruption,omitzero"`
+	paramObj
+}
+
+func (r GPUBaremetalClusterServerApplySettingsParams) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterServerApplySettingsParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterServerApplySettingsParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The most disruptive operation the request is permitted to perform on existing
+// servers. Applying settings re-images the servers, so this must be set to
+// 'rebuild' to proceed. The default 'none' always fails with a validation error
+// and exists only to prevent accidental destructive applies.
+type GPUBaremetalClusterServerApplySettingsParamsMaxDisruption string
+
+const (
+	GPUBaremetalClusterServerApplySettingsParamsMaxDisruptionNone    GPUBaremetalClusterServerApplySettingsParamsMaxDisruption = "none"
+	GPUBaremetalClusterServerApplySettingsParamsMaxDisruptionRebuild GPUBaremetalClusterServerApplySettingsParamsMaxDisruption = "rebuild"
+)
 
 type GPUBaremetalClusterServerGetConsoleParams struct {
 	// Project ID
