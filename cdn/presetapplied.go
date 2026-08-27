@@ -43,10 +43,21 @@ func NewPresetAppliedService(opts ...option.RequestOption) (r PresetAppliedServi
 //
 // The preset settings are applied to the object, and the options included in the
 // preset can no longer be edited on the object until the preset is unapplied.
-func (r *PresetAppliedService) Apply(ctx context.Context, presetID int64, body PresetAppliedApplyParams, opts ...option.RequestOption) (res *PresetAppliedApplyResponse, err error) {
+func (r *PresetAppliedService) Apply(ctx context.Context, presetID int64, body PresetAppliedApplyParams, opts ...option.RequestOption) (res *AppliedPresetCreated, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("cdn/presets/%v/applied", presetID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
+// Get a single object the preset is applied to.
+//
+// Returns `404` if the preset is not applied to the object, so you can use this
+// endpoint to check whether the relationship exists.
+func (r *PresetAppliedService) Get(ctx context.Context, objectID int64, query PresetAppliedGetParams, opts ...option.RequestOption) (res *AppliedPresetObject, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := fmt.Sprintf("cdn/presets/%v/applied/%v", query.PresetID, objectID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
 
@@ -114,6 +125,34 @@ func (r *AppliedPreset) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type AppliedPresetCreated struct {
+	// ID of the object (CDN resource or rule, according to the preset `object_type`)
+	// the preset is applied to.
+	ObjectID int64 `json:"object_id" api:"required"`
+	// ID of the preset that is applied to the object. Matches the `preset_id` path
+	// parameter.
+	PresetID int64 `json:"preset_id" api:"required"`
+	// Deprecated. Use `preset_id` and `object_id` instead. This field is kept for
+	// backward compatibility and will be removed in a future version.
+	//
+	// Deprecated: deprecated
+	Message string `json:"message"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ObjectID    respjson.Field
+		PresetID    respjson.Field
+		Message     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AppliedPresetCreated) RawJSON() string { return r.JSON.raw }
+func (r *AppliedPresetCreated) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Preset applied to the object and the list of object fields that are managed by
 // the preset.
 type AppliedPresetFields struct {
@@ -143,31 +182,26 @@ func (r *AppliedPresetFields) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type PresetAppliedApplyResponse struct {
+// A single object the preset is applied to.
+type AppliedPresetObject struct {
 	// ID of the object (CDN resource or rule, according to the preset `object_type`)
 	// the preset is applied to.
 	ObjectID int64 `json:"object_id" api:"required"`
 	// ID of the preset that is applied to the object. Matches the `preset_id` path
 	// parameter.
 	PresetID int64 `json:"preset_id" api:"required"`
-	// Deprecated. Use `preset_id` and `object_id` instead. This field is kept for
-	// backward compatibility and will be removed in a future version.
-	//
-	// Deprecated: deprecated
-	Message string `json:"message"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ObjectID    respjson.Field
 		PresetID    respjson.Field
-		Message     respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r PresetAppliedApplyResponse) RawJSON() string { return r.JSON.raw }
-func (r *PresetAppliedApplyResponse) UnmarshalJSON(data []byte) error {
+func (r AppliedPresetObject) RawJSON() string { return r.JSON.raw }
+func (r *AppliedPresetObject) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -184,6 +218,11 @@ func (r PresetAppliedApplyParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *PresetAppliedApplyParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type PresetAppliedGetParams struct {
+	PresetID int64 `path:"preset_id" api:"required" json:"-"`
+	paramObj
 }
 
 type PresetAppliedGetRulePresetParams struct {
