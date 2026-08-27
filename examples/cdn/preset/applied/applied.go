@@ -42,6 +42,9 @@ func main() {
 	// Apply the resource preset to the CDN resource.
 	applyPreset(&client, resourcePreset.ID, resource.ID)
 
+	// Read the applied preset back to confirm the relationship exists.
+	getAppliedObject(&client, resourcePreset.ID, resource.ID)
+
 	// List the objects the preset is currently applied to.
 	getAppliedObjects(&client, resourcePreset.ID)
 
@@ -152,8 +155,24 @@ func applyPreset(client *gcore.Client, presetID, objectID int64) {
 		log.Fatalf("Error applying preset: %v", err)
 	}
 
-	fmt.Printf("Applied preset %d to object %d: %s\n", presetID, objectID, result.Message)
+	fmt.Printf("Applied preset %d to object %d\n", result.PresetID, result.ObjectID)
 	fmt.Println("====================")
+}
+
+func getAppliedObject(client *gcore.Client, presetID, objectID int64) {
+	fmt.Println("\n=== GET APPLIED OBJECT ===")
+
+	// Reads a single (preset, object) pair. The API returns 404 when the preset is
+	// not applied to the object, so this is how you check the relationship exists.
+	applied, err := client.CDN.Presets.Applied.Get(context.Background(), objectID, cdn.PresetAppliedGetParams{
+		PresetID: presetID,
+	})
+	if err != nil {
+		log.Fatalf("Error getting applied preset object: %v", err)
+	}
+
+	fmt.Printf("Preset %d is applied to object %d\n", applied.PresetID, applied.ObjectID)
+	fmt.Println("==========================")
 }
 
 func getAppliedObjects(client *gcore.Client, presetID int64) {
@@ -168,8 +187,7 @@ func getAppliedObjects(client *gcore.Client, presetID int64) {
 		fmt.Printf("Preset %d is applied to %s objects: %v\n",
 			presetID, result.ObjectType, result.ObjectIDs)
 	} else {
-		fmt.Printf("Preset %d is not applied to any objects: %s\n",
-			presetID, result.Message)
+		fmt.Printf("Preset %d is not applied to any objects\n", presetID)
 	}
 	fmt.Println("===========================")
 }
