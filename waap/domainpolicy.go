@@ -4,14 +4,17 @@ package waap
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
+	shimjson "github.com/G-Core/gcore-go/internal/encoding/json"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
@@ -34,20 +37,20 @@ func NewDomainPolicyService(opts ...option.RequestOption) (r DomainPolicyService
 	return
 }
 
-// Modify the activation state of a policy associated with a domain
-func (r *DomainPolicyService) Toggle(ctx context.Context, policyID string, body DomainPolicyToggleParams, opts ...option.RequestOption) (res *WaapPolicyMode, err error) {
+// Configure a security policy on a domain.
+func (r *DomainPolicyService) Toggle(ctx context.Context, policyID string, params DomainPolicyToggleParams, opts ...option.RequestOption) (res *WaapDomainPolicySettings, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("waap/v1/domains/%v/policies/%s/toggle", body.DomainID, policyID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, &res, opts...)
+	path := fmt.Sprintf("waap/v1/domains/%v/policies/%s", params.DomainID, policyID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return res, err
 }
 
-// Represents the mode of a security rule.
-type WaapPolicyMode struct {
+// Configurable settings of a security rule (a.k.a. policy) on a domain.
+type WaapDomainPolicySettings struct {
 	// Indicates if the security rule is active
 	Mode bool `json:"mode" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -59,13 +62,49 @@ type WaapPolicyMode struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WaapPolicyMode) RawJSON() string { return r.JSON.raw }
-func (r *WaapPolicyMode) UnmarshalJSON(data []byte) error {
+func (r WaapDomainPolicySettings) RawJSON() string { return r.JSON.raw }
+func (r *WaapDomainPolicySettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this WaapDomainPolicySettings to a
+// WaapDomainPolicySettingsParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// WaapDomainPolicySettingsParam.Overrides()
+func (r WaapDomainPolicySettings) ToParam() WaapDomainPolicySettingsParam {
+	return param.Override[WaapDomainPolicySettingsParam](json.RawMessage(r.RawJSON()))
+}
+
+// Configurable settings of a security rule (a.k.a. policy) on a domain.
+//
+// The property Mode is required.
+type WaapDomainPolicySettingsParam struct {
+	// Indicates if the security rule is active
+	Mode bool `json:"mode" api:"required"`
+	paramObj
+}
+
+func (r WaapDomainPolicySettingsParam) MarshalJSON() (data []byte, err error) {
+	type shadow WaapDomainPolicySettingsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WaapDomainPolicySettingsParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type DomainPolicyToggleParams struct {
 	// The domain ID
 	DomainID int64 `path:"domain_id" api:"required" json:"-"`
+	// Configurable settings of a security rule (a.k.a. policy) on a domain.
+	WaapDomainPolicySettings WaapDomainPolicySettingsParam
 	paramObj
+}
+
+func (r DomainPolicyToggleParams) MarshalJSON() (data []byte, err error) {
+	return shimjson.Marshal(r.WaapDomainPolicySettings)
+}
+func (r *DomainPolicyToggleParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

@@ -46,12 +46,11 @@ func (r *DomainAdvancedRuleService) New(ctx context.Context, domainID int64, bod
 }
 
 // Only properties present in the request will be updated
-func (r *DomainAdvancedRuleService) Update(ctx context.Context, ruleID int64, params DomainAdvancedRuleUpdateParams, opts ...option.RequestOption) (err error) {
+func (r *DomainAdvancedRuleService) Update(ctx context.Context, ruleID int64, params DomainAdvancedRuleUpdateParams, opts ...option.RequestOption) (res *WaapAdvancedRule, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	path := fmt.Sprintf("waap/v1/domains/%v/advanced-rules/%v", params.DomainID, ruleID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, nil, opts...)
-	return err
+	path := fmt.Sprintf("waap/v2/domains/%v/advanced-rules/%v", params.DomainID, ruleID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
+	return res, err
 }
 
 // Retrieve a list of advanced rules assigned to a domain, offering filter,
@@ -97,12 +96,11 @@ func (r *DomainAdvancedRuleService) Get(ctx context.Context, ruleID int64, query
 }
 
 // Toggle an advanced rule
-func (r *DomainAdvancedRuleService) Toggle(ctx context.Context, action DomainAdvancedRuleToggleParamsAction, body DomainAdvancedRuleToggleParams, opts ...option.RequestOption) (err error) {
+func (r *DomainAdvancedRuleService) Toggle(ctx context.Context, action DomainAdvancedRuleToggleParamsAction, body DomainAdvancedRuleToggleParams, opts ...option.RequestOption) (res *DomainAdvancedRuleToggleResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	path := fmt.Sprintf("waap/v1/domains/%v/advanced-rules/%v/%v", body.DomainID, body.RuleID, action)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, nil, opts...)
-	return err
+	path := fmt.Sprintf("waap/v2/domains/%v/advanced-rules/%v/%v", body.DomainID, body.RuleID, action)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, &res, opts...)
+	return res, err
 }
 
 // An advanced WAAP rule applied to a domain
@@ -255,6 +253,23 @@ const (
 	WaapAdvancedRulePhaseHeaderFilter WaapAdvancedRulePhase = "header_filter"
 	WaapAdvancedRulePhaseBodyFilter   WaapAdvancedRulePhase = "body_filter"
 )
+
+type DomainAdvancedRuleToggleResponse struct {
+	// Rule enabled status after operation
+	Enabled bool `json:"enabled" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Enabled     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DomainAdvancedRuleToggleResponse) RawJSON() string { return r.JSON.raw }
+func (r *DomainAdvancedRuleToggleResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type DomainAdvancedRuleNewParams struct {
 	// The action that the rule takes when triggered. Only one action can be set per

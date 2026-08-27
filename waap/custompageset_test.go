@@ -89,7 +89,7 @@ func TestCustomPageSetUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Waap.CustomPageSets.Update(
+	_, err := client.Waap.CustomPageSets.Update(
 		context.TODO(),
 		0,
 		waap.CustomPageSetUpdateParams{

@@ -64,20 +64,20 @@ func NewDomainService(opts ...option.RequestOption) (r DomainService) {
 }
 
 // Update Domain
-func (r *DomainService) Update(ctx context.Context, domainID int64, body DomainUpdateParams, opts ...option.RequestOption) (err error) {
+func (r *DomainService) Update(ctx context.Context, domainID int64, body DomainUpdateParams, opts ...option.RequestOption) (res *WaapDetailedDomain, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	path := fmt.Sprintf("waap/v1/domains/%v", domainID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, nil, opts...)
-	return err
+	path := fmt.Sprintf("waap/v2/domains/%v", domainID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
+	return res, err
 }
 
-// Retrieve a list of domains associated with the client
+// Retrieve a list of domains associated with the client, including traffic
+// statistics
 func (r *DomainService) List(ctx context.Context, query DomainListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[WaapSummaryDomain], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	path := "waap/v1/domains"
+	path := "waap/v2/domains"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -90,7 +90,8 @@ func (r *DomainService) List(ctx context.Context, query DomainListParams, opts .
 	return res, nil
 }
 
-// Retrieve a list of domains associated with the client
+// Retrieve a list of domains associated with the client, including traffic
+// statistics
 func (r *DomainService) ListAutoPaging(ctx context.Context, query DomainListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[WaapSummaryDomain] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
@@ -100,7 +101,7 @@ func (r *DomainService) ListAutoPaging(ctx context.Context, query DomainListPara
 func (r *DomainService) Delete(ctx context.Context, domainID int64, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	path := fmt.Sprintf("waap/v1/domains/%v", domainID)
+	path := fmt.Sprintf("waap/v2/domains/%v", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
@@ -108,7 +109,7 @@ func (r *DomainService) Delete(ctx context.Context, domainID int64, opts ...opti
 // Retrieve detailed information about a specific domain
 func (r *DomainService) Get(ctx context.Context, domainID int64, opts ...option.RequestOption) (res *WaapDetailedDomain, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("waap/v1/domains/%v", domainID)
+	path := fmt.Sprintf("waap/v2/domains/%v", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -490,7 +491,7 @@ func (r *WaapRuleSetRule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Represents a WAAP domain when getting a list of domains.
+// Represents a WAAP domain with traffic statistics for v2 endpoint.
 type WaapSummaryDomain struct {
 	// The domain ID
 	ID int64 `json:"id" api:"required"`
@@ -506,6 +507,10 @@ type WaapSummaryDomain struct {
 	Status WaapSummaryDomainStatus `json:"status" api:"required"`
 	// CNAME aliases pointing at this domain's CDN resource
 	Aliases []string `json:"aliases"`
+	// The ID of the CDN resource this domain is bound to
+	CDNResourceID int64 `json:"cdn_resource_id" api:"nullable"`
+	// Traffic statistics for a domain.
+	Stats WaapSummaryDomainStats `json:"stats"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -514,6 +519,8 @@ type WaapSummaryDomain struct {
 		Name          respjson.Field
 		Status        respjson.Field
 		Aliases       respjson.Field
+		CDNResourceID respjson.Field
+		Stats         respjson.Field
 		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
@@ -534,6 +541,30 @@ const (
 	WaapSummaryDomainStatusMonitor WaapSummaryDomainStatus = "monitor"
 	WaapSummaryDomainStatusLocked  WaapSummaryDomainStatus = "locked"
 )
+
+// Traffic statistics for a domain.
+type WaapSummaryDomainStats struct {
+	// Total number of blocked attacks for the last 30 days
+	AttacksBlocked int64 `json:"attacks_blocked"`
+	// Total number of detected attacks for the last 30 days
+	AttacksDetected int64 `json:"attacks_detected"`
+	// Total number of requests for the last 30 days
+	TotalRequests int64 `json:"total_requests"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AttacksBlocked  respjson.Field
+		AttacksDetected respjson.Field
+		TotalRequests   respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapSummaryDomainStats) RawJSON() string { return r.JSON.raw }
+func (r *WaapSummaryDomainStats) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Represents the traffic metrics for a domain at a given time window
 type WaapTrafficMetrics struct {
@@ -643,7 +674,8 @@ type DomainListParams struct {
 	// Sort the response by given field.
 	//
 	// Any of "id", "name", "status", "created_at", "-id", "-name", "-status",
-	// "-created_at".
+	// "-created_at", "total_requests", "-total_requests", "attacks_detected",
+	// "-attacks_detected".
 	Ordering DomainListParamsOrdering `query:"ordering,omitzero" json:"-"`
 	// Filter domains based on the domain status
 	//
@@ -664,14 +696,18 @@ func (r DomainListParams) URLQuery() (v url.Values, err error) {
 type DomainListParamsOrdering string
 
 const (
-	DomainListParamsOrderingID             DomainListParamsOrdering = "id"
-	DomainListParamsOrderingName           DomainListParamsOrdering = "name"
-	DomainListParamsOrderingStatus         DomainListParamsOrdering = "status"
-	DomainListParamsOrderingCreatedAt      DomainListParamsOrdering = "created_at"
-	DomainListParamsOrderingMinusID        DomainListParamsOrdering = "-id"
-	DomainListParamsOrderingMinusName      DomainListParamsOrdering = "-name"
-	DomainListParamsOrderingMinusStatus    DomainListParamsOrdering = "-status"
-	DomainListParamsOrderingMinusCreatedAt DomainListParamsOrdering = "-created_at"
+	DomainListParamsOrderingID                   DomainListParamsOrdering = "id"
+	DomainListParamsOrderingName                 DomainListParamsOrdering = "name"
+	DomainListParamsOrderingStatus               DomainListParamsOrdering = "status"
+	DomainListParamsOrderingCreatedAt            DomainListParamsOrdering = "created_at"
+	DomainListParamsOrderingMinusID              DomainListParamsOrdering = "-id"
+	DomainListParamsOrderingMinusName            DomainListParamsOrdering = "-name"
+	DomainListParamsOrderingMinusStatus          DomainListParamsOrdering = "-status"
+	DomainListParamsOrderingMinusCreatedAt       DomainListParamsOrdering = "-created_at"
+	DomainListParamsOrderingTotalRequests        DomainListParamsOrdering = "total_requests"
+	DomainListParamsOrderingMinusTotalRequests   DomainListParamsOrdering = "-total_requests"
+	DomainListParamsOrderingAttacksDetected      DomainListParamsOrdering = "attacks_detected"
+	DomainListParamsOrderingMinusAttacksDetected DomainListParamsOrdering = "-attacks_detected"
 )
 
 // Filter domains based on the domain status

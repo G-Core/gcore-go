@@ -31,6 +31,9 @@ func TestDomainPolicyToggle(t *testing.T) {
 		"policy_id",
 		waap.DomainPolicyToggleParams{
 			DomainID: 1,
+			WaapDomainPolicySettings: waap.WaapDomainPolicySettingsParam{
+				Mode: true,
+			},
 		},
 	)
 	if err != nil {

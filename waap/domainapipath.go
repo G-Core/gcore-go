@@ -42,22 +42,21 @@ func NewDomainAPIPathService(opts ...option.RequestOption) (r DomainAPIPathServi
 // Create an API path for a domain
 func (r *DomainAPIPathService) New(ctx context.Context, domainID int64, body DomainAPIPathNewParams, opts ...option.RequestOption) (res *WaapAPIPath, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("waap/v1/domains/%v/api-paths", domainID)
+	path := fmt.Sprintf("waap/v2/domains/%v/api-paths", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
 
 // Update a specific API path for a domain
-func (r *DomainAPIPathService) Update(ctx context.Context, pathID string, params DomainAPIPathUpdateParams, opts ...option.RequestOption) (err error) {
+func (r *DomainAPIPathService) Update(ctx context.Context, pathID string, params DomainAPIPathUpdateParams, opts ...option.RequestOption) (res *WaapAPIPath, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if pathID == "" {
 		err = errors.New("missing required path_id parameter")
-		return err
+		return nil, err
 	}
-	path := fmt.Sprintf("waap/v1/domains/%v/api-paths/%s", params.DomainID, pathID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, nil, opts...)
-	return err
+	path := fmt.Sprintf("waap/v2/domains/%v/api-paths/%s", params.DomainID, pathID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
+	return res, err
 }
 
 // Retrieve a list of API paths for a specific domain
@@ -65,7 +64,7 @@ func (r *DomainAPIPathService) List(ctx context.Context, domainID int64, query D
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	path := fmt.Sprintf("waap/v1/domains/%v/api-paths", domainID)
+	path := fmt.Sprintf("waap/v2/domains/%v/api-paths", domainID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -91,7 +90,7 @@ func (r *DomainAPIPathService) Delete(ctx context.Context, pathID string, body D
 		err = errors.New("missing required path_id parameter")
 		return err
 	}
-	path := fmt.Sprintf("waap/v1/domains/%v/api-paths/%s", body.DomainID, pathID)
+	path := fmt.Sprintf("waap/v2/domains/%v/api-paths/%s", body.DomainID, pathID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
@@ -103,7 +102,7 @@ func (r *DomainAPIPathService) Get(ctx context.Context, pathID string, query Dom
 		err = errors.New("missing required path_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("waap/v1/domains/%v/api-paths/%s", query.DomainID, pathID)
+	path := fmt.Sprintf("waap/v2/domains/%v/api-paths/%s", query.DomainID, pathID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

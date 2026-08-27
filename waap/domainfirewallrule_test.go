@@ -76,7 +76,7 @@ func TestDomainFirewallRuleUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Waap.Domains.FirewallRules.Update(
+	_, err := client.Waap.Domains.FirewallRules.Update(
 		context.TODO(),
 		0,
 		waap.DomainFirewallRuleUpdateParams{
@@ -189,7 +189,7 @@ func TestDomainFirewallRuleDeleteMultiple(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Waap.Domains.FirewallRules.DeleteMultiple(
+	_, err := client.Waap.Domains.FirewallRules.DeleteMultiple(
 		context.TODO(),
 		1,
 		waap.DomainFirewallRuleDeleteMultipleParams{
@@ -245,7 +245,7 @@ func TestDomainFirewallRuleToggle(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Waap.Domains.FirewallRules.Toggle(
+	_, err := client.Waap.Domains.FirewallRules.Toggle(
 		context.TODO(),
 		waap.DomainFirewallRuleToggleParamsActionEnable,
 		waap.DomainFirewallRuleToggleParams{

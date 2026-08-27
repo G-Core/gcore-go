@@ -46,12 +46,11 @@ func (r *DomainFirewallRuleService) New(ctx context.Context, domainID int64, bod
 }
 
 // Only properties present in the request will be updated
-func (r *DomainFirewallRuleService) Update(ctx context.Context, ruleID int64, params DomainFirewallRuleUpdateParams, opts ...option.RequestOption) (err error) {
+func (r *DomainFirewallRuleService) Update(ctx context.Context, ruleID int64, params DomainFirewallRuleUpdateParams, opts ...option.RequestOption) (res *WaapFirewallRule, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	path := fmt.Sprintf("waap/v1/domains/%v/firewall-rules/%v", params.DomainID, ruleID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, nil, opts...)
-	return err
+	path := fmt.Sprintf("waap/v2/domains/%v/firewall-rules/%v", params.DomainID, ruleID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
+	return res, err
 }
 
 // Extracts a list of firewall rules assigned to a domain, offering filter,
@@ -89,12 +88,11 @@ func (r *DomainFirewallRuleService) Delete(ctx context.Context, ruleID int64, bo
 }
 
 // Delete multiple WAAP rules
-func (r *DomainFirewallRuleService) DeleteMultiple(ctx context.Context, domainID int64, body DomainFirewallRuleDeleteMultipleParams, opts ...option.RequestOption) (err error) {
+func (r *DomainFirewallRuleService) DeleteMultiple(ctx context.Context, domainID int64, body DomainFirewallRuleDeleteMultipleParams, opts ...option.RequestOption) (res *DomainFirewallRuleDeleteMultipleResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	path := fmt.Sprintf("waap/v1/domains/%v/firewall-rules/bulk_delete", domainID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return err
+	path := fmt.Sprintf("waap/v2/domains/%v/firewall-rules/bulk_delete", domainID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
 }
 
 // Extracts a specific firewall rule assigned to a domain
@@ -106,12 +104,11 @@ func (r *DomainFirewallRuleService) Get(ctx context.Context, ruleID int64, query
 }
 
 // Toggle a firewall rule
-func (r *DomainFirewallRuleService) Toggle(ctx context.Context, action DomainFirewallRuleToggleParamsAction, body DomainFirewallRuleToggleParams, opts ...option.RequestOption) (err error) {
+func (r *DomainFirewallRuleService) Toggle(ctx context.Context, action DomainFirewallRuleToggleParamsAction, body DomainFirewallRuleToggleParams, opts ...option.RequestOption) (res *DomainFirewallRuleToggleResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	path := fmt.Sprintf("waap/v1/domains/%v/firewall-rules/%v/%v", body.DomainID, body.RuleID, action)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, nil, opts...)
-	return err
+	path := fmt.Sprintf("waap/v2/domains/%v/firewall-rules/%v/%v", body.DomainID, body.RuleID, action)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, &res, opts...)
+	return res, err
 }
 
 type WaapFirewallRule struct {
@@ -259,6 +256,40 @@ type WaapFirewallRuleConditionIPRange struct {
 // Returns the unmodified JSON received from the API
 func (r WaapFirewallRuleConditionIPRange) RawJSON() string { return r.JSON.raw }
 func (r *WaapFirewallRuleConditionIPRange) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DomainFirewallRuleDeleteMultipleResponse struct {
+	// Rules IDs deleted by the operation
+	DeletedIDs []int64 `json:"deleted_ids"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DeletedIDs  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DomainFirewallRuleDeleteMultipleResponse) RawJSON() string { return r.JSON.raw }
+func (r *DomainFirewallRuleDeleteMultipleResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DomainFirewallRuleToggleResponse struct {
+	// Rule enabled status after operation
+	Enabled bool `json:"enabled" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Enabled     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DomainFirewallRuleToggleResponse) RawJSON() string { return r.JSON.raw }
+func (r *DomainFirewallRuleToggleResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

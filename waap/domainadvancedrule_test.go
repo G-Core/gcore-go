@@ -79,7 +79,7 @@ func TestDomainAdvancedRuleUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Waap.Domains.AdvancedRules.Update(
+	_, err := client.Waap.Domains.AdvancedRules.Update(
 		context.TODO(),
 		0,
 		waap.DomainAdvancedRuleUpdateParams{
@@ -224,7 +224,7 @@ func TestDomainAdvancedRuleToggle(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Waap.Domains.AdvancedRules.Toggle(
+	_, err := client.Waap.Domains.AdvancedRules.Toggle(
 		context.TODO(),
 		waap.DomainAdvancedRuleToggleParamsActionEnable,
 		waap.DomainAdvancedRuleToggleParams{

@@ -26,7 +26,7 @@ func TestDomainSettingUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Waap.Domains.Settings.Update(
+	_, err := client.Waap.Domains.Settings.Update(
 		context.TODO(),
 		1,
 		waap.DomainSettingUpdateParams{

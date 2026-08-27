@@ -160,7 +160,7 @@ func TestDomainCustomRuleUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Waap.Domains.CustomRules.Update(
+	_, err := client.Waap.Domains.CustomRules.Update(
 		context.TODO(),
 		0,
 		waap.DomainCustomRuleUpdateParams{
@@ -357,7 +357,7 @@ func TestDomainCustomRuleDeleteMultiple(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Waap.Domains.CustomRules.DeleteMultiple(
+	_, err := client.Waap.Domains.CustomRules.DeleteMultiple(
 		context.TODO(),
 		1,
 		waap.DomainCustomRuleDeleteMultipleParams{
@@ -413,7 +413,7 @@ func TestDomainCustomRuleToggle(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Waap.Domains.CustomRules.Toggle(
+	_, err := client.Waap.Domains.CustomRules.Toggle(
 		context.TODO(),
 		waap.DomainCustomRuleToggleParamsActionEnable,
 		waap.DomainCustomRuleToggleParams{

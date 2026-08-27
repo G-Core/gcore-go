@@ -34,18 +34,17 @@ func NewDomainSettingService(opts ...option.RequestOption) (r DomainSettingServi
 }
 
 // Update settings for a specific domain
-func (r *DomainSettingService) Update(ctx context.Context, domainID int64, body DomainSettingUpdateParams, opts ...option.RequestOption) (err error) {
+func (r *DomainSettingService) Update(ctx context.Context, domainID int64, body DomainSettingUpdateParams, opts ...option.RequestOption) (res *WaapDomainSettingsModel, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	path := fmt.Sprintf("waap/v1/domains/%v/settings", domainID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, nil, opts...)
-	return err
+	path := fmt.Sprintf("waap/v2/domains/%v/settings", domainID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
+	return res, err
 }
 
 // Retrieve settings for a specific domain
 func (r *DomainSettingService) Get(ctx context.Context, domainID int64, opts ...option.RequestOption) (res *WaapDomainSettingsModel, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("waap/v1/domains/%v/settings", domainID)
+	path := fmt.Sprintf("waap/v2/domains/%v/settings", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
