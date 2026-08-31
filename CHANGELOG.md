@@ -1,5 +1,40 @@
 # Changelog
 
+## [0.56.0](https://github.com/G-Core/gcore-go/compare/v0.55.0...v0.56.0) (2026-08-31)
+
+
+### ⚠ BREAKING CHANGES
+
+* **cloud:** remove task_id and tasks from images
+* **terraform:** rename tags_v2 to tags and drop the resource mirror
+* **cdn:** map the applied-preset read endpoint and name the apply response
+* **fastedge:** add search/pagination params and paginate the secrets list
+* **cloud:** update cloud OpenAPI spec
+
+### Features
+
+* **cdn:** map the applied-preset read endpoint and name the apply response ([e83ab04](https://github.com/G-Core/gcore-go/commit/e83ab04dd5bacba4417cf3599f12204cfe24e8ae))
+* **cloud:** add polling helpers for the consolidated GPU baremetal endpoints ([f75f24c](https://github.com/G-Core/gcore-go/commit/f75f24cc9f69158270b5832dbf8aaee83afc4781))
+* **cloud:** map the consolidated GPU baremetal cluster endpoints ([21a7aa3](https://github.com/G-Core/gcore-go/commit/21a7aa37d3e9d377cf27960cc4cb8ccbceb30abe))
+* **cloud:** map the lifecycle policy endpoints ([a3081cb](https://github.com/G-Core/gcore-go/commit/a3081cbdb21ecc66c18e1621c90ce22802c7a22b))
+* **cloud:** update cloud OpenAPI spec ([d202703](https://github.com/G-Core/gcore-go/commit/d202703b36ebb7a8adf88d529877efce1cf78bbb))
+* **fastedge:** add search/pagination params and paginate the secrets list ([4a64918](https://github.com/G-Core/gcore-go/commit/4a64918275c45f067ce3de7fde271e187391e903))
+* **terraform:** rename tags_v2 to tags and drop the resource mirror ([3f73827](https://github.com/G-Core/gcore-go/commit/3f73827c9d843c6e9db66daece0132a43a6d9411))
+
+
+### Bug Fixes
+
+* **cloud:** remove task_id and tasks from images ([ad60856](https://github.com/G-Core/gcore-go/commit/ad608566e8e02d1e4c85cd82c5f4ec5f537ceaad))
+
+
+### Chores
+
+* **cdn:** update cdn OpenAPI spec ([f7663c5](https://github.com/G-Core/gcore-go/commit/f7663c5f7efbea43341c60b173e97790710dff21))
+* **cdn:** use the applied-preset object instead of the message in examples ([1fdc980](https://github.com/G-Core/gcore-go/commit/1fdc980effcc792a6c5bff501d8f34f4b0bdbc07))
+* **cloud:** update cloud OpenAPI spec ([f81c61d](https://github.com/G-Core/gcore-go/commit/f81c61d0a6b342522f0b91bde12cba5a5e488d9a))
+* **dns:** update dns OpenAPI spec ([adf1fd4](https://github.com/G-Core/gcore-go/commit/adf1fd47afe41a719040283c395199f2526e039f))
+* **waap:** update waap OpenAPI spec ([d0255bd](https://github.com/G-Core/gcore-go/commit/d0255bdd3448f991bb99a713f998428ed159413e))
+
 ## [0.55.0](https://github.com/G-Core/gcore-go/compare/v0.54.0...v0.55.0) (2026-08-05)
 
 
