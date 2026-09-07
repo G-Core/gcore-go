@@ -129,6 +129,8 @@ type App struct {
 	Binary int64 `json:"binary"`
 	// Optional human-readable description of the application's purpose
 	Comment string `json:"comment"`
+	// Timestamp of app creation
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// Enable verbose debug logging for 30 minutes. Automatically expires to prevent
 	// performance impact.
 	Debug bool `json:"debug"`
@@ -164,6 +166,8 @@ type App struct {
 	Template int64 `json:"template"`
 	// Template name
 	TemplateName string `json:"template_name"`
+	// Timestamp of last app update
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
 	// Auto-generated URL where the application is accessible
 	URL string `json:"url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -171,6 +175,7 @@ type App struct {
 		APIType      respjson.Field
 		Binary       respjson.Field
 		Comment      respjson.Field
+		CreatedAt    respjson.Field
 		Debug        respjson.Field
 		DebugUntil   respjson.Field
 		Env          respjson.Field
@@ -185,6 +190,7 @@ type App struct {
 		Stores       respjson.Field
 		Template     respjson.Field
 		TemplateName respjson.Field
+		UpdatedAt    respjson.Field
 		URL          respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -343,6 +349,8 @@ type AppShort struct {
 	APIType string `json:"api_type" api:"required"`
 	// Binary ID
 	Binary int64 `json:"binary" api:"required"`
+	// Timestamp of app creation
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// App name
 	Name string `json:"name" api:"required"`
 	// Application plan ID
@@ -355,6 +363,8 @@ type AppShort struct {
 	// 4 - daily call limit exceeded
 	// 5 - suspended
 	Status int64 `json:"status" api:"required"`
+	// Timestamp of last app update
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// Description of the binary
 	Comment string `json:"comment"`
 	// Switch on logging for 30 minutes (switched off by default)
@@ -378,9 +388,11 @@ type AppShort struct {
 		ID            respjson.Field
 		APIType       respjson.Field
 		Binary        respjson.Field
+		CreatedAt     respjson.Field
 		Name          respjson.Field
 		PlanID        respjson.Field
 		Status        respjson.Field
+		UpdatedAt     respjson.Field
 		Comment       respjson.Field
 		Debug         respjson.Field
 		DebugUntil    respjson.Field
@@ -430,7 +442,7 @@ type AppListParams struct {
 	Binary param.Opt[int64] `query:"binary,omitzero" json:"-"`
 	// Maximum number of results to return
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Filter by application name (case-insensitive partial match)
+	// Filter by application name, exact match only (with or without client suffix)
 	Name param.Opt[string] `query:"name,omitzero" json:"-"`
 	// Number of results to skip for pagination
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
