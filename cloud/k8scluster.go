@@ -449,10 +449,15 @@ func (r *K8SClusterCsi) UnmarshalJSON(data []byte) error {
 
 // NFS settings
 type K8SClusterCsiNfs struct {
+	// Whether DDN (Lustre) integration is enabled. When `true`, the DDN EXAScaler CSI
+	// driver is deployed in the cluster and each DDN file share defined in the cloud
+	// is exposed as a dedicated StorageClass.
+	DdnEnabled bool `json:"ddn_enabled" api:"required"`
 	// Indicates the status of VAST NFS integration
 	VastEnabled bool `json:"vast_enabled" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		DdnEnabled  respjson.Field
 		VastEnabled respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -1137,6 +1142,14 @@ func (r *K8SClusterNewParamsCsi) UnmarshalJSON(data []byte) error {
 
 // NFS CSI driver settings
 type K8SClusterNewParamsCsiNfs struct {
+	// Enable or disable DDN (Lustre) integration. The default value is `false`. When
+	// set to `true`, the DDN EXAScaler CSI driver will be deployed in the cluster with
+	// a dedicated StorageClass for each DDN file share defined in the cloud. At least
+	// one DDN file share must already exist in the project; otherwise cluster creation
+	// fails with a `400` validation error. Existing file shares are available
+	// immediately, while those created after the cluster may take a few minutes to
+	// appear.
+	DdnEnabled param.Opt[bool] `json:"ddn_enabled,omitzero"`
 	// Enable or disable VAST NFS integration. The default value is `false`. When set
 	// to `true`, a dedicated StorageClass will be created in the cluster for each VAST
 	// NFS file share defined in the cloud. All file shares created prior to cluster

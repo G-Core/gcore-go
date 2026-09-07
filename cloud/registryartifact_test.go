@@ -28,12 +28,12 @@ func TestRegistryArtifactListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.Registries.Artifacts.List(
 		context.TODO(),
-		"repository_name",
+		"nginx",
 		cloud.RegistryArtifactListParams{
-			ProjectID:  gcore.Int(0),
-			RegionID:   gcore.Int(0),
-			RegistryID: 0,
-			Limit:      gcore.Int(0),
+			ProjectID:  gcore.Int(1),
+			RegionID:   gcore.Int(1),
+			RegistryID: 1,
+			Limit:      gcore.Int(1000),
 			Offset:     gcore.Int(0),
 		},
 	)
@@ -60,12 +60,12 @@ func TestRegistryArtifactDelete(t *testing.T) {
 	)
 	err := client.Cloud.Registries.Artifacts.Delete(
 		context.TODO(),
-		"digest",
+		"sha256:5414002a0c147f8e41da0d0764b5074480012852d5d9a0ef8bd2fec904e62b7c",
 		cloud.RegistryArtifactDeleteParams{
-			ProjectID:      gcore.Int(0),
-			RegionID:       gcore.Int(0),
-			RegistryID:     0,
-			RepositoryName: "repository_name",
+			ProjectID:      gcore.Int(1),
+			RegionID:       gcore.Int(1),
+			RegistryID:     1,
+			RepositoryName: "nginx",
 		},
 	)
 	if err != nil {

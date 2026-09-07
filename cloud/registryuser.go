@@ -144,7 +144,7 @@ func (r *RegistryUserService) Delete(ctx context.Context, userID int64, body Reg
 }
 
 // Create multiple users for accessing the container registry in a single request.
-func (r *RegistryUserService) NewMultiple(ctx context.Context, registryID int64, params RegistryUserNewMultipleParams, opts ...option.RequestOption) (res *RegistryUserCreated, err error) {
+func (r *RegistryUserService) NewMultiple(ctx context.Context, registryID int64, params RegistryUserNewMultipleParams, opts ...option.RequestOption) (res *RegistryUserNewMultipleResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -254,6 +254,26 @@ func (r *RegistryUserCreated) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type RegistryUserNewMultipleResponse struct {
+	// Number of objects
+	Count int64 `json:"count" api:"required"`
+	// Objects
+	Results []RegistryUserCreated `json:"results" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r RegistryUserNewMultipleResponse) RawJSON() string { return r.JSON.raw }
+func (r *RegistryUserNewMultipleResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type RegistryUserRefreshSecretResponse struct {
 	// User ID
 	ID int64 `json:"id" api:"required"`
@@ -290,8 +310,10 @@ func (r *RegistryUserRefreshSecretResponse) UnmarshalJSON(data []byte) error {
 }
 
 type RegistryUserNewParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// User account operating time, days
 	Duration int64 `json:"duration" api:"required"`
 	// A name for the registry user.
@@ -316,9 +338,12 @@ func (r *RegistryUserNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type RegistryUserUpdateParams struct {
-	ProjectID  param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID   param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	RegistryID int64            `path:"registry_id" api:"required" json:"-"`
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Registry ID
+	RegistryID int64 `path:"registry_id" api:"required" json:"-"`
 	// User account operating time, days
 	Duration int64 `json:"duration" api:"required"`
 	// Read-only user
@@ -335,11 +360,14 @@ func (r *RegistryUserUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type RegistryUserListParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// Limit the number of returned items
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Offset value is used to exclude the first set of records from the result
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
 }
@@ -353,15 +381,20 @@ func (r RegistryUserListParams) URLQuery() (v url.Values, err error) {
 }
 
 type RegistryUserDeleteParams struct {
-	ProjectID  param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID   param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	RegistryID int64            `path:"registry_id" api:"required" json:"-"`
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Registry ID
+	RegistryID int64 `path:"registry_id" api:"required" json:"-"`
 	paramObj
 }
 
 type RegistryUserNewMultipleParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Set of users
 	Users []RegistryUserNewMultipleParamsUser `json:"users,omitzero" api:"required"`
 	paramObj
@@ -401,8 +434,11 @@ func (r *RegistryUserNewMultipleParamsUser) UnmarshalJSON(data []byte) error {
 }
 
 type RegistryUserRefreshSecretParams struct {
-	ProjectID  param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID   param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	RegistryID int64            `path:"registry_id" api:"required" json:"-"`
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Registry ID
+	RegistryID int64 `path:"registry_id" api:"required" json:"-"`
 	paramObj
 }

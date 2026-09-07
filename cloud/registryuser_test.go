@@ -28,10 +28,10 @@ func TestRegistryUserNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.Registries.Users.New(
 		context.TODO(),
-		0,
+		1,
 		cloud.RegistryUserNewParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 			Duration:  14,
 			Name:      "user1",
 			ReadOnly:  gcore.Bool(false),
@@ -61,11 +61,11 @@ func TestRegistryUserUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.Registries.Users.Update(
 		context.TODO(),
-		0,
+		1,
 		cloud.RegistryUserUpdateParams{
-			ProjectID:  gcore.Int(0),
-			RegionID:   gcore.Int(0),
-			RegistryID: 0,
+			ProjectID:  gcore.Int(1),
+			RegionID:   gcore.Int(1),
+			RegistryID: 1,
 			Duration:   14,
 			ReadOnly:   gcore.Bool(false),
 		},
@@ -93,11 +93,11 @@ func TestRegistryUserListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.Registries.Users.List(
 		context.TODO(),
-		0,
+		1,
 		cloud.RegistryUserListParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
-			Limit:     gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
+			Limit:     gcore.Int(1000),
 			Offset:    gcore.Int(0),
 		},
 	)
@@ -124,11 +124,11 @@ func TestRegistryUserDelete(t *testing.T) {
 	)
 	err := client.Cloud.Registries.Users.Delete(
 		context.TODO(),
-		0,
+		1,
 		cloud.RegistryUserDeleteParams{
-			ProjectID:  gcore.Int(0),
-			RegionID:   gcore.Int(0),
-			RegistryID: 0,
+			ProjectID:  gcore.Int(1),
+			RegionID:   gcore.Int(1),
+			RegistryID: 1,
 		},
 	)
 	if err != nil {
@@ -154,10 +154,10 @@ func TestRegistryUserNewMultiple(t *testing.T) {
 	)
 	_, err := client.Cloud.Registries.Users.NewMultiple(
 		context.TODO(),
-		0,
+		1,
 		cloud.RegistryUserNewMultipleParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 			Users: []cloud.RegistryUserNewMultipleParamsUser{{
 				Duration: -1,
 				Name:     "user1",
@@ -189,11 +189,11 @@ func TestRegistryUserRefreshSecret(t *testing.T) {
 	)
 	_, err := client.Cloud.Registries.Users.RefreshSecret(
 		context.TODO(),
-		0,
+		1,
 		cloud.RegistryUserRefreshSecretParams{
-			ProjectID:  gcore.Int(0),
-			RegionID:   gcore.Int(0),
-			RegistryID: 0,
+			ProjectID:  gcore.Int(1),
+			RegionID:   gcore.Int(1),
+			RegistryID: 1,
 		},
 	)
 	if err != nil {

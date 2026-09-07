@@ -139,11 +139,14 @@ func (r *RegistryRepository) UnmarshalJSON(data []byte) error {
 }
 
 type RegistryRepositoryListParams struct {
+	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID  param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// Limit the number of returned items
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Offset value is used to exclude the first set of records from the result
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
 }
@@ -158,8 +161,11 @@ func (r RegistryRepositoryListParams) URLQuery() (v url.Values, err error) {
 }
 
 type RegistryRepositoryDeleteParams struct {
-	ProjectID  param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID   param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	RegistryID int64            `path:"registry_id" api:"required" json:"-"`
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Registry ID
+	RegistryID int64 `path:"registry_id" api:"required" json:"-"`
 	paramObj
 }

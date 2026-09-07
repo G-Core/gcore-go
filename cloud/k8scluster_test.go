@@ -98,6 +98,7 @@ func TestK8SClusterNewWithOptionalParams(t *testing.T) {
 		},
 		Csi: cloud.K8SClusterNewParamsCsi{
 			Nfs: cloud.K8SClusterNewParamsCsiNfs{
+				DdnEnabled:  gcore.Bool(false),
 				VastEnabled: gcore.Bool(true),
 			},
 		},

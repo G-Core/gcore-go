@@ -27,8 +27,8 @@ func TestRegistryNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Registries.New(context.TODO(), cloud.RegistryNewParams{
-		ProjectID:    gcore.Int(0),
-		RegionID:     gcore.Int(0),
+		ProjectID:    gcore.Int(1),
+		RegionID:     gcore.Int(1),
 		Name:         "reg-home1",
 		StorageLimit: gcore.Int(5),
 	})
@@ -54,9 +54,9 @@ func TestRegistryListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Registries.List(context.TODO(), cloud.RegistryListParams{
-		ProjectID: gcore.Int(0),
-		RegionID:  gcore.Int(0),
-		Limit:     gcore.Int(0),
+		ProjectID: gcore.Int(1),
+		RegionID:  gcore.Int(1),
+		Limit:     gcore.Int(1000),
 		Offset:    gcore.Int(0),
 	})
 	if err != nil {
@@ -82,10 +82,10 @@ func TestRegistryDelete(t *testing.T) {
 	)
 	err := client.Cloud.Registries.Delete(
 		context.TODO(),
-		0,
+		1,
 		cloud.RegistryDeleteParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {
@@ -111,10 +111,10 @@ func TestRegistryGet(t *testing.T) {
 	)
 	_, err := client.Cloud.Registries.Get(
 		context.TODO(),
-		0,
+		1,
 		cloud.RegistryGetParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {
@@ -140,10 +140,10 @@ func TestRegistryResizeWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.Registries.Resize(
 		context.TODO(),
-		0,
+		1,
 		cloud.RegistryResizeParams{
-			ProjectID:    gcore.Int(0),
-			RegionID:     gcore.Int(0),
+			ProjectID:    gcore.Int(1),
+			RegionID:     gcore.Int(1),
 			StorageLimit: gcore.Int(5),
 		},
 	)

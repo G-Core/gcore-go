@@ -28,11 +28,11 @@ func TestRegistryRepositoryListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.Registries.Repositories.List(
 		context.TODO(),
-		0,
+		1,
 		cloud.RegistryRepositoryListParams{
-			ProjectID: gcore.Int(0),
-			RegionID:  gcore.Int(0),
-			Limit:     gcore.Int(0),
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
+			Limit:     gcore.Int(1000),
 			Offset:    gcore.Int(0),
 		},
 	)
@@ -59,11 +59,11 @@ func TestRegistryRepositoryDelete(t *testing.T) {
 	)
 	err := client.Cloud.Registries.Repositories.Delete(
 		context.TODO(),
-		"repository_name",
+		"nginx",
 		cloud.RegistryRepositoryDeleteParams{
-			ProjectID:  gcore.Int(0),
-			RegionID:   gcore.Int(0),
-			RegistryID: 0,
+			ProjectID:  gcore.Int(1),
+			RegionID:   gcore.Int(1),
+			RegistryID: 1,
 		},
 	)
 	if err != nil {

@@ -150,12 +150,16 @@ func (r *RegistryArtifact) UnmarshalJSON(data []byte) error {
 }
 
 type RegistryArtifactListParams struct {
-	ProjectID  param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID   param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	RegistryID int64            `path:"registry_id" api:"required" json:"-"`
-	// Limit the number of returned items
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Registry ID
+	RegistryID int64 `path:"registry_id" api:"required" json:"-"`
+	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Offset value is used to exclude the first set of records from the result
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
 }
@@ -170,9 +174,14 @@ func (r RegistryArtifactListParams) URLQuery() (v url.Values, err error) {
 }
 
 type RegistryArtifactDeleteParams struct {
-	ProjectID      param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	RegionID       param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	RegistryID     int64            `path:"registry_id" api:"required" json:"-"`
-	RepositoryName string           `path:"repository_name" api:"required" json:"-"`
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Registry ID
+	RegistryID int64 `path:"registry_id" api:"required" json:"-"`
+	// Repository name. If it contains a slash, encode it with URL encoding, e.g. a/b
+	// -> a%252Fb
+	RepositoryName string `path:"repository_name" api:"required" json:"-"`
 	paramObj
 }

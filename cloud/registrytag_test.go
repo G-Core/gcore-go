@@ -28,13 +28,13 @@ func TestRegistryTagDelete(t *testing.T) {
 	)
 	err := client.Cloud.Registries.Tags.Delete(
 		context.TODO(),
-		"tag_name",
+		"latest",
 		cloud.RegistryTagDeleteParams{
-			ProjectID:      gcore.Int(0),
-			RegionID:       gcore.Int(0),
-			RegistryID:     0,
-			RepositoryName: "repository_name",
-			Digest:         "digest",
+			ProjectID:      gcore.Int(1),
+			RegionID:       gcore.Int(1),
+			RegistryID:     1,
+			RepositoryName: "nginx",
+			Digest:         "sha256:5414002a0c147f8e41da0d0764b5074480012852d5d9a0ef8bd2fec904e62b7c",
 		},
 	)
 	if err != nil {
