@@ -413,6 +413,8 @@ func (r *CDNAccountService) UnmarshalJSON(data []byte) error {
 type CDNAccountLimits struct {
 	// Account ID.
 	ID int64 `json:"id"`
+	// Maximum number of aliases that can be created on your tariff plan.
+	AliasesLimit int64 `json:"aliases_limit"`
 	// Maximum number of origins that can be added to the origin group on your tariff
 	// plan.
 	OriginsInGroupLimit int64 `json:"origins_in_group_limit"`
@@ -438,6 +440,7 @@ type CDNAccountLimits struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                      respjson.Field
+		AliasesLimit            respjson.Field
 		OriginsInGroupLimit     respjson.Field
 		PrefetchPatternLimit    respjson.Field
 		PrefetchRequestLimit    respjson.Field
