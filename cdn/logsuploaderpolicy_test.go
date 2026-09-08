@@ -30,21 +30,47 @@ func TestLogsUploaderPolicyNewWithOptionalParams(t *testing.T) {
 		DateFormat:              gcore.String("[02/Jan/2006:15:04:05 -0700]"),
 		Description:             gcore.String("New policy"),
 		EscapeSpecialCharacters: gcore.Bool(true),
-		FieldDelimiter:          gcore.String(","),
-		FieldRemap:              map[string]string{},
-		FieldSeparator:          gcore.String(";"),
-		Fields:                  []string{"remote_addr", "status"},
-		FileNameTemplate:        gcore.String("{{YYYY}}_{{MM}}_{{DD}}_{{HH}}_{{mm}}_{{ss}}_access.log.gz"),
-		FormatType:              cdn.LogsUploaderPolicyNewParamsFormatTypeJson,
-		IncludeEmptyLogs:        gcore.Bool(true),
-		IncludeShieldLogs:       gcore.Bool(true),
-		LogSampleRate:           gcore.Float(1),
-		Name:                    gcore.String("Policy"),
-		RetryIntervalMinutes:    gcore.Int(32),
-		RotateIntervalMinutes:   gcore.Int(32),
-		RotateThresholdLines:    gcore.Int(5000),
-		RotateThresholdMB:       gcore.Int(252),
-		Tags:                    map[string]string{},
+		FieldConversions: map[string]cdn.LogsUploaderPolicyNewParamsFieldConversion{
+			"request_time": {
+				Conversions: []cdn.LogsUploaderPolicyNewParamsFieldConversionConversionUnion{{
+					OfScale: &cdn.LogsUploaderPolicyNewParamsFieldConversionConversionScale{
+						Config: cdn.LogsUploaderPolicyNewParamsFieldConversionConversionScaleConfig{
+							Factor:    1000,
+							Precision: gcore.Int(0),
+							Rounding:  "nearest",
+						},
+					},
+				}},
+			},
+			"upstream_cache_status": {
+				Conversions: []cdn.LogsUploaderPolicyNewParamsFieldConversionConversionUnion{{
+					OfReplace: &cdn.LogsUploaderPolicyNewParamsFieldConversionConversionReplace{
+						Config: cdn.LogsUploaderPolicyNewParamsFieldConversionConversionReplaceConfig{
+							Values: map[string]string{
+								"HIT":  "cached",
+								"MISS": "uncached",
+							},
+							Default: gcore.String("other"),
+						},
+					},
+				}},
+			},
+		},
+		FieldDelimiter:        gcore.String(","),
+		FieldRemap:            map[string]string{},
+		FieldSeparator:        gcore.String(";"),
+		Fields:                []string{"remote_addr", "request_time", "upstream_cache_status"},
+		FileNameTemplate:      gcore.String("{{YYYY}}_{{MM}}_{{DD}}_{{HH}}_{{mm}}_{{ss}}_access.log.gz"),
+		FormatType:            cdn.LogsUploaderPolicyNewParamsFormatTypeJson,
+		IncludeEmptyLogs:      gcore.Bool(true),
+		IncludeShieldLogs:     gcore.Bool(true),
+		LogSampleRate:         gcore.Float(1),
+		Name:                  gcore.String("Policy"),
+		RetryIntervalMinutes:  gcore.Int(32),
+		RotateIntervalMinutes: gcore.Int(32),
+		RotateThresholdLines:  gcore.Int(5000),
+		RotateThresholdMB:     gcore.Int(252),
+		Tags:                  map[string]string{},
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -74,6 +100,7 @@ func TestLogsUploaderPolicyUpdateWithOptionalParams(t *testing.T) {
 			DateFormat:              gcore.String("[02/Jan/2006:15:04:05 -0700]"),
 			Description:             gcore.String("New policy"),
 			EscapeSpecialCharacters: gcore.Bool(true),
+			FieldConversions:        map[string]cdn.LogsUploaderPolicyUpdateParamsFieldConversion{},
 			FieldDelimiter:          gcore.String(","),
 			FieldRemap:              map[string]string{},
 			FieldSeparator:          gcore.String(";"),
@@ -193,6 +220,28 @@ func TestLogsUploaderPolicyListFields(t *testing.T) {
 	}
 }
 
+func TestLogsUploaderPolicyListFieldsAllowedConversions(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.CDN.LogsUploader.Policies.ListFieldsAllowedConversions(context.TODO())
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestLogsUploaderPolicyReplaceWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -212,21 +261,47 @@ func TestLogsUploaderPolicyReplaceWithOptionalParams(t *testing.T) {
 			DateFormat:              gcore.String("[02/Jan/2006:15:04:05 -0700]"),
 			Description:             gcore.String("New policy"),
 			EscapeSpecialCharacters: gcore.Bool(true),
-			FieldDelimiter:          gcore.String(","),
-			FieldRemap:              map[string]string{},
-			FieldSeparator:          gcore.String(";"),
-			Fields:                  []string{"remote_addr", "status"},
-			FileNameTemplate:        gcore.String("{{YYYY}}_{{MM}}_{{DD}}_{{HH}}_{{mm}}_{{ss}}_access.log.gz"),
-			FormatType:              cdn.LogsUploaderPolicyReplaceParamsFormatTypeJson,
-			IncludeEmptyLogs:        gcore.Bool(true),
-			IncludeShieldLogs:       gcore.Bool(true),
-			LogSampleRate:           gcore.Float(1),
-			Name:                    gcore.String("Policy"),
-			RetryIntervalMinutes:    gcore.Int(32),
-			RotateIntervalMinutes:   gcore.Int(32),
-			RotateThresholdLines:    gcore.Int(5000),
-			RotateThresholdMB:       gcore.Int(252),
-			Tags:                    map[string]string{},
+			FieldConversions: map[string]cdn.LogsUploaderPolicyReplaceParamsFieldConversion{
+				"request_time": {
+					Conversions: []cdn.LogsUploaderPolicyReplaceParamsFieldConversionConversionUnion{{
+						OfScale: &cdn.LogsUploaderPolicyReplaceParamsFieldConversionConversionScale{
+							Config: cdn.LogsUploaderPolicyReplaceParamsFieldConversionConversionScaleConfig{
+								Factor:    1000,
+								Precision: gcore.Int(0),
+								Rounding:  "nearest",
+							},
+						},
+					}},
+				},
+				"upstream_cache_status": {
+					Conversions: []cdn.LogsUploaderPolicyReplaceParamsFieldConversionConversionUnion{{
+						OfReplace: &cdn.LogsUploaderPolicyReplaceParamsFieldConversionConversionReplace{
+							Config: cdn.LogsUploaderPolicyReplaceParamsFieldConversionConversionReplaceConfig{
+								Values: map[string]string{
+									"HIT":  "cached",
+									"MISS": "uncached",
+								},
+								Default: gcore.String("other"),
+							},
+						},
+					}},
+				},
+			},
+			FieldDelimiter:        gcore.String(","),
+			FieldRemap:            map[string]string{},
+			FieldSeparator:        gcore.String(";"),
+			Fields:                []string{"remote_addr", "request_time", "upstream_cache_status"},
+			FileNameTemplate:      gcore.String("{{YYYY}}_{{MM}}_{{DD}}_{{HH}}_{{mm}}_{{ss}}_access.log.gz"),
+			FormatType:            cdn.LogsUploaderPolicyReplaceParamsFormatTypeJson,
+			IncludeEmptyLogs:      gcore.Bool(true),
+			IncludeShieldLogs:     gcore.Bool(true),
+			LogSampleRate:         gcore.Float(1),
+			Name:                  gcore.String("Policy"),
+			RetryIntervalMinutes:  gcore.Int(32),
+			RotateIntervalMinutes: gcore.Int(32),
+			RotateThresholdLines:  gcore.Int(5000),
+			RotateThresholdMB:     gcore.Int(252),
+			Tags:                  map[string]string{},
 		},
 	)
 	if err != nil {

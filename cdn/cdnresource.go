@@ -685,10 +685,29 @@ type CDNResourceOptions struct {
 	// Custom HTTP Headers for a CDN server to add to request. Up to fifty custom HTTP
 	// Headers can be specified.
 	StaticRequestHeaders CDNResourceOptionsStaticRequestHeaders `json:"staticRequestHeaders" api:"nullable"`
+	// Cipher suite policy for HTTPS connections from end users to the domain, selected
+	// from predefined profiles.
+	//
+	// The exact cipher suites the policy enforces are returned in the `ciphers` field,
+	// and each profile defines which TLS versions may be enabled together with it.
+	// While the option is active:
+	//
+	// - The `tls_versions` option can include only the versions the profile allows.
+	// - The `tls_versions` option cannot be deleted or disabled.
+	//
+	// The option is read-only. Contact support to change it.
+	//
+	// When the option is absent or disabled, the default cipher suites of the CDN are
+	// used.
+	TlsCiphers CDNResourceOptionsTlsCiphers `json:"tls_ciphers" api:"nullable"`
 	// List of SSL/TLS protocol versions allowed for HTTPS connections from end users
 	// to the domain.
 	//
 	// When the option is disabled, all protocols versions are allowed.
+	//
+	// While the `tls_ciphers` option is active on the resource, only the TLS versions
+	// its cipher profile allows can be enabled, and this option cannot be deleted or
+	// disabled.
 	TlsVersions CDNResourceOptionsTlsVersions `json:"tls_versions" api:"nullable"`
 	// Let's Encrypt certificate chain.
 	//
@@ -755,6 +774,7 @@ type CDNResourceOptions struct {
 		StaticResponseHeaders       respjson.Field
 		StaticHeaders               respjson.Field
 		StaticRequestHeaders        respjson.Field
+		TlsCiphers                  respjson.Field
 		TlsVersions                 respjson.Field
 		UseDefaultLeChain           respjson.Field
 		UseDns01LeChallenge         respjson.Field
@@ -2623,10 +2643,64 @@ func (r *CDNResourceOptionsStaticRequestHeaders) UnmarshalJSON(data []byte) erro
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Cipher suite policy for HTTPS connections from end users to the domain, selected
+// from predefined profiles.
+//
+// The exact cipher suites the policy enforces are returned in the `ciphers` field,
+// and each profile defines which TLS versions may be enabled together with it.
+// While the option is active:
+//
+// - The `tls_versions` option can include only the versions the profile allows.
+// - The `tls_versions` option cannot be deleted or disabled.
+//
+// The option is read-only. Contact support to change it.
+//
+// When the option is absent or disabled, the default cipher suites of the CDN are
+// used.
+type CDNResourceOptionsTlsCiphers struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled" api:"required"`
+	// Name of the cipher profile.
+	//
+	// Possible values:
+	//
+	//   - **`pci_dss`** - TLS 1.2 cipher suites compliant with PCI DSS. Allows only
+	//     `TLSv1.2` and `TLSv1.3`; TLS 1.3 connections use the protocol's own standard
+	//     cipher suites, which are PCI DSS compliant.
+	//
+	// Any of "pci_dss".
+	Mode string `json:"mode" api:"required"`
+	// Cipher suites the profile resolves to, in the server preference order.
+	Ciphers []string `json:"ciphers"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Enabled     respjson.Field
+		Mode        respjson.Field
+		Ciphers     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CDNResourceOptionsTlsCiphers) RawJSON() string { return r.JSON.raw }
+func (r *CDNResourceOptionsTlsCiphers) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // List of SSL/TLS protocol versions allowed for HTTPS connections from end users
 // to the domain.
 //
 // When the option is disabled, all protocols versions are allowed.
+//
+// While the `tls_ciphers` option is active on the resource, only the TLS versions
+// its cipher profile allows can be enabled, and this option cannot be deleted or
+// disabled.
 type CDNResourceOptionsTlsVersions struct {
 	// Controls the option state.
 	//
@@ -2979,13 +3053,6 @@ type CDNResourceNewParams struct {
 	// - **true** - HTTPS is enabled.
 	// - **false** - HTTPS is disabled.
 	SslEnabled param.Opt[bool] `json:"sslEnabled,omitzero"`
-	// Defines whether the associated WAAP Domain is identified as an API Domain.
-	//
-	// Possible values:
-	//
-	// - **true** - The associated WAAP Domain is designated as an API Domain.
-	// - **false** - The associated WAAP Domain is not designated as an API Domain.
-	WaapAPIDomainEnabled param.Opt[bool] `json:"waap_api_domain_enabled,omitzero"`
 	// List of options that can be configured for the CDN resource.
 	//
 	// In case of `null` value the option is not added to the CDN resource. Option may
@@ -3271,6 +3338,10 @@ type CDNResourceNewParamsOptions struct {
 	// to the domain.
 	//
 	// When the option is disabled, all protocols versions are allowed.
+	//
+	// While the `tls_ciphers` option is active on the resource, only the TLS versions
+	// its cipher profile allows can be enabled, and this option cannot be deleted or
+	// disabled.
 	TlsVersions CDNResourceNewParamsOptionsTlsVersions `json:"tls_versions,omitzero"`
 	// Let's Encrypt certificate chain.
 	//
@@ -5059,10 +5130,49 @@ func (r *CDNResourceNewParamsOptionsStaticRequestHeaders) UnmarshalJSON(data []b
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Cipher suite policy for HTTPS connections from end users to the domain, selected
+// from predefined profiles.
+//
+// The exact cipher suites the policy enforces are returned in the `ciphers` field,
+// and each profile defines which TLS versions may be enabled together with it.
+// While the option is active:
+//
+// - The `tls_versions` option can include only the versions the profile allows.
+// - The `tls_versions` option cannot be deleted or disabled.
+//
+// The option is read-only. Contact support to change it.
+//
+// When the option is absent or disabled, the default cipher suites of the CDN are
+// used.
+//
+// The properties Enabled, Mode are required.
+type CDNResourceNewParamsOptionsTlsCiphers struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled" api:"required"`
+	paramObj
+}
+
+func (r CDNResourceNewParamsOptionsTlsCiphers) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceNewParamsOptionsTlsCiphers
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceNewParamsOptionsTlsCiphers) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // List of SSL/TLS protocol versions allowed for HTTPS connections from end users
 // to the domain.
 //
 // When the option is disabled, all protocols versions are allowed.
+//
+// While the `tls_ciphers` option is active on the resource, only the TLS versions
+// its cipher profile allows can be enabled, and this option cannot be deleted or
+// disabled.
 //
 // The properties Enabled, Value are required.
 type CDNResourceNewParamsOptionsTlsVersions struct {
@@ -5628,6 +5738,10 @@ type CDNResourceUpdateParamsOptions struct {
 	// to the domain.
 	//
 	// When the option is disabled, all protocols versions are allowed.
+	//
+	// While the `tls_ciphers` option is active on the resource, only the TLS versions
+	// its cipher profile allows can be enabled, and this option cannot be deleted or
+	// disabled.
 	TlsVersions CDNResourceUpdateParamsOptionsTlsVersions `json:"tls_versions,omitzero"`
 	// Let's Encrypt certificate chain.
 	//
@@ -7416,10 +7530,49 @@ func (r *CDNResourceUpdateParamsOptionsStaticRequestHeaders) UnmarshalJSON(data 
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Cipher suite policy for HTTPS connections from end users to the domain, selected
+// from predefined profiles.
+//
+// The exact cipher suites the policy enforces are returned in the `ciphers` field,
+// and each profile defines which TLS versions may be enabled together with it.
+// While the option is active:
+//
+// - The `tls_versions` option can include only the versions the profile allows.
+// - The `tls_versions` option cannot be deleted or disabled.
+//
+// The option is read-only. Contact support to change it.
+//
+// When the option is absent or disabled, the default cipher suites of the CDN are
+// used.
+//
+// The properties Enabled, Mode are required.
+type CDNResourceUpdateParamsOptionsTlsCiphers struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled" api:"required"`
+	paramObj
+}
+
+func (r CDNResourceUpdateParamsOptionsTlsCiphers) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceUpdateParamsOptionsTlsCiphers
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceUpdateParamsOptionsTlsCiphers) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // List of SSL/TLS protocol versions allowed for HTTPS connections from end users
 // to the domain.
 //
 // When the option is disabled, all protocols versions are allowed.
+//
+// While the `tls_ciphers` option is active on the resource, only the TLS versions
+// its cipher profile allows can be enabled, and this option cannot be deleted or
+// disabled.
 //
 // The properties Enabled, Value are required.
 type CDNResourceUpdateParamsOptionsTlsVersions struct {
@@ -7971,13 +8124,6 @@ type CDNResourceReplaceParams struct {
 	// - **true** - HTTPS is enabled.
 	// - **false** - HTTPS is disabled.
 	SslEnabled param.Opt[bool] `json:"sslEnabled,omitzero"`
-	// Defines whether the associated WAAP Domain is identified as an API Domain.
-	//
-	// Possible values:
-	//
-	// - **true** - The associated WAAP Domain is designated as an API Domain.
-	// - **false** - The associated WAAP Domain is not designated as an API Domain.
-	WaapAPIDomainEnabled param.Opt[bool] `json:"waap_api_domain_enabled,omitzero"`
 	// List of options that can be configured for the CDN resource.
 	//
 	// In case of `null` value the option is not added to the CDN resource. Option may
@@ -8263,6 +8409,10 @@ type CDNResourceReplaceParamsOptions struct {
 	// to the domain.
 	//
 	// When the option is disabled, all protocols versions are allowed.
+	//
+	// While the `tls_ciphers` option is active on the resource, only the TLS versions
+	// its cipher profile allows can be enabled, and this option cannot be deleted or
+	// disabled.
 	TlsVersions CDNResourceReplaceParamsOptionsTlsVersions `json:"tls_versions,omitzero"`
 	// Let's Encrypt certificate chain.
 	//
@@ -10051,10 +10201,49 @@ func (r *CDNResourceReplaceParamsOptionsStaticRequestHeaders) UnmarshalJSON(data
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Cipher suite policy for HTTPS connections from end users to the domain, selected
+// from predefined profiles.
+//
+// The exact cipher suites the policy enforces are returned in the `ciphers` field,
+// and each profile defines which TLS versions may be enabled together with it.
+// While the option is active:
+//
+// - The `tls_versions` option can include only the versions the profile allows.
+// - The `tls_versions` option cannot be deleted or disabled.
+//
+// The option is read-only. Contact support to change it.
+//
+// When the option is absent or disabled, the default cipher suites of the CDN are
+// used.
+//
+// The properties Enabled, Mode are required.
+type CDNResourceReplaceParamsOptionsTlsCiphers struct {
+	// Controls the option state.
+	//
+	// Possible values:
+	//
+	// - **true** - Option is enabled.
+	// - **false** - Option is disabled.
+	Enabled bool `json:"enabled" api:"required"`
+	paramObj
+}
+
+func (r CDNResourceReplaceParamsOptionsTlsCiphers) MarshalJSON() (data []byte, err error) {
+	type shadow CDNResourceReplaceParamsOptionsTlsCiphers
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CDNResourceReplaceParamsOptionsTlsCiphers) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // List of SSL/TLS protocol versions allowed for HTTPS connections from end users
 // to the domain.
 //
 // When the option is disabled, all protocols versions are allowed.
+//
+// While the `tls_ciphers` option is active on the resource, only the TLS versions
+// its cipher profile allows can be enabled, and this option cannot be deleted or
+// disabled.
 //
 // The properties Enabled, Value are required.
 type CDNResourceReplaceParamsOptionsTlsVersions struct {

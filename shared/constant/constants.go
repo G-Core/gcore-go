@@ -70,8 +70,10 @@ type RedirectPrefix string                  // Always "REDIRECT_PREFIX"
 type RedirectToPool string                  // Always "REDIRECT_TO_POOL"
 type RedirectToURL string                   // Always "REDIRECT_TO_URL"
 type Reject string                          // Always "REJECT"
+type Replace string                         // Always "replace"
 type ReservedFixedIP string                 // Always "reserved_fixed_ip"
 type Resize string                          // Always "resize"
+type Scale string                           // Always "scale"
 type Snapshot string                        // Always "snapshot"
 type SoftReboot string                      // Always "soft_reboot"
 type Standard string                        // Always "standard"
@@ -137,8 +139,10 @@ func (c RedirectPrefix) Default() RedirectPrefix               { return "REDIREC
 func (c RedirectToPool) Default() RedirectToPool               { return "REDIRECT_TO_POOL" }
 func (c RedirectToURL) Default() RedirectToURL                 { return "REDIRECT_TO_URL" }
 func (c Reject) Default() Reject                               { return "REJECT" }
+func (c Replace) Default() Replace                             { return "replace" }
 func (c ReservedFixedIP) Default() ReservedFixedIP             { return "reserved_fixed_ip" }
 func (c Resize) Default() Resize                               { return "resize" }
+func (c Scale) Default() Scale                                 { return "scale" }
 func (c Snapshot) Default() Snapshot                           { return "snapshot" }
 func (c SoftReboot) Default() SoftReboot                       { return "soft_reboot" }
 func (c Standard) Default() Standard                           { return "standard" }
@@ -200,8 +204,10 @@ func (c RedirectPrefix) MarshalJSON() ([]byte, error)                  { return 
 func (c RedirectToPool) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
 func (c RedirectToURL) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
 func (c Reject) MarshalJSON() ([]byte, error)                          { return marshalString(c) }
+func (c Replace) MarshalJSON() ([]byte, error)                         { return marshalString(c) }
 func (c ReservedFixedIP) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c Resize) MarshalJSON() ([]byte, error)                          { return marshalString(c) }
+func (c Scale) MarshalJSON() ([]byte, error)                           { return marshalString(c) }
 func (c Snapshot) MarshalJSON() ([]byte, error)                        { return marshalString(c) }
 func (c SoftReboot) MarshalJSON() ([]byte, error)                      { return marshalString(c) }
 func (c Standard) MarshalJSON() ([]byte, error)                        { return marshalString(c) }
