@@ -110,8 +110,8 @@ func newTaskFlowServer(cfg taskFlowConfig) *httptest.Server {
 			// The final resource fetch (or List). Most *AndPoll methods return this
 			// value unmodified, so an empty object suffices; but a few re-fetch the
 			// parent and search a nested collection for the just-created child
-			// (BaremetalServer via List.results, LoadBalancerPoolMember via
-			// pool.members, SecurityGroupRule via sg.security_group_rules), and
+			// (BaremetalServer via List.results, SecurityGroupRule via
+			// sg.security_group_rules), and
 			// InstanceImage.UploadAndPoll polls the image until it reports
 			// status "active" with a non-zero size. The superset below carries the
 			// created ID in each of those collections plus a settled image state so
@@ -412,6 +412,14 @@ var andPollMethods = []struct {
 		_, err := client.Cloud.LoadBalancers.Pools.Members.NewAndPoll(ctx, "id", cloud.LoadBalancerPoolMemberNewParams{})
 		return err
 	}},
+	{"LoadBalancerPoolMember.UpdateAndPoll", func(ctx context.Context, client gcore.Client) error {
+		_, err := client.Cloud.LoadBalancers.Pools.Members.UpdateAndPoll(ctx, "id", cloud.LoadBalancerPoolMemberUpdateParams{PoolID: "id"})
+		return err
+	}},
+	{"LoadBalancerPoolMember.ReplaceAndPoll", func(ctx context.Context, client gcore.Client) error {
+		_, err := client.Cloud.LoadBalancers.Pools.Members.ReplaceAndPoll(ctx, "id", cloud.LoadBalancerPoolMemberReplaceParams{})
+		return err
+	}},
 	{"Network.DeleteAndPoll", func(ctx context.Context, client gcore.Client) error {
 		return client.Cloud.Networks.DeleteAndPoll(ctx, "id", cloud.NetworkDeleteParams{})
 	}},
@@ -519,7 +527,7 @@ func TestAndPollMethodsSucceed(t *testing.T) {
 // TestAndPollMethodsCount is a canary: if codegen or a spec change adds/removes
 // an *AndPoll method, this reminds us to keep the table in sync.
 func TestAndPollMethodsCount(t *testing.T) {
-	const want = 96
+	const want = 98
 	if got := len(andPollMethods); got != want {
 		t.Fatalf("andPollMethods has %d entries, want %d; update the table in this file", got, want)
 	}

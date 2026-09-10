@@ -50,6 +50,9 @@ func main() {
 	pool := createPool(&client, loadBalancer.ID)
 	listPools(&client)
 	member := createPoolMember(&client, pool.ID)
+	listPoolMembers(&client, pool.ID)
+	getPoolMember(&client, member.ID, pool.ID)
+	updatePoolMember(&client, member.ID, pool.ID)
 	deletePoolMember(&client, member.ID, pool.ID)
 	deletePool(&client, pool.ID)
 
