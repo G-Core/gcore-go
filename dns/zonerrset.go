@@ -611,10 +611,15 @@ type ZoneRrsetGetParams struct {
 type ZoneRrsetGetFailoverLogsParams struct {
 	ZoneName  string `path:"zoneName" api:"required" json:"-"`
 	RrsetName string `path:"rrsetName" api:"required" json:"-"`
+	// Only show history from that time (RFC3339). If omitted, a default lookback
+	// window is used.
+	From param.Opt[string] `query:"from,omitzero" json:"-"`
 	// Max number of records in response
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Amount of records to skip before beginning to write in response.
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	// Only show history up to that time (RFC3339).
+	To param.Opt[string] `query:"to,omitzero" json:"-"`
 	paramObj
 }
 

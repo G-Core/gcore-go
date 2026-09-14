@@ -164,8 +164,10 @@ func TestZoneRrsetGetFailoverLogsWithOptionalParams(t *testing.T) {
 		dns.ZoneRrsetGetFailoverLogsParams{
 			ZoneName:  "zoneName",
 			RrsetName: "rrsetName",
+			From:      gcore.String("from"),
 			Limit:     gcore.Int(0),
 			Offset:    gcore.Int(0),
+			To:        gcore.String("to"),
 		},
 	)
 	if err != nil {
