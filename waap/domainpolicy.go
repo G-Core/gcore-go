@@ -44,7 +44,7 @@ func (r *DomainPolicyService) Toggle(ctx context.Context, policyID string, param
 		err = errors.New("missing required policy_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("waap/v1/domains/%v/policies/%s", params.DomainID, policyID)
+	path := fmt.Sprintf("waap/v2/domains/%v/policies/%s", params.DomainID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return res, err
 }

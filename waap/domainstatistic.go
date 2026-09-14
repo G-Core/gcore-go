@@ -462,11 +462,16 @@ func (r *WaapCountStatisticsRuleNameUnion) UnmarshalJSON(data []byte) error {
 type WaapDDOSAttack struct {
 	// End time of DDoS attack
 	EndTime time.Time `json:"end_time" api:"nullable" format:"date-time"`
+	// Total DDoS-blocked requests attributed to the attack over its full duration.
+	// Computed over the attack's own time window, so it stays consistent regardless of
+	// the selected reporting range. Null when the count could not be computed.
+	Requests int64 `json:"requests" api:"nullable"`
 	// Start time of DDoS attack
 	StartTime time.Time `json:"start_time" api:"nullable" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EndTime     respjson.Field
+		Requests    respjson.Field
 		StartTime   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -871,9 +876,9 @@ const (
 )
 
 type DomainStatisticGetDDOSAttacksParams struct {
-	// Filter attacks up to a specified end date in ISO 8601 format
+	// End time of the search interval. Excludes attacks that started after it
 	EndTime param.Opt[time.Time] `query:"end_time,omitzero" format:"date-time" json:"-"`
-	// Filter attacks starting from a specified date in ISO 8601 format
+	// Start time of the search interval. Excludes attacks that ended before it
 	StartTime param.Opt[time.Time] `query:"start_time,omitzero" format:"date-time" json:"-"`
 	// Number of items to return
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`

@@ -87,7 +87,7 @@ func (r *DomainFirewallRuleService) Delete(ctx context.Context, ruleID int64, bo
 	return err
 }
 
-// Delete multiple WAAP rules
+// Delete Multiple WAAP Firewall Rules
 func (r *DomainFirewallRuleService) DeleteMultiple(ctx context.Context, domainID int64, body DomainFirewallRuleDeleteMultipleParams, opts ...option.RequestOption) (res *DomainFirewallRuleDeleteMultipleResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v2/domains/%v/firewall-rules/bulk_delete", domainID)
@@ -103,7 +103,7 @@ func (r *DomainFirewallRuleService) Get(ctx context.Context, ruleID int64, query
 	return res, err
 }
 
-// Toggle a firewall rule
+// Toggle Firewall Rule
 func (r *DomainFirewallRuleService) Toggle(ctx context.Context, action DomainFirewallRuleToggleParamsAction, body DomainFirewallRuleToggleParams, opts ...option.RequestOption) (res *DomainFirewallRuleToggleResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v2/domains/%v/firewall-rules/%v/%v", body.DomainID, body.RuleID, action)

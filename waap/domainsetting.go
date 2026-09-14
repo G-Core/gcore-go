@@ -33,7 +33,8 @@ func NewDomainSettingService(opts ...option.RequestOption) (r DomainSettingServi
 	return
 }
 
-// Update settings for a specific domain
+// Set various settings for a specific domain. Omitted settings will remain
+// unchanged.
 func (r *DomainSettingService) Update(ctx context.Context, domainID int64, body DomainSettingUpdateParams, opts ...option.RequestOption) (res *WaapDomainSettingsModel, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v2/domains/%v/settings", domainID)

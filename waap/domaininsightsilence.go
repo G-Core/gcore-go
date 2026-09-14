@@ -43,7 +43,7 @@ func NewDomainInsightSilenceService(opts ...option.RequestOption) (r DomainInsig
 // temporarily disabling certain insights based on specific criteria.
 func (r *DomainInsightSilenceService) New(ctx context.Context, domainID int64, body DomainInsightSilenceNewParams, opts ...option.RequestOption) (res *WaapInsightSilence, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("waap/v1/domains/%v/insight-silences", domainID)
+	path := fmt.Sprintf("waap/v2/domains/%v/insight-silences", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -55,7 +55,7 @@ func (r *DomainInsightSilenceService) Update(ctx context.Context, silenceID stri
 		err = errors.New("missing required silence_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("waap/v1/domains/%v/insight-silences/%s", params.DomainID, silenceID)
+	path := fmt.Sprintf("waap/v2/domains/%v/insight-silences/%s", params.DomainID, silenceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return res, err
 }
@@ -65,7 +65,7 @@ func (r *DomainInsightSilenceService) List(ctx context.Context, domainID int64, 
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	path := fmt.Sprintf("waap/v1/domains/%v/insight-silences", domainID)
+	path := fmt.Sprintf("waap/v2/domains/%v/insight-silences", domainID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -91,7 +91,7 @@ func (r *DomainInsightSilenceService) Delete(ctx context.Context, silenceID stri
 		err = errors.New("missing required silence_id parameter")
 		return err
 	}
-	path := fmt.Sprintf("waap/v1/domains/%v/insight-silences/%s", body.DomainID, silenceID)
+	path := fmt.Sprintf("waap/v2/domains/%v/insight-silences/%s", body.DomainID, silenceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
@@ -103,7 +103,7 @@ func (r *DomainInsightSilenceService) Get(ctx context.Context, silenceID string,
 		err = errors.New("missing required silence_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("waap/v1/domains/%v/insight-silences/%s", query.DomainID, silenceID)
+	path := fmt.Sprintf("waap/v2/domains/%v/insight-silences/%s", query.DomainID, silenceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

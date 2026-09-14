@@ -46,14 +46,12 @@ func (r *CustomPageSetService) New(ctx context.Context, body CustomPageSetNewPar
 	return res, err
 }
 
-// Update a custom page set based on the provided parameters. To update a field,
-// provide the field with the new value. To remove a field, provide it as null. To
-// keep a field unaltered, do not include it in the request. Note: `name` cannot be
-// removed. When updating a custom page, include all the fields that you want it to
-// have. Any field not included will be removed.
+// Fields with a value are updated, fields set to null are removed, and fields
+// omitted are left unchanged (`name` cannot be removed). When updating a custom
+// page, include all fields it should have — any field not included is removed.
 func (r *CustomPageSetService) Update(ctx context.Context, setID int64, body CustomPageSetUpdateParams, opts ...option.RequestOption) (res *WaapCustomPageSet, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("waap/v1/custom-page-sets/%v", setID)
+	path := fmt.Sprintf("waap/v2/custom-page-sets/%v", setID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }

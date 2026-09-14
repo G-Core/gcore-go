@@ -63,7 +63,7 @@ func NewDomainService(opts ...option.RequestOption) (r DomainService) {
 	return
 }
 
-// Update Domain
+// Set Domain Status
 func (r *DomainService) Update(ctx context.Context, domainID int64, body DomainUpdateParams, opts ...option.RequestOption) (res *WaapDetailedDomain, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v2/domains/%v", domainID)
@@ -114,7 +114,14 @@ func (r *DomainService) Get(ctx context.Context, domainID int64, opts ...option.
 	return res, err
 }
 
-// Retrieve all rule sets linked to a particular domain
+// Retrieve all rule sets linked to a particular domain, each with its policies
+// embedded. Deprecated. Will become unavailable after Sun, 13 Dec 2026. Use
+// [GET /v2/domains/{`domain_id`}/rule-sets](#operation/`list_policy_rule_sets_v2_domains__domain_id__rule_sets_get`)
+// for the rule sets and
+// [GET /v2/domains/{`domain_id`}/policies](#operation/`list_domain_policies_v2_domains__domain_id__policies_get`)
+// for their policies instead
+//
+// Deprecated: deprecated
 func (r *DomainService) ListRuleSets(ctx context.Context, domainID int64, opts ...option.RequestOption) (res *[]WaapRuleSet, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v/rule-sets", domainID)
@@ -393,7 +400,7 @@ const (
 	WaapRequestSummaryResultEmpty      WaapRequestSummaryResult = ""
 )
 
-// Represents a custom rule set.
+// Represents a custom rule set with associated rules.
 type WaapRuleSet struct {
 	// Identifier of the rule set.
 	ID int64 `json:"id" api:"required"`
@@ -403,20 +410,21 @@ type WaapRuleSet struct {
 	IsActive bool `json:"is_active" api:"required"`
 	// Name of the rule set.
 	Name string `json:"name" api:"required"`
+	// Collection of security rules associated with the rule set.
+	Rules []WaapRuleSetRule `json:"rules" api:"required"`
 	// Collection of tags associated with the rule set.
 	Tags []WaapRuleSetTag `json:"tags" api:"required"`
 	// The resource slug associated with the rule set.
-	ResourceSlug string            `json:"resource_slug" api:"nullable"`
-	Rules        []WaapRuleSetRule `json:"rules"`
+	ResourceSlug string `json:"resource_slug" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Description  respjson.Field
 		IsActive     respjson.Field
 		Name         respjson.Field
+		Rules        respjson.Field
 		Tags         respjson.Field
 		ResourceSlug respjson.Field
-		Rules        respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -425,30 +433,6 @@ type WaapRuleSet struct {
 // Returns the unmodified JSON received from the API
 func (r WaapRuleSet) RawJSON() string { return r.JSON.raw }
 func (r *WaapRuleSet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A single tag associated with a rule set.
-type WaapRuleSetTag struct {
-	// Identifier of the tag.
-	ID int64 `json:"id" api:"required"`
-	// Detailed description of the tag.
-	Description string `json:"description" api:"required"`
-	// Name of the tag.
-	Name string `json:"name" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Description respjson.Field
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WaapRuleSetTag) RawJSON() string { return r.JSON.raw }
-func (r *WaapRuleSetTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -488,6 +472,30 @@ type WaapRuleSetRule struct {
 // Returns the unmodified JSON received from the API
 func (r WaapRuleSetRule) RawJSON() string { return r.JSON.raw }
 func (r *WaapRuleSetRule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single tag associated with a rule set.
+type WaapRuleSetTag struct {
+	// Identifier of the tag.
+	ID int64 `json:"id" api:"required"`
+	// Detailed description of the tag.
+	Description string `json:"description" api:"required"`
+	// Name of the tag.
+	Name string `json:"name" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Description respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapRuleSetTag) RawJSON() string { return r.JSON.raw }
+func (r *WaapRuleSetTag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

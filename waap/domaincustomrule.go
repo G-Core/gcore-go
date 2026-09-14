@@ -87,7 +87,7 @@ func (r *DomainCustomRuleService) Delete(ctx context.Context, ruleID int64, body
 	return err
 }
 
-// Delete multiple WAAP rules
+// Delete Multiple Custom WAAP Rules
 func (r *DomainCustomRuleService) DeleteMultiple(ctx context.Context, domainID int64, body DomainCustomRuleDeleteMultipleParams, opts ...option.RequestOption) (res *DomainCustomRuleDeleteMultipleResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v2/domains/%v/custom-rules/bulk_delete", domainID)
@@ -103,7 +103,7 @@ func (r *DomainCustomRuleService) Get(ctx context.Context, ruleID int64, query D
 	return res, err
 }
 
-// Toggle a custom rule
+// Toggle Custom Rule
 func (r *DomainCustomRuleService) Toggle(ctx context.Context, action DomainCustomRuleToggleParamsAction, body DomainCustomRuleToggleParams, opts ...option.RequestOption) (res *DomainCustomRuleToggleResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v2/domains/%v/custom-rules/%v/%v", body.DomainID, body.RuleID, action)

@@ -95,7 +95,7 @@ func (r *DomainAdvancedRuleService) Get(ctx context.Context, ruleID int64, query
 	return res, err
 }
 
-// Toggle an advanced rule
+// Toggle Advanced Rule
 func (r *DomainAdvancedRuleService) Toggle(ctx context.Context, action DomainAdvancedRuleToggleParamsAction, body DomainAdvancedRuleToggleParams, opts ...option.RequestOption) (res *DomainAdvancedRuleToggleResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v2/domains/%v/advanced-rules/%v/%v", body.DomainID, body.RuleID, action)
