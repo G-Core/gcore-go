@@ -135,9 +135,9 @@ func runTerraformStyle(ctx context.Context, client *gcore.Client) {
 	fmt.Printf("deleted: id=%d\n", created.ID)
 }
 
-// decodeRawBody reads raw.Body, decodes it into a storage.SftpStorage so the
-// caller can use the typed fields (e.g. the resource id), and prints a summary.
-func decodeRawBody(label string, raw *http.Response) storage.SftpStorage {
+// decodeRawBody reads raw.Body, decodes it into a storage.SftpStorageCreated so
+// the caller can use the typed fields (e.g. the resource id), and prints a summary.
+func decodeRawBody(label string, raw *http.Response) storage.SftpStorageCreated {
 	if raw == nil || raw.Body == nil {
 		log.Fatalf("raw %s body: <nil>", label)
 	}
@@ -146,7 +146,7 @@ func decodeRawBody(label string, raw *http.Response) storage.SftpStorage {
 	if err != nil {
 		log.Fatalf("read raw %s body: %v", label, err)
 	}
-	var decoded storage.SftpStorage
+	var decoded storage.SftpStorageCreated
 	if err := json.Unmarshal(body, &decoded); err != nil {
 		log.Fatalf("decode raw %s body: %v", label, err)
 	}

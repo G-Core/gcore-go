@@ -48,7 +48,7 @@ func NewSftpStorageService(opts ...option.RequestOption) (r SftpStorageService) 
 
 // Creates a new SFTP storage instance in the specified location and returns the
 // storage details including credentials.
-func (r *SftpStorageService) New(ctx context.Context, body SftpStorageNewParams, opts ...option.RequestOption) (res *SftpStorage, err error) {
+func (r *SftpStorageService) New(ctx context.Context, body SftpStorageNewParams, opts ...option.RequestOption) (res *SftpStorageCreated, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "storage/v4/sftp_storages"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -64,7 +64,7 @@ func (r *SftpStorageService) New(ctx context.Context, body SftpStorageNewParams,
 // JSON.raw on the returned value is the original POST body, so RawJSON() will
 // still report provisioning_status="creating". Use the typed fields for
 // post-provisioning state.
-func (r *SftpStorageService) NewAndPoll(ctx context.Context, body SftpStorageNewParams, opts ...option.RequestOption) (res *SftpStorage, err error) {
+func (r *SftpStorageService) NewAndPoll(ctx context.Context, body SftpStorageNewParams, opts ...option.RequestOption) (res *SftpStorageCreated, err error) {
 	var raw *http.Response
 	actionOpts := slices.Concat(opts, []option.RequestOption{option.WithResponseInto(&raw)})
 
@@ -78,7 +78,7 @@ func (r *SftpStorageService) NewAndPoll(ctx context.Context, body SftpStorageNew
 		// Caller's WithResponseBodyInto overrode the default deserialization
 		// target. Recover the typed struct from the raw response so polling can
 		// proceed; supports **http.Response and *[]byte body shapes.
-		created = &SftpStorage{}
+		created = &SftpStorageCreated{}
 		rawBytes, err = polling.RecoverActionBody(raw, created, opts...)
 		if err != nil {
 			return nil, fmt.Errorf("sftp NewAndPoll: %w", err)
@@ -119,7 +119,7 @@ func (r *SftpStorageService) NewAndPoll(ctx context.Context, body SftpStorageNew
 			// carries the one-time Password). All other fields are populated
 			// synchronously on the POST response and don't change during
 			// provisioning.
-			created.ProvisioningStatus = s.ProvisioningStatus
+			created.ProvisioningStatus = SftpStorageCreatedProvisioningStatus(s.ProvisioningStatus)
 			if rawBytes != nil && raw != nil {
 				enriched, sjErr := sjson.SetBytes(rawBytes, "provisioning_status", string(s.ProvisioningStatus))
 				if sjErr != nil {
@@ -145,9 +145,12 @@ func (r *SftpStorageService) NewAndPoll(ctx context.Context, body SftpStorageNew
 }
 
 // Updates SFTP storage configuration and/or credentials including password and SSH
-// key management. Supports JSON merge patch semantics: "password": null deletes
-// the password, "ssh_key_ids": [] clears all keys.
-func (r *SftpStorageService) Update(ctx context.Context, storageID int64, body SftpStorageUpdateParams, opts ...option.RequestOption) (res *SftpStorage, err error) {
+// key management. Supports JSON merge patch semantics: an absent field is left
+// unchanged. The password is changed through "password_mode": "auto" regenerates
+// it and returns it once, "set" uses the "password" field and returns it once,
+// "none" removes it. "password" is only read when `password_mode` is "set" and
+// must be omitted otherwise. "ssh_key_ids": [] clears all keys.
+func (r *SftpStorageService) Update(ctx context.Context, storageID int64, body SftpStorageUpdateParams, opts ...option.RequestOption) (res *SftpStorageCreated, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("storage/v4/sftp_storages/%v", storageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
@@ -159,7 +162,7 @@ func (r *SftpStorageService) Update(ctx context.Context, storageID int64, body S
 // Password preserved when password_mode is "auto") and the provisioning status
 // promoted to "active". Polling reuses the polling_interval_seconds and
 // polling_timeout_seconds client options.
-func (r *SftpStorageService) UpdateAndPoll(ctx context.Context, storageID int64, body SftpStorageUpdateParams, opts ...option.RequestOption) (res *SftpStorage, err error) {
+func (r *SftpStorageService) UpdateAndPoll(ctx context.Context, storageID int64, body SftpStorageUpdateParams, opts ...option.RequestOption) (res *SftpStorageCreated, err error) {
 	var raw *http.Response
 	actionOpts := slices.Concat(opts, []option.RequestOption{option.WithResponseInto(&raw)})
 
@@ -170,7 +173,7 @@ func (r *SftpStorageService) UpdateAndPoll(ctx context.Context, storageID int64,
 
 	var rawBytes []byte
 	if updated == nil {
-		updated = &SftpStorage{}
+		updated = &SftpStorageCreated{}
 		rawBytes, err = polling.RecoverActionBody(raw, updated, opts...)
 		if err != nil {
 			return nil, fmt.Errorf("sftp UpdateAndPoll: %w", err)
@@ -210,7 +213,7 @@ func (r *SftpStorageService) UpdateAndPoll(ctx context.Context, storageID int64,
 			// Promote the polled status onto the PATCH response (which still
 			// carries any regenerated Password). All other fields are already
 			// authoritative on the PATCH response.
-			updated.ProvisioningStatus = s.ProvisioningStatus
+			updated.ProvisioningStatus = SftpStorageCreatedProvisioningStatus(s.ProvisioningStatus)
 			if rawBytes != nil && raw != nil {
 				enriched, sjErr := sjson.SetBytes(rawBytes, "provisioning_status", string(s.ProvisioningStatus))
 				if sjErr != nil {
@@ -361,8 +364,80 @@ type SftpStorage struct {
 	ServerAlias string `json:"server_alias" api:"required"`
 	// IDs of SSH keys associated with this SFTP storage
 	SSHKeyIDs []int64 `json:"ssh_key_ids" api:"required"`
-	// SFTP password. Only returned when newly generated or set (create/patch). Omitted
-	// in GET/list responses.
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                  respjson.Field
+		Address             respjson.Field
+		CreatedAt           respjson.Field
+		Expires             respjson.Field
+		FullName            respjson.Field
+		HasCustomConfigFile respjson.Field
+		HasPassword         respjson.Field
+		IsHTTPDisabled      respjson.Field
+		LocationName        respjson.Field
+		Name                respjson.Field
+		ProvisioningStatus  respjson.Field
+		ServerAlias         respjson.Field
+		SSHKeyIDs           respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SftpStorage) RawJSON() string { return r.JSON.raw }
+func (r *SftpStorage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Lifecycle status of the storage. Use this to check readiness before operations.
+type SftpStorageProvisioningStatus string
+
+const (
+	SftpStorageProvisioningStatusCreating SftpStorageProvisioningStatus = "creating"
+	SftpStorageProvisioningStatusActive   SftpStorageProvisioningStatus = "active"
+	SftpStorageProvisioningStatusUpdating SftpStorageProvisioningStatus = "updating"
+	SftpStorageProvisioningStatusDeleting SftpStorageProvisioningStatus = "deleting"
+	SftpStorageProvisioningStatusDeleted  SftpStorageProvisioningStatus = "deleted"
+)
+
+// SFTPStorageWithPasswordV4 SFTP storage as returned by create and update, which
+// are the only operations that can hand back a password. Identical to
+// SFTPStorageItemV4 otherwise.
+type SftpStorageCreated struct {
+	// Unique identifier for the storage instance
+	ID int64 `json:"id" api:"required"`
+	// Full hostname/address for accessing the storage endpoint
+	Address string `json:"address" api:"required"`
+	// ISO 8601 timestamp when the storage was created
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Duration when the storage will expire. Null if no expiration is set.
+	Expires string `json:"expires" api:"required"`
+	// Read-only internal full name of the storage, composed as "{`client_id`}-{name}".
+	// Used by the SFTP backend as the login username. Clients should use this value
+	// when connecting but should continue to identify the storage by `name` in their
+	// own configuration.
+	FullName string `json:"full_name" api:"required"`
+	// Whether this storage uses a custom configuration file
+	HasCustomConfigFile bool `json:"has_custom_config_file" api:"required"`
+	// Whether password authentication is configured for this storage
+	HasPassword bool `json:"has_password" api:"required"`
+	// Whether HTTP access is disabled for this storage (HTTPS only)
+	IsHTTPDisabled bool `json:"is_http_disabled" api:"required"`
+	// Geographic location code where the storage is provisioned
+	LocationName string `json:"location_name" api:"required"`
+	// User-defined name for the storage instance, as supplied at creation time.
+	Name string `json:"name" api:"required"`
+	// Lifecycle status of the storage. Use this to check readiness before operations.
+	//
+	// Any of "creating", "active", "updating", "deleting", "deleted".
+	ProvisioningStatus SftpStorageCreatedProvisioningStatus `json:"provisioning_status" api:"required"`
+	// Custom domain alias for accessing the storage. Null if no alias is configured.
+	ServerAlias string `json:"server_alias" api:"required"`
+	// IDs of SSH keys associated with this SFTP storage
+	SSHKeyIDs []int64 `json:"ssh_key_ids" api:"required"`
+	// SFTP password. Only present when the request generated or set one; never
+	// returned by GET or list.
 	Password string `json:"password"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -386,20 +461,20 @@ type SftpStorage struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r SftpStorage) RawJSON() string { return r.JSON.raw }
-func (r *SftpStorage) UnmarshalJSON(data []byte) error {
+func (r SftpStorageCreated) RawJSON() string { return r.JSON.raw }
+func (r *SftpStorageCreated) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Lifecycle status of the storage. Use this to check readiness before operations.
-type SftpStorageProvisioningStatus string
+type SftpStorageCreatedProvisioningStatus string
 
 const (
-	SftpStorageProvisioningStatusCreating SftpStorageProvisioningStatus = "creating"
-	SftpStorageProvisioningStatusActive   SftpStorageProvisioningStatus = "active"
-	SftpStorageProvisioningStatusUpdating SftpStorageProvisioningStatus = "updating"
-	SftpStorageProvisioningStatusDeleting SftpStorageProvisioningStatus = "deleting"
-	SftpStorageProvisioningStatusDeleted  SftpStorageProvisioningStatus = "deleted"
+	SftpStorageCreatedProvisioningStatusCreating SftpStorageCreatedProvisioningStatus = "creating"
+	SftpStorageCreatedProvisioningStatusActive   SftpStorageCreatedProvisioningStatus = "active"
+	SftpStorageCreatedProvisioningStatusUpdating SftpStorageCreatedProvisioningStatus = "updating"
+	SftpStorageCreatedProvisioningStatusDeleting SftpStorageCreatedProvisioningStatus = "deleting"
+	SftpStorageCreatedProvisioningStatusDeleted  SftpStorageCreatedProvisioningStatus = "deleted"
 )
 
 type SftpStorageNewParams struct {
@@ -408,8 +483,8 @@ type SftpStorageNewParams struct {
 	// User-defined name for the storage instance
 	Name string `json:"name" api:"required"`
 	// Password handling mode for SFTP access: 'auto': generate a random password
-	// (returned in the response) 'set': use the password provided in `sftp_password`
-	// 'none': no password (SSH-key-only access)
+	// (returned in the response) 'set': use the password provided in password 'none':
+	// no password (SSH-key-only access)
 	//
 	// Any of "auto", "set", "none".
 	PasswordMode SftpStorageNewParamsPasswordMode `json:"password_mode,omitzero" api:"required"`
@@ -420,11 +495,11 @@ type SftpStorageNewParams struct {
 	HasCustomConfigFile param.Opt[bool] `json:"has_custom_config_file,omitzero"`
 	// Whether HTTP access should be disabled (HTTPS only)
 	IsHTTPDisabled param.Opt[bool] `json:"is_http_disabled,omitzero"`
-	// Custom domain alias for accessing the storage. Omit for no alias.
-	ServerAlias param.Opt[string] `json:"server_alias,omitzero"`
 	// SFTP password (8-63 chars). Required when `password_mode` is 'set'. Must be
 	// omitted when `password_mode` is 'auto' or 'none'.
-	SftpPassword param.Opt[string] `json:"sftp_password,omitzero"`
+	Password param.Opt[string] `json:"password,omitzero"`
+	// Custom domain alias for accessing the storage. Omit for no alias.
+	ServerAlias param.Opt[string] `json:"server_alias,omitzero"`
 	// SSH key IDs to associate with this storage at creation time. If omitted, no keys
 	// are linked.
 	SSHKeyIDs []int64 `json:"ssh_key_ids,omitzero"`
@@ -440,8 +515,8 @@ func (r *SftpStorageNewParams) UnmarshalJSON(data []byte) error {
 }
 
 // Password handling mode for SFTP access: 'auto': generate a random password
-// (returned in the response) 'set': use the password provided in `sftp_password`
-// 'none': no password (SSH-key-only access)
+// (returned in the response) 'set': use the password provided in password 'none':
+// no password (SSH-key-only access)
 type SftpStorageNewParamsPasswordMode string
 
 const (
@@ -458,13 +533,16 @@ type SftpStorageUpdateParams struct {
 	HasCustomConfigFile param.Opt[bool] `json:"has_custom_config_file,omitzero"`
 	// Whether HTTP access should be disabled (HTTPS only)
 	IsHTTPDisabled param.Opt[bool] `json:"is_http_disabled,omitzero"`
+	// SFTP password (8-63 chars). Only read when `password_mode` is 'set'; must be
+	// omitted for any other `password_mode` (or when `password_mode` is absent).
+	Password param.Opt[string] `json:"password,omitzero"`
 	// Custom domain alias for accessing the storage. Empty string to remove.
 	ServerAlias param.Opt[string] `json:"server_alias,omitzero"`
 	// Password handling mode. Omit to leave password unchanged. 'auto': regenerate
-	// password (returned in response) 'none': remove password Note: 'set' is not
-	// allowed in PATCH.
+	// password (returned in response) 'set': use the password provided in password
+	// (returned in response) 'none': remove password
 	//
-	// Any of "auto", "none".
+	// Any of "auto", "set", "none".
 	PasswordMode SftpStorageUpdateParamsPasswordMode `json:"password_mode,omitzero"`
 	// SSH key IDs to associate with this storage. Replaces all existing keys. If
 	// omitted, existing keys are unchanged. If empty array, all keys are removed.
@@ -481,12 +559,13 @@ func (r *SftpStorageUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 // Password handling mode. Omit to leave password unchanged. 'auto': regenerate
-// password (returned in response) 'none': remove password Note: 'set' is not
-// allowed in PATCH.
+// password (returned in response) 'set': use the password provided in password
+// (returned in response) 'none': remove password
 type SftpStorageUpdateParamsPasswordMode string
 
 const (
 	SftpStorageUpdateParamsPasswordModeAuto SftpStorageUpdateParamsPasswordMode = "auto"
+	SftpStorageUpdateParamsPasswordModeSet  SftpStorageUpdateParamsPasswordMode = "set"
 	SftpStorageUpdateParamsPasswordModeNone SftpStorageUpdateParamsPasswordMode = "none"
 )
 

@@ -43,11 +43,12 @@ func NewObjectStorageAccessKeyService(opts ...option.RequestOption) (r ObjectSto
 }
 
 // Creates a new access key for an S3-compatible storage. Returns the new access
-// key and secret key. Maximum 2 access keys per storage.
-func (r *ObjectStorageAccessKeyService) New(ctx context.Context, storageID int64, opts ...option.RequestOption) (res *AccessKeyCreated, err error) {
+// key and secret key. Standard storages are limited to 10 access keys; Fast
+// storages are limited to 2 access keys.
+func (r *ObjectStorageAccessKeyService) New(ctx context.Context, storageID int64, body ObjectStorageAccessKeyNewParams, opts ...option.RequestOption) (res *AccessKeyCreated, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("storage/v4/object_storages/%v/access_keys", storageID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
 
@@ -105,10 +106,13 @@ type AccessKey struct {
 	AccessKey string `json:"access_key" api:"required"`
 	// ISO 8601 timestamp when the access key was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// True for a key scoped to read-only data access.
+	ReadOnly bool `json:"read_only" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AccessKey   respjson.Field
 		CreatedAt   respjson.Field
+		ReadOnly    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -126,6 +130,8 @@ type AccessKeyCreated struct {
 	AccessKey string `json:"access_key" api:"required"`
 	// ISO 8601 timestamp when the access key was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// True for a key scoped to read-only data access.
+	ReadOnly bool `json:"read_only" api:"required"`
 	// Secret key used as the password in S3 authentication. Save this now — it cannot
 	// be retrieved again.
 	SecretKey string `json:"secret_key" api:"required"`
@@ -133,6 +139,7 @@ type AccessKeyCreated struct {
 	JSON struct {
 		AccessKey   respjson.Field
 		CreatedAt   respjson.Field
+		ReadOnly    respjson.Field
 		SecretKey   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -142,6 +149,22 @@ type AccessKeyCreated struct {
 // Returns the unmodified JSON received from the API
 func (r AccessKeyCreated) RawJSON() string { return r.JSON.raw }
 func (r *AccessKeyCreated) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ObjectStorageAccessKeyNewParams struct {
+	// Request a key scoped to read-only data access. Only supported for Standard
+	// storages; a Fast storage rejects true. Defaults to false (full read-write) when
+	// omitted.
+	ReadOnly param.Opt[bool] `json:"read_only,omitzero"`
+	paramObj
+}
+
+func (r ObjectStorageAccessKeyNewParams) MarshalJSON() (data []byte, err error) {
+	type shadow ObjectStorageAccessKeyNewParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ObjectStorageAccessKeyNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

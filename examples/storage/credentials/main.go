@@ -129,7 +129,7 @@ func regenerateS3Credentials(client *gcore.Client, s3StorageID int64) string {
 	fmt.Println("\n=== REGENERATE S3 CREDENTIALS ===")
 
 	// Create a new access key for the S3 storage (max 2 per storage)
-	newKey, err := client.Storage.ObjectStorages.AccessKeys.New(context.Background(), s3StorageID)
+	newKey, err := client.Storage.ObjectStorages.AccessKeys.New(context.Background(), s3StorageID, storage.ObjectStorageAccessKeyNewParams{})
 	if err != nil {
 		fmt.Printf("Error creating new access key: %v\n", err)
 		fmt.Println("================================")

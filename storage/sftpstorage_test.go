@@ -33,8 +33,8 @@ func TestSftpStorageNewWithOptionalParams(t *testing.T) {
 		Expires:             gcore.String("2 years 6 months"),
 		HasCustomConfigFile: gcore.Bool(false),
 		IsHTTPDisabled:      gcore.Bool(false),
+		Password:            gcore.String("password"),
 		ServerAlias:         gcore.String("my-storage.example.com"),
-		SftpPassword:        gcore.String("sftp_password"),
 		SSHKeyIDs:           []int64{1, 2, 3},
 	})
 	if err != nil {
@@ -65,6 +65,7 @@ func TestSftpStorageUpdateWithOptionalParams(t *testing.T) {
 			Expires:             gcore.String("2 years 6 months"),
 			HasCustomConfigFile: gcore.Bool(false),
 			IsHTTPDisabled:      gcore.Bool(false),
+			Password:            gcore.String("Xy9$mN2p!qR8"),
 			PasswordMode:        storage.SftpStorageUpdateParamsPasswordModeAuto,
 			ServerAlias:         gcore.String("my-storage.example.com"),
 			SSHKeyIDs:           []int64{1, 2, 3},

@@ -60,6 +60,7 @@ func TestObjectStorageListWithOptionalParams(t *testing.T) {
 		OrderBy:            gcore.String("order_by"),
 		ProvisioningStatus: storage.ObjectStorageListParamsProvisioningStatusActive,
 		ShowDeleted:        gcore.Bool(true),
+		Type:               storage.ObjectStorageListParamsTypeStandard,
 	})
 	if err != nil {
 		var apierr *gcore.Error

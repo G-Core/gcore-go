@@ -360,6 +360,10 @@ type S3Storage struct {
 	//
 	// Any of "creating", "active", "updating", "deleting", "deleted".
 	ProvisioningStatus S3StorageProvisioningStatus `json:"provisioning_status" api:"required"`
+	// Performance tier of the storage, determined by the backend it is provisioned on.
+	//
+	// Any of "standard", "fast".
+	Type S3StorageType `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -369,6 +373,7 @@ type S3Storage struct {
 		LocationName       respjson.Field
 		Name               respjson.Field
 		ProvisioningStatus respjson.Field
+		Type               respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -389,6 +394,14 @@ const (
 	S3StorageProvisioningStatusUpdating S3StorageProvisioningStatus = "updating"
 	S3StorageProvisioningStatusDeleting S3StorageProvisioningStatus = "deleting"
 	S3StorageProvisioningStatusDeleted  S3StorageProvisioningStatus = "deleted"
+)
+
+// Performance tier of the storage, determined by the backend it is provisioned on.
+type S3StorageType string
+
+const (
+	S3StorageTypeStandard S3StorageType = "standard"
+	S3StorageTypeFast     S3StorageType = "fast"
 )
 
 type S3StorageCreated struct {
@@ -412,6 +425,10 @@ type S3StorageCreated struct {
 	//
 	// Any of "creating", "active", "updating", "deleting", "deleted".
 	ProvisioningStatus S3StorageCreatedProvisioningStatus `json:"provisioning_status" api:"required"`
+	// Performance tier of the storage, determined by the backend it is provisioned on.
+	//
+	// Any of "standard", "fast".
+	Type S3StorageCreatedType `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -422,6 +439,7 @@ type S3StorageCreated struct {
 		LocationName       respjson.Field
 		Name               respjson.Field
 		ProvisioningStatus respjson.Field
+		Type               respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -466,6 +484,14 @@ const (
 	S3StorageCreatedProvisioningStatusDeleted  S3StorageCreatedProvisioningStatus = "deleted"
 )
 
+// Performance tier of the storage, determined by the backend it is provisioned on.
+type S3StorageCreatedType string
+
+const (
+	S3StorageCreatedTypeStandard S3StorageCreatedType = "standard"
+	S3StorageCreatedTypeFast     S3StorageCreatedType = "fast"
+)
+
 type ObjectStorageNewParams struct {
 	// Location code where the storage should be created
 	LocationName string `json:"location_name" api:"required"`
@@ -500,6 +526,13 @@ type ObjectStorageListParams struct {
 	//
 	// Any of "active", "creating", "updating", "deleting", "deleted".
 	ProvisioningStatus ObjectStorageListParamsProvisioningStatus `query:"provisioning_status,omitzero" json:"-"`
+	// Filter by performance tier. "standard" returns Standard storages, "fast" returns
+	// Fast storages. Storages on any other backend (Backblaze, Wasabi) report a
+	// "standard" type but are never returned by this filter — omit the parameter to
+	// include them.
+	//
+	// Any of "standard", "fast".
+	Type ObjectStorageListParamsType `query:"type,omitzero" json:"-"`
 	paramObj
 }
 
@@ -521,4 +554,15 @@ const (
 	ObjectStorageListParamsProvisioningStatusUpdating ObjectStorageListParamsProvisioningStatus = "updating"
 	ObjectStorageListParamsProvisioningStatusDeleting ObjectStorageListParamsProvisioningStatus = "deleting"
 	ObjectStorageListParamsProvisioningStatusDeleted  ObjectStorageListParamsProvisioningStatus = "deleted"
+)
+
+// Filter by performance tier. "standard" returns Standard storages, "fast" returns
+// Fast storages. Storages on any other backend (Backblaze, Wasabi) report a
+// "standard" type but are never returned by this filter — omit the parameter to
+// include them.
+type ObjectStorageListParamsType string
+
+const (
+	ObjectStorageListParamsTypeStandard ObjectStorageListParamsType = "standard"
+	ObjectStorageListParamsTypeFast     ObjectStorageListParamsType = "fast"
 )
