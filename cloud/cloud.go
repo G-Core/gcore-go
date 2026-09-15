@@ -128,8 +128,9 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 type AllowedAddressPairs struct {
 	// Subnet mask or IP address of the port specified in `allowed_address_pairs`
 	IPAddress string `json:"ip_address" api:"required" format:"ipvanyaddress"`
-	// MAC address of the port specified in `allowed_address_pairs`
-	MacAddress string `json:"mac_address" api:"nullable"`
+	// MAC address of the port specified in `allowed_address_pairs`. Null when the pair
+	// has no explicit MAC.
+	MacAddress string `json:"mac_address" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IPAddress   respjson.Field
@@ -591,14 +592,16 @@ type FloatingIP struct {
 	ID string `json:"id" api:"required" format:"uuid4"`
 	// Datetime when the floating IP was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
-	// Task that created this entity
+	// Task that created this entity. Null when the floating IP wasn't created via a
+	// tracked task.
 	CreatorTaskID string `json:"creator_task_id" api:"required" format:"uuid4"`
-	// IP address of the port the floating IP is attached to
+	// IP address of the port the floating IP is attached to. Null when the floating IP
+	// is not attached to a port.
 	FixedIPAddress string `json:"fixed_ip_address" api:"required" format:"ipvanyaddress"`
 	// IP Address of the floating IP
 	FloatingIPAddress string `json:"floating_ip_address" api:"required" format:"ipvanyaddress"`
 	// Port ID the floating IP is attached to. The `fixed_ip_address` is the IP address
-	// of the port.
+	// of the port. Null when the floating IP is not attached to a port.
 	PortID string `json:"port_id" api:"required" format:"uuid4"`
 	// Project ID
 	ProjectID int64 `json:"project_id" api:"required"`
@@ -606,7 +609,7 @@ type FloatingIP struct {
 	Region string `json:"region" api:"required"`
 	// Region ID
 	RegionID int64 `json:"region_id" api:"required"`
-	// Router ID
+	// Router ID. Null when the floating IP is not attached to a port.
 	RouterID string `json:"router_id" api:"required" format:"uuid4"`
 	// Floating IP status. DOWN - unassigned (available). ACTIVE - attached to a port
 	// (in use). ERROR - error state.
@@ -1440,18 +1443,39 @@ func (r *LaasIndexRetentionPolicyParam) UnmarshalJSON(data []byte) error {
 type LoadBalancer struct {
 	// Load balancer ID
 	ID string `json:"id" api:"required" format:"uuid4"`
+	// List of additional IP addresses
+	AdditionalVips []LoadBalancerAdditionalVip `json:"additional_vips" api:"required"`
 	// Administrative state of the resource. When set to true, the resource is enabled
 	// and operational. When set to false, the resource is disabled and will not
 	// process traffic. Defaults to true.
 	AdminStateUp bool `json:"admin_state_up" api:"required"`
 	// Datetime when the load balancer was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Task that created this entity. Null when the load balancer wasn't created via a
+	// tracked task.
+	CreatorTaskID string `json:"creator_task_id" api:"required" format:"uuid4"`
+	// Loadbalancer advanced DDoS protection profile. Null unless requested via
+	// `with_ddos`, or when no profile is attached.
+	DDOSProfile DDOSProfile `json:"ddos_profile" api:"required"`
+	// Load balancer flavor. Null when using the default flavor.
+	Flavor LoadBalancerFlavor `json:"flavor" api:"required"`
+	// List of assigned floating IPs
+	FloatingIPs []FloatingIP `json:"floating_ips" api:"required"`
+	// Load balancer listeners
+	Listeners []LoadBalancerListener `json:"listeners" api:"required"`
+	// Logging configuration. Null when logging isn't configured.
+	Logging Logging `json:"logging" api:"required"`
 	// Load balancer name
 	Name string `json:"name" api:"required"`
 	// Load balancer operating status
 	//
 	// Any of "DEGRADED", "DRAINING", "ERROR", "NO_MONITOR", "OFFLINE", "ONLINE".
 	OperatingStatus LoadBalancerOperatingStatus `json:"operating_status" api:"required"`
+	// Preferred option to establish connectivity between load balancer and its pools
+	// members
+	//
+	// Any of "L2", "L3".
+	PreferredConnectivity LoadBalancerMemberConnectivity `json:"preferred_connectivity" api:"required"`
 	// Project ID
 	ProjectID int64 `json:"project_id" api:"required"`
 	// Load balancer lifecycle status
@@ -1463,72 +1487,54 @@ type LoadBalancer struct {
 	Region string `json:"region" api:"required"`
 	// Region ID
 	RegionID int64 `json:"region_id" api:"required"`
+	// Statistics of load balancer. Null unless requested via `show_stats`.
+	Stats LoadBalancerStatistics `json:"stats" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
 	TagsV2 []Tag `json:"tags_v2" api:"required"`
-	// List of additional IP addresses
-	AdditionalVips []LoadBalancerAdditionalVip `json:"additional_vips"`
-	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id" api:"nullable" format:"uuid4"`
-	// Loadbalancer advanced DDoS protection profile.
-	DDOSProfile DDOSProfile `json:"ddos_profile" api:"nullable"`
-	// Load balancer flavor (if not default)
-	Flavor LoadBalancerFlavor `json:"flavor" api:"nullable"`
-	// List of assigned floating IPs
-	FloatingIPs []FloatingIP `json:"floating_ips"`
-	// Load balancer listeners
-	Listeners []LoadBalancerListener `json:"listeners"`
-	// Logging configuration
-	Logging Logging `json:"logging" api:"nullable"`
-	// Preferred option to establish connectivity between load balancer and its pools
-	// members
-	//
-	// Any of "L2", "L3".
-	PreferredConnectivity LoadBalancerMemberConnectivity `json:"preferred_connectivity"`
-	// Statistics of load balancer.
-	Stats LoadBalancerStatistics `json:"stats" api:"nullable"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id" api:"nullable" format:"uuid4"`
-	// Datetime when the load balancer was last updated
-	UpdatedAt time.Time `json:"updated_at" api:"nullable" format:"date-time"`
+	TaskID string `json:"task_id" api:"required" format:"uuid4"`
+	// Datetime when the load balancer was last updated. Null until the first update.
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// Load balancer IP address
-	VipAddress string `json:"vip_address" api:"nullable" format:"ipvanyaddress"`
-	// Fully qualified domain name for the load balancer VIP
-	VipFqdn string `json:"vip_fqdn" api:"nullable"`
+	VipAddress string `json:"vip_address" api:"required" format:"ipvanyaddress"`
+	// Fully qualified domain name for the load balancer VIP. Null when no FQDN is
+	// assigned.
+	VipFqdn string `json:"vip_fqdn" api:"required"`
 	// Load balancer IP family
 	//
 	// Any of "dual", "ipv4", "ipv6".
-	VipIPFamily InterfaceIPFamily `json:"vip_ip_family" api:"nullable"`
+	VipIPFamily InterfaceIPFamily `json:"vip_ip_family" api:"required"`
 	// The ID of the Virtual IP (VIP) port.
-	VipPortID string `json:"vip_port_id" api:"nullable" format:"uuid4"`
+	VipPortID string `json:"vip_port_id" api:"required" format:"uuid4"`
 	// List of VRRP IP addresses
-	VrrpIPs []LoadBalancerVrrpIP `json:"vrrp_ips"`
+	VrrpIPs []LoadBalancerVrrpIP `json:"vrrp_ips" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
+		AdditionalVips        respjson.Field
 		AdminStateUp          respjson.Field
 		CreatedAt             respjson.Field
-		Name                  respjson.Field
-		OperatingStatus       respjson.Field
-		ProjectID             respjson.Field
-		ProvisioningStatus    respjson.Field
-		Region                respjson.Field
-		RegionID              respjson.Field
-		TagsV2                respjson.Field
-		AdditionalVips        respjson.Field
 		CreatorTaskID         respjson.Field
 		DDOSProfile           respjson.Field
 		Flavor                respjson.Field
 		FloatingIPs           respjson.Field
 		Listeners             respjson.Field
 		Logging               respjson.Field
+		Name                  respjson.Field
+		OperatingStatus       respjson.Field
 		PreferredConnectivity respjson.Field
+		ProjectID             respjson.Field
+		ProvisioningStatus    respjson.Field
+		Region                respjson.Field
+		RegionID              respjson.Field
 		Stats                 respjson.Field
+		TagsV2                respjson.Field
 		TaskID                respjson.Field
 		UpdatedAt             respjson.Field
 		VipAddress            respjson.Field
@@ -1567,7 +1573,7 @@ func (r *LoadBalancerAdditionalVip) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Load balancer flavor (if not default)
+// Load balancer flavor. Null when using the default flavor.
 type LoadBalancerFlavor struct {
 	// Flavor ID is the same as name
 	FlavorID string `json:"flavor_id" api:"required"`
@@ -1874,27 +1880,27 @@ func (r *NetworkDetails) UnmarshalJSON(data []byte) error {
 type NetworkInterfaceUnion struct {
 	AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs"`
 	FloatingipDetails   []FloatingIP          `json:"floatingip_details"`
+	InterfaceName       string                `json:"interface_name"`
 	IPAssignments       []IPAssignment        `json:"ip_assignments"`
+	MacAddress          string                `json:"mac_address"`
 	// This field is from variant [NetworkInterfaceInstanceInterfaceTrunkSerializer].
 	NetworkDetails      NetworkDetails `json:"network_details"`
 	NetworkID           string         `json:"network_id"`
 	PortID              string         `json:"port_id"`
 	PortSecurityEnabled bool           `json:"port_security_enabled"`
 	// This field is from variant [NetworkInterfaceInstanceInterfaceTrunkSerializer].
-	SubPorts      []NetworkInterfaceInstanceInterfaceTrunkSerializerSubPort `json:"sub_ports"`
-	InterfaceName string                                                    `json:"interface_name"`
-	MacAddress    string                                                    `json:"mac_address"`
-	JSON          struct {
+	SubPorts []NetworkInterfaceInstanceInterfaceTrunkSerializerSubPort `json:"sub_ports"`
+	JSON     struct {
 		AllowedAddressPairs respjson.Field
 		FloatingipDetails   respjson.Field
+		InterfaceName       respjson.Field
 		IPAssignments       respjson.Field
+		MacAddress          respjson.Field
 		NetworkDetails      respjson.Field
 		NetworkID           respjson.Field
 		PortID              respjson.Field
 		PortSecurityEnabled respjson.Field
 		SubPorts            respjson.Field
-		InterfaceName       respjson.Field
-		MacAddress          respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -1921,8 +1927,12 @@ type NetworkInterfaceInstanceInterfaceTrunkSerializer struct {
 	AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs" api:"required"`
 	// Bodies of floating IPs that are NAT-ing IPs of this port
 	FloatingipDetails []FloatingIP `json:"floatingip_details" api:"required"`
+	// Interface name. Null when the interface has no name set.
+	InterfaceName string `json:"interface_name" api:"required"`
 	// IP addresses assigned to this port
 	IPAssignments []IPAssignment `json:"ip_assignments" api:"required"`
+	// MAC address of the virtual port
+	MacAddress string `json:"mac_address" api:"required"`
 	// Body of the network this port is attached to
 	NetworkDetails NetworkDetails `json:"network_details" api:"required"`
 	// ID of the network the port is attached to
@@ -1933,22 +1943,18 @@ type NetworkInterfaceInstanceInterfaceTrunkSerializer struct {
 	PortSecurityEnabled bool `json:"port_security_enabled" api:"required"`
 	// body of ports that are included into trunk port
 	SubPorts []NetworkInterfaceInstanceInterfaceTrunkSerializerSubPort `json:"sub_ports" api:"required"`
-	// Interface name
-	InterfaceName string `json:"interface_name" api:"nullable"`
-	// MAC address of the virtual port
-	MacAddress string `json:"mac_address" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AllowedAddressPairs respjson.Field
 		FloatingipDetails   respjson.Field
+		InterfaceName       respjson.Field
 		IPAssignments       respjson.Field
+		MacAddress          respjson.Field
 		NetworkDetails      respjson.Field
 		NetworkID           respjson.Field
 		PortID              respjson.Field
 		PortSecurityEnabled respjson.Field
 		SubPorts            respjson.Field
-		InterfaceName       respjson.Field
-		MacAddress          respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
@@ -1965,8 +1971,12 @@ type NetworkInterfaceInstanceInterfaceTrunkSerializerSubPort struct {
 	AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs" api:"required"`
 	// Bodies of floating IPs that are NAT-ing IPs of this port
 	FloatingipDetails []FloatingIP `json:"floatingip_details" api:"required"`
+	// Interface name. Null when the interface has no name set.
+	InterfaceName string `json:"interface_name" api:"required"`
 	// IP addresses assigned to this port
 	IPAssignments []IPAssignment `json:"ip_assignments" api:"required"`
+	// MAC address of the virtual port
+	MacAddress string `json:"mac_address" api:"required"`
 	// Body of the network this port is attached to
 	NetworkDetails NetworkDetails `json:"network_details" api:"required"`
 	// ID of the network the port is attached to
@@ -1979,23 +1989,19 @@ type NetworkInterfaceInstanceInterfaceTrunkSerializerSubPort struct {
 	SegmentationID int64 `json:"segmentation_id" api:"required"`
 	// type of network segment
 	SegmentationType string `json:"segmentation_type" api:"required"`
-	// Interface name
-	InterfaceName string `json:"interface_name" api:"nullable"`
-	// MAC address of the virtual port
-	MacAddress string `json:"mac_address" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AllowedAddressPairs respjson.Field
 		FloatingipDetails   respjson.Field
+		InterfaceName       respjson.Field
 		IPAssignments       respjson.Field
+		MacAddress          respjson.Field
 		NetworkDetails      respjson.Field
 		NetworkID           respjson.Field
 		PortID              respjson.Field
 		PortSecurityEnabled respjson.Field
 		SegmentationID      respjson.Field
 		SegmentationType    respjson.Field
-		InterfaceName       respjson.Field
-		MacAddress          respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
@@ -2042,12 +2048,28 @@ func (r *Route) UnmarshalJSON(data []byte) error {
 type Subnet struct {
 	// Subnet id.
 	ID string `json:"id" api:"required" format:"uuid4"`
+	// Number of available ips in subnet. Null when this data isn't available.
+	AvailableIPs int64 `json:"available_ips" api:"required"`
 	// CIDR
 	Cidr string `json:"cidr" api:"required" format:"ipvanynetwork"`
 	// Datetime when the subnet was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Task that created this entity. Null when the subnet wasn't created via a tracked
+	// task.
+	CreatorTaskID string `json:"creator_task_id" api:"required" format:"uuid4"`
+	// List IP addresses of a DNS resolver reachable from the network
+	DNSNameservers []string `json:"dns_nameservers" api:"required" format:"ipvanyaddress"`
 	// True if DHCP should be enabled
 	EnableDhcp bool `json:"enable_dhcp" api:"required"`
+	// Default GW IPv4 address, advertised in DHCP routes of this subnet. If null, no
+	// gateway is advertised by this subnet.
+	GatewayIP string `json:"gateway_ip" api:"required" format:"ipvanyaddress"`
+	// Deprecated. Always returns `false`.
+	//
+	// Deprecated: deprecated
+	HasRouter bool `json:"has_router" api:"required"`
+	// List of custom static routes to advertise via DHCP.
+	HostRoutes []Route `json:"host_routes" api:"required"`
 	// IP version
 	//
 	// Any of 4, 6.
@@ -2068,35 +2090,26 @@ type Subnet struct {
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
 	Tags []Tag `json:"tags" api:"required"`
-	// Datetime when the subnet was last updated
-	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
-	// Number of available ips in subnet
-	AvailableIPs int64 `json:"available_ips" api:"nullable"`
-	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id" api:"nullable" format:"uuid4"`
-	// List IP addresses of a DNS resolver reachable from the network
-	DNSNameservers []string `json:"dns_nameservers" api:"nullable" format:"ipvanyaddress"`
-	// Default GW IPv4 address, advertised in DHCP routes of this subnet. If null, no
-	// gateway is advertised by this subnet.
-	GatewayIP string `json:"gateway_ip" api:"nullable" format:"ipvanyaddress"`
-	// Deprecated. Always returns `false`.
-	//
-	// Deprecated: deprecated
-	HasRouter bool `json:"has_router"`
-	// List of custom static routes to advertise via DHCP.
-	HostRoutes []Route `json:"host_routes" api:"nullable"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id" api:"nullable" format:"uuid4"`
-	// Total number of ips in subnet
-	TotalIPs int64 `json:"total_ips" api:"nullable"`
+	TaskID string `json:"task_id" api:"required" format:"uuid4"`
+	// Total number of ips in subnet. Null when this data isn't available.
+	TotalIPs int64 `json:"total_ips" api:"required"`
+	// Datetime when the subnet was last updated
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
+		AvailableIPs   respjson.Field
 		Cidr           respjson.Field
 		CreatedAt      respjson.Field
+		CreatorTaskID  respjson.Field
+		DNSNameservers respjson.Field
 		EnableDhcp     respjson.Field
+		GatewayIP      respjson.Field
+		HasRouter      respjson.Field
+		HostRoutes     respjson.Field
 		IPVersion      respjson.Field
 		Name           respjson.Field
 		NetworkID      respjson.Field
@@ -2104,15 +2117,9 @@ type Subnet struct {
 		Region         respjson.Field
 		RegionID       respjson.Field
 		Tags           respjson.Field
-		UpdatedAt      respjson.Field
-		AvailableIPs   respjson.Field
-		CreatorTaskID  respjson.Field
-		DNSNameservers respjson.Field
-		GatewayIP      respjson.Field
-		HasRouter      respjson.Field
-		HostRoutes     respjson.Field
 		TaskID         respjson.Field
 		TotalIPs       respjson.Field
+		UpdatedAt      respjson.Field
 		ExtraFields    map[string]respjson.Field
 		raw            string
 	} `json:"-"`

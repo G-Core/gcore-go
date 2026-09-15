@@ -73,6 +73,7 @@ type AuditLogEntry struct {
 	// "create_access_rule", "deactivate", "delete", "delete_access_rule",
 	// "delete_metadata", "detach", "disable_logging", "disable_portsecurity",
 	// "download", "enable_logging", "enable_portsecurity", "failover",
+	// "get_certificate", "get_console", "get_kubeconfig", "get_logs",
 	// "put_into_servergroup", "reboot", "reboot_hard", "rebuild",
 	// "regenerate_credentials", "remove_from_servergroup", "replace",
 	// "replace_metadata", "resize", "resume", "retype", "revert", "scale_down",
@@ -90,8 +91,8 @@ type AuditLogEntry struct {
 	// "port", "project", "quota_limit_request", "registry", "reservation",
 	// "reserved_fixed_ip", "role", "router", "rtbh", "secret", "securitygroup",
 	// "securitygrouprule", "servergroup", "shared_flavor", "shared_image",
-	// "shared_network", "snapshot", "snapshot_schedule", "ssh_key", "subnet", "user",
-	// "vip_ip_addresses", "volume".
+	// "shared_network", "slurm", "snapshot", "snapshot_schedule", "ssh_key", "subnet",
+	// "user", "vip_ip_addresses", "volume".
 	APIGroup AuditLogEntryAPIGroup `json:"api_group" api:"required"`
 	// Client ID of the user.
 	ClientID int64 `json:"client_id" api:"required"`
@@ -174,6 +175,10 @@ const (
 	AuditLogEntryActionTypeEnableLogging          AuditLogEntryActionType = "enable_logging"
 	AuditLogEntryActionTypeEnablePortsecurity     AuditLogEntryActionType = "enable_portsecurity"
 	AuditLogEntryActionTypeFailover               AuditLogEntryActionType = "failover"
+	AuditLogEntryActionTypeGetCertificate         AuditLogEntryActionType = "get_certificate"
+	AuditLogEntryActionTypeGetConsole             AuditLogEntryActionType = "get_console"
+	AuditLogEntryActionTypeGetKubeconfig          AuditLogEntryActionType = "get_kubeconfig"
+	AuditLogEntryActionTypeGetLogs                AuditLogEntryActionType = "get_logs"
 	AuditLogEntryActionTypePutIntoServergroup     AuditLogEntryActionType = "put_into_servergroup"
 	AuditLogEntryActionTypeReboot                 AuditLogEntryActionType = "reboot"
 	AuditLogEntryActionTypeRebootHard             AuditLogEntryActionType = "reboot_hard"
@@ -248,6 +253,7 @@ const (
 	AuditLogEntryAPIGroupSharedFlavor                AuditLogEntryAPIGroup = "shared_flavor"
 	AuditLogEntryAPIGroupSharedImage                 AuditLogEntryAPIGroup = "shared_image"
 	AuditLogEntryAPIGroupSharedNetwork               AuditLogEntryAPIGroup = "shared_network"
+	AuditLogEntryAPIGroupSlurm                       AuditLogEntryAPIGroup = "slurm"
 	AuditLogEntryAPIGroupSnapshot                    AuditLogEntryAPIGroup = "snapshot"
 	AuditLogEntryAPIGroupSnapshotSchedule            AuditLogEntryAPIGroup = "snapshot_schedule"
 	AuditLogEntryAPIGroupSSHKey                      AuditLogEntryAPIGroup = "ssh_key"
@@ -275,9 +281,9 @@ type AuditLogEntryResource struct {
 	// "registry_repository", "registry_repository_artifact",
 	// "registry_repository_tag", "registry_user", "registry_user_sercret",
 	// "reservation", "role", "router", "secret", "securitygroup", "securitygrouprule",
-	// "servergroup", "shared_flavor", "shared_image", "shared_network", "snapshot",
-	// "snapshot_schedule", "ssh_key", "subnet", "token", "user",
-	// "virtual_gpu_cluster", "volume".
+	// "servergroup", "shared_flavor", "shared_image", "shared_network",
+	// "slurm_cluster", "slurm_node_set", "snapshot", "snapshot_schedule", "ssh_key",
+	// "subnet", "token", "user", "virtual_gpu_cluster", "volume".
 	ResourceType string `json:"resource_type" api:"required"`
 	// Free-form object, resource body.
 	ResourceBody map[string]any `json:"resource_body" api:"nullable"`
@@ -351,6 +357,7 @@ type AuditLogListParams struct {
 	// "create_access_rule", "deactivate", "delete", "delete_access_rule",
 	// "delete_metadata", "detach", "disable_logging", "disable_portsecurity",
 	// "download", "enable_logging", "enable_portsecurity", "failover",
+	// "get_certificate", "get_console", "get_kubeconfig", "get_logs",
 	// "put_into_servergroup", "reboot", "reboot_hard", "rebuild",
 	// "regenerate_credentials", "remove_from_servergroup", "replace",
 	// "replace_metadata", "resize", "resume", "retype", "revert", "scale_down",
@@ -368,8 +375,8 @@ type AuditLogListParams struct {
 	// "port", "project", "quota_limit_request", "registry", "reservation",
 	// "reserved_fixed_ip", "role", "router", "rtbh", "secret", "securitygroup",
 	// "securitygrouprule", "servergroup", "shared_flavor", "shared_image",
-	// "shared_network", "snapshot", "snapshot_schedule", "ssh_key", "subnet", "user",
-	// "vip_ip_addresses", "volume".
+	// "shared_network", "slurm", "snapshot", "snapshot_schedule", "ssh_key", "subnet",
+	// "user", "vip_ip_addresses", "volume".
 	APIGroup []string `query:"api_group,omitzero" json:"-"`
 	// Sorting by timestamp. Oldest first, or most recent first
 	//

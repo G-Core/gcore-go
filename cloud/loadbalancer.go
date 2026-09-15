@@ -268,6 +268,16 @@ type HealthMonitor struct {
 	// Domain name for HTTP host header. Can only be used together with `HTTP` or
 	// `HTTPS` health monitor type.
 	DomainName string `json:"domain_name" api:"required"`
+	// Expected HTTP response codes. Can be a single code, a comma-separated list of
+	// codes, or a single range of codes. Can only be used together with `HTTP` or
+	// `HTTPS` health monitor type. For example, 200, 200,202,401,403,404, or 200-204.
+	// If not specified, the default is 200. Null for non-HTTP(S) health monitor types.
+	ExpectedCodes string `json:"expected_codes" api:"required"`
+	// HTTP method. Null for non-HTTP(S) health monitor types.
+	//
+	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
+	// "TRACE".
+	HTTPMethod HTTPMethod `json:"http_method" api:"required"`
 	// HTTP version. Can only be used together with `HTTP` or `HTTPS` health monitor
 	// type.
 	//
@@ -292,23 +302,16 @@ type HealthMonitor struct {
 	//
 	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
 	Type LbHealthMonitorType `json:"type" api:"required"`
-	// Expected HTTP response codes. Can be a single code or a range of codes. Can only
-	// be used together with `HTTP` or `HTTPS` health monitor type. For example,
-	// 200,202,300-302,401,403,404,500-504. If not specified, the default is 200.
-	ExpectedCodes string `json:"expected_codes" api:"nullable"`
-	// HTTP method
-	//
-	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
-	// "TRACE".
-	HTTPMethod HTTPMethod `json:"http_method" api:"nullable"`
-	// URL Path. Defaults to '/'
-	URLPath string `json:"url_path" api:"nullable"`
+	// URL Path. Defaults to '/'. Null for non-HTTP(S) health monitor types.
+	URLPath string `json:"url_path" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
 		AdminStateUp       respjson.Field
 		Delay              respjson.Field
 		DomainName         respjson.Field
+		ExpectedCodes      respjson.Field
+		HTTPMethod         respjson.Field
 		HTTPVersion        respjson.Field
 		MaxRetries         respjson.Field
 		MaxRetriesDown     respjson.Field
@@ -316,8 +319,6 @@ type HealthMonitor struct {
 		ProvisioningStatus respjson.Field
 		Timeout            respjson.Field
 		Type               respjson.Field
-		ExpectedCodes      respjson.Field
-		HTTPMethod         respjson.Field
 		URLPath            respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
@@ -983,20 +984,21 @@ func (r *LoadBalancerListenerList) UnmarshalJSON(data []byte) error {
 }
 
 type LoadBalancerMetrics struct {
-	// CPU utilization, % (max 100% for multi-core)
-	CPUUtil float64 `json:"cpu_util" api:"nullable"`
-	// RAM utilization, %
-	MemoryUtil float64 `json:"memory_util" api:"nullable"`
-	// Network out, bytes per second
-	NetworkBpsEgress float64 `json:"network_Bps_egress" api:"nullable"`
-	// Network in, bytes per second
-	NetworkBpsIngress float64 `json:"network_Bps_ingress" api:"nullable"`
-	// Network out, packets per second
-	NetworkPpsEgress float64 `json:"network_pps_egress" api:"nullable"`
-	// Network in, packets per second
-	NetworkPpsIngress float64 `json:"network_pps_ingress" api:"nullable"`
-	// Timestamp
-	Time string `json:"time" api:"nullable"`
+	// CPU utilization, % (max 100% for multi-core). Null when no data point is
+	// available.
+	CPUUtil float64 `json:"cpu_util" api:"required"`
+	// RAM utilization, %. Null when no data point is available.
+	MemoryUtil float64 `json:"memory_util" api:"required"`
+	// Network out, bytes per second. Null when no data point is available.
+	NetworkBpsEgress float64 `json:"network_Bps_egress" api:"required"`
+	// Network in, bytes per second. Null when no data point is available.
+	NetworkBpsIngress float64 `json:"network_Bps_ingress" api:"required"`
+	// Network out, packets per second. Null when no data point is available.
+	NetworkPpsEgress float64 `json:"network_pps_egress" api:"required"`
+	// Network in, packets per second. Null when no data point is available.
+	NetworkPpsIngress float64 `json:"network_pps_ingress" api:"required"`
+	// Timestamp. Null when no data point is available.
+	Time string `json:"time" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CPUUtil           respjson.Field
@@ -1408,7 +1410,7 @@ type LoadBalancerStatus struct {
 	// grouping for better organization and management. Some tags are read-only and
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
-	Tags []Tag `json:"tags"`
+	Tags []Tag `json:"tags" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -1559,6 +1561,8 @@ func (r *MemberStatus) UnmarshalJSON(data []byte) error {
 type PoolStatus struct {
 	// UUID of the entity
 	ID string `json:"id" api:"required" format:"uuid"`
+	// Health Monitor of the Pool. Null when the pool has no health monitor.
+	HealthMonitor HealthMonitorStatus `json:"health_monitor" api:"required"`
 	// Members (servers) of the pool
 	Members []MemberStatus `json:"members" api:"required"`
 	// Name of the load balancer pool
@@ -1572,16 +1576,14 @@ type PoolStatus struct {
 	// Any of "ACTIVE", "DELETED", "ERROR", "PENDING_CREATE", "PENDING_DELETE",
 	// "PENDING_UPDATE".
 	ProvisioningStatus ProvisioningStatus `json:"provisioning_status" api:"required"`
-	// Health Monitor of the Pool
-	HealthMonitor HealthMonitorStatus `json:"health_monitor" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
+		HealthMonitor      respjson.Field
 		Members            respjson.Field
 		Name               respjson.Field
 		OperatingStatus    respjson.Field
 		ProvisioningStatus respjson.Field
-		HealthMonitor      respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -1594,22 +1596,22 @@ func (r *PoolStatus) UnmarshalJSON(data []byte) error {
 }
 
 type SessionPersistence struct {
+	// Should be set if app cookie or http cookie is used. Null otherwise.
+	CookieName string `json:"cookie_name" api:"required"`
+	// Subnet mask if `source_ip` is used. For UDP ports only, null otherwise.
+	PersistenceGranularity string `json:"persistence_granularity" api:"required"`
+	// Session persistence timeout. For UDP ports only, null otherwise.
+	PersistenceTimeout int64 `json:"persistence_timeout" api:"required"`
 	// Session persistence type
 	//
 	// Any of "APP_COOKIE", "HTTP_COOKIE", "SOURCE_IP".
 	Type LbSessionPersistenceType `json:"type" api:"required"`
-	// Should be set if app cookie or http cookie is used
-	CookieName string `json:"cookie_name" api:"nullable"`
-	// Subnet mask if `source_ip` is used. For UDP ports only
-	PersistenceGranularity string `json:"persistence_granularity" api:"nullable"`
-	// Session persistence timeout. For UDP ports only
-	PersistenceTimeout int64 `json:"persistence_timeout" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Type                   respjson.Field
 		CookieName             respjson.Field
 		PersistenceGranularity respjson.Field
 		PersistenceTimeout     respjson.Field
+		Type                   respjson.Field
 		ExtraFields            map[string]respjson.Field
 		raw                    string
 	} `json:"-"`
@@ -1896,9 +1898,10 @@ type LoadBalancerNewParamsListenerPoolHealthmonitor struct {
 	// Domain name for HTTP host header. Can only be used together with `HTTP` or
 	// `HTTPS` health monitor type.
 	DomainName param.Opt[string] `json:"domain_name,omitzero"`
-	// Expected HTTP response codes. Can be a single code or a range of codes. Can only
-	// be used together with `HTTP` or `HTTPS` health monitor type. For example,
-	// 200,202,300-302,401,403,404,500-504. If not specified, the default is 200.
+	// Expected HTTP response codes. Can be a single code, a comma-separated list of
+	// codes, or a single range of codes. Can only be used together with `HTTP` or
+	// `HTTPS` health monitor type. For example, 200, 200,202,401,403,404, or 200-204.
+	// If not specified, the default is 200.
 	ExpectedCodes param.Opt[string] `json:"expected_codes,omitzero"`
 	// The HTTP path the health monitor requests on each member. Defaults to `/` if not
 	// set. Can only be used with `HTTP` or `HTTPS` health monitor type.

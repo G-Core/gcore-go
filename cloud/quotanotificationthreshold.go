@@ -720,6 +720,10 @@ type NotificationThresholdLastMessageRegionalQuota struct {
 	SharedVmCountLimit NotificationThresholdLastMessageRegionalQuotaSharedVmCountLimit `json:"shared_vm_count_limit"`
 	// Basic VMs Count usage
 	SharedVmCountUsage NotificationThresholdLastMessageRegionalQuotaSharedVmCountUsage `json:"shared_vm_count_usage"`
+	// Slurm cluster count limit for this region. 0 disables Slurm in this region.
+	SlurmClusterCountLimit NotificationThresholdLastMessageRegionalQuotaSlurmClusterCountLimit `json:"slurm_cluster_count_limit"`
+	// Slurm cluster count usage
+	SlurmClusterCountUsage NotificationThresholdLastMessageRegionalQuotaSlurmClusterCountUsage `json:"slurm_cluster_count_usage"`
 	// Snapshot Schedules Count limit
 	SnapshotScheduleCountLimit NotificationThresholdLastMessageRegionalQuotaSnapshotScheduleCountLimit `json:"snapshot_schedule_count_limit"`
 	// Snapshot Schedules Count usage
@@ -838,6 +842,8 @@ type NotificationThresholdLastMessageRegionalQuota struct {
 		SfsSizeUsage                      respjson.Field
 		SharedVmCountLimit                respjson.Field
 		SharedVmCountUsage                respjson.Field
+		SlurmClusterCountLimit            respjson.Field
+		SlurmClusterCountUsage            respjson.Field
 		SnapshotScheduleCountLimit        respjson.Field
 		SnapshotScheduleCountUsage        respjson.Field
 		SubnetCountLimit                  respjson.Field
@@ -2837,6 +2843,52 @@ func (r *NotificationThresholdLastMessageRegionalQuotaSharedVmCountUsage) Unmars
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Slurm cluster count limit for this region. 0 disables Slurm in this region.
+type NotificationThresholdLastMessageRegionalQuotaSlurmClusterCountLimit struct {
+	// Current quota limit
+	Limit int64 `json:"limit" api:"required"`
+	// Current amount of resource used
+	Usage int64 `json:"usage" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Limit       respjson.Field
+		Usage       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NotificationThresholdLastMessageRegionalQuotaSlurmClusterCountLimit) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *NotificationThresholdLastMessageRegionalQuotaSlurmClusterCountLimit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Slurm cluster count usage
+type NotificationThresholdLastMessageRegionalQuotaSlurmClusterCountUsage struct {
+	// Current quota limit
+	Limit int64 `json:"limit" api:"required"`
+	// Current amount of resource used
+	Usage int64 `json:"usage" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Limit       respjson.Field
+		Usage       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NotificationThresholdLastMessageRegionalQuotaSlurmClusterCountUsage) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *NotificationThresholdLastMessageRegionalQuotaSlurmClusterCountUsage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Snapshot Schedules Count limit
 type NotificationThresholdLastMessageRegionalQuotaSnapshotScheduleCountLimit struct {
 	// Current quota limit
@@ -3723,6 +3775,10 @@ type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuota struct {
 	SharedVmCountLimit QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSharedVmCountLimit `json:"shared_vm_count_limit,omitzero"`
 	// Basic VMs Count usage
 	SharedVmCountUsage QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSharedVmCountUsage `json:"shared_vm_count_usage,omitzero"`
+	// Slurm cluster count limit for this region. 0 disables Slurm in this region.
+	SlurmClusterCountLimit QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSlurmClusterCountLimit `json:"slurm_cluster_count_limit,omitzero"`
+	// Slurm cluster count usage
+	SlurmClusterCountUsage QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSlurmClusterCountUsage `json:"slurm_cluster_count_usage,omitzero"`
 	// Snapshot Schedules Count limit
 	SnapshotScheduleCountLimit QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSnapshotScheduleCountLimit `json:"snapshot_schedule_count_limit,omitzero"`
 	// Snapshot Schedules Count usage
@@ -5393,6 +5449,44 @@ func (r QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSharedVmCo
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSharedVmCountUsage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Slurm cluster count limit for this region. 0 disables Slurm in this region.
+//
+// The properties Limit, Usage are required.
+type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSlurmClusterCountLimit struct {
+	// Current quota limit
+	Limit int64 `json:"limit" api:"required"`
+	// Current amount of resource used
+	Usage int64 `json:"usage" api:"required"`
+	paramObj
+}
+
+func (r QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSlurmClusterCountLimit) MarshalJSON() (data []byte, err error) {
+	type shadow QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSlurmClusterCountLimit
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSlurmClusterCountLimit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Slurm cluster count usage
+//
+// The properties Limit, Usage are required.
+type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSlurmClusterCountUsage struct {
+	// Current quota limit
+	Limit int64 `json:"limit" api:"required"`
+	// Current amount of resource used
+	Usage int64 `json:"usage" api:"required"`
+	paramObj
+}
+
+func (r QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSlurmClusterCountUsage) MarshalJSON() (data []byte, err error) {
+	type shadow QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSlurmClusterCountUsage
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSlurmClusterCountUsage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

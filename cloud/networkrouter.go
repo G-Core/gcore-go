@@ -239,8 +239,14 @@ type Router struct {
 	ID string `json:"id" api:"required" format:"uuid4"`
 	// Datetime when the router was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Task that created this entity. Null when the router wasn't created via a tracked
+	// task.
+	CreatorTaskID string `json:"creator_task_id" api:"required" format:"uuid4"`
 	// Whether the router is distributed or centralized.
 	Distributed bool `json:"distributed" api:"required"`
+	// State of this router's external gateway. Null when the router has no external
+	// gateway.
+	ExternalGatewayInfo RouterExternalGatewayInfo `json:"external_gateway_info" api:"required"`
 	// List of router interfaces.
 	Interfaces []RouterInterface `json:"interfaces" api:"required"`
 	// Router name
@@ -261,15 +267,13 @@ type Router struct {
 	TaskID string `json:"task_id" api:"required" format:"uuid4"`
 	// Datetime when the router was last updated
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
-	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id" api:"nullable" format:"uuid4"`
-	// State of this router's external gateway.
-	ExternalGatewayInfo RouterExternalGatewayInfo `json:"external_gateway_info" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                  respjson.Field
 		CreatedAt           respjson.Field
+		CreatorTaskID       respjson.Field
 		Distributed         respjson.Field
+		ExternalGatewayInfo respjson.Field
 		Interfaces          respjson.Field
 		Name                respjson.Field
 		ProjectID           respjson.Field
@@ -279,8 +283,6 @@ type Router struct {
 		Status              respjson.Field
 		TaskID              respjson.Field
 		UpdatedAt           respjson.Field
-		CreatorTaskID       respjson.Field
-		ExternalGatewayInfo respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
@@ -292,33 +294,8 @@ func (r *Router) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RouterInterface struct {
-	// IP addresses assigned to this port
-	IPAssignments []IPAssignment `json:"ip_assignments" api:"required"`
-	// ID of the network the port is attached to
-	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
-	// ID of virtual ethernet port object
-	PortID string `json:"port_id" api:"required" format:"uuid4"`
-	// MAC address of the virtual port
-	MacAddress string `json:"mac_address" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		IPAssignments respjson.Field
-		NetworkID     respjson.Field
-		PortID        respjson.Field
-		MacAddress    respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r RouterInterface) RawJSON() string { return r.JSON.raw }
-func (r *RouterInterface) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// State of this router's external gateway.
+// State of this router's external gateway. Null when the router has no external
+// gateway.
 type RouterExternalGatewayInfo struct {
 	// Is SNAT enabled.
 	EnableSnat bool `json:"enable_snat" api:"required"`
@@ -339,6 +316,32 @@ type RouterExternalGatewayInfo struct {
 // Returns the unmodified JSON received from the API
 func (r RouterExternalGatewayInfo) RawJSON() string { return r.JSON.raw }
 func (r *RouterExternalGatewayInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type RouterInterface struct {
+	// IP addresses assigned to this port
+	IPAssignments []IPAssignment `json:"ip_assignments" api:"required"`
+	// MAC address of the virtual port
+	MacAddress string `json:"mac_address" api:"required"`
+	// ID of the network the port is attached to
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
+	// ID of virtual ethernet port object
+	PortID string `json:"port_id" api:"required" format:"uuid4"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		IPAssignments respjson.Field
+		MacAddress    respjson.Field
+		NetworkID     respjson.Field
+		PortID        respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r RouterInterface) RawJSON() string { return r.JSON.raw }
+func (r *RouterInterface) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

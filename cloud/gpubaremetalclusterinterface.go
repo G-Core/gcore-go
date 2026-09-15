@@ -189,8 +189,15 @@ type GPUBaremetalClusterInterfaceAttachParamsBodyExternal struct {
 	DDOSProfile GPUBaremetalClusterInterfaceAttachParamsBodyExternalDDOSProfile `json:"ddos_profile,omitzero"`
 	// List of security group IDs.
 	SecurityGroups []GPUBaremetalClusterInterfaceAttachParamsBodyExternalSecurityGroup `json:"security_groups,omitzero"`
+	// Specify `ipv4`, `ipv6`, or `dual` to enable both. If omitted, the API selects
+	// `ipv4` when the network has an IPv4 subnet, `ipv6` otherwise.
+	//
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
+	// Port will get an IP address in a subnet of the external network with the largest
+	// count of free IPs. If the instance already has an IP address in a subnet of the
+	// external network with the same IP family, the API tries to reuse that subnet.
+	//
 	// Any of "external".
 	Type string `json:"type,omitzero"`
 	paramObj
@@ -363,8 +370,15 @@ type GPUBaremetalClusterInterfaceAttachParamsBodyAnySubnet struct {
 	DDOSProfile GPUBaremetalClusterInterfaceAttachParamsBodyAnySubnetDDOSProfile `json:"ddos_profile,omitzero"`
 	// List of security group IDs.
 	SecurityGroups []GPUBaremetalClusterInterfaceAttachParamsBodyAnySubnetSecurityGroup `json:"security_groups,omitzero"`
+	// Specify `ipv4`, `ipv6`, or `dual` to enable both. If omitted, the API selects
+	// `ipv4` when the network has an IPv4 subnet, `ipv6` otherwise.
+	//
 	// Any of "dual", "ipv4", "ipv6".
 	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
+	// Port will get an IP address in the subnet with the largest count of free IPs. If
+	// the instance already has an IP address in a subnet of `network_id` with the same
+	// IP family, the API tries to reuse that subnet.
+	//
 	// Any of "any_subnet".
 	Type string `json:"type,omitzero"`
 	paramObj

@@ -478,8 +478,12 @@ type InstanceInterface struct {
 	AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs" api:"required"`
 	// Bodies of floating IPs that are NAT-ing IPs of this port
 	FloatingipDetails []FloatingIP `json:"floatingip_details" api:"required"`
+	// Interface name. Null when the interface has no name set.
+	InterfaceName string `json:"interface_name" api:"required"`
 	// IP addresses assigned to this port
 	IPAssignments []IPAssignment `json:"ip_assignments" api:"required"`
+	// MAC address of the virtual port
+	MacAddress string `json:"mac_address" api:"required"`
 	// Body of the network this port is attached to
 	NetworkDetails NetworkDetails `json:"network_details" api:"required"`
 	// ID of the network the port is attached to
@@ -488,21 +492,17 @@ type InstanceInterface struct {
 	PortID string `json:"port_id" api:"required" format:"uuid4"`
 	// Port security status
 	PortSecurityEnabled bool `json:"port_security_enabled" api:"required"`
-	// Interface name
-	InterfaceName string `json:"interface_name" api:"nullable"`
-	// MAC address of the virtual port
-	MacAddress string `json:"mac_address" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AllowedAddressPairs respjson.Field
 		FloatingipDetails   respjson.Field
+		InterfaceName       respjson.Field
 		IPAssignments       respjson.Field
+		MacAddress          respjson.Field
 		NetworkDetails      respjson.Field
 		NetworkID           respjson.Field
 		PortID              respjson.Field
 		PortSecurityEnabled respjson.Field
-		InterfaceName       respjson.Field
-		MacAddress          respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`

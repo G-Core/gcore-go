@@ -447,6 +447,14 @@ func TestQuotaNotificationThresholdUpdateWithOptionalParams(t *testing.T) {
 						Limit: 10,
 						Usage: 8,
 					},
+					SlurmClusterCountLimit: cloud.QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSlurmClusterCountLimit{
+						Limit: 10,
+						Usage: 8,
+					},
+					SlurmClusterCountUsage: cloud.QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSlurmClusterCountUsage{
+						Limit: 10,
+						Usage: 8,
+					},
 					SnapshotScheduleCountLimit: cloud.QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaSnapshotScheduleCountLimit{
 						Limit: 10,
 						Usage: 8,

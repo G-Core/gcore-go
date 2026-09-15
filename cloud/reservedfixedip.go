@@ -189,6 +189,15 @@ type ReservedFixedIP struct {
 	Attachments []ReservedFixedIPAttachment `json:"attachments" api:"required"`
 	// Datetime when the reserved fixed IP was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Task that created this entity. Null when the reservation wasn't created via a
+	// tracked task.
+	CreatorTaskID string `json:"creator_task_id" api:"required" format:"uuid4"`
+	// IPv4 address of the reserved fixed IP. Null when the reservation has no IPv4
+	// address.
+	FixedIPAddress string `json:"fixed_ip_address" api:"required" format:"ipv4"`
+	// IPv6 address of the reserved fixed IP. Null when the reservation has no IPv6
+	// address.
+	FixedIpv6Address string `json:"fixed_ipv6_address" api:"required" format:"ipv6"`
 	// If reserved fixed IP belongs to a public network
 	IsExternal bool `json:"is_external" api:"required"`
 	// If reserved fixed IP is a VIP
@@ -201,6 +210,8 @@ type ReservedFixedIP struct {
 	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// ID of the port underlying the reserved fixed IP
 	PortID string `json:"port_id" api:"required" format:"uuid4"`
+	// Project ID. Null in an internal, project-less context.
+	ProjectID int64 `json:"project_id" api:"required"`
 	// Region name
 	Region string `json:"region" api:"required"`
 	// Region ID
@@ -209,47 +220,41 @@ type ReservedFixedIP struct {
 	Reservation ReservedFixedIPReservation `json:"reservation" api:"required"`
 	// Underlying port status
 	Status string `json:"status" api:"required"`
-	// Datetime when the reserved fixed IP was last updated
-	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
-	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id" api:"nullable" format:"uuid4"`
-	// IPv4 address of the reserved fixed IP
-	FixedIPAddress string `json:"fixed_ip_address" api:"nullable" format:"ipv4"`
-	// IPv6 address of the reserved fixed IP
-	FixedIpv6Address string `json:"fixed_ipv6_address" api:"nullable" format:"ipv6"`
-	// Project ID
-	ProjectID int64 `json:"project_id" api:"nullable"`
-	// ID of the subnet that owns the IP address
-	SubnetID string `json:"subnet_id" api:"nullable" format:"uuid4"`
-	// ID of the subnet that owns the IPv6 address
-	SubnetV6ID string `json:"subnet_v6_id" api:"nullable" format:"uuid4"`
+	// ID of the subnet that owns the IP address. Null when the reservation has no IPv4
+	// address.
+	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
+	// ID of the subnet that owns the IPv6 address. Null when the reservation has no
+	// IPv6 address.
+	SubnetV6ID string `json:"subnet_v6_id" api:"required" format:"uuid4"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id" api:"nullable" format:"uuid4"`
+	TaskID string `json:"task_id" api:"required" format:"uuid4"`
+	// Datetime when the reserved fixed IP was last updated
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AllowedAddressPairs respjson.Field
 		Attachments         respjson.Field
 		CreatedAt           respjson.Field
+		CreatorTaskID       respjson.Field
+		FixedIPAddress      respjson.Field
+		FixedIpv6Address    respjson.Field
 		IsExternal          respjson.Field
 		IsVip               respjson.Field
 		Name                respjson.Field
 		Network             respjson.Field
 		NetworkID           respjson.Field
 		PortID              respjson.Field
+		ProjectID           respjson.Field
 		Region              respjson.Field
 		RegionID            respjson.Field
 		Reservation         respjson.Field
 		Status              respjson.Field
-		UpdatedAt           respjson.Field
-		CreatorTaskID       respjson.Field
-		FixedIPAddress      respjson.Field
-		FixedIpv6Address    respjson.Field
-		ProjectID           respjson.Field
 		SubnetID            respjson.Field
 		SubnetV6ID          respjson.Field
 		TaskID              respjson.Field
+		UpdatedAt           respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
@@ -262,10 +267,10 @@ func (r *ReservedFixedIP) UnmarshalJSON(data []byte) error {
 }
 
 type ReservedFixedIPAttachment struct {
-	// Resource ID
-	ResourceID string `json:"resource_id" api:"nullable"`
-	// Resource type
-	ResourceType string `json:"resource_type" api:"nullable"`
+	// Resource ID. Null when the attachment's resource is unknown.
+	ResourceID string `json:"resource_id" api:"required"`
+	// Resource type. Null when the attachment's resource type is unknown.
+	ResourceType string `json:"resource_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ResourceID   respjson.Field
@@ -283,12 +288,14 @@ func (r *ReservedFixedIPAttachment) UnmarshalJSON(data []byte) error {
 
 // Reserved fixed IP status with resource type and ID it is attached to
 type ReservedFixedIPReservation struct {
-	// ID of the instance or load balancer the IP is attached to
-	ResourceID string `json:"resource_id" api:"nullable" format:"uuid4"`
-	// Resource type of the resource the IP is attached to
-	ResourceType string `json:"resource_type" api:"nullable"`
-	// IP reservation status
-	Status string `json:"status" api:"nullable"`
+	// ID of the instance or load balancer the IP is attached to. Null when the IP
+	// isn't attached.
+	ResourceID string `json:"resource_id" api:"required" format:"uuid4"`
+	// Resource type of the resource the IP is attached to. Null when the IP isn't
+	// attached.
+	ResourceType string `json:"resource_type" api:"required"`
+	// IP reservation status. Null when the IP isn't attached to a resource.
+	Status string `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ResourceID   respjson.Field

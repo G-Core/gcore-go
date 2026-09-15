@@ -347,6 +347,10 @@ type QuotaRegionalQuota struct {
 	SharedVmCountLimit int64 `json:"shared_vm_count_limit"`
 	// Basic VMs Count usage
 	SharedVmCountUsage int64 `json:"shared_vm_count_usage"`
+	// Slurm cluster count limit for this region. 0 disables Slurm in this region.
+	SlurmClusterCountLimit int64 `json:"slurm_cluster_count_limit"`
+	// Slurm cluster count usage
+	SlurmClusterCountUsage int64 `json:"slurm_cluster_count_usage"`
 	// Snapshot Schedules Count limit
 	SnapshotScheduleCountLimit int64 `json:"snapshot_schedule_count_limit"`
 	// Snapshot Schedules Count usage
@@ -466,6 +470,8 @@ type QuotaRegionalQuota struct {
 		SfsSizeUsage                      respjson.Field
 		SharedVmCountLimit                respjson.Field
 		SharedVmCountUsage                respjson.Field
+		SlurmClusterCountLimit            respjson.Field
+		SlurmClusterCountUsage            respjson.Field
 		SnapshotScheduleCountLimit        respjson.Field
 		SnapshotScheduleCountUsage        respjson.Field
 		SubnetCountLimit                  respjson.Field
@@ -680,6 +686,10 @@ type QuotaGetByRegionResponse struct {
 	SharedVmCountLimit int64 `json:"shared_vm_count_limit"`
 	// Basic VMs Count usage
 	SharedVmCountUsage int64 `json:"shared_vm_count_usage"`
+	// Slurm cluster count limit for this region. 0 disables Slurm in this region.
+	SlurmClusterCountLimit int64 `json:"slurm_cluster_count_limit"`
+	// Slurm cluster count usage
+	SlurmClusterCountUsage int64 `json:"slurm_cluster_count_usage"`
 	// Snapshot Schedules Count limit
 	SnapshotScheduleCountLimit int64 `json:"snapshot_schedule_count_limit"`
 	// Snapshot Schedules Count usage
@@ -799,6 +809,8 @@ type QuotaGetByRegionResponse struct {
 		SfsSizeUsage                      respjson.Field
 		SharedVmCountLimit                respjson.Field
 		SharedVmCountUsage                respjson.Field
+		SlurmClusterCountLimit            respjson.Field
+		SlurmClusterCountUsage            respjson.Field
 		SnapshotScheduleCountLimit        respjson.Field
 		SnapshotScheduleCountUsage        respjson.Field
 		SubnetCountLimit                  respjson.Field

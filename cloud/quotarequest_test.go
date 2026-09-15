@@ -86,6 +86,7 @@ func TestQuotaRequestNewWithOptionalParams(t *testing.T) {
 				SfsCountLimit:                     gcore.Int(0),
 				SfsSizeLimit:                      gcore.Int(0),
 				SharedVmCountLimit:                gcore.Int(0),
+				SlurmClusterCountLimit:            gcore.Int(0),
 				SnapshotScheduleCountLimit:        gcore.Int(0),
 				SubnetCountLimit:                  gcore.Int(0),
 				VmCountLimit:                      gcore.Int(0),

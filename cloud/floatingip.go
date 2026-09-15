@@ -288,9 +288,11 @@ type FloatingIPDetailed struct {
 	ID string `json:"id" api:"required" format:"uuid4"`
 	// Datetime when the floating IP was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
-	// Task that created this entity
+	// Task that created this entity. Null when the floating IP wasn't created via a
+	// tracked task.
 	CreatorTaskID string `json:"creator_task_id" api:"required" format:"uuid4"`
-	// IP address of the port the floating IP is attached to
+	// IP address of the port the floating IP is attached to. Null when the floating IP
+	// is not attached to a port.
 	FixedIPAddress string `json:"fixed_ip_address" api:"required" format:"ipvanyaddress"`
 	// IP Address of the floating IP
 	FloatingIPAddress string `json:"floating_ip_address" api:"required" format:"ipvanyaddress"`
@@ -306,7 +308,7 @@ type FloatingIPDetailed struct {
 	Region string `json:"region" api:"required"`
 	// Region ID
 	RegionID int64 `json:"region_id" api:"required"`
-	// Router ID
+	// Router ID. Null when the floating IP is not attached to a port.
 	RouterID string `json:"router_id" api:"required" format:"uuid4"`
 	// Floating IP status. DOWN - unassigned (available). ACTIVE - attached to a port
 	// (in use). ERROR - error state.

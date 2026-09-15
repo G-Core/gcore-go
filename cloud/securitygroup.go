@@ -275,6 +275,8 @@ type SecurityGroup struct {
 	RegionID int64 `json:"region_id" api:"required"`
 	// The number of revisions
 	RevisionNumber int64 `json:"revision_number" api:"required"`
+	// Security group rules
+	SecurityGroupRules []SecurityGroupRule `json:"security_group_rules" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
@@ -283,8 +285,6 @@ type SecurityGroup struct {
 	TagsV2 []Tag `json:"tags_v2" api:"required"`
 	// Datetime when the security group was last updated
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
-	// Security group rules
-	SecurityGroupRules []SecurityGroupRule `json:"security_group_rules"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -295,9 +295,9 @@ type SecurityGroup struct {
 		Region             respjson.Field
 		RegionID           respjson.Field
 		RevisionNumber     respjson.Field
+		SecurityGroupRules respjson.Field
 		TagsV2             respjson.Field
 		UpdatedAt          respjson.Field
-		SecurityGroupRules respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`

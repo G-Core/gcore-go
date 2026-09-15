@@ -63,6 +63,37 @@ func (r *LoadBalancerPoolHealthMonitorService) New(ctx context.Context, poolID s
 	return res, err
 }
 
+// Updates the health monitor of a load balancer pool, such as its check intervals,
+// timeouts, and the thresholds used to mark pool members as healthy or unhealthy.
+// Only the supplied fields are changed. Returns 404 if the pool has no health
+// monitor attached. If a provided field already matches the current health monitor
+// state it is skipped, and when no field changes anything no task is created and
+// an empty task list is returned.
+func (r *LoadBalancerPoolHealthMonitorService) Update(ctx context.Context, poolID string, params LoadBalancerPoolHealthMonitorUpdateParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return nil, err
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return nil, err
+	}
+	if !params.RegionID.Valid() {
+		err = errors.New("missing required region_id parameter")
+		return nil, err
+	}
+	if poolID == "" {
+		err = errors.New("missing required pool_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("cloud/v1/lbpools/%v/%v/%s/healthmonitor", params.ProjectID.Value, params.RegionID.Value, poolID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
+	return res, err
+}
+
 // Removes the health monitor from a load balancer pool. After deletion, the pool
 // will no longer perform automatic health checks on its members, and all members
 // will remain in rotation regardless of their actual health status.
@@ -92,6 +123,34 @@ func (r *LoadBalancerPoolHealthMonitorService) Delete(ctx context.Context, poolI
 	return err
 }
 
+// Returns the health monitor configured for a load balancer pool, including its
+// type, check intervals, timeouts, and the thresholds used to mark pool members as
+// healthy or unhealthy. Returns 404 if the pool has no health monitor attached.
+func (r *LoadBalancerPoolHealthMonitorService) Get(ctx context.Context, poolID string, query LoadBalancerPoolHealthMonitorGetParams, opts ...option.RequestOption) (res *HealthMonitor, err error) {
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return nil, err
+	}
+	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
+	if !query.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return nil, err
+	}
+	if !query.RegionID.Valid() {
+		err = errors.New("missing required region_id parameter")
+		return nil, err
+	}
+	if poolID == "" {
+		err = errors.New("missing required pool_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("cloud/v1/lbpools/%v/%v/%s/healthmonitor", query.ProjectID.Value, query.RegionID.Value, poolID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
 type LoadBalancerPoolHealthMonitorNewParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
@@ -110,9 +169,10 @@ type LoadBalancerPoolHealthMonitorNewParams struct {
 	// Domain name for HTTP host header. Can only be used together with `HTTP` or
 	// `HTTPS` health monitor type.
 	DomainName param.Opt[string] `json:"domain_name,omitzero"`
-	// Expected HTTP response codes. Can be a single code or a range of codes. Can only
-	// be used together with `HTTP` or `HTTPS` health monitor type. For example,
-	// 200,202,300-302,401,403,404,500-504. If not specified, the default is 200.
+	// Expected HTTP response codes. Can be a single code, a comma-separated list of
+	// codes, or a single range of codes. Can only be used together with `HTTP` or
+	// `HTTPS` health monitor type. For example, 200, 200,202,401,403,404, or 200-204.
+	// If not specified, the default is 200.
 	ExpectedCodes param.Opt[string] `json:"expected_codes,omitzero"`
 	// The HTTP path the health monitor requests on each member. Defaults to `/` if not
 	// set. Can only be used with `HTTP` or `HTTPS` health monitor type.
@@ -163,7 +223,91 @@ const (
 	LoadBalancerPoolHealthMonitorNewParamsHTTPVersion1_1 LoadBalancerPoolHealthMonitorNewParamsHTTPVersion = "1.1"
 )
 
+type LoadBalancerPoolHealthMonitorUpdateParams struct {
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Domain name for HTTP host header. Can only be used together with `HTTP` or
+	// `HTTPS` health monitor type. Omit to leave unchanged. Set to `null` to clear the
+	// current value.
+	DomainName param.Opt[string] `json:"domain_name,omitzero"`
+	// Expected HTTP response codes. Can be a single code, a comma-separated list of
+	// codes, or a single range of codes. Can only be used together with `HTTP` or
+	// `HTTPS` health monitor type. For example, 200, 200,202,401,403,404, or 200-204.
+	// Omit to leave unchanged. Set to `null` to clear the current value.
+	ExpectedCodes param.Opt[string] `json:"expected_codes,omitzero"`
+	// The HTTP path the health monitor requests on each member. Can only be used with
+	// `HTTP` or `HTTPS` health monitor type.
+	//
+	// Must start with `/` and contain only plain path segments. Query strings (`?`),
+	// fragments (`#`), percent-encoding (`%`), and consecutive slashes (`//`) are not
+	// allowed.
+	//
+	// Examples of valid paths:
+	//
+	// - `/` — check the root (most common)
+	// - `/healthz` — a dedicated health endpoint
+	//
+	// Omit to leave unchanged. Set to `null` to clear the current value.
+	URLPath param.Opt[string] `json:"url_path,omitzero"`
+	// Administrative state of the resource. Omit to leave unchanged; `false` disables
+	// the resource so it will not process traffic.
+	AdminStateUp param.Opt[bool] `json:"admin_state_up,omitzero"`
+	// The time, in seconds, between sending probes to members. Omit to leave
+	// unchanged.
+	Delay param.Opt[int64] `json:"delay,omitzero"`
+	// Number of successes before the member is switched to ONLINE state. Omit to leave
+	// unchanged.
+	MaxRetries param.Opt[int64] `json:"max_retries,omitzero"`
+	// Number of failures before the member is switched to ERROR state. Omit to leave
+	// unchanged.
+	MaxRetriesDown param.Opt[int64] `json:"max_retries_down,omitzero"`
+	// The maximum time to connect. Must be less than the delay value. Omit to leave
+	// unchanged.
+	Timeout param.Opt[int64] `json:"timeout,omitzero"`
+	// HTTP version. Can only be used together with `HTTP` or `HTTPS` health monitor
+	// type. Supported values: 1.0, 1.1. Omit to leave unchanged. Set to `null` to
+	// clear the current value.
+	//
+	// Any of "1.0", "1.1".
+	HTTPVersion LoadBalancerPoolHealthMonitorUpdateParamsHTTPVersion `json:"http_version,omitzero"`
+	// HTTP method. Can only be used together with `HTTP` or `HTTPS` health monitor
+	// type. Omit to leave unchanged. Set to `null` to clear the current value.
+	//
+	// Any of "CONNECT", "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT",
+	// "TRACE".
+	HTTPMethod HTTPMethod `json:"http_method,omitzero"`
+	paramObj
+}
+
+func (r LoadBalancerPoolHealthMonitorUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow LoadBalancerPoolHealthMonitorUpdateParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LoadBalancerPoolHealthMonitorUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// HTTP version. Can only be used together with `HTTP` or `HTTPS` health monitor
+// type. Supported values: 1.0, 1.1. Omit to leave unchanged. Set to `null` to
+// clear the current value.
+type LoadBalancerPoolHealthMonitorUpdateParamsHTTPVersion string
+
+const (
+	LoadBalancerPoolHealthMonitorUpdateParamsHTTPVersion1_0 LoadBalancerPoolHealthMonitorUpdateParamsHTTPVersion = "1.0"
+	LoadBalancerPoolHealthMonitorUpdateParamsHTTPVersion1_1 LoadBalancerPoolHealthMonitorUpdateParamsHTTPVersion = "1.1"
+)
+
 type LoadBalancerPoolHealthMonitorDeleteParams struct {
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	paramObj
+}
+
+type LoadBalancerPoolHealthMonitorGetParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID

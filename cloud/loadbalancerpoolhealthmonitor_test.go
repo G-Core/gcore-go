@@ -54,6 +54,45 @@ func TestLoadBalancerPoolHealthMonitorNewWithOptionalParams(t *testing.T) {
 	}
 }
 
+func TestLoadBalancerPoolHealthMonitorUpdateWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Cloud.LoadBalancers.Pools.HealthMonitors.Update(
+		context.TODO(),
+		"00000000-0000-4000-8000-000000000000",
+		cloud.LoadBalancerPoolHealthMonitorUpdateParams{
+			ProjectID:      gcore.Int(1),
+			RegionID:       gcore.Int(1),
+			AdminStateUp:   gcore.Bool(true),
+			Delay:          gcore.Int(10),
+			DomainName:     gcore.String("example.com"),
+			ExpectedCodes:  gcore.String("200,301,302"),
+			HTTPMethod:     cloud.HTTPMethodConnect,
+			HTTPVersion:    cloud.LoadBalancerPoolHealthMonitorUpdateParamsHTTPVersion1_1,
+			MaxRetries:     gcore.Int(2),
+			MaxRetriesDown: gcore.Int(2),
+			Timeout:        gcore.Int(5),
+			URLPath:        gcore.String("/"),
+		},
+	)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestLoadBalancerPoolHealthMonitorDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -70,6 +109,35 @@ func TestLoadBalancerPoolHealthMonitorDelete(t *testing.T) {
 		context.TODO(),
 		"00000000-0000-4000-8000-000000000000",
 		cloud.LoadBalancerPoolHealthMonitorDeleteParams{
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
+		},
+	)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestLoadBalancerPoolHealthMonitorGet(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Cloud.LoadBalancers.Pools.HealthMonitors.Get(
+		context.TODO(),
+		"00000000-0000-4000-8000-000000000000",
+		cloud.LoadBalancerPoolHealthMonitorGetParams{
 			ProjectID: gcore.Int(1),
 			RegionID:  gcore.Int(1),
 		},

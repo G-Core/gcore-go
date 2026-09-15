@@ -266,9 +266,10 @@ type LoadBalancerPoolNewParamsHealthmonitor struct {
 	// Domain name for HTTP host header. Can only be used together with `HTTP` or
 	// `HTTPS` health monitor type.
 	DomainName param.Opt[string] `json:"domain_name,omitzero"`
-	// Expected HTTP response codes. Can be a single code or a range of codes. Can only
-	// be used together with `HTTP` or `HTTPS` health monitor type. For example,
-	// 200,202,300-302,401,403,404,500-504. If not specified, the default is 200.
+	// Expected HTTP response codes. Can be a single code, a comma-separated list of
+	// codes, or a single range of codes. Can only be used together with `HTTP` or
+	// `HTTPS` health monitor type. For example, 200, 200,202,401,403,404, or 200-204.
+	// If not specified, the default is 200.
 	ExpectedCodes param.Opt[string] `json:"expected_codes,omitzero"`
 	// The HTTP path the health monitor requests on each member. Defaults to `/` if not
 	// set. Can only be used with `HTTP` or `HTTPS` health monitor type.
@@ -461,9 +462,10 @@ type LoadBalancerPoolUpdateParamsHealthmonitor struct {
 	// Domain name for HTTP host header. Can only be used together with `HTTP` or
 	// `HTTPS` health monitor type.
 	DomainName param.Opt[string] `json:"domain_name,omitzero"`
-	// Expected HTTP response codes. Can be a single code or a range of codes. Can only
-	// be used together with `HTTP` or `HTTPS` health monitor type. For example,
-	// 200,202,300-302,401,403,404,500-504. If not specified, the default is 200.
+	// Expected HTTP response codes. Can be a single code, a comma-separated list of
+	// codes, or a single range of codes. Can only be used together with `HTTP` or
+	// `HTTPS` health monitor type. For example, 200, 200,202,401,403,404, or 200-204.
+	// If not specified, the default is 200.
 	ExpectedCodes param.Opt[string] `json:"expected_codes,omitzero"`
 	// The HTTP path the health monitor requests on each member. Defaults to `/` if not
 	// set. Can only be used with `HTTP` or `HTTPS` health monitor type.

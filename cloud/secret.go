@@ -156,6 +156,24 @@ func (r *SecretService) UploadTlsCertificate(ctx context.Context, params SecretU
 type Secret struct {
 	// Secret uuid
 	ID string `json:"id" api:"required"`
+	// Metadata provided by a user or system for informational purposes. Null when not
+	// specified at secret creation.
+	Algorithm string `json:"algorithm" api:"required"`
+	// Metadata provided by a user or system for informational purposes. Value must be
+	// greater than zero. Null when not specified at secret creation.
+	BitLength int64 `json:"bit_length" api:"required"`
+	// Describes the content-types that can be used to retrieve the payload. The
+	// content-type used with symmetric secrets is application/octet-stream. Null until
+	// the secret has a payload.
+	ContentTypes map[string]string `json:"content_types" api:"required"`
+	// Datetime when the secret was created. The format is 2020-01-01T12:00:00+00:00
+	Created time.Time `json:"created" api:"required" format:"date-time"`
+	// Datetime when the secret will expire. The format is 2020-01-01T12:00:00+00:00.
+	// Null when no expiration was set.
+	Expiration time.Time `json:"expiration" api:"required" format:"date-time"`
+	// Metadata provided by a user or system for informational purposes. Null when not
+	// specified at secret creation.
+	Mode string `json:"mode" api:"required"`
 	// Secret name
 	Name string `json:"name" api:"required"`
 	// Secret type, base64 encoded. symmetric - Used for storing byte arrays such as
@@ -170,35 +188,18 @@ type Secret struct {
 	SecretType SecretSecretType `json:"secret_type" api:"required"`
 	// Status
 	Status string `json:"status" api:"required"`
-	// Metadata provided by a user or system for informational purposes. Defaults to
-	// None
-	Algorithm string `json:"algorithm" api:"nullable"`
-	// Metadata provided by a user or system for informational purposes. Value must be
-	// greater than zero. Defaults to None
-	BitLength int64 `json:"bit_length" api:"nullable"`
-	// Describes the content-types that can be used to retrieve the payload. The
-	// content-type used with symmetric secrets is application/octet-stream
-	ContentTypes map[string]string `json:"content_types" api:"nullable"`
-	// Datetime when the secret was created. The format is 2020-01-01T12:00:00+00:00
-	Created time.Time `json:"created" api:"nullable" format:"date-time"`
-	// Datetime when the secret will expire. The format is 2020-01-01T12:00:00+00:00.
-	// Defaults to None
-	Expiration time.Time `json:"expiration" api:"nullable" format:"date-time"`
-	// Metadata provided by a user or system for informational purposes. Defaults to
-	// None
-	Mode string `json:"mode" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
-		Name         respjson.Field
-		SecretType   respjson.Field
-		Status       respjson.Field
 		Algorithm    respjson.Field
 		BitLength    respjson.Field
 		ContentTypes respjson.Field
 		Created      respjson.Field
 		Expiration   respjson.Field
 		Mode         respjson.Field
+		Name         respjson.Field
+		SecretType   respjson.Field
+		Status       respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`

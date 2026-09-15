@@ -278,6 +278,8 @@ type QuotaRequestListResponseRequestedLimitsRegionalLimit struct {
 	SfsSizeLimit int64 `json:"sfs_size_limit"`
 	// Basic VMs Count limit
 	SharedVmCountLimit int64 `json:"shared_vm_count_limit"`
+	// Slurm cluster count limit for this region. 0 disables Slurm in this region.
+	SlurmClusterCountLimit int64 `json:"slurm_cluster_count_limit"`
 	// Snapshot Schedules Count limit
 	SnapshotScheduleCountLimit int64 `json:"snapshot_schedule_count_limit"`
 	// Subnets Count limit
@@ -339,6 +341,7 @@ type QuotaRequestListResponseRequestedLimitsRegionalLimit struct {
 		SfsCountLimit                     respjson.Field
 		SfsSizeLimit                      respjson.Field
 		SharedVmCountLimit                respjson.Field
+		SlurmClusterCountLimit            respjson.Field
 		SnapshotScheduleCountLimit        respjson.Field
 		SubnetCountLimit                  respjson.Field
 		VmCountLimit                      respjson.Field
@@ -548,6 +551,8 @@ type QuotaRequestGetResponseRequestedLimitsRegionalLimit struct {
 	SfsSizeLimit int64 `json:"sfs_size_limit"`
 	// Basic VMs Count limit
 	SharedVmCountLimit int64 `json:"shared_vm_count_limit"`
+	// Slurm cluster count limit for this region. 0 disables Slurm in this region.
+	SlurmClusterCountLimit int64 `json:"slurm_cluster_count_limit"`
 	// Snapshot Schedules Count limit
 	SnapshotScheduleCountLimit int64 `json:"snapshot_schedule_count_limit"`
 	// Subnets Count limit
@@ -609,6 +614,7 @@ type QuotaRequestGetResponseRequestedLimitsRegionalLimit struct {
 		SfsCountLimit                     respjson.Field
 		SfsSizeLimit                      respjson.Field
 		SharedVmCountLimit                respjson.Field
+		SlurmClusterCountLimit            respjson.Field
 		SnapshotScheduleCountLimit        respjson.Field
 		SubnetCountLimit                  respjson.Field
 		VmCountLimit                      respjson.Field
@@ -785,6 +791,8 @@ type QuotaRequestNewParamsRequestedLimitsRegionalLimit struct {
 	SfsSizeLimit param.Opt[int64] `json:"sfs_size_limit,omitzero"`
 	// Basic VMs Count limit
 	SharedVmCountLimit param.Opt[int64] `json:"shared_vm_count_limit,omitzero"`
+	// Slurm cluster count limit for this region. 0 disables Slurm in this region.
+	SlurmClusterCountLimit param.Opt[int64] `json:"slurm_cluster_count_limit,omitzero"`
 	// Snapshot Schedules Count limit
 	SnapshotScheduleCountLimit param.Opt[int64] `json:"snapshot_schedule_count_limit,omitzero"`
 	// Subnets Count limit
