@@ -43,8 +43,8 @@ type Client struct {
 }
 
 // DefaultClientOptions read from the environment (GCORE_API_KEY,
-// GCORE_CLOUD_PROJECT_ID, GCORE_CLOUD_REGION_ID, GCORE_BASE_URL). This should be
-// used to initialize new clients.
+// GCORE_CLOUD_PROJECT_ID, GCORE_CLOUD_REGION_ID, GCORE_POLLING_TIMEOUT_SECONDS,
+// GCORE_BASE_URL). This should be used to initialize new clients.
 func DefaultClientOptions() []option.RequestOption {
 	defaults := []option.RequestOption{option.WithHTTPClient(defaultHTTPClient()), option.WithEnvironmentProduction()}
 	if o, ok := os.LookupEnv("GCORE_BASE_URL"); ok {
@@ -69,6 +69,13 @@ func DefaultClientOptions() []option.RequestOption {
 		}
 		defaults = append(defaults, option.WithCloudRegionID(parsed))
 	}
+	if o, ok := os.LookupEnv("GCORE_POLLING_TIMEOUT_SECONDS"); ok {
+		parsed, err := strconv.ParseInt(o, 10, 64)
+		if err != nil {
+			panic(err)
+		}
+		defaults = append(defaults, option.WithPollingTimeoutSeconds(parsed))
+	}
 	if o, ok := os.LookupEnv("GCORE_CUSTOM_HEADERS"); ok {
 		for _, line := range strings.Split(o, "\n") {
 			colon := strings.Index(line, ":")
@@ -82,9 +89,9 @@ func DefaultClientOptions() []option.RequestOption {
 
 // NewClient generates a new client with the default option read from the
 // environment (GCORE_API_KEY, GCORE_CLOUD_PROJECT_ID, GCORE_CLOUD_REGION_ID,
-// GCORE_BASE_URL). The option passed in as arguments are applied after these
-// default arguments, and all option will be passed down to the services and
-// requests that this client makes.
+// GCORE_POLLING_TIMEOUT_SECONDS, GCORE_BASE_URL). The option passed in as
+// arguments are applied after these default arguments, and all option will be
+// passed down to the services and requests that this client makes.
 func NewClient(opts ...option.RequestOption) (r Client) {
 	opts = append(DefaultClientOptions(), opts...)
 
