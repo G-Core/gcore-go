@@ -52,9 +52,8 @@ func (r *AnalyticsService) GetEventStatistics(ctx context.Context, dimension Ana
 // Retrieves autocomplete suggestions for specified filter parameter values
 // observed within the current client account during the requested time range. Use
 // the returned `value` in the filter parameters of an analytics data request
-// ([GET /v1/analytics/requests](/docs/api-reference/waap/analytics/get-request-log-data)
-// and
-// [GET /v1/analytics/traffic-filtered](/docs/api-reference/waap/analytics/get-filtered-traffic-data)).
+// ([Get security events (V2)](#operation/`get_events_v2_analytics_events_get`) and
+// [Get filtered traffic data](#operation/`get_traffic_filtered_v1_analytics_traffic_filtered_get`)).
 // `count` reports how many times the value was observed in the requested range.
 func (r *AnalyticsService) GetFilters(ctx context.Context, type_ AnalyticsGetFiltersParamsType, query AnalyticsGetFiltersParams, opts ...option.RequestOption) (res *pagination.OffsetPage[AnalyticsGetFiltersResponse], err error) {
 	var raw *http.Response
@@ -76,9 +75,8 @@ func (r *AnalyticsService) GetFilters(ctx context.Context, type_ AnalyticsGetFil
 // Retrieves autocomplete suggestions for specified filter parameter values
 // observed within the current client account during the requested time range. Use
 // the returned `value` in the filter parameters of an analytics data request
-// ([GET /v1/analytics/requests](/docs/api-reference/waap/analytics/get-request-log-data)
-// and
-// [GET /v1/analytics/traffic-filtered](/docs/api-reference/waap/analytics/get-filtered-traffic-data)).
+// ([Get security events (V2)](#operation/`get_events_v2_analytics_events_get`) and
+// [Get filtered traffic data](#operation/`get_traffic_filtered_v1_analytics_traffic_filtered_get`)).
 // `count` reports how many times the value was observed in the requested range.
 func (r *AnalyticsService) GetFiltersAutoPaging(ctx context.Context, type_ AnalyticsGetFiltersParamsType, query AnalyticsGetFiltersParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[AnalyticsGetFiltersResponse] {
 	return pagination.NewOffsetPageAutoPager(r.GetFilters(ctx, type_, query, opts...))
@@ -86,7 +84,7 @@ func (r *AnalyticsService) GetFiltersAutoPaging(ctx context.Context, type_ Analy
 
 // Retrieve request log data over account's domains. The log records every request
 // passing through WAAP towards the origin server. Deprecated. Use
-// [GET /v2/analytics/events](/docs/api-reference/waap/analytics/get-security-events)
+// [Get security events (V2)](#operation/`get_events_v2_analytics_events_get`)
 // instead.
 //
 // Deprecated: deprecated
@@ -109,7 +107,7 @@ func (r *AnalyticsService) GetRequests(ctx context.Context, query AnalyticsGetRe
 
 // Retrieve request log data over account's domains. The log records every request
 // passing through WAAP towards the origin server. Deprecated. Use
-// [GET /v2/analytics/events](/docs/api-reference/waap/analytics/get-security-events)
+// [Get security events (V2)](#operation/`get_events_v2_analytics_events_get`)
 // instead.
 //
 // Deprecated: deprecated
