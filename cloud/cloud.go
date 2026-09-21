@@ -82,7 +82,7 @@ type CloudService struct {
 	// volumes they cover. Volume membership is owned by the policy: attach and detach
 	// are policy-side operations, so a volume can join or leave a policy without being
 	// recreated.
-	LifecyclePolicies LifecyclePolicyService
+	SnapshotSchedules SnapshotScheduleService
 	VolumeSnapshots   VolumeSnapshotService
 }
 
@@ -120,7 +120,7 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r.CostReports = NewCostReportService(opts...)
 	r.UsageReports = NewUsageReportService(opts...)
 	r.Databases = NewDatabaseService(opts...)
-	r.LifecyclePolicies = NewLifecyclePolicyService(opts...)
+	r.SnapshotSchedules = NewSnapshotScheduleService(opts...)
 	r.VolumeSnapshots = NewVolumeSnapshotService(opts...)
 	return
 }

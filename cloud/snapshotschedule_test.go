@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/option"
 )
 
-func TestLifecyclePolicyNewWithOptionalParams(t *testing.T) {
+func TestSnapshotScheduleNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,13 +26,13 @@ func TestLifecyclePolicyNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.LifecyclePolicies.New(context.TODO(), cloud.LifecyclePolicyNewParams{
+	_, err := client.Cloud.SnapshotSchedules.New(context.TODO(), cloud.SnapshotScheduleNewParams{
 		ProjectID: gcore.Int(1),
 		RegionID:  gcore.Int(1),
-		Action:    cloud.LifecyclePolicyNewParamsActionVolumeSnapshot,
+		Action:    cloud.SnapshotScheduleNewParamsActionVolumeSnapshot,
 		Name:      "schedule_1",
-		Schedules: []cloud.LifecyclePolicyNewParamsScheduleUnion{{
-			OfCron: &cloud.LifecyclePolicyNewParamsScheduleCron{
+		Schedules: []cloud.SnapshotScheduleNewParamsScheduleUnion{{
+			OfCron: &cloud.SnapshotScheduleNewParamsScheduleCron{
 				Day:                  gcore.String("5"),
 				DayOfWeek:            gcore.String("fri"),
 				Hour:                 gcore.String("0, 20"),
@@ -40,7 +40,7 @@ func TestLifecyclePolicyNewWithOptionalParams(t *testing.T) {
 				Minute:               gcore.String("30"),
 				Month:                gcore.String("1"),
 				ResourceNameTemplate: gcore.String("snapshot of volume {volume_id}"),
-				RetentionTime: cloud.LifecyclePolicyNewParamsScheduleCronRetentionTime{
+				RetentionTime: cloud.SnapshotScheduleNewParamsScheduleCronRetentionTime{
 					Days:    gcore.Int(0),
 					Hours:   gcore.Int(2),
 					Minutes: gcore.Int(1),
@@ -50,7 +50,7 @@ func TestLifecyclePolicyNewWithOptionalParams(t *testing.T) {
 				Week:     gcore.String("1"),
 			},
 		}},
-		Status:    cloud.LifecyclePolicyNewParamsStatusActive,
+		Status:    cloud.SnapshotScheduleNewParamsStatusActive,
 		VolumeIDs: []string{"3ed9e2ce-f906-47fb-ba32-c25a3f63df4f"},
 	})
 	if err != nil {
@@ -62,7 +62,7 @@ func TestLifecyclePolicyNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestLifecyclePolicyUpdateWithOptionalParams(t *testing.T) {
+func TestSnapshotScheduleUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -74,14 +74,14 @@ func TestLifecyclePolicyUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.LifecyclePolicies.Update(
+	_, err := client.Cloud.SnapshotSchedules.Update(
 		context.TODO(),
 		1,
-		cloud.LifecyclePolicyUpdateParams{
+		cloud.SnapshotScheduleUpdateParams{
 			ProjectID: gcore.Int(1),
 			RegionID:  gcore.Int(1),
 			Name:      gcore.String("schedule_1"),
-			Status:    cloud.LifecyclePolicyUpdateParamsStatusPaused,
+			Status:    cloud.SnapshotScheduleUpdateParamsStatusPaused,
 		},
 	)
 	if err != nil {
@@ -93,7 +93,7 @@ func TestLifecyclePolicyUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestLifecyclePolicyList(t *testing.T) {
+func TestSnapshotScheduleList(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -105,7 +105,7 @@ func TestLifecyclePolicyList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.LifecyclePolicies.List(context.TODO(), cloud.LifecyclePolicyListParams{
+	_, err := client.Cloud.SnapshotSchedules.List(context.TODO(), cloud.SnapshotScheduleListParams{
 		ProjectID: gcore.Int(1),
 		RegionID:  gcore.Int(1),
 	})
@@ -118,7 +118,7 @@ func TestLifecyclePolicyList(t *testing.T) {
 	}
 }
 
-func TestLifecyclePolicyDelete(t *testing.T) {
+func TestSnapshotScheduleDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -130,10 +130,10 @@ func TestLifecyclePolicyDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Cloud.LifecyclePolicies.Delete(
+	err := client.Cloud.SnapshotSchedules.Delete(
 		context.TODO(),
 		1,
-		cloud.LifecyclePolicyDeleteParams{
+		cloud.SnapshotScheduleDeleteParams{
 			ProjectID: gcore.Int(1),
 			RegionID:  gcore.Int(1),
 		},
@@ -147,7 +147,7 @@ func TestLifecyclePolicyDelete(t *testing.T) {
 	}
 }
 
-func TestLifecyclePolicyAddSchedules(t *testing.T) {
+func TestSnapshotScheduleAddSchedules(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -159,14 +159,14 @@ func TestLifecyclePolicyAddSchedules(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.LifecyclePolicies.AddSchedules(
+	_, err := client.Cloud.SnapshotSchedules.AddSchedules(
 		context.TODO(),
 		1,
-		cloud.LifecyclePolicyAddSchedulesParams{
+		cloud.SnapshotScheduleAddSchedulesParams{
 			ProjectID: gcore.Int(1),
 			RegionID:  gcore.Int(1),
-			Schedules: []cloud.LifecyclePolicyAddSchedulesParamsScheduleUnion{{
-				OfCron: &cloud.LifecyclePolicyAddSchedulesParamsScheduleCron{
+			Schedules: []cloud.SnapshotScheduleAddSchedulesParamsScheduleUnion{{
+				OfCron: &cloud.SnapshotScheduleAddSchedulesParamsScheduleCron{
 					Day:                  gcore.String("5"),
 					DayOfWeek:            gcore.String("fri, tue"),
 					Hour:                 gcore.String("0, 20"),
@@ -174,7 +174,7 @@ func TestLifecyclePolicyAddSchedules(t *testing.T) {
 					Minute:               gcore.String("30"),
 					Month:                gcore.String("1"),
 					ResourceNameTemplate: gcore.String("CRON reserve snap of the volume {volume_id}"),
-					RetentionTime: cloud.LifecyclePolicyAddSchedulesParamsScheduleCronRetentionTime{
+					RetentionTime: cloud.SnapshotScheduleAddSchedulesParamsScheduleCronRetentionTime{
 						Days:    gcore.Int(0),
 						Hours:   gcore.Int(2),
 						Minutes: gcore.Int(1),
@@ -184,13 +184,13 @@ func TestLifecyclePolicyAddSchedules(t *testing.T) {
 					Week:     gcore.String("1"),
 				},
 			}, {
-				OfInterval: &cloud.LifecyclePolicyAddSchedulesParamsScheduleInterval{
+				OfInterval: &cloud.SnapshotScheduleAddSchedulesParamsScheduleInterval{
 					Days:                 gcore.Int(0),
 					Hours:                gcore.Int(2),
 					MaxQuantity:          gcore.Int(2),
 					Minutes:              gcore.Int(1),
 					ResourceNameTemplate: gcore.String("INTERVAL reserve snap of the volume {volume_id}"),
-					RetentionTime: cloud.LifecyclePolicyAddSchedulesParamsScheduleIntervalRetentionTime{
+					RetentionTime: cloud.SnapshotScheduleAddSchedulesParamsScheduleIntervalRetentionTime{
 						Days:    gcore.Int(1),
 						Hours:   gcore.Int(2),
 						Minutes: gcore.Int(1),
@@ -210,7 +210,7 @@ func TestLifecyclePolicyAddSchedules(t *testing.T) {
 	}
 }
 
-func TestLifecyclePolicyAddVolumes(t *testing.T) {
+func TestSnapshotScheduleAddVolumes(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -222,10 +222,10 @@ func TestLifecyclePolicyAddVolumes(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.LifecyclePolicies.AddVolumes(
+	_, err := client.Cloud.SnapshotSchedules.AddVolumes(
 		context.TODO(),
 		1,
-		cloud.LifecyclePolicyAddVolumesParams{
+		cloud.SnapshotScheduleAddVolumesParams{
 			ProjectID: gcore.Int(1),
 			RegionID:  gcore.Int(1),
 			VolumeIDs: []string{"1488e2ce-f906-47fb-ba32-c25a3f63df4f"},
@@ -240,7 +240,7 @@ func TestLifecyclePolicyAddVolumes(t *testing.T) {
 	}
 }
 
-func TestLifecyclePolicyEstimateMaxUsageWithOptionalParams(t *testing.T) {
+func TestSnapshotScheduleEstimateMaxUsageWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -252,13 +252,13 @@ func TestLifecyclePolicyEstimateMaxUsageWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.LifecyclePolicies.EstimateMaxUsage(context.TODO(), cloud.LifecyclePolicyEstimateMaxUsageParams{
+	_, err := client.Cloud.SnapshotSchedules.EstimateMaxUsage(context.TODO(), cloud.SnapshotScheduleEstimateMaxUsageParams{
 		ProjectID: gcore.Int(1),
 		RegionID:  gcore.Int(1),
-		Action:    cloud.LifecyclePolicyEstimateMaxUsageParamsActionVolumeSnapshot,
+		Action:    cloud.SnapshotScheduleEstimateMaxUsageParamsActionVolumeSnapshot,
 		Name:      "schedule_1",
-		Schedules: []cloud.LifecyclePolicyEstimateMaxUsageParamsScheduleUnion{{
-			OfCron: &cloud.LifecyclePolicyEstimateMaxUsageParamsScheduleCron{
+		Schedules: []cloud.SnapshotScheduleEstimateMaxUsageParamsScheduleUnion{{
+			OfCron: &cloud.SnapshotScheduleEstimateMaxUsageParamsScheduleCron{
 				Day:                  gcore.String("5"),
 				DayOfWeek:            gcore.String("fri"),
 				Hour:                 gcore.String("0, 20"),
@@ -266,7 +266,7 @@ func TestLifecyclePolicyEstimateMaxUsageWithOptionalParams(t *testing.T) {
 				Minute:               gcore.String("30"),
 				Month:                gcore.String("1"),
 				ResourceNameTemplate: gcore.String("snapshot of volume {volume_id}"),
-				RetentionTime: cloud.LifecyclePolicyEstimateMaxUsageParamsScheduleCronRetentionTime{
+				RetentionTime: cloud.SnapshotScheduleEstimateMaxUsageParamsScheduleCronRetentionTime{
 					Days:    gcore.Int(0),
 					Hours:   gcore.Int(2),
 					Minutes: gcore.Int(1),
@@ -276,7 +276,7 @@ func TestLifecyclePolicyEstimateMaxUsageWithOptionalParams(t *testing.T) {
 				Week:     gcore.String("1"),
 			},
 		}},
-		Status:    cloud.LifecyclePolicyEstimateMaxUsageParamsStatusActive,
+		Status:    cloud.SnapshotScheduleEstimateMaxUsageParamsStatusActive,
 		VolumeIDs: []string{"3ed9e2ce-f906-47fb-ba32-c25a3f63df4f"},
 	})
 	if err != nil {
@@ -288,7 +288,7 @@ func TestLifecyclePolicyEstimateMaxUsageWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestLifecyclePolicyGet(t *testing.T) {
+func TestSnapshotScheduleGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -300,10 +300,10 @@ func TestLifecyclePolicyGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.LifecyclePolicies.Get(
+	_, err := client.Cloud.SnapshotSchedules.Get(
 		context.TODO(),
 		1,
-		cloud.LifecyclePolicyGetParams{
+		cloud.SnapshotScheduleGetParams{
 			ProjectID: gcore.Int(1),
 			RegionID:  gcore.Int(1),
 		},
@@ -317,7 +317,7 @@ func TestLifecyclePolicyGet(t *testing.T) {
 	}
 }
 
-func TestLifecyclePolicyRemoveSchedules(t *testing.T) {
+func TestSnapshotScheduleRemoveSchedules(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -329,10 +329,10 @@ func TestLifecyclePolicyRemoveSchedules(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.LifecyclePolicies.RemoveSchedules(
+	_, err := client.Cloud.SnapshotSchedules.RemoveSchedules(
 		context.TODO(),
 		1,
-		cloud.LifecyclePolicyRemoveSchedulesParams{
+		cloud.SnapshotScheduleRemoveSchedulesParams{
 			ProjectID:   gcore.Int(1),
 			RegionID:    gcore.Int(1),
 			ScheduleIDs: []string{"1488e2ce-f906-47fb-ba32-c25a3f63df4f"},
@@ -347,7 +347,7 @@ func TestLifecyclePolicyRemoveSchedules(t *testing.T) {
 	}
 }
 
-func TestLifecyclePolicyRemoveVolumes(t *testing.T) {
+func TestSnapshotScheduleRemoveVolumes(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -359,10 +359,10 @@ func TestLifecyclePolicyRemoveVolumes(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.LifecyclePolicies.RemoveVolumes(
+	_, err := client.Cloud.SnapshotSchedules.RemoveVolumes(
 		context.TODO(),
 		1,
-		cloud.LifecyclePolicyRemoveVolumesParams{
+		cloud.SnapshotScheduleRemoveVolumesParams{
 			ProjectID: gcore.Int(1),
 			RegionID:  gcore.Int(1),
 			VolumeIDs: []string{"1488e2ce-f906-47fb-ba32-c25a3f63df4f"},

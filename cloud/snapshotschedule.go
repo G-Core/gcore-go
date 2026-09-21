@@ -24,27 +24,27 @@ import (
 // are policy-side operations, so a volume can join or leave a policy without being
 // recreated.
 //
-// LifecyclePolicyService contains methods and other services that help with
+// SnapshotScheduleService contains methods and other services that help with
 // interacting with the gcore API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewLifecyclePolicyService] method instead.
-type LifecyclePolicyService struct {
+// the [NewSnapshotScheduleService] method instead.
+type SnapshotScheduleService struct {
 	Options []option.RequestOption
 }
 
-// NewLifecyclePolicyService generates a new service that applies the given options
-// to each request. These options are applied after the parent client's options (if
-// there is one), and before any request-specific options.
-func NewLifecyclePolicyService(opts ...option.RequestOption) (r LifecyclePolicyService) {
-	r = LifecyclePolicyService{}
+// NewSnapshotScheduleService generates a new service that applies the given
+// options to each request. These options are applied after the parent client's
+// options (if there is one), and before any request-specific options.
+func NewSnapshotScheduleService(opts ...option.RequestOption) (r SnapshotScheduleService) {
+	r = SnapshotScheduleService{}
 	r.Options = opts
 	return
 }
 
 // Create a new snapshot policy with the specified configuration.
-func (r *LifecyclePolicyService) New(ctx context.Context, params LifecyclePolicyNewParams, opts ...option.RequestOption) (res *LifecyclePolicy, err error) {
+func (r *SnapshotScheduleService) New(ctx context.Context, params SnapshotScheduleNewParams, opts ...option.RequestOption) (res *LifecyclePolicy, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -66,7 +66,7 @@ func (r *LifecyclePolicyService) New(ctx context.Context, params LifecyclePolicy
 }
 
 // Update the configuration of an existing snapshot policy.
-func (r *LifecyclePolicyService) Update(ctx context.Context, policyID int64, params LifecyclePolicyUpdateParams, opts ...option.RequestOption) (res *LifecyclePolicy, err error) {
+func (r *SnapshotScheduleService) Update(ctx context.Context, policyID int64, params SnapshotScheduleUpdateParams, opts ...option.RequestOption) (res *LifecyclePolicy, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -88,7 +88,7 @@ func (r *LifecyclePolicyService) Update(ctx context.Context, policyID int64, par
 }
 
 // List all snapshot policies in the specified project and region.
-func (r *LifecyclePolicyService) List(ctx context.Context, query LifecyclePolicyListParams, opts ...option.RequestOption) (res *LifecyclePolicyListResponse, err error) {
+func (r *SnapshotScheduleService) List(ctx context.Context, query SnapshotScheduleListParams, opts ...option.RequestOption) (res *SnapshotScheduleListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -110,7 +110,7 @@ func (r *LifecyclePolicyService) List(ctx context.Context, query LifecyclePolicy
 }
 
 // Delete a specific snapshot policy and all its associated schedules.
-func (r *LifecyclePolicyService) Delete(ctx context.Context, policyID int64, body LifecyclePolicyDeleteParams, opts ...option.RequestOption) (err error) {
+func (r *SnapshotScheduleService) Delete(ctx context.Context, policyID int64, body SnapshotScheduleDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -133,7 +133,7 @@ func (r *LifecyclePolicyService) Delete(ctx context.Context, policyID int64, bod
 }
 
 // Add new schedules to an existing snapshot policy.
-func (r *LifecyclePolicyService) AddSchedules(ctx context.Context, policyID int64, params LifecyclePolicyAddSchedulesParams, opts ...option.RequestOption) (res *LifecyclePolicy, err error) {
+func (r *SnapshotScheduleService) AddSchedules(ctx context.Context, policyID int64, params SnapshotScheduleAddSchedulesParams, opts ...option.RequestOption) (res *LifecyclePolicy, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -155,7 +155,7 @@ func (r *LifecyclePolicyService) AddSchedules(ctx context.Context, policyID int6
 }
 
 // Add volumes to an existing snapshot policy.
-func (r *LifecyclePolicyService) AddVolumes(ctx context.Context, policyID int64, params LifecyclePolicyAddVolumesParams, opts ...option.RequestOption) (res *LifecyclePolicy, err error) {
+func (r *SnapshotScheduleService) AddVolumes(ctx context.Context, policyID int64, params SnapshotScheduleAddVolumesParams, opts ...option.RequestOption) (res *LifecyclePolicy, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -177,7 +177,7 @@ func (r *LifecyclePolicyService) AddVolumes(ctx context.Context, policyID int64,
 }
 
 // Calculate the maximum resource usage if all snapshots are created by the policy.
-func (r *LifecyclePolicyService) EstimateMaxUsage(ctx context.Context, params LifecyclePolicyEstimateMaxUsageParams, opts ...option.RequestOption) (res *LifecyclePolicyEstimateMaxUsageResponse, err error) {
+func (r *SnapshotScheduleService) EstimateMaxUsage(ctx context.Context, params SnapshotScheduleEstimateMaxUsageParams, opts ...option.RequestOption) (res *SnapshotScheduleEstimateMaxUsageResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -199,7 +199,7 @@ func (r *LifecyclePolicyService) EstimateMaxUsage(ctx context.Context, params Li
 }
 
 // Get detailed information about a specific snapshot policy.
-func (r *LifecyclePolicyService) Get(ctx context.Context, policyID int64, query LifecyclePolicyGetParams, opts ...option.RequestOption) (res *LifecyclePolicy, err error) {
+func (r *SnapshotScheduleService) Get(ctx context.Context, policyID int64, query SnapshotScheduleGetParams, opts ...option.RequestOption) (res *LifecyclePolicy, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -221,7 +221,7 @@ func (r *LifecyclePolicyService) Get(ctx context.Context, policyID int64, query 
 }
 
 // Remove schedules from an existing snapshot policy.
-func (r *LifecyclePolicyService) RemoveSchedules(ctx context.Context, policyID int64, params LifecyclePolicyRemoveSchedulesParams, opts ...option.RequestOption) (res *LifecyclePolicy, err error) {
+func (r *SnapshotScheduleService) RemoveSchedules(ctx context.Context, policyID int64, params SnapshotScheduleRemoveSchedulesParams, opts ...option.RequestOption) (res *LifecyclePolicy, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -243,7 +243,7 @@ func (r *LifecyclePolicyService) RemoveSchedules(ctx context.Context, policyID i
 }
 
 // Remove volumes from an existing snapshot policy.
-func (r *LifecyclePolicyService) RemoveVolumes(ctx context.Context, policyID int64, params LifecyclePolicyRemoveVolumesParams, opts ...option.RequestOption) (res *LifecyclePolicy, err error) {
+func (r *SnapshotScheduleService) RemoveVolumes(ctx context.Context, policyID int64, params SnapshotScheduleRemoveVolumesParams, opts ...option.RequestOption) (res *LifecyclePolicy, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -632,7 +632,7 @@ func (r *LifecyclePolicyVolume) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type LifecyclePolicyListResponse struct {
+type SnapshotScheduleListResponse struct {
 	// Number of objects
 	Count int64 `json:"count" api:"required"`
 	// Objects
@@ -647,15 +647,15 @@ type LifecyclePolicyListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r LifecyclePolicyListResponse) RawJSON() string { return r.JSON.raw }
-func (r *LifecyclePolicyListResponse) UnmarshalJSON(data []byte) error {
+func (r SnapshotScheduleListResponse) RawJSON() string { return r.JSON.raw }
+func (r *SnapshotScheduleListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type LifecyclePolicyEstimateMaxUsageResponse struct {
+type SnapshotScheduleEstimateMaxUsageResponse struct {
 	// Total billed cost of all snapshots that can be created by the schedule. Cost of
 	// `max_volume_snapshot_count_usage` snapshots.
-	MaxCost LifecyclePolicyEstimateMaxUsageResponseMaxCost `json:"max_cost" api:"required"`
+	MaxCost SnapshotScheduleEstimateMaxUsageResponseMaxCost `json:"max_cost" api:"required"`
 	// Count of snapshots that can be created if the schedule creates the maximum
 	// possible number of snapshots.
 	MaxVolumeSnapshotCountUsage int64 `json:"max_volume_snapshot_count_usage" api:"required"`
@@ -676,14 +676,14 @@ type LifecyclePolicyEstimateMaxUsageResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r LifecyclePolicyEstimateMaxUsageResponse) RawJSON() string { return r.JSON.raw }
-func (r *LifecyclePolicyEstimateMaxUsageResponse) UnmarshalJSON(data []byte) error {
+func (r SnapshotScheduleEstimateMaxUsageResponse) RawJSON() string { return r.JSON.raw }
+func (r *SnapshotScheduleEstimateMaxUsageResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Total billed cost of all snapshots that can be created by the schedule. Cost of
 // `max_volume_snapshot_count_usage` snapshots.
-type LifecyclePolicyEstimateMaxUsageResponseMaxCost struct {
+type SnapshotScheduleEstimateMaxUsageResponseMaxCost struct {
 	// Currency code (3 letter code per ISO 4217)
 	//
 	// Any of "AZN", "EUR", "USD".
@@ -717,12 +717,12 @@ type LifecyclePolicyEstimateMaxUsageResponseMaxCost struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r LifecyclePolicyEstimateMaxUsageResponseMaxCost) RawJSON() string { return r.JSON.raw }
-func (r *LifecyclePolicyEstimateMaxUsageResponseMaxCost) UnmarshalJSON(data []byte) error {
+func (r SnapshotScheduleEstimateMaxUsageResponseMaxCost) RawJSON() string { return r.JSON.raw }
+func (r *SnapshotScheduleEstimateMaxUsageResponseMaxCost) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type LifecyclePolicyNewParams struct {
+type SnapshotScheduleNewParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
@@ -730,52 +730,52 @@ type LifecyclePolicyNewParams struct {
 	// Action that the policy will perform.
 	//
 	// Any of "volume_snapshot".
-	Action LifecyclePolicyNewParamsAction `json:"action,omitzero" api:"required"`
+	Action SnapshotScheduleNewParamsAction `json:"action,omitzero" api:"required"`
 	// Name of the lifecycle policy.
 	Name string `json:"name" api:"required"`
 	// List of schedules associated with the policy.
-	Schedules []LifecyclePolicyNewParamsScheduleUnion `json:"schedules,omitzero"`
+	Schedules []SnapshotScheduleNewParamsScheduleUnion `json:"schedules,omitzero"`
 	// Current status of the lifecycle policy.
 	//
 	// Any of "active", "paused".
-	Status LifecyclePolicyNewParamsStatus `json:"status,omitzero"`
+	Status SnapshotScheduleNewParamsStatus `json:"status,omitzero"`
 	// List of volume IDs.
 	VolumeIDs []string `json:"volume_ids,omitzero" format:"uuid4"`
 	paramObj
 }
 
-func (r LifecyclePolicyNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow LifecyclePolicyNewParams
+func (r SnapshotScheduleNewParams) MarshalJSON() (data []byte, err error) {
+	type shadow SnapshotScheduleNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *LifecyclePolicyNewParams) UnmarshalJSON(data []byte) error {
+func (r *SnapshotScheduleNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Action that the policy will perform.
-type LifecyclePolicyNewParamsAction string
+type SnapshotScheduleNewParamsAction string
 
 const (
-	LifecyclePolicyNewParamsActionVolumeSnapshot LifecyclePolicyNewParamsAction = "volume_snapshot"
+	SnapshotScheduleNewParamsActionVolumeSnapshot SnapshotScheduleNewParamsAction = "volume_snapshot"
 )
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type LifecyclePolicyNewParamsScheduleUnion struct {
-	OfCron     *LifecyclePolicyNewParamsScheduleCron     `json:",omitzero,inline"`
-	OfInterval *LifecyclePolicyNewParamsScheduleInterval `json:",omitzero,inline"`
+type SnapshotScheduleNewParamsScheduleUnion struct {
+	OfCron     *SnapshotScheduleNewParamsScheduleCron     `json:",omitzero,inline"`
+	OfInterval *SnapshotScheduleNewParamsScheduleInterval `json:",omitzero,inline"`
 	paramUnion
 }
 
-func (u LifecyclePolicyNewParamsScheduleUnion) MarshalJSON() ([]byte, error) {
+func (u SnapshotScheduleNewParamsScheduleUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfCron, u.OfInterval)
 }
-func (u *LifecyclePolicyNewParamsScheduleUnion) UnmarshalJSON(data []byte) error {
+func (u *SnapshotScheduleNewParamsScheduleUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
-func (u *LifecyclePolicyNewParamsScheduleUnion) asAny() any {
+func (u *SnapshotScheduleNewParamsScheduleUnion) asAny() any {
 	if !param.IsOmitted(u.OfCron) {
 		return u.OfCron
 	} else if !param.IsOmitted(u.OfInterval) {
@@ -785,7 +785,7 @@ func (u *LifecyclePolicyNewParamsScheduleUnion) asAny() any {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyNewParamsScheduleUnion) GetDay() *string {
+func (u SnapshotScheduleNewParamsScheduleUnion) GetDay() *string {
 	if vt := u.OfCron; vt != nil && vt.Day.Valid() {
 		return &vt.Day.Value
 	}
@@ -793,7 +793,7 @@ func (u LifecyclePolicyNewParamsScheduleUnion) GetDay() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyNewParamsScheduleUnion) GetDayOfWeek() *string {
+func (u SnapshotScheduleNewParamsScheduleUnion) GetDayOfWeek() *string {
 	if vt := u.OfCron; vt != nil && vt.DayOfWeek.Valid() {
 		return &vt.DayOfWeek.Value
 	}
@@ -801,7 +801,7 @@ func (u LifecyclePolicyNewParamsScheduleUnion) GetDayOfWeek() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyNewParamsScheduleUnion) GetHour() *string {
+func (u SnapshotScheduleNewParamsScheduleUnion) GetHour() *string {
 	if vt := u.OfCron; vt != nil && vt.Hour.Valid() {
 		return &vt.Hour.Value
 	}
@@ -809,7 +809,7 @@ func (u LifecyclePolicyNewParamsScheduleUnion) GetHour() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyNewParamsScheduleUnion) GetMinute() *string {
+func (u SnapshotScheduleNewParamsScheduleUnion) GetMinute() *string {
 	if vt := u.OfCron; vt != nil && vt.Minute.Valid() {
 		return &vt.Minute.Value
 	}
@@ -817,7 +817,7 @@ func (u LifecyclePolicyNewParamsScheduleUnion) GetMinute() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyNewParamsScheduleUnion) GetMonth() *string {
+func (u SnapshotScheduleNewParamsScheduleUnion) GetMonth() *string {
 	if vt := u.OfCron; vt != nil && vt.Month.Valid() {
 		return &vt.Month.Value
 	}
@@ -825,7 +825,7 @@ func (u LifecyclePolicyNewParamsScheduleUnion) GetMonth() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyNewParamsScheduleUnion) GetTimezone() *string {
+func (u SnapshotScheduleNewParamsScheduleUnion) GetTimezone() *string {
 	if vt := u.OfCron; vt != nil && vt.Timezone.Valid() {
 		return &vt.Timezone.Value
 	}
@@ -833,7 +833,7 @@ func (u LifecyclePolicyNewParamsScheduleUnion) GetTimezone() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyNewParamsScheduleUnion) GetWeek() *string {
+func (u SnapshotScheduleNewParamsScheduleUnion) GetWeek() *string {
 	if vt := u.OfCron; vt != nil && vt.Week.Valid() {
 		return &vt.Week.Value
 	}
@@ -841,7 +841,7 @@ func (u LifecyclePolicyNewParamsScheduleUnion) GetWeek() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyNewParamsScheduleUnion) GetDays() *int64 {
+func (u SnapshotScheduleNewParamsScheduleUnion) GetDays() *int64 {
 	if vt := u.OfInterval; vt != nil && vt.Days.Valid() {
 		return &vt.Days.Value
 	}
@@ -849,7 +849,7 @@ func (u LifecyclePolicyNewParamsScheduleUnion) GetDays() *int64 {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyNewParamsScheduleUnion) GetHours() *int64 {
+func (u SnapshotScheduleNewParamsScheduleUnion) GetHours() *int64 {
 	if vt := u.OfInterval; vt != nil && vt.Hours.Valid() {
 		return &vt.Hours.Value
 	}
@@ -857,7 +857,7 @@ func (u LifecyclePolicyNewParamsScheduleUnion) GetHours() *int64 {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyNewParamsScheduleUnion) GetMinutes() *int64 {
+func (u SnapshotScheduleNewParamsScheduleUnion) GetMinutes() *int64 {
 	if vt := u.OfInterval; vt != nil && vt.Minutes.Valid() {
 		return &vt.Minutes.Value
 	}
@@ -865,7 +865,7 @@ func (u LifecyclePolicyNewParamsScheduleUnion) GetMinutes() *int64 {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyNewParamsScheduleUnion) GetWeeks() *int64 {
+func (u SnapshotScheduleNewParamsScheduleUnion) GetWeeks() *int64 {
 	if vt := u.OfInterval; vt != nil && vt.Weeks.Valid() {
 		return &vt.Weeks.Value
 	}
@@ -873,7 +873,7 @@ func (u LifecyclePolicyNewParamsScheduleUnion) GetWeeks() *int64 {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyNewParamsScheduleUnion) GetType() *string {
+func (u SnapshotScheduleNewParamsScheduleUnion) GetType() *string {
 	if vt := u.OfCron; vt != nil {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfInterval; vt != nil {
@@ -883,7 +883,7 @@ func (u LifecyclePolicyNewParamsScheduleUnion) GetType() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyNewParamsScheduleUnion) GetMaxQuantity() *int64 {
+func (u SnapshotScheduleNewParamsScheduleUnion) GetMaxQuantity() *int64 {
 	if vt := u.OfCron; vt != nil && vt.MaxQuantity.Valid() {
 		return &vt.MaxQuantity.Value
 	} else if vt := u.OfInterval; vt != nil && vt.MaxQuantity.Valid() {
@@ -893,7 +893,7 @@ func (u LifecyclePolicyNewParamsScheduleUnion) GetMaxQuantity() *int64 {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyNewParamsScheduleUnion) GetResourceNameTemplate() *string {
+func (u SnapshotScheduleNewParamsScheduleUnion) GetResourceNameTemplate() *string {
 	if vt := u.OfCron; vt != nil && vt.ResourceNameTemplate.Valid() {
 		return &vt.ResourceNameTemplate.Value
 	} else if vt := u.OfInterval; vt != nil && vt.ResourceNameTemplate.Valid() {
@@ -905,7 +905,7 @@ func (u LifecyclePolicyNewParamsScheduleUnion) GetResourceNameTemplate() *string
 // Returns a subunion which exports methods to access subproperties
 //
 // Or use AsAny() to get the underlying value
-func (u LifecyclePolicyNewParamsScheduleUnion) GetRetentionTime() (res lifecyclePolicyNewParamsScheduleUnionRetentionTime) {
+func (u SnapshotScheduleNewParamsScheduleUnion) GetRetentionTime() (res snapshotScheduleNewParamsScheduleUnionRetentionTime) {
 	if vt := u.OfCron; vt != nil {
 		res.any = &vt.RetentionTime
 	} else if vt := u.OfInterval; vt != nil {
@@ -914,74 +914,75 @@ func (u LifecyclePolicyNewParamsScheduleUnion) GetRetentionTime() (res lifecycle
 	return
 }
 
-// Can have the runtime types [*LifecyclePolicyNewParamsScheduleCronRetentionTime],
-// [*LifecyclePolicyNewParamsScheduleIntervalRetentionTime]
-type lifecyclePolicyNewParamsScheduleUnionRetentionTime struct{ any }
+// Can have the runtime types
+// [*SnapshotScheduleNewParamsScheduleCronRetentionTime],
+// [*SnapshotScheduleNewParamsScheduleIntervalRetentionTime]
+type snapshotScheduleNewParamsScheduleUnionRetentionTime struct{ any }
 
 // Use the following switch statement to get the type of the union:
 //
 //	switch u.AsAny().(type) {
-//	case *cloud.LifecyclePolicyNewParamsScheduleCronRetentionTime:
-//	case *cloud.LifecyclePolicyNewParamsScheduleIntervalRetentionTime:
+//	case *cloud.SnapshotScheduleNewParamsScheduleCronRetentionTime:
+//	case *cloud.SnapshotScheduleNewParamsScheduleIntervalRetentionTime:
 //	default:
 //	    fmt.Errorf("not present")
 //	}
-func (u lifecyclePolicyNewParamsScheduleUnionRetentionTime) AsAny() any { return u.any }
+func (u snapshotScheduleNewParamsScheduleUnionRetentionTime) AsAny() any { return u.any }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u lifecyclePolicyNewParamsScheduleUnionRetentionTime) GetDays() *int64 {
+func (u snapshotScheduleNewParamsScheduleUnionRetentionTime) GetDays() *int64 {
 	switch vt := u.any.(type) {
-	case *LifecyclePolicyNewParamsScheduleCronRetentionTime:
+	case *SnapshotScheduleNewParamsScheduleCronRetentionTime:
 		return paramutil.AddrIfPresent(vt.Days)
-	case *LifecyclePolicyNewParamsScheduleIntervalRetentionTime:
+	case *SnapshotScheduleNewParamsScheduleIntervalRetentionTime:
 		return paramutil.AddrIfPresent(vt.Days)
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u lifecyclePolicyNewParamsScheduleUnionRetentionTime) GetHours() *int64 {
+func (u snapshotScheduleNewParamsScheduleUnionRetentionTime) GetHours() *int64 {
 	switch vt := u.any.(type) {
-	case *LifecyclePolicyNewParamsScheduleCronRetentionTime:
+	case *SnapshotScheduleNewParamsScheduleCronRetentionTime:
 		return paramutil.AddrIfPresent(vt.Hours)
-	case *LifecyclePolicyNewParamsScheduleIntervalRetentionTime:
+	case *SnapshotScheduleNewParamsScheduleIntervalRetentionTime:
 		return paramutil.AddrIfPresent(vt.Hours)
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u lifecyclePolicyNewParamsScheduleUnionRetentionTime) GetMinutes() *int64 {
+func (u snapshotScheduleNewParamsScheduleUnionRetentionTime) GetMinutes() *int64 {
 	switch vt := u.any.(type) {
-	case *LifecyclePolicyNewParamsScheduleCronRetentionTime:
+	case *SnapshotScheduleNewParamsScheduleCronRetentionTime:
 		return paramutil.AddrIfPresent(vt.Minutes)
-	case *LifecyclePolicyNewParamsScheduleIntervalRetentionTime:
+	case *SnapshotScheduleNewParamsScheduleIntervalRetentionTime:
 		return paramutil.AddrIfPresent(vt.Minutes)
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u lifecyclePolicyNewParamsScheduleUnionRetentionTime) GetWeeks() *int64 {
+func (u snapshotScheduleNewParamsScheduleUnionRetentionTime) GetWeeks() *int64 {
 	switch vt := u.any.(type) {
-	case *LifecyclePolicyNewParamsScheduleCronRetentionTime:
+	case *SnapshotScheduleNewParamsScheduleCronRetentionTime:
 		return paramutil.AddrIfPresent(vt.Weeks)
-	case *LifecyclePolicyNewParamsScheduleIntervalRetentionTime:
+	case *SnapshotScheduleNewParamsScheduleIntervalRetentionTime:
 		return paramutil.AddrIfPresent(vt.Weeks)
 	}
 	return nil
 }
 
 func init() {
-	apijson.RegisterUnion[LifecyclePolicyNewParamsScheduleUnion](
+	apijson.RegisterUnion[SnapshotScheduleNewParamsScheduleUnion](
 		"type",
-		apijson.Discriminator[LifecyclePolicyNewParamsScheduleCron]("cron"),
-		apijson.Discriminator[LifecyclePolicyNewParamsScheduleInterval]("interval"),
+		apijson.Discriminator[SnapshotScheduleNewParamsScheduleCron]("cron"),
+		apijson.Discriminator[SnapshotScheduleNewParamsScheduleInterval]("interval"),
 	)
 }
 
 // The property Type is required.
-type LifecyclePolicyNewParamsScheduleCron struct {
+type SnapshotScheduleNewParamsScheduleCron struct {
 	// Day of the month (1-31, '\*') or a comma-separated list of days
 	Day param.Opt[string] `json:"day,omitzero"`
 	// Weekday or a comma-separated list of weekdays (mon,tue,wed,thu,fri,sat,sun,\*)
@@ -1001,7 +1002,7 @@ type LifecyclePolicyNewParamsScheduleCron struct {
 	// ISO week (1-53, '\*') or a comma-separated list of weeks
 	Week param.Opt[string] `json:"week,omitzero"`
 	// Time after which the resource will be deleted
-	RetentionTime LifecyclePolicyNewParamsScheduleCronRetentionTime `json:"retention_time,omitzero"`
+	RetentionTime SnapshotScheduleNewParamsScheduleCronRetentionTime `json:"retention_time,omitzero"`
 	// Schedule type
 	//
 	// This field can be elided, and will marshal its zero value as "cron".
@@ -1009,16 +1010,16 @@ type LifecyclePolicyNewParamsScheduleCron struct {
 	paramObj
 }
 
-func (r LifecyclePolicyNewParamsScheduleCron) MarshalJSON() (data []byte, err error) {
-	type shadow LifecyclePolicyNewParamsScheduleCron
+func (r SnapshotScheduleNewParamsScheduleCron) MarshalJSON() (data []byte, err error) {
+	type shadow SnapshotScheduleNewParamsScheduleCron
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *LifecyclePolicyNewParamsScheduleCron) UnmarshalJSON(data []byte) error {
+func (r *SnapshotScheduleNewParamsScheduleCron) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Time after which the resource will be deleted
-type LifecyclePolicyNewParamsScheduleCronRetentionTime struct {
+type SnapshotScheduleNewParamsScheduleCronRetentionTime struct {
 	// Number of days to wait
 	Days param.Opt[int64] `json:"days,omitzero"`
 	// Number of hours to wait
@@ -1030,16 +1031,16 @@ type LifecyclePolicyNewParamsScheduleCronRetentionTime struct {
 	paramObj
 }
 
-func (r LifecyclePolicyNewParamsScheduleCronRetentionTime) MarshalJSON() (data []byte, err error) {
-	type shadow LifecyclePolicyNewParamsScheduleCronRetentionTime
+func (r SnapshotScheduleNewParamsScheduleCronRetentionTime) MarshalJSON() (data []byte, err error) {
+	type shadow SnapshotScheduleNewParamsScheduleCronRetentionTime
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *LifecyclePolicyNewParamsScheduleCronRetentionTime) UnmarshalJSON(data []byte) error {
+func (r *SnapshotScheduleNewParamsScheduleCronRetentionTime) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property Type is required.
-type LifecyclePolicyNewParamsScheduleInterval struct {
+type SnapshotScheduleNewParamsScheduleInterval struct {
 	// Number of days to wait
 	Days param.Opt[int64] `json:"days,omitzero"`
 	// Number of hours to wait
@@ -1053,7 +1054,7 @@ type LifecyclePolicyNewParamsScheduleInterval struct {
 	// Number of weeks to wait
 	Weeks param.Opt[int64] `json:"weeks,omitzero"`
 	// Time after which the resource will be deleted
-	RetentionTime LifecyclePolicyNewParamsScheduleIntervalRetentionTime `json:"retention_time,omitzero"`
+	RetentionTime SnapshotScheduleNewParamsScheduleIntervalRetentionTime `json:"retention_time,omitzero"`
 	// Schedule type
 	//
 	// This field can be elided, and will marshal its zero value as "interval".
@@ -1061,16 +1062,16 @@ type LifecyclePolicyNewParamsScheduleInterval struct {
 	paramObj
 }
 
-func (r LifecyclePolicyNewParamsScheduleInterval) MarshalJSON() (data []byte, err error) {
-	type shadow LifecyclePolicyNewParamsScheduleInterval
+func (r SnapshotScheduleNewParamsScheduleInterval) MarshalJSON() (data []byte, err error) {
+	type shadow SnapshotScheduleNewParamsScheduleInterval
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *LifecyclePolicyNewParamsScheduleInterval) UnmarshalJSON(data []byte) error {
+func (r *SnapshotScheduleNewParamsScheduleInterval) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Time after which the resource will be deleted
-type LifecyclePolicyNewParamsScheduleIntervalRetentionTime struct {
+type SnapshotScheduleNewParamsScheduleIntervalRetentionTime struct {
 	// Number of days to wait
 	Days param.Opt[int64] `json:"days,omitzero"`
 	// Number of hours to wait
@@ -1082,23 +1083,23 @@ type LifecyclePolicyNewParamsScheduleIntervalRetentionTime struct {
 	paramObj
 }
 
-func (r LifecyclePolicyNewParamsScheduleIntervalRetentionTime) MarshalJSON() (data []byte, err error) {
-	type shadow LifecyclePolicyNewParamsScheduleIntervalRetentionTime
+func (r SnapshotScheduleNewParamsScheduleIntervalRetentionTime) MarshalJSON() (data []byte, err error) {
+	type shadow SnapshotScheduleNewParamsScheduleIntervalRetentionTime
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *LifecyclePolicyNewParamsScheduleIntervalRetentionTime) UnmarshalJSON(data []byte) error {
+func (r *SnapshotScheduleNewParamsScheduleIntervalRetentionTime) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Current status of the lifecycle policy.
-type LifecyclePolicyNewParamsStatus string
+type SnapshotScheduleNewParamsStatus string
 
 const (
-	LifecyclePolicyNewParamsStatusActive LifecyclePolicyNewParamsStatus = "active"
-	LifecyclePolicyNewParamsStatusPaused LifecyclePolicyNewParamsStatus = "paused"
+	SnapshotScheduleNewParamsStatusActive SnapshotScheduleNewParamsStatus = "active"
+	SnapshotScheduleNewParamsStatusPaused SnapshotScheduleNewParamsStatus = "paused"
 )
 
-type LifecyclePolicyUpdateParams struct {
+type SnapshotScheduleUpdateParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
@@ -1108,27 +1109,27 @@ type LifecyclePolicyUpdateParams struct {
 	// Status of the lifecycle policy.
 	//
 	// Any of "active", "paused".
-	Status LifecyclePolicyUpdateParamsStatus `json:"status,omitzero"`
+	Status SnapshotScheduleUpdateParamsStatus `json:"status,omitzero"`
 	paramObj
 }
 
-func (r LifecyclePolicyUpdateParams) MarshalJSON() (data []byte, err error) {
-	type shadow LifecyclePolicyUpdateParams
+func (r SnapshotScheduleUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow SnapshotScheduleUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *LifecyclePolicyUpdateParams) UnmarshalJSON(data []byte) error {
+func (r *SnapshotScheduleUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Status of the lifecycle policy.
-type LifecyclePolicyUpdateParamsStatus string
+type SnapshotScheduleUpdateParamsStatus string
 
 const (
-	LifecyclePolicyUpdateParamsStatusActive LifecyclePolicyUpdateParamsStatus = "active"
-	LifecyclePolicyUpdateParamsStatusPaused LifecyclePolicyUpdateParamsStatus = "paused"
+	SnapshotScheduleUpdateParamsStatusActive SnapshotScheduleUpdateParamsStatus = "active"
+	SnapshotScheduleUpdateParamsStatusPaused SnapshotScheduleUpdateParamsStatus = "paused"
 )
 
-type LifecyclePolicyListParams struct {
+type SnapshotScheduleListParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
@@ -1136,7 +1137,7 @@ type LifecyclePolicyListParams struct {
 	paramObj
 }
 
-type LifecyclePolicyDeleteParams struct {
+type SnapshotScheduleDeleteParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
@@ -1144,41 +1145,41 @@ type LifecyclePolicyDeleteParams struct {
 	paramObj
 }
 
-type LifecyclePolicyAddSchedulesParams struct {
+type SnapshotScheduleAddSchedulesParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// List of schedules associated with the policy.
-	Schedules []LifecyclePolicyAddSchedulesParamsScheduleUnion `json:"schedules,omitzero" api:"required"`
+	Schedules []SnapshotScheduleAddSchedulesParamsScheduleUnion `json:"schedules,omitzero" api:"required"`
 	paramObj
 }
 
-func (r LifecyclePolicyAddSchedulesParams) MarshalJSON() (data []byte, err error) {
-	type shadow LifecyclePolicyAddSchedulesParams
+func (r SnapshotScheduleAddSchedulesParams) MarshalJSON() (data []byte, err error) {
+	type shadow SnapshotScheduleAddSchedulesParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *LifecyclePolicyAddSchedulesParams) UnmarshalJSON(data []byte) error {
+func (r *SnapshotScheduleAddSchedulesParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type LifecyclePolicyAddSchedulesParamsScheduleUnion struct {
-	OfCron     *LifecyclePolicyAddSchedulesParamsScheduleCron     `json:",omitzero,inline"`
-	OfInterval *LifecyclePolicyAddSchedulesParamsScheduleInterval `json:",omitzero,inline"`
+type SnapshotScheduleAddSchedulesParamsScheduleUnion struct {
+	OfCron     *SnapshotScheduleAddSchedulesParamsScheduleCron     `json:",omitzero,inline"`
+	OfInterval *SnapshotScheduleAddSchedulesParamsScheduleInterval `json:",omitzero,inline"`
 	paramUnion
 }
 
-func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) MarshalJSON() ([]byte, error) {
+func (u SnapshotScheduleAddSchedulesParamsScheduleUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfCron, u.OfInterval)
 }
-func (u *LifecyclePolicyAddSchedulesParamsScheduleUnion) UnmarshalJSON(data []byte) error {
+func (u *SnapshotScheduleAddSchedulesParamsScheduleUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
-func (u *LifecyclePolicyAddSchedulesParamsScheduleUnion) asAny() any {
+func (u *SnapshotScheduleAddSchedulesParamsScheduleUnion) asAny() any {
 	if !param.IsOmitted(u.OfCron) {
 		return u.OfCron
 	} else if !param.IsOmitted(u.OfInterval) {
@@ -1188,7 +1189,7 @@ func (u *LifecyclePolicyAddSchedulesParamsScheduleUnion) asAny() any {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetDay() *string {
+func (u SnapshotScheduleAddSchedulesParamsScheduleUnion) GetDay() *string {
 	if vt := u.OfCron; vt != nil && vt.Day.Valid() {
 		return &vt.Day.Value
 	}
@@ -1196,7 +1197,7 @@ func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetDay() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetDayOfWeek() *string {
+func (u SnapshotScheduleAddSchedulesParamsScheduleUnion) GetDayOfWeek() *string {
 	if vt := u.OfCron; vt != nil && vt.DayOfWeek.Valid() {
 		return &vt.DayOfWeek.Value
 	}
@@ -1204,7 +1205,7 @@ func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetDayOfWeek() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetHour() *string {
+func (u SnapshotScheduleAddSchedulesParamsScheduleUnion) GetHour() *string {
 	if vt := u.OfCron; vt != nil && vt.Hour.Valid() {
 		return &vt.Hour.Value
 	}
@@ -1212,7 +1213,7 @@ func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetHour() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetMinute() *string {
+func (u SnapshotScheduleAddSchedulesParamsScheduleUnion) GetMinute() *string {
 	if vt := u.OfCron; vt != nil && vt.Minute.Valid() {
 		return &vt.Minute.Value
 	}
@@ -1220,7 +1221,7 @@ func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetMinute() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetMonth() *string {
+func (u SnapshotScheduleAddSchedulesParamsScheduleUnion) GetMonth() *string {
 	if vt := u.OfCron; vt != nil && vt.Month.Valid() {
 		return &vt.Month.Value
 	}
@@ -1228,7 +1229,7 @@ func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetMonth() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetTimezone() *string {
+func (u SnapshotScheduleAddSchedulesParamsScheduleUnion) GetTimezone() *string {
 	if vt := u.OfCron; vt != nil && vt.Timezone.Valid() {
 		return &vt.Timezone.Value
 	}
@@ -1236,7 +1237,7 @@ func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetTimezone() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetWeek() *string {
+func (u SnapshotScheduleAddSchedulesParamsScheduleUnion) GetWeek() *string {
 	if vt := u.OfCron; vt != nil && vt.Week.Valid() {
 		return &vt.Week.Value
 	}
@@ -1244,7 +1245,7 @@ func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetWeek() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetDays() *int64 {
+func (u SnapshotScheduleAddSchedulesParamsScheduleUnion) GetDays() *int64 {
 	if vt := u.OfInterval; vt != nil && vt.Days.Valid() {
 		return &vt.Days.Value
 	}
@@ -1252,7 +1253,7 @@ func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetDays() *int64 {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetHours() *int64 {
+func (u SnapshotScheduleAddSchedulesParamsScheduleUnion) GetHours() *int64 {
 	if vt := u.OfInterval; vt != nil && vt.Hours.Valid() {
 		return &vt.Hours.Value
 	}
@@ -1260,7 +1261,7 @@ func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetHours() *int64 {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetMinutes() *int64 {
+func (u SnapshotScheduleAddSchedulesParamsScheduleUnion) GetMinutes() *int64 {
 	if vt := u.OfInterval; vt != nil && vt.Minutes.Valid() {
 		return &vt.Minutes.Value
 	}
@@ -1268,7 +1269,7 @@ func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetMinutes() *int64 {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetWeeks() *int64 {
+func (u SnapshotScheduleAddSchedulesParamsScheduleUnion) GetWeeks() *int64 {
 	if vt := u.OfInterval; vt != nil && vt.Weeks.Valid() {
 		return &vt.Weeks.Value
 	}
@@ -1276,7 +1277,7 @@ func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetWeeks() *int64 {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetType() *string {
+func (u SnapshotScheduleAddSchedulesParamsScheduleUnion) GetType() *string {
 	if vt := u.OfCron; vt != nil {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfInterval; vt != nil {
@@ -1286,7 +1287,7 @@ func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetType() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetMaxQuantity() *int64 {
+func (u SnapshotScheduleAddSchedulesParamsScheduleUnion) GetMaxQuantity() *int64 {
 	if vt := u.OfCron; vt != nil && vt.MaxQuantity.Valid() {
 		return &vt.MaxQuantity.Value
 	} else if vt := u.OfInterval; vt != nil && vt.MaxQuantity.Valid() {
@@ -1296,7 +1297,7 @@ func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetMaxQuantity() *int64 
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetResourceNameTemplate() *string {
+func (u SnapshotScheduleAddSchedulesParamsScheduleUnion) GetResourceNameTemplate() *string {
 	if vt := u.OfCron; vt != nil && vt.ResourceNameTemplate.Valid() {
 		return &vt.ResourceNameTemplate.Value
 	} else if vt := u.OfInterval; vt != nil && vt.ResourceNameTemplate.Valid() {
@@ -1308,7 +1309,7 @@ func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetResourceNameTemplate(
 // Returns a subunion which exports methods to access subproperties
 //
 // Or use AsAny() to get the underlying value
-func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetRetentionTime() (res lifecyclePolicyAddSchedulesParamsScheduleUnionRetentionTime) {
+func (u SnapshotScheduleAddSchedulesParamsScheduleUnion) GetRetentionTime() (res snapshotScheduleAddSchedulesParamsScheduleUnionRetentionTime) {
 	if vt := u.OfCron; vt != nil {
 		res.any = &vt.RetentionTime
 	} else if vt := u.OfInterval; vt != nil {
@@ -1318,74 +1319,74 @@ func (u LifecyclePolicyAddSchedulesParamsScheduleUnion) GetRetentionTime() (res 
 }
 
 // Can have the runtime types
-// [*LifecyclePolicyAddSchedulesParamsScheduleCronRetentionTime],
-// [*LifecyclePolicyAddSchedulesParamsScheduleIntervalRetentionTime]
-type lifecyclePolicyAddSchedulesParamsScheduleUnionRetentionTime struct{ any }
+// [*SnapshotScheduleAddSchedulesParamsScheduleCronRetentionTime],
+// [*SnapshotScheduleAddSchedulesParamsScheduleIntervalRetentionTime]
+type snapshotScheduleAddSchedulesParamsScheduleUnionRetentionTime struct{ any }
 
 // Use the following switch statement to get the type of the union:
 //
 //	switch u.AsAny().(type) {
-//	case *cloud.LifecyclePolicyAddSchedulesParamsScheduleCronRetentionTime:
-//	case *cloud.LifecyclePolicyAddSchedulesParamsScheduleIntervalRetentionTime:
+//	case *cloud.SnapshotScheduleAddSchedulesParamsScheduleCronRetentionTime:
+//	case *cloud.SnapshotScheduleAddSchedulesParamsScheduleIntervalRetentionTime:
 //	default:
 //	    fmt.Errorf("not present")
 //	}
-func (u lifecyclePolicyAddSchedulesParamsScheduleUnionRetentionTime) AsAny() any { return u.any }
+func (u snapshotScheduleAddSchedulesParamsScheduleUnionRetentionTime) AsAny() any { return u.any }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u lifecyclePolicyAddSchedulesParamsScheduleUnionRetentionTime) GetDays() *int64 {
+func (u snapshotScheduleAddSchedulesParamsScheduleUnionRetentionTime) GetDays() *int64 {
 	switch vt := u.any.(type) {
-	case *LifecyclePolicyAddSchedulesParamsScheduleCronRetentionTime:
+	case *SnapshotScheduleAddSchedulesParamsScheduleCronRetentionTime:
 		return paramutil.AddrIfPresent(vt.Days)
-	case *LifecyclePolicyAddSchedulesParamsScheduleIntervalRetentionTime:
+	case *SnapshotScheduleAddSchedulesParamsScheduleIntervalRetentionTime:
 		return paramutil.AddrIfPresent(vt.Days)
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u lifecyclePolicyAddSchedulesParamsScheduleUnionRetentionTime) GetHours() *int64 {
+func (u snapshotScheduleAddSchedulesParamsScheduleUnionRetentionTime) GetHours() *int64 {
 	switch vt := u.any.(type) {
-	case *LifecyclePolicyAddSchedulesParamsScheduleCronRetentionTime:
+	case *SnapshotScheduleAddSchedulesParamsScheduleCronRetentionTime:
 		return paramutil.AddrIfPresent(vt.Hours)
-	case *LifecyclePolicyAddSchedulesParamsScheduleIntervalRetentionTime:
+	case *SnapshotScheduleAddSchedulesParamsScheduleIntervalRetentionTime:
 		return paramutil.AddrIfPresent(vt.Hours)
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u lifecyclePolicyAddSchedulesParamsScheduleUnionRetentionTime) GetMinutes() *int64 {
+func (u snapshotScheduleAddSchedulesParamsScheduleUnionRetentionTime) GetMinutes() *int64 {
 	switch vt := u.any.(type) {
-	case *LifecyclePolicyAddSchedulesParamsScheduleCronRetentionTime:
+	case *SnapshotScheduleAddSchedulesParamsScheduleCronRetentionTime:
 		return paramutil.AddrIfPresent(vt.Minutes)
-	case *LifecyclePolicyAddSchedulesParamsScheduleIntervalRetentionTime:
+	case *SnapshotScheduleAddSchedulesParamsScheduleIntervalRetentionTime:
 		return paramutil.AddrIfPresent(vt.Minutes)
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u lifecyclePolicyAddSchedulesParamsScheduleUnionRetentionTime) GetWeeks() *int64 {
+func (u snapshotScheduleAddSchedulesParamsScheduleUnionRetentionTime) GetWeeks() *int64 {
 	switch vt := u.any.(type) {
-	case *LifecyclePolicyAddSchedulesParamsScheduleCronRetentionTime:
+	case *SnapshotScheduleAddSchedulesParamsScheduleCronRetentionTime:
 		return paramutil.AddrIfPresent(vt.Weeks)
-	case *LifecyclePolicyAddSchedulesParamsScheduleIntervalRetentionTime:
+	case *SnapshotScheduleAddSchedulesParamsScheduleIntervalRetentionTime:
 		return paramutil.AddrIfPresent(vt.Weeks)
 	}
 	return nil
 }
 
 func init() {
-	apijson.RegisterUnion[LifecyclePolicyAddSchedulesParamsScheduleUnion](
+	apijson.RegisterUnion[SnapshotScheduleAddSchedulesParamsScheduleUnion](
 		"type",
-		apijson.Discriminator[LifecyclePolicyAddSchedulesParamsScheduleCron]("cron"),
-		apijson.Discriminator[LifecyclePolicyAddSchedulesParamsScheduleInterval]("interval"),
+		apijson.Discriminator[SnapshotScheduleAddSchedulesParamsScheduleCron]("cron"),
+		apijson.Discriminator[SnapshotScheduleAddSchedulesParamsScheduleInterval]("interval"),
 	)
 }
 
 // The property Type is required.
-type LifecyclePolicyAddSchedulesParamsScheduleCron struct {
+type SnapshotScheduleAddSchedulesParamsScheduleCron struct {
 	// Day of the month (1-31, '\*') or a comma-separated list of days
 	Day param.Opt[string] `json:"day,omitzero"`
 	// Weekday or a comma-separated list of weekdays (mon,tue,wed,thu,fri,sat,sun,\*)
@@ -1405,7 +1406,7 @@ type LifecyclePolicyAddSchedulesParamsScheduleCron struct {
 	// ISO week (1-53, '\*') or a comma-separated list of weeks
 	Week param.Opt[string] `json:"week,omitzero"`
 	// Time after which the resource will be deleted
-	RetentionTime LifecyclePolicyAddSchedulesParamsScheduleCronRetentionTime `json:"retention_time,omitzero"`
+	RetentionTime SnapshotScheduleAddSchedulesParamsScheduleCronRetentionTime `json:"retention_time,omitzero"`
 	// Schedule type
 	//
 	// This field can be elided, and will marshal its zero value as "cron".
@@ -1413,16 +1414,16 @@ type LifecyclePolicyAddSchedulesParamsScheduleCron struct {
 	paramObj
 }
 
-func (r LifecyclePolicyAddSchedulesParamsScheduleCron) MarshalJSON() (data []byte, err error) {
-	type shadow LifecyclePolicyAddSchedulesParamsScheduleCron
+func (r SnapshotScheduleAddSchedulesParamsScheduleCron) MarshalJSON() (data []byte, err error) {
+	type shadow SnapshotScheduleAddSchedulesParamsScheduleCron
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *LifecyclePolicyAddSchedulesParamsScheduleCron) UnmarshalJSON(data []byte) error {
+func (r *SnapshotScheduleAddSchedulesParamsScheduleCron) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Time after which the resource will be deleted
-type LifecyclePolicyAddSchedulesParamsScheduleCronRetentionTime struct {
+type SnapshotScheduleAddSchedulesParamsScheduleCronRetentionTime struct {
 	// Number of days to wait
 	Days param.Opt[int64] `json:"days,omitzero"`
 	// Number of hours to wait
@@ -1434,16 +1435,16 @@ type LifecyclePolicyAddSchedulesParamsScheduleCronRetentionTime struct {
 	paramObj
 }
 
-func (r LifecyclePolicyAddSchedulesParamsScheduleCronRetentionTime) MarshalJSON() (data []byte, err error) {
-	type shadow LifecyclePolicyAddSchedulesParamsScheduleCronRetentionTime
+func (r SnapshotScheduleAddSchedulesParamsScheduleCronRetentionTime) MarshalJSON() (data []byte, err error) {
+	type shadow SnapshotScheduleAddSchedulesParamsScheduleCronRetentionTime
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *LifecyclePolicyAddSchedulesParamsScheduleCronRetentionTime) UnmarshalJSON(data []byte) error {
+func (r *SnapshotScheduleAddSchedulesParamsScheduleCronRetentionTime) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property Type is required.
-type LifecyclePolicyAddSchedulesParamsScheduleInterval struct {
+type SnapshotScheduleAddSchedulesParamsScheduleInterval struct {
 	// Number of days to wait
 	Days param.Opt[int64] `json:"days,omitzero"`
 	// Number of hours to wait
@@ -1457,7 +1458,7 @@ type LifecyclePolicyAddSchedulesParamsScheduleInterval struct {
 	// Number of weeks to wait
 	Weeks param.Opt[int64] `json:"weeks,omitzero"`
 	// Time after which the resource will be deleted
-	RetentionTime LifecyclePolicyAddSchedulesParamsScheduleIntervalRetentionTime `json:"retention_time,omitzero"`
+	RetentionTime SnapshotScheduleAddSchedulesParamsScheduleIntervalRetentionTime `json:"retention_time,omitzero"`
 	// Schedule type
 	//
 	// This field can be elided, and will marshal its zero value as "interval".
@@ -1465,16 +1466,16 @@ type LifecyclePolicyAddSchedulesParamsScheduleInterval struct {
 	paramObj
 }
 
-func (r LifecyclePolicyAddSchedulesParamsScheduleInterval) MarshalJSON() (data []byte, err error) {
-	type shadow LifecyclePolicyAddSchedulesParamsScheduleInterval
+func (r SnapshotScheduleAddSchedulesParamsScheduleInterval) MarshalJSON() (data []byte, err error) {
+	type shadow SnapshotScheduleAddSchedulesParamsScheduleInterval
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *LifecyclePolicyAddSchedulesParamsScheduleInterval) UnmarshalJSON(data []byte) error {
+func (r *SnapshotScheduleAddSchedulesParamsScheduleInterval) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Time after which the resource will be deleted
-type LifecyclePolicyAddSchedulesParamsScheduleIntervalRetentionTime struct {
+type SnapshotScheduleAddSchedulesParamsScheduleIntervalRetentionTime struct {
 	// Number of days to wait
 	Days param.Opt[int64] `json:"days,omitzero"`
 	// Number of hours to wait
@@ -1486,15 +1487,15 @@ type LifecyclePolicyAddSchedulesParamsScheduleIntervalRetentionTime struct {
 	paramObj
 }
 
-func (r LifecyclePolicyAddSchedulesParamsScheduleIntervalRetentionTime) MarshalJSON() (data []byte, err error) {
-	type shadow LifecyclePolicyAddSchedulesParamsScheduleIntervalRetentionTime
+func (r SnapshotScheduleAddSchedulesParamsScheduleIntervalRetentionTime) MarshalJSON() (data []byte, err error) {
+	type shadow SnapshotScheduleAddSchedulesParamsScheduleIntervalRetentionTime
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *LifecyclePolicyAddSchedulesParamsScheduleIntervalRetentionTime) UnmarshalJSON(data []byte) error {
+func (r *SnapshotScheduleAddSchedulesParamsScheduleIntervalRetentionTime) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type LifecyclePolicyAddVolumesParams struct {
+type SnapshotScheduleAddVolumesParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
@@ -1504,15 +1505,15 @@ type LifecyclePolicyAddVolumesParams struct {
 	paramObj
 }
 
-func (r LifecyclePolicyAddVolumesParams) MarshalJSON() (data []byte, err error) {
-	type shadow LifecyclePolicyAddVolumesParams
+func (r SnapshotScheduleAddVolumesParams) MarshalJSON() (data []byte, err error) {
+	type shadow SnapshotScheduleAddVolumesParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *LifecyclePolicyAddVolumesParams) UnmarshalJSON(data []byte) error {
+func (r *SnapshotScheduleAddVolumesParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type LifecyclePolicyEstimateMaxUsageParams struct {
+type SnapshotScheduleEstimateMaxUsageParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
@@ -1520,52 +1521,52 @@ type LifecyclePolicyEstimateMaxUsageParams struct {
 	// Action that the policy will perform.
 	//
 	// Any of "volume_snapshot".
-	Action LifecyclePolicyEstimateMaxUsageParamsAction `json:"action,omitzero" api:"required"`
+	Action SnapshotScheduleEstimateMaxUsageParamsAction `json:"action,omitzero" api:"required"`
 	// Name of the lifecycle policy.
 	Name string `json:"name" api:"required"`
 	// List of schedules associated with the policy.
-	Schedules []LifecyclePolicyEstimateMaxUsageParamsScheduleUnion `json:"schedules,omitzero"`
+	Schedules []SnapshotScheduleEstimateMaxUsageParamsScheduleUnion `json:"schedules,omitzero"`
 	// Current status of the lifecycle policy.
 	//
 	// Any of "active", "paused".
-	Status LifecyclePolicyEstimateMaxUsageParamsStatus `json:"status,omitzero"`
+	Status SnapshotScheduleEstimateMaxUsageParamsStatus `json:"status,omitzero"`
 	// List of volume IDs.
 	VolumeIDs []string `json:"volume_ids,omitzero" format:"uuid4"`
 	paramObj
 }
 
-func (r LifecyclePolicyEstimateMaxUsageParams) MarshalJSON() (data []byte, err error) {
-	type shadow LifecyclePolicyEstimateMaxUsageParams
+func (r SnapshotScheduleEstimateMaxUsageParams) MarshalJSON() (data []byte, err error) {
+	type shadow SnapshotScheduleEstimateMaxUsageParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *LifecyclePolicyEstimateMaxUsageParams) UnmarshalJSON(data []byte) error {
+func (r *SnapshotScheduleEstimateMaxUsageParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Action that the policy will perform.
-type LifecyclePolicyEstimateMaxUsageParamsAction string
+type SnapshotScheduleEstimateMaxUsageParamsAction string
 
 const (
-	LifecyclePolicyEstimateMaxUsageParamsActionVolumeSnapshot LifecyclePolicyEstimateMaxUsageParamsAction = "volume_snapshot"
+	SnapshotScheduleEstimateMaxUsageParamsActionVolumeSnapshot SnapshotScheduleEstimateMaxUsageParamsAction = "volume_snapshot"
 )
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type LifecyclePolicyEstimateMaxUsageParamsScheduleUnion struct {
-	OfCron     *LifecyclePolicyEstimateMaxUsageParamsScheduleCron     `json:",omitzero,inline"`
-	OfInterval *LifecyclePolicyEstimateMaxUsageParamsScheduleInterval `json:",omitzero,inline"`
+type SnapshotScheduleEstimateMaxUsageParamsScheduleUnion struct {
+	OfCron     *SnapshotScheduleEstimateMaxUsageParamsScheduleCron     `json:",omitzero,inline"`
+	OfInterval *SnapshotScheduleEstimateMaxUsageParamsScheduleInterval `json:",omitzero,inline"`
 	paramUnion
 }
 
-func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) MarshalJSON() ([]byte, error) {
+func (u SnapshotScheduleEstimateMaxUsageParamsScheduleUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfCron, u.OfInterval)
 }
-func (u *LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) UnmarshalJSON(data []byte) error {
+func (u *SnapshotScheduleEstimateMaxUsageParamsScheduleUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
-func (u *LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) asAny() any {
+func (u *SnapshotScheduleEstimateMaxUsageParamsScheduleUnion) asAny() any {
 	if !param.IsOmitted(u.OfCron) {
 		return u.OfCron
 	} else if !param.IsOmitted(u.OfInterval) {
@@ -1575,7 +1576,7 @@ func (u *LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) asAny() any {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetDay() *string {
+func (u SnapshotScheduleEstimateMaxUsageParamsScheduleUnion) GetDay() *string {
 	if vt := u.OfCron; vt != nil && vt.Day.Valid() {
 		return &vt.Day.Value
 	}
@@ -1583,7 +1584,7 @@ func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetDay() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetDayOfWeek() *string {
+func (u SnapshotScheduleEstimateMaxUsageParamsScheduleUnion) GetDayOfWeek() *string {
 	if vt := u.OfCron; vt != nil && vt.DayOfWeek.Valid() {
 		return &vt.DayOfWeek.Value
 	}
@@ -1591,7 +1592,7 @@ func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetDayOfWeek() *stri
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetHour() *string {
+func (u SnapshotScheduleEstimateMaxUsageParamsScheduleUnion) GetHour() *string {
 	if vt := u.OfCron; vt != nil && vt.Hour.Valid() {
 		return &vt.Hour.Value
 	}
@@ -1599,7 +1600,7 @@ func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetHour() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetMinute() *string {
+func (u SnapshotScheduleEstimateMaxUsageParamsScheduleUnion) GetMinute() *string {
 	if vt := u.OfCron; vt != nil && vt.Minute.Valid() {
 		return &vt.Minute.Value
 	}
@@ -1607,7 +1608,7 @@ func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetMinute() *string 
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetMonth() *string {
+func (u SnapshotScheduleEstimateMaxUsageParamsScheduleUnion) GetMonth() *string {
 	if vt := u.OfCron; vt != nil && vt.Month.Valid() {
 		return &vt.Month.Value
 	}
@@ -1615,7 +1616,7 @@ func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetMonth() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetTimezone() *string {
+func (u SnapshotScheduleEstimateMaxUsageParamsScheduleUnion) GetTimezone() *string {
 	if vt := u.OfCron; vt != nil && vt.Timezone.Valid() {
 		return &vt.Timezone.Value
 	}
@@ -1623,7 +1624,7 @@ func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetTimezone() *strin
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetWeek() *string {
+func (u SnapshotScheduleEstimateMaxUsageParamsScheduleUnion) GetWeek() *string {
 	if vt := u.OfCron; vt != nil && vt.Week.Valid() {
 		return &vt.Week.Value
 	}
@@ -1631,7 +1632,7 @@ func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetWeek() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetDays() *int64 {
+func (u SnapshotScheduleEstimateMaxUsageParamsScheduleUnion) GetDays() *int64 {
 	if vt := u.OfInterval; vt != nil && vt.Days.Valid() {
 		return &vt.Days.Value
 	}
@@ -1639,7 +1640,7 @@ func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetDays() *int64 {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetHours() *int64 {
+func (u SnapshotScheduleEstimateMaxUsageParamsScheduleUnion) GetHours() *int64 {
 	if vt := u.OfInterval; vt != nil && vt.Hours.Valid() {
 		return &vt.Hours.Value
 	}
@@ -1647,7 +1648,7 @@ func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetHours() *int64 {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetMinutes() *int64 {
+func (u SnapshotScheduleEstimateMaxUsageParamsScheduleUnion) GetMinutes() *int64 {
 	if vt := u.OfInterval; vt != nil && vt.Minutes.Valid() {
 		return &vt.Minutes.Value
 	}
@@ -1655,7 +1656,7 @@ func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetMinutes() *int64 
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetWeeks() *int64 {
+func (u SnapshotScheduleEstimateMaxUsageParamsScheduleUnion) GetWeeks() *int64 {
 	if vt := u.OfInterval; vt != nil && vt.Weeks.Valid() {
 		return &vt.Weeks.Value
 	}
@@ -1663,7 +1664,7 @@ func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetWeeks() *int64 {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetType() *string {
+func (u SnapshotScheduleEstimateMaxUsageParamsScheduleUnion) GetType() *string {
 	if vt := u.OfCron; vt != nil {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfInterval; vt != nil {
@@ -1673,7 +1674,7 @@ func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetType() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetMaxQuantity() *int64 {
+func (u SnapshotScheduleEstimateMaxUsageParamsScheduleUnion) GetMaxQuantity() *int64 {
 	if vt := u.OfCron; vt != nil && vt.MaxQuantity.Valid() {
 		return &vt.MaxQuantity.Value
 	} else if vt := u.OfInterval; vt != nil && vt.MaxQuantity.Valid() {
@@ -1683,7 +1684,7 @@ func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetMaxQuantity() *in
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetResourceNameTemplate() *string {
+func (u SnapshotScheduleEstimateMaxUsageParamsScheduleUnion) GetResourceNameTemplate() *string {
 	if vt := u.OfCron; vt != nil && vt.ResourceNameTemplate.Valid() {
 		return &vt.ResourceNameTemplate.Value
 	} else if vt := u.OfInterval; vt != nil && vt.ResourceNameTemplate.Valid() {
@@ -1695,7 +1696,7 @@ func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetResourceNameTempl
 // Returns a subunion which exports methods to access subproperties
 //
 // Or use AsAny() to get the underlying value
-func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetRetentionTime() (res lifecyclePolicyEstimateMaxUsageParamsScheduleUnionRetentionTime) {
+func (u SnapshotScheduleEstimateMaxUsageParamsScheduleUnion) GetRetentionTime() (res snapshotScheduleEstimateMaxUsageParamsScheduleUnionRetentionTime) {
 	if vt := u.OfCron; vt != nil {
 		res.any = &vt.RetentionTime
 	} else if vt := u.OfInterval; vt != nil {
@@ -1705,74 +1706,74 @@ func (u LifecyclePolicyEstimateMaxUsageParamsScheduleUnion) GetRetentionTime() (
 }
 
 // Can have the runtime types
-// [*LifecyclePolicyEstimateMaxUsageParamsScheduleCronRetentionTime],
-// [*LifecyclePolicyEstimateMaxUsageParamsScheduleIntervalRetentionTime]
-type lifecyclePolicyEstimateMaxUsageParamsScheduleUnionRetentionTime struct{ any }
+// [*SnapshotScheduleEstimateMaxUsageParamsScheduleCronRetentionTime],
+// [*SnapshotScheduleEstimateMaxUsageParamsScheduleIntervalRetentionTime]
+type snapshotScheduleEstimateMaxUsageParamsScheduleUnionRetentionTime struct{ any }
 
 // Use the following switch statement to get the type of the union:
 //
 //	switch u.AsAny().(type) {
-//	case *cloud.LifecyclePolicyEstimateMaxUsageParamsScheduleCronRetentionTime:
-//	case *cloud.LifecyclePolicyEstimateMaxUsageParamsScheduleIntervalRetentionTime:
+//	case *cloud.SnapshotScheduleEstimateMaxUsageParamsScheduleCronRetentionTime:
+//	case *cloud.SnapshotScheduleEstimateMaxUsageParamsScheduleIntervalRetentionTime:
 //	default:
 //	    fmt.Errorf("not present")
 //	}
-func (u lifecyclePolicyEstimateMaxUsageParamsScheduleUnionRetentionTime) AsAny() any { return u.any }
+func (u snapshotScheduleEstimateMaxUsageParamsScheduleUnionRetentionTime) AsAny() any { return u.any }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u lifecyclePolicyEstimateMaxUsageParamsScheduleUnionRetentionTime) GetDays() *int64 {
+func (u snapshotScheduleEstimateMaxUsageParamsScheduleUnionRetentionTime) GetDays() *int64 {
 	switch vt := u.any.(type) {
-	case *LifecyclePolicyEstimateMaxUsageParamsScheduleCronRetentionTime:
+	case *SnapshotScheduleEstimateMaxUsageParamsScheduleCronRetentionTime:
 		return paramutil.AddrIfPresent(vt.Days)
-	case *LifecyclePolicyEstimateMaxUsageParamsScheduleIntervalRetentionTime:
+	case *SnapshotScheduleEstimateMaxUsageParamsScheduleIntervalRetentionTime:
 		return paramutil.AddrIfPresent(vt.Days)
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u lifecyclePolicyEstimateMaxUsageParamsScheduleUnionRetentionTime) GetHours() *int64 {
+func (u snapshotScheduleEstimateMaxUsageParamsScheduleUnionRetentionTime) GetHours() *int64 {
 	switch vt := u.any.(type) {
-	case *LifecyclePolicyEstimateMaxUsageParamsScheduleCronRetentionTime:
+	case *SnapshotScheduleEstimateMaxUsageParamsScheduleCronRetentionTime:
 		return paramutil.AddrIfPresent(vt.Hours)
-	case *LifecyclePolicyEstimateMaxUsageParamsScheduleIntervalRetentionTime:
+	case *SnapshotScheduleEstimateMaxUsageParamsScheduleIntervalRetentionTime:
 		return paramutil.AddrIfPresent(vt.Hours)
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u lifecyclePolicyEstimateMaxUsageParamsScheduleUnionRetentionTime) GetMinutes() *int64 {
+func (u snapshotScheduleEstimateMaxUsageParamsScheduleUnionRetentionTime) GetMinutes() *int64 {
 	switch vt := u.any.(type) {
-	case *LifecyclePolicyEstimateMaxUsageParamsScheduleCronRetentionTime:
+	case *SnapshotScheduleEstimateMaxUsageParamsScheduleCronRetentionTime:
 		return paramutil.AddrIfPresent(vt.Minutes)
-	case *LifecyclePolicyEstimateMaxUsageParamsScheduleIntervalRetentionTime:
+	case *SnapshotScheduleEstimateMaxUsageParamsScheduleIntervalRetentionTime:
 		return paramutil.AddrIfPresent(vt.Minutes)
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u lifecyclePolicyEstimateMaxUsageParamsScheduleUnionRetentionTime) GetWeeks() *int64 {
+func (u snapshotScheduleEstimateMaxUsageParamsScheduleUnionRetentionTime) GetWeeks() *int64 {
 	switch vt := u.any.(type) {
-	case *LifecyclePolicyEstimateMaxUsageParamsScheduleCronRetentionTime:
+	case *SnapshotScheduleEstimateMaxUsageParamsScheduleCronRetentionTime:
 		return paramutil.AddrIfPresent(vt.Weeks)
-	case *LifecyclePolicyEstimateMaxUsageParamsScheduleIntervalRetentionTime:
+	case *SnapshotScheduleEstimateMaxUsageParamsScheduleIntervalRetentionTime:
 		return paramutil.AddrIfPresent(vt.Weeks)
 	}
 	return nil
 }
 
 func init() {
-	apijson.RegisterUnion[LifecyclePolicyEstimateMaxUsageParamsScheduleUnion](
+	apijson.RegisterUnion[SnapshotScheduleEstimateMaxUsageParamsScheduleUnion](
 		"type",
-		apijson.Discriminator[LifecyclePolicyEstimateMaxUsageParamsScheduleCron]("cron"),
-		apijson.Discriminator[LifecyclePolicyEstimateMaxUsageParamsScheduleInterval]("interval"),
+		apijson.Discriminator[SnapshotScheduleEstimateMaxUsageParamsScheduleCron]("cron"),
+		apijson.Discriminator[SnapshotScheduleEstimateMaxUsageParamsScheduleInterval]("interval"),
 	)
 }
 
 // The property Type is required.
-type LifecyclePolicyEstimateMaxUsageParamsScheduleCron struct {
+type SnapshotScheduleEstimateMaxUsageParamsScheduleCron struct {
 	// Day of the month (1-31, '\*') or a comma-separated list of days
 	Day param.Opt[string] `json:"day,omitzero"`
 	// Weekday or a comma-separated list of weekdays (mon,tue,wed,thu,fri,sat,sun,\*)
@@ -1792,7 +1793,7 @@ type LifecyclePolicyEstimateMaxUsageParamsScheduleCron struct {
 	// ISO week (1-53, '\*') or a comma-separated list of weeks
 	Week param.Opt[string] `json:"week,omitzero"`
 	// Time after which the resource will be deleted
-	RetentionTime LifecyclePolicyEstimateMaxUsageParamsScheduleCronRetentionTime `json:"retention_time,omitzero"`
+	RetentionTime SnapshotScheduleEstimateMaxUsageParamsScheduleCronRetentionTime `json:"retention_time,omitzero"`
 	// Schedule type
 	//
 	// This field can be elided, and will marshal its zero value as "cron".
@@ -1800,16 +1801,16 @@ type LifecyclePolicyEstimateMaxUsageParamsScheduleCron struct {
 	paramObj
 }
 
-func (r LifecyclePolicyEstimateMaxUsageParamsScheduleCron) MarshalJSON() (data []byte, err error) {
-	type shadow LifecyclePolicyEstimateMaxUsageParamsScheduleCron
+func (r SnapshotScheduleEstimateMaxUsageParamsScheduleCron) MarshalJSON() (data []byte, err error) {
+	type shadow SnapshotScheduleEstimateMaxUsageParamsScheduleCron
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *LifecyclePolicyEstimateMaxUsageParamsScheduleCron) UnmarshalJSON(data []byte) error {
+func (r *SnapshotScheduleEstimateMaxUsageParamsScheduleCron) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Time after which the resource will be deleted
-type LifecyclePolicyEstimateMaxUsageParamsScheduleCronRetentionTime struct {
+type SnapshotScheduleEstimateMaxUsageParamsScheduleCronRetentionTime struct {
 	// Number of days to wait
 	Days param.Opt[int64] `json:"days,omitzero"`
 	// Number of hours to wait
@@ -1821,16 +1822,16 @@ type LifecyclePolicyEstimateMaxUsageParamsScheduleCronRetentionTime struct {
 	paramObj
 }
 
-func (r LifecyclePolicyEstimateMaxUsageParamsScheduleCronRetentionTime) MarshalJSON() (data []byte, err error) {
-	type shadow LifecyclePolicyEstimateMaxUsageParamsScheduleCronRetentionTime
+func (r SnapshotScheduleEstimateMaxUsageParamsScheduleCronRetentionTime) MarshalJSON() (data []byte, err error) {
+	type shadow SnapshotScheduleEstimateMaxUsageParamsScheduleCronRetentionTime
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *LifecyclePolicyEstimateMaxUsageParamsScheduleCronRetentionTime) UnmarshalJSON(data []byte) error {
+func (r *SnapshotScheduleEstimateMaxUsageParamsScheduleCronRetentionTime) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property Type is required.
-type LifecyclePolicyEstimateMaxUsageParamsScheduleInterval struct {
+type SnapshotScheduleEstimateMaxUsageParamsScheduleInterval struct {
 	// Number of days to wait
 	Days param.Opt[int64] `json:"days,omitzero"`
 	// Number of hours to wait
@@ -1844,7 +1845,7 @@ type LifecyclePolicyEstimateMaxUsageParamsScheduleInterval struct {
 	// Number of weeks to wait
 	Weeks param.Opt[int64] `json:"weeks,omitzero"`
 	// Time after which the resource will be deleted
-	RetentionTime LifecyclePolicyEstimateMaxUsageParamsScheduleIntervalRetentionTime `json:"retention_time,omitzero"`
+	RetentionTime SnapshotScheduleEstimateMaxUsageParamsScheduleIntervalRetentionTime `json:"retention_time,omitzero"`
 	// Schedule type
 	//
 	// This field can be elided, and will marshal its zero value as "interval".
@@ -1852,16 +1853,16 @@ type LifecyclePolicyEstimateMaxUsageParamsScheduleInterval struct {
 	paramObj
 }
 
-func (r LifecyclePolicyEstimateMaxUsageParamsScheduleInterval) MarshalJSON() (data []byte, err error) {
-	type shadow LifecyclePolicyEstimateMaxUsageParamsScheduleInterval
+func (r SnapshotScheduleEstimateMaxUsageParamsScheduleInterval) MarshalJSON() (data []byte, err error) {
+	type shadow SnapshotScheduleEstimateMaxUsageParamsScheduleInterval
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *LifecyclePolicyEstimateMaxUsageParamsScheduleInterval) UnmarshalJSON(data []byte) error {
+func (r *SnapshotScheduleEstimateMaxUsageParamsScheduleInterval) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Time after which the resource will be deleted
-type LifecyclePolicyEstimateMaxUsageParamsScheduleIntervalRetentionTime struct {
+type SnapshotScheduleEstimateMaxUsageParamsScheduleIntervalRetentionTime struct {
 	// Number of days to wait
 	Days param.Opt[int64] `json:"days,omitzero"`
 	// Number of hours to wait
@@ -1873,23 +1874,23 @@ type LifecyclePolicyEstimateMaxUsageParamsScheduleIntervalRetentionTime struct {
 	paramObj
 }
 
-func (r LifecyclePolicyEstimateMaxUsageParamsScheduleIntervalRetentionTime) MarshalJSON() (data []byte, err error) {
-	type shadow LifecyclePolicyEstimateMaxUsageParamsScheduleIntervalRetentionTime
+func (r SnapshotScheduleEstimateMaxUsageParamsScheduleIntervalRetentionTime) MarshalJSON() (data []byte, err error) {
+	type shadow SnapshotScheduleEstimateMaxUsageParamsScheduleIntervalRetentionTime
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *LifecyclePolicyEstimateMaxUsageParamsScheduleIntervalRetentionTime) UnmarshalJSON(data []byte) error {
+func (r *SnapshotScheduleEstimateMaxUsageParamsScheduleIntervalRetentionTime) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Current status of the lifecycle policy.
-type LifecyclePolicyEstimateMaxUsageParamsStatus string
+type SnapshotScheduleEstimateMaxUsageParamsStatus string
 
 const (
-	LifecyclePolicyEstimateMaxUsageParamsStatusActive LifecyclePolicyEstimateMaxUsageParamsStatus = "active"
-	LifecyclePolicyEstimateMaxUsageParamsStatusPaused LifecyclePolicyEstimateMaxUsageParamsStatus = "paused"
+	SnapshotScheduleEstimateMaxUsageParamsStatusActive SnapshotScheduleEstimateMaxUsageParamsStatus = "active"
+	SnapshotScheduleEstimateMaxUsageParamsStatusPaused SnapshotScheduleEstimateMaxUsageParamsStatus = "paused"
 )
 
-type LifecyclePolicyGetParams struct {
+type SnapshotScheduleGetParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
@@ -1897,7 +1898,7 @@ type LifecyclePolicyGetParams struct {
 	paramObj
 }
 
-type LifecyclePolicyRemoveSchedulesParams struct {
+type SnapshotScheduleRemoveSchedulesParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
@@ -1907,15 +1908,15 @@ type LifecyclePolicyRemoveSchedulesParams struct {
 	paramObj
 }
 
-func (r LifecyclePolicyRemoveSchedulesParams) MarshalJSON() (data []byte, err error) {
-	type shadow LifecyclePolicyRemoveSchedulesParams
+func (r SnapshotScheduleRemoveSchedulesParams) MarshalJSON() (data []byte, err error) {
+	type shadow SnapshotScheduleRemoveSchedulesParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *LifecyclePolicyRemoveSchedulesParams) UnmarshalJSON(data []byte) error {
+func (r *SnapshotScheduleRemoveSchedulesParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type LifecyclePolicyRemoveVolumesParams struct {
+type SnapshotScheduleRemoveVolumesParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
@@ -1925,10 +1926,10 @@ type LifecyclePolicyRemoveVolumesParams struct {
 	paramObj
 }
 
-func (r LifecyclePolicyRemoveVolumesParams) MarshalJSON() (data []byte, err error) {
-	type shadow LifecyclePolicyRemoveVolumesParams
+func (r SnapshotScheduleRemoveVolumesParams) MarshalJSON() (data []byte, err error) {
+	type shadow SnapshotScheduleRemoveVolumesParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *LifecyclePolicyRemoveVolumesParams) UnmarshalJSON(data []byte) error {
+func (r *SnapshotScheduleRemoveVolumesParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
