@@ -190,8 +190,8 @@ func TestGPUVirtualClusterListWithOptionalParams(t *testing.T) {
 			Prefix:   []string{"string"},
 			Suffix:   []string{"string"},
 		},
-		Tags: map[string]string{
-			"env": "prod",
+		Tags: map[string][]string{
+			"env": {"prod"},
 		},
 		UpdatedAt: cloud.GPUVirtualClusterListParamsUpdatedAt{
 			Gt:  gcore.Time(time.Now()),

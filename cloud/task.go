@@ -257,7 +257,7 @@ type TaskCreatedResources struct {
 	SecurityGroupRules []string `json:"security_group_rules"`
 	// IDs of created security groups
 	SecurityGroups []string `json:"security_groups"`
-	// IDs of created server groups
+	// IDs of created placement groups
 	Servergroups []string `json:"servergroups"`
 	// IDs of created volume snapshots
 	Snapshots []string `json:"snapshots"`

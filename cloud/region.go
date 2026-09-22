@@ -107,7 +107,7 @@ type Region struct {
 	//
 	// Any of "admin", "internal", "public".
 	EndpointType RegionEndpointType `json:"endpoint_type" api:"required"`
-	// External network ID for Neutron
+	// External network ID
 	ExternalNetworkID string `json:"external_network_id" api:"required"`
 	// List of available file share types
 	//
@@ -127,11 +127,11 @@ type Region struct {
 	HasDDOS bool `json:"has_ddos" api:"required"`
 	// Region has managed kubernetes capability
 	HasK8S bool `json:"has_k8s" api:"required"`
-	// Region has KVM virtualization capability
+	// Region supports virtual machine instances
 	HasKvm bool `json:"has_kvm" api:"required"`
 	// Region has SFS capability
 	HasSfs bool `json:"has_sfs" api:"required"`
-	// Foreign key to Keystone entity
+	// ID of the identity service record
 	KeystoneID int64 `json:"keystone_id" api:"required"`
 	// Technical region name
 	KeystoneName string `json:"keystone_name" api:"required"`

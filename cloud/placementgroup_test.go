@@ -29,7 +29,7 @@ func TestPlacementGroupNew(t *testing.T) {
 	_, err := client.Cloud.PlacementGroups.New(context.TODO(), cloud.PlacementGroupNewParams{
 		ProjectID: gcore.Int(1),
 		RegionID:  gcore.Int(1),
-		Name:      "my-server-group",
+		Name:      "my-placement-group",
 		Policy:    cloud.PlacementGroupNewParamsPolicyAntiAffinity,
 	})
 	if err != nil {

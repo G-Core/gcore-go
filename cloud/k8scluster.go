@@ -301,7 +301,8 @@ type K8SCluster struct {
 	Pools []K8SClusterPool `json:"pools" api:"required"`
 	// Status
 	//
-	// Any of "Deleting", "Provisioned", "Provisioning".
+	// Any of "Deleting", "Failed", "Pending", "Provisioned", "Provisioning",
+	// "Unknown".
 	Status K8SClusterStatus `json:"status" api:"required"`
 	// K8s version
 	Version string `json:"version" api:"required"`
@@ -475,8 +476,11 @@ type K8SClusterStatus string
 
 const (
 	K8SClusterStatusDeleting     K8SClusterStatus = "Deleting"
+	K8SClusterStatusFailed       K8SClusterStatus = "Failed"
+	K8SClusterStatusPending      K8SClusterStatus = "Pending"
 	K8SClusterStatusProvisioned  K8SClusterStatus = "Provisioned"
 	K8SClusterStatusProvisioning K8SClusterStatus = "Provisioning"
+	K8SClusterStatusUnknown      K8SClusterStatus = "Unknown"
 )
 
 // Cluster authentication settings
@@ -875,7 +879,7 @@ type K8SClusterNewParamsPool struct {
 	KubeletConfig map[string]string `json:"kubelet_config,omitzero"`
 	// Labels applied to the cluster pool
 	Labels map[string]string `json:"labels,omitzero"`
-	// Server group policy: anti-affinity, soft-anti-affinity or affinity
+	// Placement group policy: anti-affinity, soft-anti-affinity or affinity
 	//
 	// Any of "affinity", "anti-affinity", "soft-anti-affinity".
 	ServergroupPolicy string `json:"servergroup_policy,omitzero"`

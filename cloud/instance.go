@@ -216,8 +216,8 @@ func (r *InstanceService) Action(ctx context.Context, instanceID string, params 
 	return res, err
 }
 
-// Add an instance to a server group. The instance must not already be in a server
-// group. Bare metal servers do not support server groups.
+// Add an instance to a placement group. The instance must not already be in a
+// placement group. Bare metal servers do not support placement groups.
 func (r *InstanceService) AddToPlacementGroup(ctx context.Context, instanceID string, params InstanceAddToPlacementGroupParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -392,8 +392,9 @@ func (r *InstanceService) GetConsole(ctx context.Context, instanceID string, par
 	return res, err
 }
 
-// Remove an instance from its current server group. The instance must be in a
-// server group to be removed. Bare metal servers do not support server groups.
+// Remove an instance from its current placement group. The instance must be in a
+// placement group to be removed. Bare metal servers do not support placement
+// groups.
 func (r *InstanceService) RemoveFromPlacementGroup(ctx context.Context, instanceID string, body InstanceRemoveFromPlacementGroupParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -2044,7 +2045,7 @@ type InstanceAddToPlacementGroupParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// Anti-affinity or affinity or soft-anti-affinity server group ID.
+	// Anti-affinity or affinity or soft-anti-affinity placement group ID.
 	ServergroupID string `json:"servergroup_id" api:"required"`
 	paramObj
 }

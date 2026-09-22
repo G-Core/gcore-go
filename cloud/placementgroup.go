@@ -153,11 +153,11 @@ func (r *PlacementGroupService) Get(ctx context.Context, groupID string, query P
 }
 
 type PlacementGroup struct {
-	// The list of instances in this server group.
+	// The list of instances in this placement group.
 	Instances []PlacementGroupInstance `json:"instances" api:"required"`
-	// The name of the server group.
+	// The name of the placement group.
 	Name string `json:"name" api:"required"`
-	// The server group policy. Options are: anti-affinity, affinity, or
+	// The placement group policy. Options are: anti-affinity, affinity, or
 	// soft-anti-affinity.
 	Policy string `json:"policy" api:"required"`
 	// Project ID
@@ -166,7 +166,7 @@ type PlacementGroup struct {
 	Region string `json:"region" api:"required"`
 	// Region ID
 	RegionID int64 `json:"region_id" api:"required"`
-	// The ID of the server group.
+	// The ID of the placement group.
 	ServergroupID string `json:"servergroup_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -233,9 +233,9 @@ type PlacementGroupNewParams struct {
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// The name of the server group.
+	// The name of the placement group.
 	Name string `json:"name" api:"required"`
-	// The server group policy.
+	// The placement group policy.
 	//
 	// Any of "affinity", "anti-affinity", "soft-anti-affinity".
 	Policy PlacementGroupNewParamsPolicy `json:"policy,omitzero" api:"required"`
@@ -250,7 +250,7 @@ func (r *PlacementGroupNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The server group policy.
+// The placement group policy.
 type PlacementGroupNewParamsPolicy string
 
 const (

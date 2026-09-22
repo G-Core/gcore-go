@@ -288,11 +288,11 @@ type K8SClusterPool struct {
 	Status string `json:"status" api:"required"`
 	// Taints applied to the cluster pool
 	Taints map[string]string `json:"taints" api:"required"`
-	// Server group ID
+	// Placement group ID
 	ServergroupID string `json:"servergroup_id"`
-	// Server group name
+	// Placement group name
 	ServergroupName string `json:"servergroup_name"`
-	// Anti-affinity, affinity or soft-anti-affinity server group policy
+	// Anti-affinity, affinity or soft-anti-affinity placement group policy
 	ServergroupPolicy string `json:"servergroup_policy"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -572,7 +572,7 @@ type K8SClusterPoolNewParams struct {
 	KubeletConfig map[string]string `json:"kubelet_config,omitzero"`
 	// Labels applied to the cluster pool
 	Labels map[string]string `json:"labels,omitzero"`
-	// Server group policy: anti-affinity, soft-anti-affinity or affinity
+	// Placement group policy: anti-affinity, soft-anti-affinity or affinity
 	//
 	// Any of "affinity", "anti-affinity", "soft-anti-affinity".
 	ServergroupPolicy K8SClusterPoolNewParamsServergroupPolicy `json:"servergroup_policy,omitzero"`
@@ -603,7 +603,7 @@ const (
 	K8SClusterPoolNewParamsBootVolumeTypeUltra         K8SClusterPoolNewParamsBootVolumeType = "ultra"
 )
 
-// Server group policy: anti-affinity, soft-anti-affinity or affinity
+// Placement group policy: anti-affinity, soft-anti-affinity or affinity
 type K8SClusterPoolNewParamsServergroupPolicy string
 
 const (
@@ -697,7 +697,7 @@ type K8SClusterPoolCheckQuotaParams struct {
 	// Enable public IPv4 address for pool nodes. Each node consumes one external IP
 	// quota unit
 	IsPublicIpv4 param.Opt[bool] `json:"is_public_ipv4,omitzero"`
-	// Server group policy: anti-affinity, soft-anti-affinity or affinity
+	// Placement group policy: anti-affinity, soft-anti-affinity or affinity
 	//
 	// Any of "affinity", "anti-affinity", "soft-anti-affinity".
 	ServergroupPolicy K8SClusterPoolCheckQuotaParamsServergroupPolicy `json:"servergroup_policy,omitzero"`
@@ -712,7 +712,7 @@ func (r *K8SClusterPoolCheckQuotaParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Server group policy: anti-affinity, soft-anti-affinity or affinity
+// Placement group policy: anti-affinity, soft-anti-affinity or affinity
 type K8SClusterPoolCheckQuotaParamsServergroupPolicy string
 
 const (

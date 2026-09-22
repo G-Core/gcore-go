@@ -1724,8 +1724,10 @@ type GPUVirtualClusterListParams struct {
 	// Filter by tag value regardless of key, e.g. `tag_value[prefix]=prod`.
 	TagValue GPUVirtualClusterListParamsTagValue `query:"tag_value,omitzero" json:"-"`
 	// Filter by exact tag key-value pairs, e.g. `tags[env]=prod&tags[team]=core`.
-	// Pairs are ANDed; values match case-insensitively.
-	Tags map[string]string `query:"tags,omitzero" json:"-"`
+	// Repeat a key to match any of several values for it, e.g.
+	// `tags[env]=prod&tags[env]=dev`. Values for one key are ORed, different keys are
+	// ANDed; values match case-insensitively.
+	Tags map[string][]string `query:"tags,omitzero" json:"-"`
 	// Filter by last-change time (UTC), e.g. `updated_at[gte]=2026-06-01T00:00:00Z`.
 	UpdatedAt GPUVirtualClusterListParamsUpdatedAt `query:"updated_at,omitzero" json:"-"`
 	paramObj

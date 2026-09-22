@@ -28,12 +28,11 @@ func TestBillingReservationListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.BillingReservations.List(context.TODO(), cloud.BillingReservationListParams{
-		MetricName:   gcore.String("metric_name"),
-		OrderBy:      cloud.BillingReservationListParamsOrderByActiveFromAsc,
-		RegionID:     gcore.Int(0),
-		ShowInactive: gcore.Bool(true),
-		TimeFrom:     gcore.Time(time.Now()),
-		TimeTo:       gcore.Time(time.Now()),
+		TimeFrom:   time.Now(),
+		TimeTo:     time.Now(),
+		MetricName: gcore.String("metric_name"),
+		OrderBy:    cloud.BillingReservationListParamsOrderByActiveFromAsc,
+		RegionID:   gcore.Int(0),
 	})
 	if err != nil {
 		var apierr *gcore.Error
