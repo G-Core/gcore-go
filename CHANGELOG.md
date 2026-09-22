@@ -1,5 +1,44 @@
 # Changelog
 
+## [0.57.0](https://github.com/G-Core/gcore-go/compare/v0.56.0...v0.57.0) (2026-09-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* **cloud:** rename to snapshot schedules
+* **waap:** migrate compatible endpoints to v2
+* **cloud:** map the full LB pool member endpoint family
+* **cdn:** add logs uploader field conversions, policy fields v2, and tls_ciphers
+* **fastedge:** update fastedge OpenAPI spec
+
+### Features
+
+* **cdn:** add aliases_limit to account limits response ([89f0e41](https://github.com/G-Core/gcore-go/commit/89f0e419e41f3f0e642311e8f9e2b7b92b05cd1b))
+* **cdn:** add logs uploader field conversions, policy fields v2, and tls_ciphers ([d3a29bc](https://github.com/G-Core/gcore-go/commit/d3a29bc9f018cbf5d922302fff92558af4124087))
+* **cdn:** add preset and applied preset terraform resource and data source ([9a37710](https://github.com/G-Core/gcore-go/commit/9a3771039a4e28e62c57fddbe25316c811137b59))
+* **client:** support polling timeout environment variable ([05026be](https://github.com/G-Core/gcore-go/commit/05026beeece5c61bb736bc513aa928a962b49e23))
+* **cloud:** generate the LB pool member methods for terraform and cli ([0014249](https://github.com/G-Core/gcore-go/commit/00142496285804adb31485f8c6650ed598d23cbe))
+* **cloud:** map the full LB pool member endpoint family ([38aa11f](https://github.com/G-Core/gcore-go/commit/38aa11f6c27885bcea0002f750ed1d0974ce96ba))
+* **cloud:** pool member polling helpers and example coverage ([cbac15a](https://github.com/G-Core/gcore-go/commit/cbac15ab356ad2d11ce170e784927be59f403c53))
+* **dns:** add from/to time filters to rrset failover log ([d7dee5c](https://github.com/G-Core/gcore-go/commit/d7dee5c4107b9e93984654d24f51be29517f498f))
+* **storage:** SFTP spec update and named write response model ([bc4049f](https://github.com/G-Core/gcore-go/commit/bc4049f038f970a651033dd79b354bf582247675))
+* **waap:** migrate compatible endpoints to v2 ([a67eb8e](https://github.com/G-Core/gcore-go/commit/a67eb8e343893d16989e3db5271b52e72e509cdc))
+
+
+### Bug Fixes
+
+* **cloud:** rename to snapshot schedules ([9f81373](https://github.com/G-Core/gcore-go/commit/9f813734c72b9f57da74e9c038db1bd7dda90e96))
+* **fastedge:** update fastedge OpenAPI spec ([43bb640](https://github.com/G-Core/gcore-go/commit/43bb640878e2a08a2c4bb923c441a729705673a6))
+
+
+### Chores
+
+* **cdn:** update cdn OpenAPI spec ([716e3a9](https://github.com/G-Core/gcore-go/commit/716e3a935ab6d591a898c1d050bd1853d8cfaf94))
+* **cloud:** update cloud OpenAPI spec ([fc1312a](https://github.com/G-Core/gcore-go/commit/fc1312a726fbc9adb370390ac359064b70c9bf39))
+* **cloud:** update cloud OpenAPI spec ([a09b883](https://github.com/G-Core/gcore-go/commit/a09b8831ddb5e2a585793236bd0207f0bb1de30b))
+* **cloud:** update cloud OpenAPI spec ([3df9063](https://github.com/G-Core/gcore-go/commit/3df9063d8a0d50d341f3bb10f7a7b8488dccbea3))
+* **waap:** update descriptions ([0933100](https://github.com/G-Core/gcore-go/commit/09331001528dbb43ee3ff0a5d0a89c58801a64ec))
+
 ## [0.56.0](https://github.com/G-Core/gcore-go/compare/v0.55.0...v0.56.0) (2026-08-31)
 
 
