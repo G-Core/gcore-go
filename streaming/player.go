@@ -39,12 +39,11 @@ func NewPlayerService(opts ...option.RequestOption) (r PlayerService) {
 }
 
 // Create player
-func (r *PlayerService) New(ctx context.Context, body PlayerNewParams, opts ...option.RequestOption) (err error) {
+func (r *PlayerService) New(ctx context.Context, body PlayerNewParams, opts ...option.RequestOption) (res *Player, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "streaming/players"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return err
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
 }
 
 // Updates player settings
@@ -107,8 +106,6 @@ func (r *PlayerService) Preview(ctx context.Context, playerID int64, opts ...opt
 // Set of properties for displaying videos. All parameters may be blank to inherit
 // their values from default Streaming player.
 type Player struct {
-	// Player name
-	Name string `json:"name" api:"required"`
 	// Player ID
 	ID int64 `json:"id"`
 	// Enables video playback right after player load:
@@ -161,6 +158,8 @@ type Player struct {
 	//
 	// Default is false
 	Mute bool `json:"mute"`
+	// Player name
+	Name string `json:"name"`
 	// Enables/Disables saving volume and other options in cookies:
 	//
 	// - **true** — user settings will be saved
@@ -188,7 +187,6 @@ type Player struct {
 	TextColor string `json:"text_color"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Name                 respjson.Field
 		ID                   respjson.Field
 		Autoplay             respjson.Field
 		BgColor              respjson.Field
@@ -203,6 +201,7 @@ type Player struct {
 		Logo                 respjson.Field
 		LogoPosition         respjson.Field
 		Mute                 respjson.Field
+		Name                 respjson.Field
 		SaveOptionsToCookies respjson.Field
 		ShowSharing          respjson.Field
 		SkinIsURL            respjson.Field
@@ -230,11 +229,7 @@ func (r Player) ToParam() PlayerParam {
 
 // Set of properties for displaying videos. All parameters may be blank to inherit
 // their values from default Streaming player.
-//
-// The property Name is required.
 type PlayerParam struct {
-	// Player name
-	Name string `json:"name" api:"required"`
 	// Player ID
 	ID param.Opt[int64] `json:"id,omitzero"`
 	// Enables video playback right after player load:
@@ -287,6 +282,8 @@ type PlayerParam struct {
 	//
 	// Default is false
 	Mute param.Opt[bool] `json:"mute,omitzero"`
+	// Player name
+	Name param.Opt[string] `json:"name,omitzero"`
 	// Enables/Disables saving volume and other options in cookies:
 	//
 	// - **true** — user settings will be saved

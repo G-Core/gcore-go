@@ -264,7 +264,7 @@ func NewAITaskService(opts ...option.RequestOption) (r AITaskService) {
 // ```
 // curl -L 'https://api.gcore.com/streaming/ai/tasks' \
 // -H 'Content-Type: application/json' \
-// -H 'Authorization: APIKey 1234$abcd...' \
+// -H 'Authorization: APIKey 1234_abcd...' \
 //
 //	-d '{
 //	    "url": "https://demo-files.gvideo.io/apidocs/spritefright-blender-cut30sec.mp4"

@@ -26,12 +26,15 @@ func TestRestreamNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Streaming.Restreams.New(context.TODO(), streaming.RestreamNewParams{
+	_, err := client.Streaming.Restreams.New(context.TODO(), streaming.RestreamNewParams{
 		Restream: streaming.RestreamNewParamsRestream{
 			Active:       gcore.Bool(true),
 			ClientUserID: gcore.Int(10),
 			Live:         gcore.Bool(true),
 			Name:         gcore.String("first restream"),
+			NoAudio:      gcore.Bool(true),
+			NoAudioMode:  "silence",
+			Source:       "original",
 			StreamID:     gcore.Int(20),
 			Uri:          gcore.String("rtmp://a.rtmp.youtube.com/live/k17a-13s8"),
 		},
@@ -66,6 +69,9 @@ func TestRestreamUpdateWithOptionalParams(t *testing.T) {
 				ClientUserID: gcore.Int(10),
 				Live:         gcore.Bool(true),
 				Name:         gcore.String("first restream"),
+				NoAudio:      gcore.Bool(true),
+				NoAudioMode:  "silence",
+				Source:       "original",
 				StreamID:     gcore.Int(20),
 				Uri:          gcore.String("rtmp://a.rtmp.youtube.com/live/k17a-13s8"),
 			},

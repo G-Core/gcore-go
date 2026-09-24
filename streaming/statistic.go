@@ -1251,6 +1251,10 @@ type StatisticGetPopularVideosParams struct {
 	DateFrom string `query:"date_from" api:"required" json:"-"`
 	// End of time frame. Datetime in ISO 8601 format.
 	DateTo string `query:"date_to" api:"required" json:"-"`
+	// Filter statistics by content type.
+	//
+	// Any of "live", "vod", "playlist".
+	Type StatisticGetPopularVideosParamsType `query:"type,omitzero" json:"-"`
 	paramObj
 }
 
@@ -1262,6 +1266,15 @@ func (r StatisticGetPopularVideosParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
 }
+
+// Filter statistics by content type.
+type StatisticGetPopularVideosParamsType string
+
+const (
+	StatisticGetPopularVideosParamsTypeLive     StatisticGetPopularVideosParamsType = "live"
+	StatisticGetPopularVideosParamsTypeVod      StatisticGetPopularVideosParamsType = "vod"
+	StatisticGetPopularVideosParamsTypePlaylist StatisticGetPopularVideosParamsType = "playlist"
+)
 
 type StatisticGetStorageSeriesParams struct {
 	// Start of time frame. Datetime in ISO 8601 format.
@@ -1478,6 +1491,10 @@ type StatisticGetViewsByBrowsersParams struct {
 	DateFrom string `query:"date_from" api:"required" json:"-"`
 	// End of time frame. Datetime in ISO 8601 format.
 	DateTo string `query:"date_to" api:"required" json:"-"`
+	// Filter statistics by content type.
+	//
+	// Any of "live", "vod", "playlist".
+	Type StatisticGetViewsByBrowsersParamsType `query:"type,omitzero" json:"-"`
 	paramObj
 }
 
@@ -1490,11 +1507,24 @@ func (r StatisticGetViewsByBrowsersParams) URLQuery() (v url.Values, err error) 
 	})
 }
 
+// Filter statistics by content type.
+type StatisticGetViewsByBrowsersParamsType string
+
+const (
+	StatisticGetViewsByBrowsersParamsTypeLive     StatisticGetViewsByBrowsersParamsType = "live"
+	StatisticGetViewsByBrowsersParamsTypeVod      StatisticGetViewsByBrowsersParamsType = "vod"
+	StatisticGetViewsByBrowsersParamsTypePlaylist StatisticGetViewsByBrowsersParamsType = "playlist"
+)
+
 type StatisticGetViewsByCountryParams struct {
 	// Start of time frame. Datetime in ISO 8601 format.
 	DateFrom string `query:"date_from" api:"required" json:"-"`
 	// End of time frame. Datetime in ISO 8601 format.
 	DateTo string `query:"date_to" api:"required" json:"-"`
+	// Filter statistics by content type.
+	//
+	// Any of "live", "vod", "playlist".
+	Type StatisticGetViewsByCountryParamsType `query:"type,omitzero" json:"-"`
 	paramObj
 }
 
@@ -1507,11 +1537,24 @@ func (r StatisticGetViewsByCountryParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
+// Filter statistics by content type.
+type StatisticGetViewsByCountryParamsType string
+
+const (
+	StatisticGetViewsByCountryParamsTypeLive     StatisticGetViewsByCountryParamsType = "live"
+	StatisticGetViewsByCountryParamsTypeVod      StatisticGetViewsByCountryParamsType = "vod"
+	StatisticGetViewsByCountryParamsTypePlaylist StatisticGetViewsByCountryParamsType = "playlist"
+)
+
 type StatisticGetViewsByHostnameParams struct {
 	// Start of time frame. Datetime in ISO 8601 format.
 	DateFrom string `query:"date_from" api:"required" json:"-"`
 	// End of time frame. Datetime in ISO 8601 format.
 	DateTo string `query:"date_to" api:"required" json:"-"`
+	// Filter statistics by content type.
+	//
+	// Any of "live", "vod", "playlist".
+	Type StatisticGetViewsByHostnameParamsType `query:"type,omitzero" json:"-"`
 	paramObj
 }
 
@@ -1524,11 +1567,24 @@ func (r StatisticGetViewsByHostnameParams) URLQuery() (v url.Values, err error) 
 	})
 }
 
+// Filter statistics by content type.
+type StatisticGetViewsByHostnameParamsType string
+
+const (
+	StatisticGetViewsByHostnameParamsTypeLive     StatisticGetViewsByHostnameParamsType = "live"
+	StatisticGetViewsByHostnameParamsTypeVod      StatisticGetViewsByHostnameParamsType = "vod"
+	StatisticGetViewsByHostnameParamsTypePlaylist StatisticGetViewsByHostnameParamsType = "playlist"
+)
+
 type StatisticGetViewsByOperatingSystemParams struct {
 	// Start of time frame. Datetime in ISO 8601 format.
 	DateFrom string `query:"date_from" api:"required" json:"-"`
 	// End of time frame. Datetime in ISO 8601 format.
 	DateTo string `query:"date_to" api:"required" json:"-"`
+	// Filter statistics by content type.
+	//
+	// Any of "live", "vod", "playlist".
+	Type StatisticGetViewsByOperatingSystemParamsType `query:"type,omitzero" json:"-"`
 	paramObj
 }
 
@@ -1541,11 +1597,24 @@ func (r StatisticGetViewsByOperatingSystemParams) URLQuery() (v url.Values, err 
 	})
 }
 
+// Filter statistics by content type.
+type StatisticGetViewsByOperatingSystemParamsType string
+
+const (
+	StatisticGetViewsByOperatingSystemParamsTypeLive     StatisticGetViewsByOperatingSystemParamsType = "live"
+	StatisticGetViewsByOperatingSystemParamsTypeVod      StatisticGetViewsByOperatingSystemParamsType = "vod"
+	StatisticGetViewsByOperatingSystemParamsTypePlaylist StatisticGetViewsByOperatingSystemParamsType = "playlist"
+)
+
 type StatisticGetViewsByRefererParams struct {
 	// Start of time frame. Datetime in ISO 8601 format.
 	DateFrom string `query:"date_from" api:"required" json:"-"`
 	// End of time frame. Datetime in ISO 8601 format.
 	DateTo string `query:"date_to" api:"required" json:"-"`
+	// Filter statistics by content type.
+	//
+	// Any of "live", "vod", "playlist".
+	Type StatisticGetViewsByRefererParamsType `query:"type,omitzero" json:"-"`
 	paramObj
 }
 
@@ -1558,11 +1627,24 @@ func (r StatisticGetViewsByRefererParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
+// Filter statistics by content type.
+type StatisticGetViewsByRefererParamsType string
+
+const (
+	StatisticGetViewsByRefererParamsTypeLive     StatisticGetViewsByRefererParamsType = "live"
+	StatisticGetViewsByRefererParamsTypeVod      StatisticGetViewsByRefererParamsType = "vod"
+	StatisticGetViewsByRefererParamsTypePlaylist StatisticGetViewsByRefererParamsType = "playlist"
+)
+
 type StatisticGetViewsByRegionParams struct {
 	// Start of time frame. Datetime in ISO 8601 format.
 	DateFrom string `query:"date_from" api:"required" json:"-"`
 	// End of time frame. Datetime in ISO 8601 format.
 	DateTo string `query:"date_to" api:"required" json:"-"`
+	// Filter statistics by content type.
+	//
+	// Any of "live", "vod", "playlist".
+	Type StatisticGetViewsByRegionParamsType `query:"type,omitzero" json:"-"`
 	paramObj
 }
 
@@ -1574,6 +1656,15 @@ func (r StatisticGetViewsByRegionParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
 }
+
+// Filter statistics by content type.
+type StatisticGetViewsByRegionParamsType string
+
+const (
+	StatisticGetViewsByRegionParamsTypeLive     StatisticGetViewsByRegionParamsType = "live"
+	StatisticGetViewsByRegionParamsTypeVod      StatisticGetViewsByRegionParamsType = "vod"
+	StatisticGetViewsByRegionParamsTypePlaylist StatisticGetViewsByRegionParamsType = "playlist"
+)
 
 type StatisticGetViewsHeatmapParams struct {
 	// Start of time frame. Datetime in ISO 8601 format.

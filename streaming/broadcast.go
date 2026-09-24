@@ -48,12 +48,11 @@ func NewBroadcastService(opts ...option.RequestOption) (r BroadcastService) {
 //
 // Scheme of "broadcast" entity using:
 // ![Scheme of "broadcast" using](https://demo-files.gvideo.io/apidocs/broadcasts.png)
-func (r *BroadcastService) New(ctx context.Context, body BroadcastNewParams, opts ...option.RequestOption) (err error) {
+func (r *BroadcastService) New(ctx context.Context, body BroadcastNewParams, opts ...option.RequestOption) (res *Broadcast, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "streaming/broadcasts"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return err
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
 }
 
 // Updates broadcast settings
@@ -121,12 +120,24 @@ func (r *BroadcastService) GetSpectatorsCount(ctx context.Context, broadcastID i
 type Broadcast struct {
 	// Broadcast name
 	Name string `json:"name" api:"required"`
+	// Broadcast ID
+	ID int64 `json:"id"`
 	// ID of ad to be displayed in a live stream. If empty the default ad is show. If
 	// there is no default ad, no ad is shown
 	AdID int64 `json:"ad_id"`
+	// Client ID
+	ClientID int64 `json:"client_id"`
+	// Custom field where you can specify user ID in your system
+	ClientUserID int64 `json:"client_user_id"`
 	// Custom URL of iframe for video player to be shared via sharing button in player.
 	// Auto generated iframe URL is provided by default
 	CustomIframeURL string `json:"custom_iframe_url"`
+	// Custom status messages configuration for the broadcast, if configured
+	CustomMessages any `json:"custom_messages" api:"nullable"`
+	// Ready-to-use HTML `<iframe>` snippet embedding the broadcast player
+	IframeEmbedCode string `json:"iframe_embed_code"`
+	// URL to the broadcast player, can be embedded via iframe
+	IframeURL string `json:"iframe_url"`
 	// A custom message that is shown if broadcast status is set to pending. If empty,
 	// a default message is shown
 	PendingMessage string `json:"pending_message"`
@@ -134,6 +145,8 @@ type Broadcast struct {
 	PlayerID int64 `json:"player_id"`
 	// Uploaded poster file
 	Poster string `json:"poster"`
+	// URL of the poster image thumbnail
+	PosterThumb string `json:"poster_thumb" api:"nullable"`
 	// Custom URL or iframe displayed in the link field when a user clicks on a sharing
 	// button in player. If empty, the link field and social network sharing is
 	// disabled
@@ -167,11 +180,18 @@ type Broadcast struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Name               respjson.Field
+		ID                 respjson.Field
 		AdID               respjson.Field
+		ClientID           respjson.Field
+		ClientUserID       respjson.Field
 		CustomIframeURL    respjson.Field
+		CustomMessages     respjson.Field
+		IframeEmbedCode    respjson.Field
+		IframeURL          respjson.Field
 		PendingMessage     respjson.Field
 		PlayerID           respjson.Field
 		Poster             respjson.Field
+		PosterThumb        respjson.Field
 		ShareURL           respjson.Field
 		ShowDvrAfterFinish respjson.Field
 		Status             respjson.Field

@@ -151,7 +151,7 @@ func TestStatisticGetMaxStreamsSeriesWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestStatisticGetPopularVideos(t *testing.T) {
+func TestStatisticGetPopularVideosWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -166,6 +166,7 @@ func TestStatisticGetPopularVideos(t *testing.T) {
 	_, err := client.Streaming.Statistics.GetPopularVideos(context.TODO(), streaming.StatisticGetPopularVideosParams{
 		DateFrom: "date_from",
 		DateTo:   "date_to",
+		Type:     streaming.StatisticGetPopularVideosParamsTypeLive,
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -317,7 +318,7 @@ func TestStatisticGetViewsWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestStatisticGetViewsByBrowsers(t *testing.T) {
+func TestStatisticGetViewsByBrowsersWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -332,6 +333,7 @@ func TestStatisticGetViewsByBrowsers(t *testing.T) {
 	_, err := client.Streaming.Statistics.GetViewsByBrowsers(context.TODO(), streaming.StatisticGetViewsByBrowsersParams{
 		DateFrom: "date_from",
 		DateTo:   "date_to",
+		Type:     streaming.StatisticGetViewsByBrowsersParamsTypeLive,
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -342,7 +344,7 @@ func TestStatisticGetViewsByBrowsers(t *testing.T) {
 	}
 }
 
-func TestStatisticGetViewsByCountry(t *testing.T) {
+func TestStatisticGetViewsByCountryWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -357,6 +359,7 @@ func TestStatisticGetViewsByCountry(t *testing.T) {
 	_, err := client.Streaming.Statistics.GetViewsByCountry(context.TODO(), streaming.StatisticGetViewsByCountryParams{
 		DateFrom: "date_from",
 		DateTo:   "date_to",
+		Type:     streaming.StatisticGetViewsByCountryParamsTypeLive,
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -367,7 +370,7 @@ func TestStatisticGetViewsByCountry(t *testing.T) {
 	}
 }
 
-func TestStatisticGetViewsByHostname(t *testing.T) {
+func TestStatisticGetViewsByHostnameWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -382,6 +385,7 @@ func TestStatisticGetViewsByHostname(t *testing.T) {
 	_, err := client.Streaming.Statistics.GetViewsByHostname(context.TODO(), streaming.StatisticGetViewsByHostnameParams{
 		DateFrom: "date_from",
 		DateTo:   "date_to",
+		Type:     streaming.StatisticGetViewsByHostnameParamsTypeLive,
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -392,7 +396,7 @@ func TestStatisticGetViewsByHostname(t *testing.T) {
 	}
 }
 
-func TestStatisticGetViewsByOperatingSystem(t *testing.T) {
+func TestStatisticGetViewsByOperatingSystemWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -407,6 +411,7 @@ func TestStatisticGetViewsByOperatingSystem(t *testing.T) {
 	_, err := client.Streaming.Statistics.GetViewsByOperatingSystem(context.TODO(), streaming.StatisticGetViewsByOperatingSystemParams{
 		DateFrom: "date_from",
 		DateTo:   "date_to",
+		Type:     streaming.StatisticGetViewsByOperatingSystemParamsTypeLive,
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -417,7 +422,7 @@ func TestStatisticGetViewsByOperatingSystem(t *testing.T) {
 	}
 }
 
-func TestStatisticGetViewsByReferer(t *testing.T) {
+func TestStatisticGetViewsByRefererWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -432,6 +437,7 @@ func TestStatisticGetViewsByReferer(t *testing.T) {
 	_, err := client.Streaming.Statistics.GetViewsByReferer(context.TODO(), streaming.StatisticGetViewsByRefererParams{
 		DateFrom: "date_from",
 		DateTo:   "date_to",
+		Type:     streaming.StatisticGetViewsByRefererParamsTypeLive,
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -442,7 +448,7 @@ func TestStatisticGetViewsByReferer(t *testing.T) {
 	}
 }
 
-func TestStatisticGetViewsByRegion(t *testing.T) {
+func TestStatisticGetViewsByRegionWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -457,6 +463,7 @@ func TestStatisticGetViewsByRegion(t *testing.T) {
 	_, err := client.Streaming.Statistics.GetViewsByRegion(context.TODO(), streaming.StatisticGetViewsByRegionParams{
 		DateFrom: "date_from",
 		DateTo:   "date_to",
+		Type:     streaming.StatisticGetViewsByRegionParamsTypeLive,
 	})
 	if err != nil {
 		var apierr *gcore.Error

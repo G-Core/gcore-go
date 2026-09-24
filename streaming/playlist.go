@@ -4,7 +4,6 @@ package streaming
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -12,7 +11,6 @@ import (
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
-	shimjson "github.com/G-Core/gcore-go/internal/encoding/json"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/pagination"
@@ -113,7 +111,7 @@ func NewPlaylistService(opts ...option.RequestOption) (r PlaylistService) {
 //	start_time: "2024-07-01T11:00:00Z"
 //
 // ```
-func (r *PlaylistService) New(ctx context.Context, body PlaylistNewParams, opts ...option.RequestOption) (res *PlaylistCreated, err error) {
+func (r *PlaylistService) New(ctx context.Context, body PlaylistNewParams, opts ...option.RequestOption) (res *Playlist, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "streaming/playlists"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -169,6 +167,8 @@ func (r *PlaylistService) Get(ctx context.Context, playlistID int64, opts ...opt
 }
 
 type Playlist struct {
+	// Playlist ID
+	ID int64 `json:"id"`
 	// Enables/Disables playlist. Has two possible values:
 	//
 	// - true – Playlist can be played.
@@ -210,6 +210,8 @@ type Playlist struct {
 	// in any manner or form. It is strongly advised not to store them in your database
 	// or cache them on your end.
 	HlsURL string `json:"hls_url"`
+	// Ready-to-use HTML `<iframe>` snippet embedding the playlist player
+	IframeEmbedCode string `json:"iframe_embed_code"`
 	// A URL to a built-in HTML video player with the video inside. It can be inserted
 	// into an iframe on your website and the video will automatically play in all
 	// browsers.
@@ -242,22 +244,24 @@ type Playlist struct {
 	VideoIDs []int64 `json:"video_ids"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Active       respjson.Field
-		AdID         respjson.Field
-		ClientID     respjson.Field
-		ClientUserID respjson.Field
-		Countdown    respjson.Field
-		HlsCmafURL   respjson.Field
-		HlsURL       respjson.Field
-		IframeURL    respjson.Field
-		Loop         respjson.Field
-		Name         respjson.Field
-		PlayerID     respjson.Field
-		PlaylistType respjson.Field
-		StartTime    respjson.Field
-		VideoIDs     respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID              respjson.Field
+		Active          respjson.Field
+		AdID            respjson.Field
+		ClientID        respjson.Field
+		ClientUserID    respjson.Field
+		Countdown       respjson.Field
+		HlsCmafURL      respjson.Field
+		HlsURL          respjson.Field
+		IframeEmbedCode respjson.Field
+		IframeURL       respjson.Field
+		Loop            respjson.Field
+		Name            respjson.Field
+		PlayerID        respjson.Field
+		PlaylistType    respjson.Field
+		StartTime       respjson.Field
+		VideoIDs        respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
 	} `json:"-"`
 }
 
@@ -265,15 +269,6 @@ type Playlist struct {
 func (r Playlist) RawJSON() string { return r.JSON.raw }
 func (r *Playlist) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-// ToParam converts this Playlist to a PlaylistParam.
-//
-// Warning: the fields of the param type will not be present. ToParam should only
-// be used at the last possible moment before sending a request. Test for this with
-// PlaylistParam.Overrides()
-func (r Playlist) ToParam() PlaylistParam {
-	return param.Override[PlaylistParam](json.RawMessage(r.RawJSON()))
 }
 
 // Determines whether the playlist:
@@ -286,107 +281,6 @@ const (
 	PlaylistPlaylistTypeLive PlaylistPlaylistType = "live"
 	PlaylistPlaylistTypeVod  PlaylistPlaylistType = "vod"
 )
-
-type PlaylistParam struct {
-	// Enables/Disables playlist. Has two possible values:
-	//
-	// - true – Playlist can be played.
-	// - false – Playlist is disabled. No broadcast while it's disabled.
-	Active param.Opt[bool] `json:"active,omitzero"`
-	// The advertisement ID that will be inserted into the video
-	AdID param.Opt[int64] `json:"ad_id,omitzero"`
-	// Current playlist client ID
-	ClientID param.Opt[int64] `json:"client_id,omitzero"`
-	// Custom field where you can specify user ID in your system
-	ClientUserID param.Opt[int64] `json:"client_user_id,omitzero"`
-	// Enables countdown before playlist start with `playlist_type: live`
-	Countdown param.Opt[bool] `json:"countdown,omitzero"`
-	// A URL to a master playlist HLS (master-cmaf.m3u8) with CMAF-based chunks. Chunks
-	// are in fMP4 container.
-	//
-	// It is possible to use the same suffix-options as described in the "hls_url"
-	// attribute.
-	//
-	// Caution. Solely master.m3u8 (and master[-options].m3u8) is officially documented
-	// and intended for your use. Any additional internal manifests, sub-manifests,
-	// parameters, chunk names, file extensions, and related components are internal
-	// infrastructure entities. These may undergo modifications without prior notice,
-	// in any manner or form. It is strongly advised not to store them in your database
-	// or cache them on your end.
-	HlsCmafURL param.Opt[string] `json:"hls_cmaf_url,omitzero"`
-	// A URL to a master playlist HLS (master.m3u8) with MPEG TS container.
-	//
-	// This URL is a link to the main manifest. But you can also manually specify
-	// suffix-options that will allow you to change the manifest to your request:
-	//
-	// `/playlists/{client_id}_{playlist_id}/master[-cmaf][-min-N][-max-N][-img][-(h264|hevc|av1)].m3u8`
-	// Please see the details in `hls_url` attribute of /videos/{id} method.
-	//
-	// Caution. Solely master.m3u8 (and master[-options].m3u8) is officially documented
-	// and intended for your use. Any additional internal manifests, sub-manifests,
-	// parameters, chunk names, file extensions, and related components are internal
-	// infrastructure entities. These may undergo modifications without prior notice,
-	// in any manner or form. It is strongly advised not to store them in your database
-	// or cache them on your end.
-	HlsURL param.Opt[string] `json:"hls_url,omitzero"`
-	// A URL to a built-in HTML video player with the video inside. It can be inserted
-	// into an iframe on your website and the video will automatically play in all
-	// browsers.
-	//
-	// The player can be opened or shared via this direct link. Also the video player
-	// can be integrated into your web pages using the Iframe tag.
-	//
-	// Please see the details in `iframe_url` attribute of /videos/{id} method.
-	IframeURL param.Opt[string] `json:"iframe_url,omitzero"`
-	// Enables/Disables playlist loop
-	Loop param.Opt[bool] `json:"loop,omitzero"`
-	// Playlist name
-	Name param.Opt[string] `json:"name,omitzero"`
-	// The player ID with which the video will be played
-	PlayerID param.Opt[int64] `json:"player_id,omitzero"`
-	// Playlist start time. Playlist won't be available before the specified time.
-	// Datetime in ISO 8601 format.
-	StartTime param.Opt[string] `json:"start_time,omitzero"`
-	// Determines whether the playlist:
-	//
-	// - `live` - playlist for live-streaming
-	// - `vod` - playlist is for video on demand access
-	//
-	// Any of "live", "vod".
-	PlaylistType PlaylistPlaylistType `json:"playlist_type,omitzero"`
-	// A list of VOD IDs included in the playlist. Order of videos in a playlist
-	// reflects the order of IDs in the array.
-	//
-	// Maximum video limit = 128.
-	VideoIDs []int64 `json:"video_ids,omitzero"`
-	paramObj
-}
-
-func (r PlaylistParam) MarshalJSON() (data []byte, err error) {
-	type shadow PlaylistParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *PlaylistParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PlaylistCreated struct {
-	// Playlist ID
-	ID int64 `json:"id"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-	Playlist
-}
-
-// Returns the unmodified JSON received from the API
-func (r PlaylistCreated) RawJSON() string { return r.JSON.raw }
-func (r *PlaylistCreated) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 type PlaylistVideo struct {
 	// Video name
@@ -692,28 +586,192 @@ const (
 )
 
 type PlaylistNewParams struct {
-	Playlist PlaylistParam
+	// Enables/Disables playlist. Has two possible values:
+	//
+	// - true – Playlist can be played.
+	// - false – Playlist is disabled. No broadcast while it's disabled.
+	Active param.Opt[bool] `json:"active,omitzero"`
+	// The advertisement ID that will be inserted into the video
+	AdID param.Opt[int64] `json:"ad_id,omitzero"`
+	// Current playlist client ID
+	ClientID param.Opt[int64] `json:"client_id,omitzero"`
+	// Custom field where you can specify user ID in your system
+	ClientUserID param.Opt[int64] `json:"client_user_id,omitzero"`
+	// Enables countdown before playlist start with `playlist_type: live`
+	Countdown param.Opt[bool] `json:"countdown,omitzero"`
+	// A URL to a master playlist HLS (master-cmaf.m3u8) with CMAF-based chunks. Chunks
+	// are in fMP4 container.
+	//
+	// It is possible to use the same suffix-options as described in the "hls_url"
+	// attribute.
+	//
+	// Caution. Solely master.m3u8 (and master[-options].m3u8) is officially documented
+	// and intended for your use. Any additional internal manifests, sub-manifests,
+	// parameters, chunk names, file extensions, and related components are internal
+	// infrastructure entities. These may undergo modifications without prior notice,
+	// in any manner or form. It is strongly advised not to store them in your database
+	// or cache them on your end.
+	HlsCmafURL param.Opt[string] `json:"hls_cmaf_url,omitzero"`
+	// A URL to a master playlist HLS (master.m3u8) with MPEG TS container.
+	//
+	// This URL is a link to the main manifest. But you can also manually specify
+	// suffix-options that will allow you to change the manifest to your request:
+	//
+	// `/playlists/{client_id}_{playlist_id}/master[-cmaf][-min-N][-max-N][-img][-(h264|hevc|av1)].m3u8`
+	// Please see the details in `hls_url` attribute of /videos/{id} method.
+	//
+	// Caution. Solely master.m3u8 (and master[-options].m3u8) is officially documented
+	// and intended for your use. Any additional internal manifests, sub-manifests,
+	// parameters, chunk names, file extensions, and related components are internal
+	// infrastructure entities. These may undergo modifications without prior notice,
+	// in any manner or form. It is strongly advised not to store them in your database
+	// or cache them on your end.
+	HlsURL param.Opt[string] `json:"hls_url,omitzero"`
+	// A URL to a built-in HTML video player with the video inside. It can be inserted
+	// into an iframe on your website and the video will automatically play in all
+	// browsers.
+	//
+	// The player can be opened or shared via this direct link. Also the video player
+	// can be integrated into your web pages using the Iframe tag.
+	//
+	// Please see the details in `iframe_url` attribute of /videos/{id} method.
+	IframeURL param.Opt[string] `json:"iframe_url,omitzero"`
+	// Enables/Disables playlist loop
+	Loop param.Opt[bool] `json:"loop,omitzero"`
+	// Playlist name
+	Name param.Opt[string] `json:"name,omitzero"`
+	// The player ID with which the video will be played
+	PlayerID param.Opt[int64] `json:"player_id,omitzero"`
+	// Playlist start time. Playlist won't be available before the specified time.
+	// Datetime in ISO 8601 format.
+	StartTime param.Opt[string] `json:"start_time,omitzero"`
+	// Determines whether the playlist:
+	//
+	// - `live` - playlist for live-streaming
+	// - `vod` - playlist is for video on demand access
+	//
+	// Any of "live", "vod".
+	PlaylistType PlaylistNewParamsPlaylistType `json:"playlist_type,omitzero"`
+	// A list of VOD IDs included in the playlist. Order of videos in a playlist
+	// reflects the order of IDs in the array.
+	//
+	// Maximum video limit = 128.
+	VideoIDs []int64 `json:"video_ids,omitzero"`
 	paramObj
 }
 
 func (r PlaylistNewParams) MarshalJSON() (data []byte, err error) {
-	return shimjson.Marshal(r.Playlist)
+	type shadow PlaylistNewParams
+	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *PlaylistNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Determines whether the playlist:
+//
+// - `live` - playlist for live-streaming
+// - `vod` - playlist is for video on demand access
+type PlaylistNewParamsPlaylistType string
+
+const (
+	PlaylistNewParamsPlaylistTypeLive PlaylistNewParamsPlaylistType = "live"
+	PlaylistNewParamsPlaylistTypeVod  PlaylistNewParamsPlaylistType = "vod"
+)
+
 type PlaylistUpdateParams struct {
-	Playlist PlaylistParam
+	// Enables/Disables playlist. Has two possible values:
+	//
+	// - true – Playlist can be played.
+	// - false – Playlist is disabled. No broadcast while it's disabled.
+	Active param.Opt[bool] `json:"active,omitzero"`
+	// The advertisement ID that will be inserted into the video
+	AdID param.Opt[int64] `json:"ad_id,omitzero"`
+	// Current playlist client ID
+	ClientID param.Opt[int64] `json:"client_id,omitzero"`
+	// Custom field where you can specify user ID in your system
+	ClientUserID param.Opt[int64] `json:"client_user_id,omitzero"`
+	// Enables countdown before playlist start with `playlist_type: live`
+	Countdown param.Opt[bool] `json:"countdown,omitzero"`
+	// A URL to a master playlist HLS (master-cmaf.m3u8) with CMAF-based chunks. Chunks
+	// are in fMP4 container.
+	//
+	// It is possible to use the same suffix-options as described in the "hls_url"
+	// attribute.
+	//
+	// Caution. Solely master.m3u8 (and master[-options].m3u8) is officially documented
+	// and intended for your use. Any additional internal manifests, sub-manifests,
+	// parameters, chunk names, file extensions, and related components are internal
+	// infrastructure entities. These may undergo modifications without prior notice,
+	// in any manner or form. It is strongly advised not to store them in your database
+	// or cache them on your end.
+	HlsCmafURL param.Opt[string] `json:"hls_cmaf_url,omitzero"`
+	// A URL to a master playlist HLS (master.m3u8) with MPEG TS container.
+	//
+	// This URL is a link to the main manifest. But you can also manually specify
+	// suffix-options that will allow you to change the manifest to your request:
+	//
+	// `/playlists/{client_id}_{playlist_id}/master[-cmaf][-min-N][-max-N][-img][-(h264|hevc|av1)].m3u8`
+	// Please see the details in `hls_url` attribute of /videos/{id} method.
+	//
+	// Caution. Solely master.m3u8 (and master[-options].m3u8) is officially documented
+	// and intended for your use. Any additional internal manifests, sub-manifests,
+	// parameters, chunk names, file extensions, and related components are internal
+	// infrastructure entities. These may undergo modifications without prior notice,
+	// in any manner or form. It is strongly advised not to store them in your database
+	// or cache them on your end.
+	HlsURL param.Opt[string] `json:"hls_url,omitzero"`
+	// A URL to a built-in HTML video player with the video inside. It can be inserted
+	// into an iframe on your website and the video will automatically play in all
+	// browsers.
+	//
+	// The player can be opened or shared via this direct link. Also the video player
+	// can be integrated into your web pages using the Iframe tag.
+	//
+	// Please see the details in `iframe_url` attribute of /videos/{id} method.
+	IframeURL param.Opt[string] `json:"iframe_url,omitzero"`
+	// Enables/Disables playlist loop
+	Loop param.Opt[bool] `json:"loop,omitzero"`
+	// Playlist name
+	Name param.Opt[string] `json:"name,omitzero"`
+	// The player ID with which the video will be played
+	PlayerID param.Opt[int64] `json:"player_id,omitzero"`
+	// Playlist start time. Playlist won't be available before the specified time.
+	// Datetime in ISO 8601 format.
+	StartTime param.Opt[string] `json:"start_time,omitzero"`
+	// Determines whether the playlist:
+	//
+	// - `live` - playlist for live-streaming
+	// - `vod` - playlist is for video on demand access
+	//
+	// Any of "live", "vod".
+	PlaylistType PlaylistUpdateParamsPlaylistType `json:"playlist_type,omitzero"`
+	// A list of VOD IDs included in the playlist. Order of videos in a playlist
+	// reflects the order of IDs in the array.
+	//
+	// Maximum video limit = 128.
+	VideoIDs []int64 `json:"video_ids,omitzero"`
 	paramObj
 }
 
 func (r PlaylistUpdateParams) MarshalJSON() (data []byte, err error) {
-	return shimjson.Marshal(r.Playlist)
+	type shadow PlaylistUpdateParams
+	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *PlaylistUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Determines whether the playlist:
+//
+// - `live` - playlist for live-streaming
+// - `vod` - playlist is for video on demand access
+type PlaylistUpdateParamsPlaylistType string
+
+const (
+	PlaylistUpdateParamsPlaylistTypeLive PlaylistUpdateParamsPlaylistType = "live"
+	PlaylistUpdateParamsPlaylistTypeVod  PlaylistUpdateParamsPlaylistType = "vod"
+)
 
 type PlaylistListParams struct {
 	// Query parameter. Use it to list the paginated content

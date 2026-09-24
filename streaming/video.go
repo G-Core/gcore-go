@@ -75,8 +75,7 @@ func NewVideoService(opts ...option.RequestOption) (r VideoService) {
 //
 // Read more:
 //
-//   - What is
-//     ["AI Speech Recognition"](/api-reference/streaming/ai/create-ai-asr-task).
+//   - What is ["AI Speech Recognition"](/api-reference/streaming/ai/create-ai-task).
 //   - If the option is enabled via
 //     `auto_transcribe_audio_language: auto|<language_code>`, then immediately after
 //     successful transcoding, an AI task will be automatically created for
@@ -109,7 +108,7 @@ func NewVideoService(opts ...option.RequestOption) (r VideoService) {
 //
 // Additionally, check the Knowledge Base for any supplementary information you may
 // need.
-func (r *VideoService) New(ctx context.Context, body VideoNewParams, opts ...option.RequestOption) (res *[]Video, err error) {
+func (r *VideoService) New(ctx context.Context, body VideoNewParams, opts ...option.RequestOption) (res *Video, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "streaming/videos"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)

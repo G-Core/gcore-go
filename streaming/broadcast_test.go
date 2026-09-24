@@ -26,7 +26,7 @@ func TestBroadcastNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Streaming.Broadcasts.New(context.TODO(), streaming.BroadcastNewParams{
+	_, err := client.Streaming.Broadcasts.New(context.TODO(), streaming.BroadcastNewParams{
 		Broadcast: streaming.BroadcastNewParamsBroadcast{
 			Name:               "Broadcast",
 			AdID:               gcore.Int(1),

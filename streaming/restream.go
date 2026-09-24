@@ -93,12 +93,11 @@ func NewRestreamService(opts ...option.RequestOption) (r RestreamService) {
 // documentation.
 //
 // Learn more about SRT latency in product documentation.
-func (r *RestreamService) New(ctx context.Context, body RestreamNewParams, opts ...option.RequestOption) (err error) {
+func (r *RestreamService) New(ctx context.Context, body RestreamNewParams, opts ...option.RequestOption) (res *Restream, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "streaming/restreams"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return err
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
 }
 
 // Updates restream settings, such as the target URI or active status
@@ -150,6 +149,8 @@ func (r *RestreamService) Get(ctx context.Context, restreamID int64, opts ...opt
 }
 
 type Restream struct {
+	// Restream ID
+	ID int64 `json:"id"`
 	// Enables/Disables restream. Has two possible values:
 	//
 	// - **true** — restream is enabled and can be started
@@ -157,6 +158,8 @@ type Restream struct {
 	//
 	// Default is true
 	Active bool `json:"active"`
+	// Client ID
+	ClientID int64 `json:"client_id"`
 	// Custom field where you can specify user ID in your system
 	ClientUserID int64 `json:"client_user_id"`
 	// Indicates that the stream is being published. Has two possible values:
@@ -166,6 +169,51 @@ type Restream struct {
 	Live bool `json:"live"`
 	// Restream name
 	Name string `json:"name"`
+	// Removes the source audio track from the restream. Has two possible values:
+	//
+	// - false – the source audio track is forwarded to the target as is (default)
+	// - true – the audio track is removed or replaced, depending on `no_audio_mode`
+	//
+	// Useful to avoid copyright claims on platforms like YouTube when the source
+	// stream contains licensed music or other copyrighted audio.
+	//
+	// Only strict boolean values (`true`/`false`) are accepted; any other value
+	// returns a 422 error.
+	NoAudio bool `json:"no_audio"`
+	// Defines how the audio track is handled when `no_audio` is `true`. Ignored when
+	// `no_audio` is `false`.
+	//
+	// Types:
+	//
+	//   - "drop" – removes the audio track entirely.
+	//   - "silence" – replaces the audio track with a silent track instead of removing
+	//     it.
+	//
+	// > **Note:** YouTube rejects incoming streams with no audio track at all. Use
+	// > `no_audio_mode=silence` when restreaming to YouTube.
+	//
+	// Any of "drop", "silence".
+	NoAudioMode RestreamNoAudioMode `json:"no_audio_mode"`
+	// ID of the playlist used as source for the restream, if applicable
+	PlaylistID int64 `json:"playlist_id" api:"nullable"`
+	// ID of the specific transcoded quality used as source for the restream, if
+	// applicable
+	QualityID int64 `json:"quality_id" api:"nullable"`
+	// Selects which version of the stream is used as the source for the restream.
+	//
+	// Types:
+	//
+	//   - "original" – uses the original ingested stream without any modifications
+	//     (default).
+	//   - "transcoded" – uses the transcoded output, including overlays. Use it when you
+	//     want to restream the stream with enabled overlays.
+	//
+	// > **Note:** For `transcoded`, the highest quality available in the stream's
+	// > quality ladder is used. For example, if the ladder is 480p/720p/1080p, 1080p
+	// > is used; if the ladder goes up to 4K, 4K is used.
+	//
+	// Any of "original", "transcoded".
+	Source RestreamSource `json:"source"`
 	// ID of the stream to restream
 	StreamID int64 `json:"stream_id"`
 	// A URL to push the stream to. Supported protocols: rtmp, rtmps, srt. For SRT
@@ -173,10 +221,17 @@ type Restream struct {
 	Uri string `json:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID           respjson.Field
 		Active       respjson.Field
+		ClientID     respjson.Field
 		ClientUserID respjson.Field
 		Live         respjson.Field
 		Name         respjson.Field
+		NoAudio      respjson.Field
+		NoAudioMode  respjson.Field
+		PlaylistID   respjson.Field
+		QualityID    respjson.Field
+		Source       respjson.Field
 		StreamID     respjson.Field
 		Uri          respjson.Field
 		ExtraFields  map[string]respjson.Field
@@ -189,6 +244,43 @@ func (r Restream) RawJSON() string { return r.JSON.raw }
 func (r *Restream) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Defines how the audio track is handled when `no_audio` is `true`. Ignored when
+// `no_audio` is `false`.
+//
+// Types:
+//
+//   - "drop" – removes the audio track entirely.
+//   - "silence" – replaces the audio track with a silent track instead of removing
+//     it.
+//
+// > **Note:** YouTube rejects incoming streams with no audio track at all. Use
+// > `no_audio_mode=silence` when restreaming to YouTube.
+type RestreamNoAudioMode string
+
+const (
+	RestreamNoAudioModeDrop    RestreamNoAudioMode = "drop"
+	RestreamNoAudioModeSilence RestreamNoAudioMode = "silence"
+)
+
+// Selects which version of the stream is used as the source for the restream.
+//
+// Types:
+//
+//   - "original" – uses the original ingested stream without any modifications
+//     (default).
+//   - "transcoded" – uses the transcoded output, including overlays. Use it when you
+//     want to restream the stream with enabled overlays.
+//
+// > **Note:** For `transcoded`, the highest quality available in the stream's
+// > quality ladder is used. For example, if the ladder is 480p/720p/1080p, 1080p
+// > is used; if the ladder goes up to 4K, 4K is used.
+type RestreamSource string
+
+const (
+	RestreamSourceOriginal   RestreamSource = "original"
+	RestreamSourceTranscoded RestreamSource = "transcoded"
+)
 
 type RestreamNewParams struct {
 	Restream RestreamNewParamsRestream `json:"restream,omitzero"`
@@ -220,11 +312,51 @@ type RestreamNewParamsRestream struct {
 	Live param.Opt[bool] `json:"live,omitzero"`
 	// Restream name
 	Name param.Opt[string] `json:"name,omitzero"`
+	// Removes the source audio track from the restream. Has two possible values:
+	//
+	// - false – the source audio track is forwarded to the target as is (default)
+	// - true – the audio track is removed or replaced, depending on `no_audio_mode`
+	//
+	// Useful to avoid copyright claims on platforms like YouTube when the source
+	// stream contains licensed music or other copyrighted audio.
+	//
+	// Only strict boolean values (`true`/`false`) are accepted; any other value
+	// returns a 422 error.
+	NoAudio param.Opt[bool] `json:"no_audio,omitzero"`
 	// ID of the stream to restream
 	StreamID param.Opt[int64] `json:"stream_id,omitzero"`
 	// A URL to push the stream to. Supported protocols: rtmp, rtmps, srt. For SRT
 	// target URLs, only `mode=caller` is supported.
 	Uri param.Opt[string] `json:"uri,omitzero"`
+	// Defines how the audio track is handled when `no_audio` is `true`. Ignored when
+	// `no_audio` is `false`.
+	//
+	// Types:
+	//
+	//   - "drop" – removes the audio track entirely.
+	//   - "silence" – replaces the audio track with a silent track instead of removing
+	//     it.
+	//
+	// > **Note:** YouTube rejects incoming streams with no audio track at all. Use
+	// > `no_audio_mode=silence` when restreaming to YouTube.
+	//
+	// Any of "drop", "silence".
+	NoAudioMode string `json:"no_audio_mode,omitzero"`
+	// Selects which version of the stream is used as the source for the restream.
+	//
+	// Types:
+	//
+	//   - "original" – uses the original ingested stream without any modifications
+	//     (default).
+	//   - "transcoded" – uses the transcoded output, including overlays. Use it when you
+	//     want to restream the stream with enabled overlays.
+	//
+	// > **Note:** For `transcoded`, the highest quality available in the stream's
+	// > quality ladder is used. For example, if the ladder is 480p/720p/1080p, 1080p
+	// > is used; if the ladder goes up to 4K, 4K is used.
+	//
+	// Any of "original", "transcoded".
+	Source string `json:"source,omitzero"`
 	paramObj
 }
 
@@ -234,6 +366,15 @@ func (r RestreamNewParamsRestream) MarshalJSON() (data []byte, err error) {
 }
 func (r *RestreamNewParamsRestream) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[RestreamNewParamsRestream](
+		"no_audio_mode", "drop", "silence",
+	)
+	apijson.RegisterFieldValidator[RestreamNewParamsRestream](
+		"source", "original", "transcoded",
+	)
 }
 
 type RestreamUpdateParams struct {
@@ -266,11 +407,51 @@ type RestreamUpdateParamsRestream struct {
 	Live param.Opt[bool] `json:"live,omitzero"`
 	// Restream name
 	Name param.Opt[string] `json:"name,omitzero"`
+	// Removes the source audio track from the restream. Has two possible values:
+	//
+	// - false – the source audio track is forwarded to the target as is (default)
+	// - true – the audio track is removed or replaced, depending on `no_audio_mode`
+	//
+	// Useful to avoid copyright claims on platforms like YouTube when the source
+	// stream contains licensed music or other copyrighted audio.
+	//
+	// Only strict boolean values (`true`/`false`) are accepted; any other value
+	// returns a 422 error.
+	NoAudio param.Opt[bool] `json:"no_audio,omitzero"`
 	// ID of the stream to restream
 	StreamID param.Opt[int64] `json:"stream_id,omitzero"`
 	// A URL to push the stream to. Supported protocols: rtmp, rtmps, srt. For SRT
 	// target URLs, only `mode=caller` is supported.
 	Uri param.Opt[string] `json:"uri,omitzero"`
+	// Defines how the audio track is handled when `no_audio` is `true`. Ignored when
+	// `no_audio` is `false`.
+	//
+	// Types:
+	//
+	//   - "drop" – removes the audio track entirely.
+	//   - "silence" – replaces the audio track with a silent track instead of removing
+	//     it.
+	//
+	// > **Note:** YouTube rejects incoming streams with no audio track at all. Use
+	// > `no_audio_mode=silence` when restreaming to YouTube.
+	//
+	// Any of "drop", "silence".
+	NoAudioMode string `json:"no_audio_mode,omitzero"`
+	// Selects which version of the stream is used as the source for the restream.
+	//
+	// Types:
+	//
+	//   - "original" – uses the original ingested stream without any modifications
+	//     (default).
+	//   - "transcoded" – uses the transcoded output, including overlays. Use it when you
+	//     want to restream the stream with enabled overlays.
+	//
+	// > **Note:** For `transcoded`, the highest quality available in the stream's
+	// > quality ladder is used. For example, if the ladder is 480p/720p/1080p, 1080p
+	// > is used; if the ladder goes up to 4K, 4K is used.
+	//
+	// Any of "original", "transcoded".
+	Source string `json:"source,omitzero"`
 	paramObj
 }
 
@@ -280,6 +461,15 @@ func (r RestreamUpdateParamsRestream) MarshalJSON() (data []byte, err error) {
 }
 func (r *RestreamUpdateParamsRestream) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[RestreamUpdateParamsRestream](
+		"no_audio_mode", "drop", "silence",
+	)
+	apijson.RegisterFieldValidator[RestreamUpdateParamsRestream](
+		"source", "original", "transcoded",
+	)
 }
 
 type RestreamListParams struct {
