@@ -379,8 +379,6 @@ func (r *GPUBaremetalClusterService) Resize(ctx context.Context, clusterID strin
 	return res, err
 }
 
-// This operation only modifies cluster settings such as SSH key, image, and user
-// data. **It does NOT modify or rebuild any existing servers in the cluster.**
 // Use `PATCH /v3/gpu/baremetal/{project_id}/{region_id}/clusters/{cluster_id}`
 // instead, which now accepts `servers_settings` and `image_id` fields alongside
 // `name` and `tags`.
@@ -1151,18 +1149,6 @@ func init() {
 	)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[GPUBaremetalClusterNewParamsServersSettingsInterfaceExternal](
-		"ip_family", "dual", "ipv4", "ipv6",
-	)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[GPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnet](
-		"ip_family", "dual", "ipv4", "ipv6",
-	)
-}
-
 // The property Type is required.
 type GPUBaremetalClusterNewParamsServersSettingsInterfaceExternal struct {
 	// Interface name
@@ -1322,6 +1308,12 @@ func (r GPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnet) MarshalJS
 }
 func (r *GPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[GPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnet](
+		"ip_family", "dual", "ipv4", "ipv6",
+	)
 }
 
 func NewGPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnetFloatingIP() GPUBaremetalClusterNewParamsServersSettingsInterfaceAnySubnetFloatingIP {

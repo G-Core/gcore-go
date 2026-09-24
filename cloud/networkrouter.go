@@ -488,24 +488,6 @@ func init() {
 	)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[NetworkRouterNewParamsExternalGatewayInfoRouterExternalDefaultGwSerializer](
-		"type", "default",
-	)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[NetworkRouterNewParamsInterface](
-		"type", "subnet",
-	)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[NetworkRouterUpdateParamsExternalGatewayInfo](
-		"type", "manual",
-	)
-}
-
 type NetworkRouterNewParamsExternalGatewayInfoRouterExternalDefaultGwSerializer struct {
 	// Is SNAT enabled. Defaults to true.
 	EnableSnat param.Opt[bool] `json:"enable_snat,omitzero"`
@@ -526,6 +508,12 @@ func (r *NetworkRouterNewParamsExternalGatewayInfoRouterExternalDefaultGwSeriali
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func init() {
+	apijson.RegisterFieldValidator[NetworkRouterNewParamsExternalGatewayInfoRouterExternalDefaultGwSerializer](
+		"type", "default",
+	)
+}
+
 // The property SubnetID is required.
 type NetworkRouterNewParamsInterface struct {
 	// id of the subnet to attach to.
@@ -543,6 +531,12 @@ func (r NetworkRouterNewParamsInterface) MarshalJSON() (data []byte, err error) 
 }
 func (r *NetworkRouterNewParamsInterface) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[NetworkRouterNewParamsInterface](
+		"type", "subnet",
+	)
 }
 
 // The properties Destination, Nexthop are required.
@@ -611,6 +605,12 @@ func (r NetworkRouterUpdateParamsExternalGatewayInfo) MarshalJSON() (data []byte
 }
 func (r *NetworkRouterUpdateParamsExternalGatewayInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[NetworkRouterUpdateParamsExternalGatewayInfo](
+		"type", "manual",
+	)
 }
 
 // The properties Destination, Nexthop are required.

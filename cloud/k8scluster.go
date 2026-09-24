@@ -907,68 +907,6 @@ func init() {
 	)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[K8SClusterNewParamsAddOnsSlurm](
-		"enabled", true,
-	)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[K8SClusterNewParamsCni](
-		"provider", "calico", "cilium",
-	)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[K8SClusterNewParamsCniCilium](
-		"lb_mode", "dsr", "hybrid", "snat",
-	)
-	apijson.RegisterFieldValidator[K8SClusterNewParamsCniCilium](
-		"routing_mode", "native", "tunnel",
-	)
-	apijson.RegisterFieldValidator[K8SClusterNewParamsCniCilium](
-		"tunnel", "", "geneve", "vxlan",
-	)
-}
-
-func init() {
-	apijson.RegisterUnion[K8SClusterUpdateParamsAddOnsSlurmUnion](
-		"enabled",
-		apijson.Discriminator[K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonEnableV2Serializer](true),
-		apijson.Discriminator[K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer](false),
-	)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonEnableV2Serializer](
-		"enabled", true,
-	)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer](
-		"enabled", false,
-	)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[K8SClusterUpdateParamsCni](
-		"provider", "calico", "cilium",
-	)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[K8SClusterUpdateParamsCniCilium](
-		"lb_mode", "dsr", "hybrid", "snat",
-	)
-	apijson.RegisterFieldValidator[K8SClusterUpdateParamsCniCilium](
-		"routing_mode", "native", "tunnel",
-	)
-	apijson.RegisterFieldValidator[K8SClusterUpdateParamsCniCilium](
-		"tunnel", "", "geneve", "vxlan",
-	)
-}
-
 // Cluster add-ons configuration
 type K8SClusterNewParamsAddOns struct {
 	// Slurm add-on configuration
@@ -1021,6 +959,12 @@ func (r K8SClusterNewParamsAddOnsSlurm) MarshalJSON() (data []byte, err error) {
 }
 func (r *K8SClusterNewParamsAddOnsSlurm) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[K8SClusterNewParamsAddOnsSlurm](
+		"enabled", true,
+	)
 }
 
 // Authentication settings
@@ -1089,6 +1033,12 @@ func (r *K8SClusterNewParamsCni) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func init() {
+	apijson.RegisterFieldValidator[K8SClusterNewParamsCni](
+		"provider", "calico", "cilium",
+	)
+}
+
 // Cilium settings
 type K8SClusterNewParamsCniCilium struct {
 	// Whether Cilium manages networking exclusively. Set to `false` to allow other CNI
@@ -1127,6 +1077,18 @@ func (r K8SClusterNewParamsCniCilium) MarshalJSON() (data []byte, err error) {
 }
 func (r *K8SClusterNewParamsCniCilium) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[K8SClusterNewParamsCniCilium](
+		"lb_mode", "dsr", "hybrid", "snat",
+	)
+	apijson.RegisterFieldValidator[K8SClusterNewParamsCniCilium](
+		"routing_mode", "native", "tunnel",
+	)
+	apijson.RegisterFieldValidator[K8SClusterNewParamsCniCilium](
+		"tunnel", "", "geneve", "vxlan",
+	)
 }
 
 // Container Storage Interface (CSI) driver settings
@@ -1389,6 +1351,14 @@ func (u K8SClusterUpdateParamsAddOnsSlurmUnion) GetEnabled() *bool {
 	return nil
 }
 
+func init() {
+	apijson.RegisterUnion[K8SClusterUpdateParamsAddOnsSlurmUnion](
+		"enabled",
+		apijson.Discriminator[K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonEnableV2Serializer](true),
+		apijson.Discriminator[K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer](false),
+	)
+}
+
 // The properties Enabled, FileShareID, SSHKeyIDs, WorkerCount are required.
 type K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonEnableV2Serializer struct {
 	// ID of a VAST file share to be used as Slurm storage.
@@ -1426,6 +1396,12 @@ func (r *K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonEnableV2Serializer
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func init() {
+	apijson.RegisterFieldValidator[K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonEnableV2Serializer](
+		"enabled", true,
+	)
+}
+
 func NewK8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer() K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer {
 	return K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer{
 		Enabled: false,
@@ -1446,6 +1422,12 @@ func (r K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer
 }
 func (r *K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[K8SClusterUpdateParamsAddOnsSlurmK8SClusterSlurmAddonDisableV2Serializer](
+		"enabled", false,
+	)
 }
 
 // Authentication settings
@@ -1514,6 +1496,12 @@ func (r *K8SClusterUpdateParamsCni) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func init() {
+	apijson.RegisterFieldValidator[K8SClusterUpdateParamsCni](
+		"provider", "calico", "cilium",
+	)
+}
+
 // Cilium settings
 type K8SClusterUpdateParamsCniCilium struct {
 	// Whether Cilium manages networking exclusively. Set to `false` to allow other CNI
@@ -1552,6 +1540,18 @@ func (r K8SClusterUpdateParamsCniCilium) MarshalJSON() (data []byte, err error) 
 }
 func (r *K8SClusterUpdateParamsCniCilium) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[K8SClusterUpdateParamsCniCilium](
+		"lb_mode", "dsr", "hybrid", "snat",
+	)
+	apijson.RegisterFieldValidator[K8SClusterUpdateParamsCniCilium](
+		"routing_mode", "native", "tunnel",
+	)
+	apijson.RegisterFieldValidator[K8SClusterUpdateParamsCniCilium](
+		"tunnel", "", "geneve", "vxlan",
+	)
 }
 
 // Advanced DDoS Protection profile

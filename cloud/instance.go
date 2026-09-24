@@ -802,71 +802,6 @@ func init() {
 	)
 }
 
-func init() {
-	apijson.RegisterUnion[InstanceNewParamsInterfaceSubnetFloatingIPUnion](
-		"source",
-		apijson.Discriminator[InstanceNewParamsInterfaceSubnetFloatingIPNew]("new"),
-		apijson.Discriminator[InstanceNewParamsInterfaceSubnetFloatingIPExisting]("existing"),
-	)
-}
-
-func init() {
-	apijson.RegisterUnion[InstanceNewParamsInterfaceAnySubnetFloatingIPUnion](
-		"source",
-		apijson.Discriminator[InstanceNewParamsInterfaceAnySubnetFloatingIPNew]("new"),
-		apijson.Discriminator[InstanceNewParamsInterfaceAnySubnetFloatingIPExisting]("existing"),
-	)
-}
-
-func init() {
-	apijson.RegisterUnion[InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion](
-		"source",
-		apijson.Discriminator[InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew]("new"),
-		apijson.Discriminator[InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting]("existing"),
-	)
-}
-
-func init() {
-	apijson.RegisterUnion[InstanceNewParamsVolumeUnion](
-		"source",
-		apijson.Discriminator[InstanceNewParamsVolumeNewVolume]("new-volume"),
-		apijson.Discriminator[InstanceNewParamsVolumeImage]("image"),
-		apijson.Discriminator[InstanceNewParamsVolumeSnapshot]("snapshot"),
-		apijson.Discriminator[InstanceNewParamsVolumeApptemplate]("apptemplate"),
-		apijson.Discriminator[InstanceNewParamsVolumeExistingVolume]("existing-volume"),
-	)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[InstanceNewParamsVolumeNewVolume](
-		"type_name", "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
-	)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[InstanceNewParamsVolumeImage](
-		"type_name", "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
-	)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[InstanceNewParamsVolumeSnapshot](
-		"type_name", "ssd_hiiops", "standard",
-	)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[InstanceNewParamsVolumeApptemplate](
-		"type_name", "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
-	)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[InstanceActionParamsBodyBasicActionInstanceSerializer](
-		"action", "reboot", "reboot_hard", "resume", "stop", "suspend",
-	)
-}
-
 // Instance will be attached to default external network
 //
 // The property Type is required.
@@ -989,6 +924,14 @@ func (u InstanceNewParamsInterfaceSubnetFloatingIPUnion) GetSource() *string {
 		return (*string)(&vt.Source)
 	}
 	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[InstanceNewParamsInterfaceSubnetFloatingIPUnion](
+		"source",
+		apijson.Discriminator[InstanceNewParamsInterfaceSubnetFloatingIPNew]("new"),
+		apijson.Discriminator[InstanceNewParamsInterfaceSubnetFloatingIPExisting]("existing"),
+	)
 }
 
 func NewInstanceNewParamsInterfaceSubnetFloatingIPNew() InstanceNewParamsInterfaceSubnetFloatingIPNew {
@@ -1131,6 +1074,14 @@ func (u InstanceNewParamsInterfaceAnySubnetFloatingIPUnion) GetSource() *string 
 	return nil
 }
 
+func init() {
+	apijson.RegisterUnion[InstanceNewParamsInterfaceAnySubnetFloatingIPUnion](
+		"source",
+		apijson.Discriminator[InstanceNewParamsInterfaceAnySubnetFloatingIPNew]("new"),
+		apijson.Discriminator[InstanceNewParamsInterfaceAnySubnetFloatingIPExisting]("existing"),
+	)
+}
+
 func NewInstanceNewParamsInterfaceAnySubnetFloatingIPNew() InstanceNewParamsInterfaceAnySubnetFloatingIPNew {
 	return InstanceNewParamsInterfaceAnySubnetFloatingIPNew{
 		Source: "new",
@@ -1266,6 +1217,14 @@ func (u InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion) GetSource() *s
 		return (*string)(&vt.Source)
 	}
 	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion](
+		"source",
+		apijson.Discriminator[InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew]("new"),
+		apijson.Discriminator[InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting]("existing"),
+	)
 }
 
 func NewInstanceNewParamsInterfaceReservedFixedIPFloatingIPNew() InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew {
@@ -1521,6 +1480,17 @@ func (u InstanceNewParamsVolumeUnion) GetTags() map[string]string {
 	return nil
 }
 
+func init() {
+	apijson.RegisterUnion[InstanceNewParamsVolumeUnion](
+		"source",
+		apijson.Discriminator[InstanceNewParamsVolumeNewVolume]("new-volume"),
+		apijson.Discriminator[InstanceNewParamsVolumeImage]("image"),
+		apijson.Discriminator[InstanceNewParamsVolumeSnapshot]("snapshot"),
+		apijson.Discriminator[InstanceNewParamsVolumeApptemplate]("apptemplate"),
+		apijson.Discriminator[InstanceNewParamsVolumeExistingVolume]("existing-volume"),
+	)
+}
+
 // The properties Size, Source are required.
 type InstanceNewParamsVolumeNewVolume struct {
 	// Volume size in GiB.
@@ -1566,6 +1536,12 @@ func (r InstanceNewParamsVolumeNewVolume) MarshalJSON() (data []byte, err error)
 }
 func (r *InstanceNewParamsVolumeNewVolume) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[InstanceNewParamsVolumeNewVolume](
+		"type_name", "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
+	)
 }
 
 // The properties ImageID, Source are required.
@@ -1625,6 +1601,12 @@ func (r *InstanceNewParamsVolumeImage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func init() {
+	apijson.RegisterFieldValidator[InstanceNewParamsVolumeImage](
+		"type_name", "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
+	)
+}
+
 // The properties Size, SnapshotID, Source are required.
 type InstanceNewParamsVolumeSnapshot struct {
 	// Volume size in GiB.
@@ -1667,6 +1649,12 @@ func (r InstanceNewParamsVolumeSnapshot) MarshalJSON() (data []byte, err error) 
 }
 func (r *InstanceNewParamsVolumeSnapshot) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[InstanceNewParamsVolumeSnapshot](
+		"type_name", "ssd_hiiops", "standard",
+	)
 }
 
 // The properties ApptemplateID, Source are required.
@@ -1720,6 +1708,12 @@ func (r InstanceNewParamsVolumeApptemplate) MarshalJSON() (data []byte, err erro
 }
 func (r *InstanceNewParamsVolumeApptemplate) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[InstanceNewParamsVolumeApptemplate](
+		"type_name", "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
+	)
 }
 
 // The properties Source, VolumeID are required.
@@ -2038,6 +2032,12 @@ func (r InstanceActionParamsBodyBasicActionInstanceSerializer) MarshalJSON() (da
 }
 func (r *InstanceActionParamsBodyBasicActionInstanceSerializer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[InstanceActionParamsBodyBasicActionInstanceSerializer](
+		"action", "reboot", "reboot_hard", "resume", "stop", "suspend",
+	)
 }
 
 type InstanceAddToPlacementGroupParams struct {

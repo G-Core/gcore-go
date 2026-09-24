@@ -600,7 +600,6 @@ func (r *LoadBalancerFlavorListResultLbFlavorSerializer) UnmarshalJSON(data []by
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// L7Policy schema
 type LoadBalancerL7Policy struct {
 	// ID
 	ID string `json:"id" api:"required"`
@@ -1730,12 +1729,6 @@ func init() {
 	)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[LoadBalancerNewParamsListener](
-		"secret_id", "",
-	)
-}
-
 func NewLoadBalancerNewParamsFloatingIPNew() LoadBalancerNewParamsFloatingIPNew {
 	return LoadBalancerNewParamsFloatingIPNew{
 		Source: "new",
@@ -1835,6 +1828,12 @@ func (r LoadBalancerNewParamsListener) MarshalJSON() (data []byte, err error) {
 }
 func (r *LoadBalancerNewParamsListener) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[LoadBalancerNewParamsListener](
+		"secret_id", "",
+	)
 }
 
 // The properties LbAlgorithm, Name, Protocol are required.

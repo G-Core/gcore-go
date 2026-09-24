@@ -10,8 +10,6 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/G-Core/gcore-go/packages/respjson"
-
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
@@ -177,26 +175,6 @@ func (r *LoadBalancerListenerService) Get(ctx context.Context, listenerID string
 	path := fmt.Sprintf("cloud/v1/lblisteners/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, listenerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return res, err
-}
-
-type LoadBalancerListenerListResponse struct {
-	// Number of objects
-	Count int64 `json:"count,required"`
-	// Objects
-	Results []LoadBalancerListenerDetail `json:"results,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r LoadBalancerListenerListResponse) RawJSON() string { return r.JSON.raw }
-func (r *LoadBalancerListenerListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type LoadBalancerListenerNewParams struct {

@@ -499,18 +499,6 @@ func init() {
 	)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[SecurityGroupUpdateParamsRule](
-		"direction", "egress", "ingress",
-	)
-	apijson.RegisterFieldValidator[SecurityGroupUpdateParamsRule](
-		"ethertype", "IPv4", "IPv6",
-	)
-	apijson.RegisterFieldValidator[SecurityGroupUpdateParamsRule](
-		"protocol", "ah", "any", "dccp", "egp", "esp", "gre", "icmp", "igmp", "ipencap", "ipip", "ipv6-encap", "ipv6-frag", "ipv6-icmp", "ipv6-nonxt", "ipv6-opts", "ipv6-route", "ospf", "pgm", "rsvp", "sctp", "tcp", "udp", "udplite", "vrrp",
-	)
-}
-
 type SecurityGroupUpdateParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
