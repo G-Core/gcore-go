@@ -4981,7 +4981,8 @@ type CostReportGetAggregatedParams struct {
 	// "dbaas_postgresql_memory", "dbaas_postgresql_public_network",
 	// "dbaas_postgresql_volume", "egress_traffic", "external_ip", "file_share",
 	// "floatingip", "functions", "functions_calls", "functions_traffic", "image",
-	// "inference", "instance", "load_balancer", "log_index", "snapshot", "volume".
+	// "inference", "inference_public_models", "instance", "load_balancer",
+	// "log_index", "snapshot", "volume".
 	Types []string `json:"types,omitzero"`
 	paramObj
 }
@@ -6078,7 +6079,8 @@ type CostReportGetAggregatedMonthlyParams struct {
 	// "dbaas_postgresql_memory", "dbaas_postgresql_public_network",
 	// "dbaas_postgresql_volume", "egress_traffic", "external_ip", "file_share",
 	// "floatingip", "functions", "functions_calls", "functions_traffic", "image",
-	// "inference", "instance", "load_balancer", "log_index", "snapshot", "volume".
+	// "inference", "inference_public_models", "instance", "load_balancer",
+	// "log_index", "snapshot", "volume".
 	Types []string `json:"types,omitzero"`
 	paramObj
 }
@@ -7194,7 +7196,8 @@ type CostReportGetDetailedParams struct {
 	// "dbaas_postgresql_memory", "dbaas_postgresql_public_network",
 	// "dbaas_postgresql_volume", "egress_traffic", "external_ip", "file_share",
 	// "floatingip", "functions", "functions_calls", "functions_traffic", "image",
-	// "inference", "instance", "load_balancer", "log_index", "snapshot", "volume".
+	// "inference", "inference_public_models", "instance", "load_balancer",
+	// "log_index", "snapshot", "volume".
 	Types []string `json:"types,omitzero"`
 	paramObj
 }

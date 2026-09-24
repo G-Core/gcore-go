@@ -330,7 +330,9 @@ type FileShareShareSettingsUnion struct {
 	PathLength string `json:"path_length"`
 	// This field is from variant [FileShareShareSettingsVast].
 	RootSquash bool `json:"root_squash"`
-	JSON       struct {
+	// This field is from variant [FileShareShareSettingsVast].
+	TrashAccess bool `json:"trash_access"`
+	JSON        struct {
 		TypeName          respjson.Field
 		Gid               respjson.Field
 		Projid            respjson.Field
@@ -338,6 +340,7 @@ type FileShareShareSettingsUnion struct {
 		AllowedCharacters respjson.Field
 		PathLength        respjson.Field
 		RootSquash        respjson.Field
+		TrashAccess       respjson.Field
 		raw               string
 	} `json:"-"`
 }
@@ -451,6 +454,9 @@ type FileShareShareSettingsVast struct {
 	//   - If `false`, root squash is disabled: the NFS client `root` user retains root
 	//     privileges.
 	RootSquash bool `json:"root_squash" api:"required"`
+	// Shows whether clients within the share's access range can move files and folders
+	// to the hidden `.vast_trash` folder for asynchronous deletion.
+	TrashAccess bool `json:"trash_access" api:"required"`
 	// Vast file share type
 	TypeName constant.Vast `json:"type_name" default:"vast"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -458,6 +464,7 @@ type FileShareShareSettingsVast struct {
 		AllowedCharacters respjson.Field
 		PathLength        respjson.Field
 		RootSquash        respjson.Field
+		TrashAccess       respjson.Field
 		TypeName          respjson.Field
 		ExtraFields       map[string]respjson.Field
 		raw               string
@@ -763,12 +770,22 @@ func init() {
 type FileShareNewParamsBodyCreateVastFileShareSerializerShareSettings struct {
 	// Enables or disables root squash for NFS clients.
 	//
-	//   - If `true` (default), root squash is enabled: the root user is mapped to nobody
-	//     for all file and folder management operations on the export.
+	//   - If `true`, root squash is enabled: the root user is mapped to nobody for all
+	//     file and folder management operations on the export.
 	//   - If `false`, root squash is disabled: the NFS client `root` user retains root
 	//     privileges. Use this option if you trust the root user not to perform
 	//     operations that will corrupt data.
 	RootSquash param.Opt[bool] `json:"root_squash,omitzero"`
+	// Enables or disables access to the hidden `.vast_trash` folder of the share.
+	//
+	//   - If `false`, the folder is not accessible.
+	//   - If `true`, clients within the share's access range can move files and folders
+	//     to `.vast_trash` for asynchronous deletion, which is much faster than deleting
+	//     large directory trees in place.
+	//
+	// Requires `root_squash` to be disabled, because VAST ignores trash folder access
+	// for hosts that are under root squash.
+	TrashAccess param.Opt[bool] `json:"trash_access,omitzero"`
 	// Determines which characters are allowed in file names. Choose between:
 	//
 	//   - Lowest Common Denominator (LCD), allows only characters allowed by all VAST
@@ -781,9 +798,8 @@ type FileShareNewParamsBodyCreateVastFileShareSerializerShareSettings struct {
 	// Affects the maximum limit of file path component name length. Choose between:
 	//
 	//   - Lowest Common Denominator (LCD), imposes the lowest common denominator file
-	//     length limit of all VAST Cluster-supported protocols. With this (default)
-	//     option, the limitation on the length of a single component of the path is 255
-	//     characters
+	//     length limit of all VAST Cluster-supported protocols. With this option, the
+	//     limitation on the length of a single component of the path is 255 characters
 	//   - Native Protocol Limit (NPL), imposes no limitation beyond that of the client
 	//     protocol.
 	//
@@ -855,13 +871,13 @@ func (r *FileShareUpdateParams) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type FileShareUpdateParamsShareSettingsUnion struct {
-	OfDdnFileShareSettingsInputSerializer  *FileShareUpdateParamsShareSettingsDdnFileShareSettingsInputSerializer  `json:",omitzero,inline"`
-	OfVastFileShareSettingsInputSerializer *FileShareUpdateParamsShareSettingsVastFileShareSettingsInputSerializer `json:",omitzero,inline"`
+	OfDdnFileShareSettingsInputSerializer   *FileShareUpdateParamsShareSettingsDdnFileShareSettingsInputSerializer   `json:",omitzero,inline"`
+	OfUpdateVastFileShareSettingsSerializer *FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializer `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u FileShareUpdateParamsShareSettingsUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfDdnFileShareSettingsInputSerializer, u.OfVastFileShareSettingsInputSerializer)
+	return param.MarshalUnion(u, u.OfDdnFileShareSettingsInputSerializer, u.OfUpdateVastFileShareSettingsSerializer)
 }
 func (u *FileShareUpdateParamsShareSettingsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -870,8 +886,8 @@ func (u *FileShareUpdateParamsShareSettingsUnion) UnmarshalJSON(data []byte) err
 func (u *FileShareUpdateParamsShareSettingsUnion) asAny() any {
 	if !param.IsOmitted(u.OfDdnFileShareSettingsInputSerializer) {
 		return u.OfDdnFileShareSettingsInputSerializer
-	} else if !param.IsOmitted(u.OfVastFileShareSettingsInputSerializer) {
-		return u.OfVastFileShareSettingsInputSerializer
+	} else if !param.IsOmitted(u.OfUpdateVastFileShareSettingsSerializer) {
+		return u.OfUpdateVastFileShareSettingsSerializer
 	}
 	return nil
 }
@@ -892,15 +908,29 @@ func (r *FileShareUpdateParamsShareSettingsDdnFileShareSettingsInputSerializer) 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type FileShareUpdateParamsShareSettingsVastFileShareSettingsInputSerializer struct {
+type FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializer struct {
 	// Enables or disables root squash for NFS clients.
 	//
-	//   - If `true` (default), root squash is enabled: the root user is mapped to nobody
-	//     for all file and folder management operations on the export.
+	//   - If `true`, root squash is enabled: the root user is mapped to nobody for all
+	//     file and folder management operations on the export.
 	//   - If `false`, root squash is disabled: the NFS client `root` user retains root
 	//     privileges. Use this option if you trust the root user not to perform
 	//     operations that will corrupt data.
+	//
+	// Omit this field to keep the current setting.
 	RootSquash param.Opt[bool] `json:"root_squash,omitzero"`
+	// Enables or disables access to the hidden `.vast_trash` folder of the share.
+	//
+	//   - If `false`, the folder is not accessible.
+	//   - If `true`, clients within the share's access range can move files and folders
+	//     to `.vast_trash` for asynchronous deletion, which is much faster than deleting
+	//     large directory trees in place.
+	//
+	// Requires `root_squash` to be disabled, because VAST ignores trash folder access
+	// for hosts that are under root squash.
+	//
+	// Omit this field to keep the current setting.
+	TrashAccess param.Opt[bool] `json:"trash_access,omitzero"`
 	// Determines which characters are allowed in file names. Choose between:
 	//
 	//   - Lowest Common Denominator (LCD), allows only characters allowed by all VAST
@@ -908,35 +938,38 @@ type FileShareUpdateParamsShareSettingsVastFileShareSettingsInputSerializer stru
 	//   - Native Protocol Limit (NPL), imposes no limitation beyond that of the client
 	//     protocol.
 	//
+	// Omit this field to keep the current setting.
+	//
 	// Any of "LCD", "NPL".
 	AllowedCharacters string `json:"allowed_characters,omitzero"`
 	// Affects the maximum limit of file path component name length. Choose between:
 	//
 	//   - Lowest Common Denominator (LCD), imposes the lowest common denominator file
-	//     length limit of all VAST Cluster-supported protocols. With this (default)
-	//     option, the limitation on the length of a single component of the path is 255
-	//     characters
+	//     length limit of all VAST Cluster-supported protocols. With this option, the
+	//     limitation on the length of a single component of the path is 255 characters
 	//   - Native Protocol Limit (NPL), imposes no limitation beyond that of the client
 	//     protocol.
+	//
+	// Omit this field to keep the current setting.
 	//
 	// Any of "LCD", "NPL".
 	PathLength string `json:"path_length,omitzero"`
 	paramObj
 }
 
-func (r FileShareUpdateParamsShareSettingsVastFileShareSettingsInputSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow FileShareUpdateParamsShareSettingsVastFileShareSettingsInputSerializer
+func (r FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializer) MarshalJSON() (data []byte, err error) {
+	type shadow FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializer
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileShareUpdateParamsShareSettingsVastFileShareSettingsInputSerializer) UnmarshalJSON(data []byte) error {
+func (r *FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[FileShareUpdateParamsShareSettingsVastFileShareSettingsInputSerializer](
+	apijson.RegisterFieldValidator[FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializer](
 		"allowed_characters", "LCD", "NPL",
 	)
-	apijson.RegisterFieldValidator[FileShareUpdateParamsShareSettingsVastFileShareSettingsInputSerializer](
+	apijson.RegisterFieldValidator[FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializer](
 		"path_length", "LCD", "NPL",
 	)
 }
