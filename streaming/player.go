@@ -105,6 +105,101 @@ func (r *PlayerService) Preview(ctx context.Context, playerID int64, opts ...opt
 
 // Set of properties for displaying videos. All parameters may be blank to inherit
 // their values from default Streaming player.
+//
+// The property Name is required.
+type CreatePlayerParam struct {
+	// Player name
+	Name string `json:"name" api:"required"`
+	// Player ID
+	ID param.Opt[int64] `json:"id,omitzero"`
+	// Enables video playback right after player load:
+	//
+	// - **true** — video starts playing right after player loads
+	// - **false** — video isn’t played automatically. A user must click play to start
+	//
+	// Default is false
+	Autoplay param.Opt[bool] `json:"autoplay,omitzero"`
+	// Color of skin background in format #AAAAAA
+	BgColor param.Opt[string] `json:"bg_color,omitzero"`
+	// Client ID
+	ClientID param.Opt[int64] `json:"client_id,omitzero"`
+	// Custom CSS to be added to player iframe
+	CustomCss param.Opt[string] `json:"custom_css,omitzero"`
+	// String to be rendered as JS parameters to player
+	Design param.Opt[string] `json:"design,omitzero"`
+	// Enables/Disables player skin:
+	//
+	// - **true** — player skin is disabled
+	// - **false** — player skin is enabled
+	//
+	// Default is false
+	DisableSkin param.Opt[bool] `json:"disable_skin,omitzero"`
+	// Color of skin foreground (elements) in format #AAAAAA
+	FgColor param.Opt[string] `json:"fg_color,omitzero"`
+	// Player framework type
+	Framework param.Opt[string] `json:"framework,omitzero"`
+	// Color of foreground elements when mouse is over in format #AAAAAA
+	HoverColor param.Opt[string] `json:"hover_color,omitzero"`
+	// Player main JS file URL. Leave empty to use JS URL from the default player
+	JsURL param.Opt[string] `json:"js_url,omitzero"`
+	// URL to logo image
+	Logo param.Opt[string] `json:"logo,omitzero"`
+	// Logotype position.
+	//
+	//	Has four possible values:
+	//
+	// - **tl** — top left
+	// - **tr** — top right
+	// - **bl** — bottom left
+	// - **br** — bottom right
+	//
+	// Default is null
+	LogoPosition param.Opt[string] `json:"logo_position,omitzero"`
+	// Regulates the sound volume:
+	//
+	// - **true** — video starts with volume off
+	// - **false** — video starts with volume on
+	//
+	// Default is false
+	Mute param.Opt[bool] `json:"mute,omitzero"`
+	// Enables/Disables saving volume and other options in cookies:
+	//
+	// - **true** — user settings will be saved
+	// - **false** — user settings will not be saved
+	//
+	// Default is true
+	SaveOptionsToCookies param.Opt[bool] `json:"save_options_to_cookies,omitzero"`
+	// Enables/Disables sharing button display:
+	//
+	// - **true** — sharing button is displayed
+	// - **false** — no sharing button is displayed
+	//
+	// Default is true
+	ShowSharing param.Opt[bool] `json:"show_sharing,omitzero"`
+	// URL to custom skin JS file
+	SkinIsURL param.Opt[string] `json:"skin_is_url,omitzero"`
+	// Enables/Disables speed control button display:
+	//
+	// - **true** — sharing button is displayed
+	// - **false** — no sharing button is displayed
+	//
+	// Default is false
+	SpeedControl param.Opt[bool] `json:"speed_control,omitzero"`
+	// Color of skin text elements in format #AAAAAA
+	TextColor param.Opt[string] `json:"text_color,omitzero"`
+	paramObj
+}
+
+func (r CreatePlayerParam) MarshalJSON() (data []byte, err error) {
+	type shadow CreatePlayerParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CreatePlayerParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Set of properties for displaying videos. All parameters may be blank to inherit
+// their values from default Streaming player.
 type Player struct {
 	// Player ID
 	ID int64 `json:"id"`
@@ -323,7 +418,7 @@ func (r *PlayerParam) UnmarshalJSON(data []byte) error {
 type PlayerNewParams struct {
 	// Set of properties for displaying videos. All parameters may be blank to inherit
 	// their values from default Streaming player.
-	Player PlayerParam `json:"player,omitzero"`
+	Player CreatePlayerParam `json:"player,omitzero"`
 	paramObj
 }
 

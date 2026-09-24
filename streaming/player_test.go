@@ -27,7 +27,8 @@ func TestPlayerNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Streaming.Players.New(context.TODO(), streaming.PlayerNewParams{
-		Player: streaming.PlayerParam{
+		Player: streaming.CreatePlayerParam{
+			Name:                 "name",
 			ID:                   gcore.Int(0),
 			Autoplay:             gcore.Bool(true),
 			BgColor:              gcore.String("bg_color"),
@@ -42,7 +43,6 @@ func TestPlayerNewWithOptionalParams(t *testing.T) {
 			Logo:                 gcore.String("logo"),
 			LogoPosition:         gcore.String("logo_position"),
 			Mute:                 gcore.Bool(true),
-			Name:                 gcore.String("name"),
 			SaveOptionsToCookies: gcore.Bool(true),
 			ShowSharing:          gcore.Bool(true),
 			SkinIsURL:            gcore.String("skin_is_url"),

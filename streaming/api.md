@@ -75,6 +75,7 @@ Methods:
 
 Params Types:
 
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/streaming">streaming</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/streaming#CreatePlayerParam">CreatePlayerParam</a>
 - <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/streaming">streaming</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/streaming#PlayerParam">PlayerParam</a>
 
 Response Types:
