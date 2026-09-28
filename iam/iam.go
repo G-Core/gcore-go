@@ -635,7 +635,7 @@ type AccountOverviewServiceStatusesCDN struct {
 	Enabled bool `json:"enabled"`
 	// Status of the service.
 	//
-	// Any of "new", "trial", "trialend", "active", "paused", "activating", "deleted".
+	// Any of "new", "trial", "trialend", "active", "paused", "deleted".
 	Status string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -657,7 +657,7 @@ type AccountOverviewServiceStatusesCloud struct {
 	Enabled bool `json:"enabled"`
 	// Status of the service.
 	//
-	// Any of "new", "trial", "trialend", "active", "paused", "activating", "deleted".
+	// Any of "new", "trial", "trialend", "active", "paused", "deleted".
 	Status string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -679,7 +679,7 @@ type AccountOverviewServiceStatusesDDOS struct {
 	Enabled bool `json:"enabled"`
 	// Status of the service.
 	//
-	// Any of "new", "trial", "trialend", "active", "paused", "activating", "deleted".
+	// Any of "new", "trial", "trialend", "active", "paused", "deleted".
 	Status string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -701,7 +701,7 @@ type AccountOverviewServiceStatusesDNS struct {
 	Enabled bool `json:"enabled"`
 	// Status of the service.
 	//
-	// Any of "new", "trial", "trialend", "active", "paused", "activating", "deleted".
+	// Any of "new", "trial", "trialend", "active", "paused", "deleted".
 	Status string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -723,7 +723,7 @@ type AccountOverviewServiceStatusesStorage struct {
 	Enabled bool `json:"enabled"`
 	// Status of the service.
 	//
-	// Any of "new", "trial", "trialend", "active", "paused", "activating", "deleted".
+	// Any of "new", "trial", "trialend", "active", "paused", "deleted".
 	Status string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -745,7 +745,7 @@ type AccountOverviewServiceStatusesStreaming struct {
 	Enabled bool `json:"enabled"`
 	// Status of the service.
 	//
-	// Any of "new", "trial", "trialend", "active", "paused", "activating", "deleted".
+	// Any of "new", "trial", "trialend", "active", "paused", "deleted".
 	Status string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
