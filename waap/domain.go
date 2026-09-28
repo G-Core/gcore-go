@@ -330,6 +330,9 @@ type WaapRequestSummary struct {
 	// JA3 TLS client fingerprint as a 32-character lowercase hexadecimal MD5 hash, or
 	// an empty string when the record has no JA3 value.
 	Ja3 string `json:"ja3"`
+	// Applied overrides with id, t, and matched metadata keyed by target ID. Does not
+	// replace the final decision.
+	PolicyOverride []WaapRequestSummaryPolicyOverride `json:"policy_override"`
 	// The URI scheme of the request that generated an event
 	Scheme string `json:"scheme"`
 	// The session ID associated with the request.
@@ -358,6 +361,7 @@ type WaapRequestSummary struct {
 		UserAgentClient respjson.Field
 		HTTPVersion     respjson.Field
 		Ja3             respjson.Field
+		PolicyOverride  respjson.Field
 		Scheme          respjson.Field
 		SessionID       respjson.Field
 		ExtraFields     map[string]respjson.Field
@@ -399,6 +403,35 @@ const (
 	WaapRequestSummaryResultSuppressed WaapRequestSummaryResult = "suppressed"
 	WaapRequestSummaryResultEmpty      WaapRequestSummaryResult = ""
 )
+
+// An override that applied to a request, with its match metadata.
+type WaapRequestSummaryPolicyOverride struct {
+	// ID of the policy override applied to this request.
+	ID int64 `json:"id" api:"required"`
+	// Match evidence keyed by target reference, such as 'ID861'. For legacy records,
+	// evidence is retained only for the first matched target; subsequent matched
+	// targets have empty objects.
+	Matched map[string]any `json:"matched" api:"required"`
+	// Type of target affected by the override: 'waf_rule' for a detector or
+	// 'static_rule_template' for a rule.
+	//
+	// Any of "waf_rule", "static_rule_template".
+	T string `json:"t" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Matched     respjson.Field
+		T           respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapRequestSummaryPolicyOverride) RawJSON() string { return r.JSON.raw }
+func (r *WaapRequestSummaryPolicyOverride) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Represents a custom rule set with associated rules.
 type WaapRuleSet struct {

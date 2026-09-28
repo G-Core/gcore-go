@@ -118,6 +118,7 @@ func TestAnalyticsGetRequestsWithOptionalParams(t *testing.T) {
 		ExcludeUserAgent:         []string{"python-requests", "bot"},
 		ExcludeUserAgentClients:  []string{"OpenAI GPTBot", "Uptimerobot"},
 		ExcludeUserAgentDevices:  []string{"SMART TV"},
+		HasPolicyOverride:        gcore.Bool(true),
 		HTTPMethods:              []string{"GET", "HEAD"},
 		IPs:                      []string{"1.2.3.4", "2001:678:194::3c25:ddad"},
 		Ja3:                      []string{"e7d705a3286e19ea42f587b344ee6865"},

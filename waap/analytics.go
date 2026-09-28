@@ -408,6 +408,9 @@ type AnalyticsGetRequestsParams struct {
 	// Filter data items up to a specified end date in ISO 8601 format. If not
 	// provided, defaults to the current date and time.
 	End param.Opt[string] `query:"end,omitzero" json:"-"`
+	// True selects requests with applied overrides; false excludes them. Omit to
+	// include both.
+	HasPolicyOverride param.Opt[bool] `query:"has_policy_override,omitzero" json:"-"`
 	// Number of items to return
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Number of items to skip
@@ -440,16 +443,14 @@ type AnalyticsGetRequestsParams struct {
 	// Exclude traffic data by client IP.
 	ExcludeIPs []string `query:"exclude_ips,omitzero" format:"ipvanyaddress" json:"-"`
 	// Exclude entries whose JA3 TLS client fingerprint matches any of the supplied
-	// values. Each value must be exactly 32 hexadecimal characters (mixed case
-	// allowed) and is case-folded to lowercase when the backend filter is built.
-	// Supply multiple values to exclude any of them. Omit the parameter to apply no
-	// JA3 exclusion.
+	// values. Each value must be exactly 32 hexadecimal characters, mixed case
+	// allowed, normalized to lowercase. Supply multiple values to exclude any of them.
+	// Omit the parameter to apply no JA3 exclusion.
 	ExcludeJa3 []string `query:"exclude_ja3,omitzero" json:"-"`
 	// Exclude entries whose JA4 TLS client fingerprint equals any of the supplied
 	// values. An item must match the JA4 form `<ja4_a>_<ja4_b>_<ja4_c>` (a
-	// 10-character prefix and two 12-character hexadecimal hashes, mixed case allowed)
-	// and is case-folded to lowercase when the backend filter is built. Omit the
-	// parameter to apply no JA4 exclusion.
+	// 10-character prefix and two 12-character hexadecimal hashes, mixed case allowed,
+	// normalized to lowercase). Omit the parameter to apply no JA4 exclusion.
 	ExcludeJa4 []string `query:"exclude_ja4,omitzero" json:"-"`
 	// Exclude entries that match any of the given optional action values.
 	//
@@ -490,15 +491,14 @@ type AnalyticsGetRequestsParams struct {
 	// Filter traffic data by client IP.
 	IPs []string `query:"ips,omitzero" format:"ipvanyaddress" json:"-"`
 	// Filter by JA3 TLS client fingerprint. Each value must be exactly 32 hexadecimal
-	// characters (mixed case allowed) and is case-folded to lowercase when the backend
-	// filter is built. Supply multiple values to match any of them. Omit the parameter
-	// to apply no JA3 filter.
+	// characters, mixed case allowed, normalized to lowercase. Supply multiple values
+	// to match any of them. Omit the parameter to apply no JA3 filter.
 	Ja3 []string `query:"ja3,omitzero" json:"-"`
 	// Filter by JA4 TLS client fingerprint. When present, the value must match the JA4
 	// form `<ja4_a>_<ja4_b>_<ja4_c>` (a 10-character prefix and two 12-character
-	// hexadecimal hashes, mixed case allowed) and is case-folded to lowercase when the
-	// backend filter is built. Supply multiple values to match any of them. Omit the
-	// parameter entirely to apply no JA4 filter.
+	// hexadecimal hashes, mixed case allowed, normalized to lowercase). Supply
+	// multiple values to match any of them. Omit the parameter entirely to apply no
+	// JA4 filter.
 	Ja4 []string `query:"ja4,omitzero" json:"-"`
 	// Filter data by optional action.
 	//
@@ -624,16 +624,14 @@ type AnalyticsGetTrafficFilteredParams struct {
 	// Exclude traffic data by client IP.
 	ExcludeIPs []string `query:"exclude_ips,omitzero" format:"ipvanyaddress" json:"-"`
 	// Exclude entries whose JA3 TLS client fingerprint matches any of the supplied
-	// values. Each value must be exactly 32 hexadecimal characters (mixed case
-	// allowed) and is case-folded to lowercase when the backend filter is built.
-	// Supply multiple values to exclude any of them. Omit the parameter to apply no
-	// JA3 exclusion.
+	// values. Each value must be exactly 32 hexadecimal characters, mixed case
+	// allowed, normalized to lowercase. Supply multiple values to exclude any of them.
+	// Omit the parameter to apply no JA3 exclusion.
 	ExcludeJa3 []string `query:"exclude_ja3,omitzero" json:"-"`
 	// Exclude entries whose JA4 TLS client fingerprint equals any of the supplied
 	// values. An item must match the JA4 form `<ja4_a>_<ja4_b>_<ja4_c>` (a
-	// 10-character prefix and two 12-character hexadecimal hashes, mixed case allowed)
-	// and is case-folded to lowercase when the backend filter is built. Omit the
-	// parameter to apply no JA4 exclusion.
+	// 10-character prefix and two 12-character hexadecimal hashes, mixed case allowed,
+	// normalized to lowercase). Omit the parameter to apply no JA4 exclusion.
 	ExcludeJa4 []string `query:"exclude_ja4,omitzero" json:"-"`
 	// Exclude entries that match any of the given optional action values.
 	//
@@ -674,15 +672,14 @@ type AnalyticsGetTrafficFilteredParams struct {
 	// Filter traffic data by client IP.
 	IPs []string `query:"ips,omitzero" format:"ipvanyaddress" json:"-"`
 	// Filter by JA3 TLS client fingerprint. Each value must be exactly 32 hexadecimal
-	// characters (mixed case allowed) and is case-folded to lowercase when the backend
-	// filter is built. Supply multiple values to match any of them. Omit the parameter
-	// to apply no JA3 filter.
+	// characters, mixed case allowed, normalized to lowercase. Supply multiple values
+	// to match any of them. Omit the parameter to apply no JA3 filter.
 	Ja3 []string `query:"ja3,omitzero" json:"-"`
 	// Filter by JA4 TLS client fingerprint. When present, the value must match the JA4
 	// form `<ja4_a>_<ja4_b>_<ja4_c>` (a 10-character prefix and two 12-character
-	// hexadecimal hashes, mixed case allowed) and is case-folded to lowercase when the
-	// backend filter is built. Supply multiple values to match any of them. Omit the
-	// parameter entirely to apply no JA4 filter.
+	// hexadecimal hashes, mixed case allowed, normalized to lowercase). Supply
+	// multiple values to match any of them. Omit the parameter entirely to apply no
+	// JA4 filter.
 	Ja4 []string `query:"ja4,omitzero" json:"-"`
 	// Filter data by optional action.
 	//

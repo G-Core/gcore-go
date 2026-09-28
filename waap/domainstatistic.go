@@ -611,6 +611,9 @@ type WaapRequestDetails struct {
 	//
 	// Any of "captcha", "challenge", "".
 	OptionalAction WaapRequestDetailsOptionalAction `json:"optional_action"`
+	// Applied overrides with id, t, and matched metadata keyed by target ID. Does not
+	// replace the final decision.
+	PolicyOverride []WaapRequestDetailsPolicyOverride `json:"policy_override"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                  respjson.Field
@@ -645,6 +648,7 @@ type WaapRequestDetails struct {
 		Ja3                 respjson.Field
 		Ja4                 respjson.Field
 		OptionalAction      respjson.Field
+		PolicyOverride      respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
@@ -874,6 +878,35 @@ const (
 	WaapRequestDetailsOptionalActionChallenge WaapRequestDetailsOptionalAction = "challenge"
 	WaapRequestDetailsOptionalActionEmpty     WaapRequestDetailsOptionalAction = ""
 )
+
+// An override that applied to a request, with its match metadata.
+type WaapRequestDetailsPolicyOverride struct {
+	// ID of the policy override applied to this request.
+	ID int64 `json:"id" api:"required"`
+	// Match evidence keyed by target reference, such as 'ID861'. For legacy records,
+	// evidence is retained only for the first matched target; subsequent matched
+	// targets have empty objects.
+	Matched map[string]any `json:"matched" api:"required"`
+	// Type of target affected by the override: 'waf_rule' for a detector or
+	// 'static_rule_template' for a rule.
+	//
+	// Any of "waf_rule", "static_rule_template".
+	T string `json:"t" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Matched     respjson.Field
+		T           respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapRequestDetailsPolicyOverride) RawJSON() string { return r.JSON.raw }
+func (r *WaapRequestDetailsPolicyOverride) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type DomainStatisticGetDDOSAttacksParams struct {
 	// End time of the search interval. Excludes attacks that started after it
