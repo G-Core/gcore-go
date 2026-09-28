@@ -40,6 +40,19 @@ func NewStatisticService(opts ...option.RequestOption) (r StatisticService) {
 	return
 }
 
+// Get the number of aliases in use.
+//
+// Request URL parameters should be added as a query string after the endpoint.
+//
+// The requested period is always expanded to whole calendar months, so a request
+// for part of a month returns the count for its entire containing month.
+func (r *StatisticService) GetAliasUsageAggregated(ctx context.Context, query StatisticGetAliasUsageAggregatedParams, opts ...option.RequestOption) (res *AliasAggregatedStats, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "cdn/statistics/aliases_usage/aggregated"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
 // Get the number of CDN resources that used Logs uploader.
 //
 // Request URL parameters should be added as a query string after the endpoint.
@@ -98,6 +111,53 @@ func (r *StatisticService) GetShieldUsageSeries(ctx context.Context, query Stati
 	path := "cdn/statistics/shield_usage/series"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
+}
+
+type AliasAggregatedStats struct {
+	// CDN resource ID for which statistics data is shown.
+	Number1Example any `json:"1 (example)"`
+	// Client ID for which statistics data is shown.
+	Number12Example any `json:"12 (example)"`
+	// Client IDs by which statistics data is grouped.
+	Client any `json:"client"`
+	// Statistics parameters.
+	Metrics AliasAggregatedStatsMetrics `json:"metrics"`
+	// Resources IDs by which statistics data is grouped.
+	Resource any `json:"resource"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Number1Example  respjson.Field
+		Number12Example respjson.Field
+		Client          respjson.Field
+		Metrics         respjson.Field
+		Resource        respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AliasAggregatedStats) RawJSON() string { return r.JSON.raw }
+func (r *AliasAggregatedStats) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Statistics parameters.
+type AliasAggregatedStatsMetrics struct {
+	// Number of aliases in use.
+	AliasUsage int64 `json:"alias_usage"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AliasUsage  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AliasAggregatedStatsMetrics) RawJSON() string { return r.JSON.raw }
+func (r *AliasAggregatedStatsMetrics) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type LogsAggregatedStats struct {
@@ -374,6 +434,45 @@ type UsageSeriesStat struct {
 func (r UsageSeriesStat) RawJSON() string { return r.JSON.raw }
 func (r *UsageSeriesStat) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type StatisticGetAliasUsageAggregatedParams struct {
+	// Beginning of the requested time period (ISO 8601/RFC 3339 format, UTC.)
+	From string `query:"from" api:"required" json:"-"`
+	// End of the requested time period (ISO 8601/RFC 3339 format, UTC.)
+	To string `query:"to" api:"required" json:"-"`
+	// The way the parameters are arranged in the response.
+	//
+	// Possible values:
+	//
+	// - **true** – Flat structure is used.
+	// - **false** – Embedded structure is used (default.)
+	Flat param.Opt[bool] `query:"flat,omitzero" json:"-"`
+	// Output data grouping.
+	//
+	// Possible value:
+	//
+	// - **resource** - Data is grouped by CDN resources.
+	GroupBy param.Opt[string] `query:"group_by,omitzero" json:"-"`
+	// CDN resources IDs by that statistics data is grouped.
+	//
+	// To request multiple values, use:
+	//
+	// - &resource=1&resource=2
+	//
+	// If CDN resource ID is not specified, data related to all CDN resources is
+	// returned.
+	Resource param.Opt[int64] `query:"resource,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [StatisticGetAliasUsageAggregatedParams]'s query parameters
+// as `url.Values`.
+func (r StatisticGetAliasUsageAggregatedParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
 }
 
 type StatisticGetLogsUsageAggregatedParams struct {

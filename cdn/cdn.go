@@ -41,6 +41,9 @@ type CDNService struct {
 	// applied to an object in a single request, letting you configure caching,
 	// delivery, and security options consistently.
 	Presets PresetService
+	// CDN aliases are hostnames you own that are served with the settings of one of
+	// your CDN resources, each with its own SSL certificate.
+	Aliases AliasService
 	// CDN SSL certificates enable HTTPS content delivery, supporting both uploaded
 	// certificates and automated Let's Encrypt provisioning.
 	Certificates CertificateService
@@ -92,6 +95,7 @@ func NewCDNService(opts ...option.RequestOption) (r CDNService) {
 	r.OriginGroups = NewOriginGroupService(opts...)
 	r.RuleTemplates = NewRuleTemplateService(opts...)
 	r.Presets = NewPresetService(opts...)
+	r.Aliases = NewAliasService(opts...)
 	r.Certificates = NewCertificateService(opts...)
 	r.TrustedCaCertificates = NewTrustedCaCertificateService(opts...)
 	r.AuditLogs = NewAuditLogService(opts...)

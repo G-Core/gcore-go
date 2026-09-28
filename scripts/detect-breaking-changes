@@ -170,6 +170,7 @@ TEST_PATHS=(
 	cdn/ruletemplate_test.go
 	cdn/preset_test.go
 	cdn/presetapplied_test.go
+	cdn/alias_test.go
 	cdn/certificate_test.go
 	cdn/trustedcacertificate_test.go
 	cdn/auditlog_test.go

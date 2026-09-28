@@ -161,12 +161,12 @@ type SslDetail struct {
 	// - **true** - Certificate has been deleted.
 	// - **false** - Certificate has not been deleted.
 	Deleted bool `json:"deleted"`
-	// Defines whether the SSL certificate is used by a CDN resource.
+	// Defines whether the SSL certificate is used by a CDN resource or an alias.
 	//
 	// Possible values:
 	//
-	// - **true** - Certificate is used by a CDN resource.
-	// - **false** - Certificate is not used by a CDN resource.
+	// - **true** - Certificate is used by a CDN resource or an alias.
+	// - **false** - Certificate is not used by a CDN resource or an alias.
 	HasRelatedResources bool `json:"hasRelatedResources"`
 	// SSL certificate name.
 	Name string `json:"name"`
