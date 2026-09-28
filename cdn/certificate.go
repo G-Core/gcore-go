@@ -120,6 +120,17 @@ func (r *CertificateService) GetStatus(ctx context.Context, certID int64, query 
 	return res, err
 }
 
+// Get list of CDN resources and aliases that are using this SSL certificate.
+//
+// This endpoint is useful to check which resources and aliases depend on a
+// certificate before renewing, modifying, or deleting it.
+func (r *CertificateService) GetUsage(ctx context.Context, certID int64, opts ...option.RequestOption) (res *SslCertificateUsage, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := fmt.Sprintf("cdn/sslData/%v/usage", certID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
 // Renew free Let's Encrypt certificate for the CDN resource. It can take up to
 // fifteen minutes.
 func (r *CertificateService) Renew(ctx context.Context, certID int64, opts ...option.RequestOption) (err error) {
@@ -136,6 +147,99 @@ func (r *CertificateService) Replace(ctx context.Context, sslID int64, body Cert
 	path := fmt.Sprintf("cdn/sslData/%v", sslID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return res, err
+}
+
+// List of CDN resources and aliases using this SSL certificate.
+type SslCertificateUsage struct {
+	// Aliases that have this certificate attached, including one in the process of
+	// issuance.
+	Aliases []SslCertificateUsageAlias `json:"aliases" api:"required"`
+	// CDN resources that have this certificate attached.
+	Resources []SslCertificateUsageResource `json:"resources" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Aliases     respjson.Field
+		Resources   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SslCertificateUsage) RawJSON() string { return r.JSON.raw }
+func (r *SslCertificateUsage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SslCertificateUsageAlias struct {
+	// Alias ID.
+	ID int64 `json:"id" api:"required"`
+	// Alias hostname.
+	Cname string `json:"cname" api:"required"`
+	// Alias status.
+	//
+	// Possible values:
+	//
+	//   - **pending** – The certificate has not been issued yet; the alias is not
+	//     served.
+	//   - **active** – The alias is served with its certificate.
+	//   - **`ssl_issuing`** – A new certificate is being issued; the current one keeps
+	//     being served.
+	//   - **`ssl_error`** – Certificate issuance failed; a previously issued certificate
+	//     keeps being served.
+	//   - **inactive** – The alias or its CDN resource is disabled; the alias is not
+	//     served.
+	//
+	// Any of "pending", "active", "ssl_issuing", "ssl_error", "inactive".
+	Status string `json:"status" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Cname       respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SslCertificateUsageAlias) RawJSON() string { return r.JSON.raw }
+func (r *SslCertificateUsageAlias) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SslCertificateUsageResource struct {
+	// CDN resource ID.
+	ID int64 `json:"id" api:"required"`
+	// CDN resource CNAME (primary hostname).
+	Cname string `json:"cname" api:"required"`
+	// CDN resource status.
+	//
+	// Possible values:
+	//
+	//   - **active** - CDN resource is active. Content is available to users.
+	//   - **suspended** - CDN resource is suspended. Content is not available to users.
+	//   - **processed** - CDN resource has recently been created and is currently being
+	//     processed. It will take about fifteen minutes to propagate it to all
+	//     locations.
+	//   - **deleted** - CDN resource is deleted.
+	//
+	// Any of "active", "suspended", "processed", "deleted".
+	Status string `json:"status" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Cname       respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SslCertificateUsageResource) RawJSON() string { return r.JSON.raw }
+func (r *SslCertificateUsageResource) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type SslDetail struct {
