@@ -1,5 +1,43 @@
 # Changelog
 
+## [0.58.0](https://github.com/G-Core/gcore-go/compare/v0.57.0...v0.58.0) (2026-09-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* **security-iaas:** update profile template filtering and fields
+* **iam:** remove activating service status
+* **cloud:** remove merge leftovers from generated files
+* **streaming:** require name when creating a player
+* **streaming:** update streaming OpenAPI spec
+
+### Features
+
+* **cdn:** add CDN alias endpoints and alias usage statistics ([082f020](https://github.com/G-Core/gcore-go/commit/082f020a1cab57f44eb7daf578bc4307f8a30100))
+* **cdn:** add certificate usage method ([f037752](https://github.com/G-Core/gcore-go/commit/f037752e69f1a8dc25b00c05f1101f082cd226f9))
+* **security-iaas:** update profile template filtering and fields ([6f2b5e6](https://github.com/G-Core/gcore-go/commit/6f2b5e605d387d7095a2314bc04322fa5b297527))
+* **streaming:** update streaming OpenAPI spec ([47b1514](https://github.com/G-Core/gcore-go/commit/47b1514ab40862ad0a9edd6820313ab942dbbec4))
+
+
+### Bug Fixes
+
+* **cloud:** remove merge leftovers from generated files ([69306ff](https://github.com/G-Core/gcore-go/commit/69306ffce0524133d79cc5237ecca1e1d27233ad))
+* **iam:** remove activating service status ([00faf49](https://github.com/G-Core/gcore-go/commit/00faf490c44d9d57651e11b12c4d54c73c0fb2f0))
+* **streaming:** require name when creating a player ([beeac15](https://github.com/G-Core/gcore-go/commit/beeac15c7c797623aa97520c6c25133790e337f5))
+
+
+### Chores
+
+* **cloud:** update cloud OpenAPI spec ([625f16e](https://github.com/G-Core/gcore-go/commit/625f16e5183ce0d59b3c6c6049b8f2a739da3996))
+* **dns:** update dns OpenAPI spec ([d989097](https://github.com/G-Core/gcore-go/commit/d9890972c7c2ae20677eba5e5a191101ddf9c23f))
+* **waap:** update waap OpenAPI spec ([d9128d8](https://github.com/G-Core/gcore-go/commit/d9128d832af025fee0e90e6096fdbb1ef0f3ac37))
+
+
+### Refactors
+
+* **cdn:** move custom methods into _custom.go files ([0832995](https://github.com/G-Core/gcore-go/commit/08329955ce21aaa4df2a2441ba2d7d4e4012b9dd))
+* **storage:** move *AndPoll methods into _custom.go files ([b02c66d](https://github.com/G-Core/gcore-go/commit/b02c66dfd3d5b5c294fc174c3e26862461c8400e))
+
 ## [0.57.0](https://github.com/G-Core/gcore-go/compare/v0.56.0...v0.57.0) (2026-09-22)
 
 
