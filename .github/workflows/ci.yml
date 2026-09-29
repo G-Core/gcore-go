@@ -1,37 +1,25 @@
 name: CI
 on:
+  # Fire once per SHA. Pull requests cover branches, push covers `main` (a
+  # different SHA). Two triggers for one SHA create duplicate check runs with
+  # the same name, and GitHub counts a skipped run as a passing required check.
   push:
     branches:
-      - '**'
-      - '!integrated/**'
-      - '!stl-preview-head/**'
-      - '!stl-preview-base/**'
-      - '!generated'
-      - '!codegen/**'
-      - 'codegen/stl/**'
+      - main
   pull_request:
     branches-ignore:
       - 'stl-preview-head/**'
       - 'stl-preview-base/**'
 
+permissions:
+  contents: read
+
 jobs:
-  build:
-    timeout-minutes: 10
-    name: build
-    permissions:
-      contents: read
-      id-token: write
-    runs-on: ubuntu-latest
-    if: |-
-      github.repository == 'G-Core/gcore-go-staging' &&
-      (github.event_name == 'push' || github.event.pull_request.head.repo.fork) && (github.event_name != 'push' || github.event.head_commit.message != 'codegen metadata')
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
   lint:
     timeout-minutes: 10
     name: lint
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.fork
+    if: github.event_name != 'push' || github.event.head_commit.message != 'codegen metadata'
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
