@@ -154,7 +154,7 @@ func (r *RoleAssignmentUpdatedDeleted) UnmarshalJSON(data []byte) error {
 }
 
 type UserRoleAssignmentNewParams struct {
-	// User role
+	// User role. The InternalNetworkOnlyUser value is deprecated. Use User instead.
 	//
 	// Any of "ClientAdministrator", "InternalNetworkOnlyUser", "Observer",
 	// "ProjectAdministrator", "User".
@@ -176,7 +176,7 @@ func (r *UserRoleAssignmentNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// User role
+// User role. The InternalNetworkOnlyUser value is deprecated. Use User instead.
 type UserRoleAssignmentNewParamsRole string
 
 const (
@@ -188,7 +188,7 @@ const (
 )
 
 type UserRoleAssignmentUpdateParams struct {
-	// User role
+	// User role. The InternalNetworkOnlyUser value is deprecated. Use User instead.
 	//
 	// Any of "ClientAdministrator", "InternalNetworkOnlyUser", "Observer",
 	// "ProjectAdministrator", "User".
@@ -210,7 +210,7 @@ func (r *UserRoleAssignmentUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// User role
+// User role. The InternalNetworkOnlyUser value is deprecated. Use User instead.
 type UserRoleAssignmentUpdateParamsRole string
 
 const (
