@@ -32,7 +32,7 @@ Response Types:
 
 Methods:
 
-- <code title="get /security/iaas/profile-templates">client.Security.ProfileTemplates.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security#ProfileTemplateService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*[]<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security">security</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security#ClientProfileTemplate">ClientProfileTemplate</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /security/iaas/profile-templates">client.Security.ProfileTemplates.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security#ProfileTemplateService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security">security</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security#ProfileTemplateListParams">ProfileTemplateListParams</a>) (\*[]<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security">security</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/security#ClientProfileTemplate">ClientProfileTemplate</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## Profiles
 

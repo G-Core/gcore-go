@@ -11,9 +11,10 @@ import (
 	"github.com/G-Core/gcore-go"
 	"github.com/G-Core/gcore-go/internal/testutil"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/security"
 )
 
-func TestProfileTemplateList(t *testing.T) {
+func TestProfileTemplateListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -25,7 +26,9 @@ func TestProfileTemplateList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Security.ProfileTemplates.List(context.TODO())
+	_, err := client.Security.ProfileTemplates.List(context.TODO(), security.ProfileTemplateListParams{
+		AcceptsIPAddress: gcore.Bool(true),
+	})
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {

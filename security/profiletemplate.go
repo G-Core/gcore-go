@@ -5,12 +5,15 @@ package security
 import (
 	"context"
 	"net/http"
+	"net/url"
 	"slices"
 	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
+	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
@@ -35,34 +38,34 @@ func NewProfileTemplateService(opts ...option.RequestOption) (r ProfileTemplateS
 
 // Get list of profile templates. Profile template is used as a template to create
 // profile. Client receives only common and created for him profile templates.
-func (r *ProfileTemplateService) List(ctx context.Context, opts ...option.RequestOption) (res *[]ClientProfileTemplate, err error) {
+func (r *ProfileTemplateService) List(ctx context.Context, query ProfileTemplateListParams, opts ...option.RequestOption) (res *[]ClientProfileTemplate, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "security/iaas/profile-templates"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
 
 type ClientProfileTemplate struct {
-	ID             int64                        `json:"id" api:"required"`
-	Created        time.Time                    `json:"created" api:"required" format:"date-time"`
-	Fields         []ClientProfileTemplateField `json:"fields" api:"required"`
-	Name           string                       `json:"name" api:"required"`
-	Version        string                       `json:"version" api:"required" format:"uuid"`
-	BaseTemplate   int64                        `json:"base_template" api:"nullable"`
-	Description    string                       `json:"description"`
-	TemplateSifter string                       `json:"template_sifter" api:"nullable"`
+	ID           int64                        `json:"id" api:"required"`
+	Created      time.Time                    `json:"created" api:"required" format:"date-time"`
+	Fields       []ClientProfileTemplateField `json:"fields" api:"required"`
+	Name         string                       `json:"name" api:"required"`
+	Version      string                       `json:"version" api:"required" format:"uuid"`
+	AllowMerge   bool                         `json:"allow_merge"`
+	BaseTemplate int64                        `json:"base_template" api:"nullable"`
+	Description  string                       `json:"description"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID             respjson.Field
-		Created        respjson.Field
-		Fields         respjson.Field
-		Name           respjson.Field
-		Version        respjson.Field
-		BaseTemplate   respjson.Field
-		Description    respjson.Field
-		TemplateSifter respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
+		ID           respjson.Field
+		Created      respjson.Field
+		Fields       respjson.Field
+		Name         respjson.Field
+		Version      respjson.Field
+		AllowMerge   respjson.Field
+		BaseTemplate respjson.Field
+		Description  respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
 	} `json:"-"`
 }
 
@@ -108,3 +111,20 @@ const (
 	ClientProfileTemplateFieldFieldTypeBool ClientProfileTemplateFieldFieldType = "bool"
 	ClientProfileTemplateFieldFieldTypeStr  ClientProfileTemplateFieldFieldType = "str"
 )
+
+type ProfileTemplateListParams struct {
+	// Keep only templates that require a protected `ip_address` per profile (true), or
+	// only templates whose protected addresses are hardcoded (false). Omit to get
+	// every template.
+	AcceptsIPAddress param.Opt[bool] `query:"accepts_ip_address,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [ProfileTemplateListParams]'s query parameters as
+// `url.Values`.
+func (r ProfileTemplateListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
