@@ -39,7 +39,9 @@ func NewLocationService(opts ...option.RequestOption) (r LocationService) {
 }
 
 // Returns storage locations where you can create new storages. Only locations
-// currently accepting new storage creation are returned.
+// currently accepting new storage creation are returned. Use the `type` query
+// parameter to restrict the result to a location type (object storage performance
+// tier or sftp).
 func (r *LocationService) List(ctx context.Context, query LocationListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Location], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -58,7 +60,9 @@ func (r *LocationService) List(ctx context.Context, query LocationListParams, op
 }
 
 // Returns storage locations where you can create new storages. Only locations
-// currently accepting new storage creation are returned.
+// currently accepting new storage creation are returned. Use the `type` query
+// parameter to restrict the result to a location type (object storage performance
+// tier or sftp).
 func (r *LocationService) ListAutoPaging(ctx context.Context, query LocationListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Location] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
@@ -108,6 +112,11 @@ type LocationListParams struct {
 	// Number of records to skip before beginning to return results
 	Offset  param.Opt[int64]  `query:"offset,omitzero" json:"-"`
 	OrderBy param.Opt[string] `query:"order_by,omitzero" json:"-"`
+	// Filter by location type: object storage performance tier (standard, fast) or
+	// sftp
+	//
+	// Any of "standard", "fast", "sftp".
+	Type LocationListParamsType `query:"type,omitzero" json:"-"`
 	paramObj
 }
 
@@ -118,3 +127,13 @@ func (r LocationListParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
 }
+
+// Filter by location type: object storage performance tier (standard, fast) or
+// sftp
+type LocationListParamsType string
+
+const (
+	LocationListParamsTypeStandard LocationListParamsType = "standard"
+	LocationListParamsTypeFast     LocationListParamsType = "fast"
+	LocationListParamsTypeSftp     LocationListParamsType = "sftp"
+)

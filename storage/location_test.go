@@ -30,6 +30,7 @@ func TestLocationListWithOptionalParams(t *testing.T) {
 		Limit:   gcore.Int(1),
 		Offset:  gcore.Int(0),
 		OrderBy: gcore.String("order_by"),
+		Type:    storage.LocationListParamsTypeStandard,
 	})
 	if err != nil {
 		var apierr *gcore.Error

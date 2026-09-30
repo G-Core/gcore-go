@@ -96,6 +96,10 @@ func (r *ObjectStorageBucketService) ListAutoPaging(ctx context.Context, storage
 
 // Removes a bucket from an S3-compatible storage. All objects in the bucket will
 // be deleted.
+//
+// Returns 409 when CDN still uses the bucket as an origin or a logs-uploader
+// target — unbind it in CDN first — or when that could not be verified, in which
+// case the bucket is left in place and the request can be retried.
 func (r *ObjectStorageBucketService) Delete(ctx context.Context, name string, body ObjectStorageBucketDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -205,7 +209,10 @@ func (r *BucketPolicy) UnmarshalJSON(data []byte) error {
 
 type ObjectStorageBucketNewParams struct {
 	// Name of the bucket to create
-	Name string `json:"name" api:"required"`
+	Name      string                                `json:"name" api:"required"`
+	Cors      ObjectStorageBucketNewParamsCors      `json:"cors,omitzero"`
+	Lifecycle ObjectStorageBucketNewParamsLifecycle `json:"lifecycle,omitzero"`
+	Policy    ObjectStorageBucketNewParamsPolicy    `json:"policy,omitzero"`
 	paramObj
 }
 
@@ -214,6 +221,51 @@ func (r ObjectStorageBucketNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *ObjectStorageBucketNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ObjectStorageBucketNewParamsCors struct {
+	// Web domains allowed to make direct browser requests. Send an empty array to
+	// remove CORS configuration.
+	AllowedOrigins []string `json:"allowed_origins,omitzero"`
+	paramObj
+}
+
+func (r ObjectStorageBucketNewParamsCors) MarshalJSON() (data []byte, err error) {
+	type shadow ObjectStorageBucketNewParamsCors
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ObjectStorageBucketNewParamsCors) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ObjectStorageBucketNewParamsLifecycle struct {
+	// Days before objects are automatically deleted. Set to a positive number to
+	// enable, or null/0 to remove the rule.
+	ExpirationDays param.Opt[int64] `json:"expiration_days,omitzero"`
+	paramObj
+}
+
+func (r ObjectStorageBucketNewParamsLifecycle) MarshalJSON() (data []byte, err error) {
+	type shadow ObjectStorageBucketNewParamsLifecycle
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ObjectStorageBucketNewParamsLifecycle) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ObjectStorageBucketNewParamsPolicy struct {
+	// Set to true to allow unauthenticated object downloads, false to require valid S3
+	// credentials. Omit to leave the current policy unchanged.
+	IsPublic param.Opt[bool] `json:"is_public,omitzero"`
+	paramObj
+}
+
+func (r ObjectStorageBucketNewParamsPolicy) MarshalJSON() (data []byte, err error) {
+	type shadow ObjectStorageBucketNewParamsPolicy
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ObjectStorageBucketNewParamsPolicy) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -265,7 +317,7 @@ func (r *ObjectStorageBucketUpdateParamsLifecycle) UnmarshalJSON(data []byte) er
 
 type ObjectStorageBucketUpdateParamsPolicy struct {
 	// Set to true to allow unauthenticated object downloads, false to require valid S3
-	// credentials.
+	// credentials. Omit to leave the current policy unchanged.
 	IsPublic param.Opt[bool] `json:"is_public,omitzero"`
 	paramObj
 }

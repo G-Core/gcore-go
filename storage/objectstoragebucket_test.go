@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/storage"
 )
 
-func TestObjectStorageBucketNew(t *testing.T) {
+func TestObjectStorageBucketNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -31,6 +31,15 @@ func TestObjectStorageBucketNew(t *testing.T) {
 		0,
 		storage.ObjectStorageBucketNewParams{
 			Name: "my-new-bucket",
+			Cors: storage.ObjectStorageBucketNewParamsCors{
+				AllowedOrigins: []string{"https://example.com"},
+			},
+			Lifecycle: storage.ObjectStorageBucketNewParamsLifecycle{
+				ExpirationDays: gcore.Int(30),
+			},
+			Policy: storage.ObjectStorageBucketNewParamsPolicy{
+				IsPublic: gcore.Bool(true),
+			},
 		},
 	)
 	if err != nil {
