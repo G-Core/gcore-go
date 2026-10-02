@@ -221,9 +221,15 @@ type FileShare struct {
 	CreatorTaskID string `json:"creator_task_id" api:"required" format:"uuid4"`
 	// File share name
 	Name string `json:"name" api:"required"`
-	// Network ID.
+	// Network and subnet of the file share.
+	Network FileShareNetwork `json:"network" api:"required"`
+	// Deprecated. Use `network.network_id` instead. Network ID.
+	//
+	// Deprecated: deprecated
 	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
-	// Network name.
+	// Deprecated. Use `network.network_name` instead. Network name.
+	//
+	// Deprecated: deprecated
 	NetworkName string `json:"network_name" api:"required"`
 	// Project ID
 	ProjectID int64 `json:"project_id" api:"required"`
@@ -250,9 +256,13 @@ type FileShare struct {
 	// "shrinking", "shrinking_error", "shrinking_possible_data_loss_error",
 	// "unmanage_error", "unmanage_starting", "unmanaged".
 	Status FileShareStatus `json:"status" api:"required"`
-	// Subnet ID.
+	// Deprecated. Use `network.subnet_id` instead. Subnet ID.
+	//
+	// Deprecated: deprecated
 	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
-	// Subnet name.
+	// Deprecated. Use `network.subnet_name` instead. Subnet name.
+	//
+	// Deprecated: deprecated
 	SubnetName string `json:"subnet_name" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
@@ -281,6 +291,7 @@ type FileShare struct {
 		CreatedAt        respjson.Field
 		CreatorTaskID    respjson.Field
 		Name             respjson.Field
+		Network          respjson.Field
 		NetworkID        respjson.Field
 		NetworkName      respjson.Field
 		ProjectID        respjson.Field
@@ -305,6 +316,33 @@ type FileShare struct {
 // Returns the unmodified JSON received from the API
 func (r FileShare) RawJSON() string { return r.JSON.raw }
 func (r *FileShare) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Network and subnet of the file share.
+type FileShareNetwork struct {
+	// Network ID.
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
+	// Network name.
+	NetworkName string `json:"network_name" api:"required"`
+	// ID of the subnet that the file share uses.
+	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
+	// Subnet name.
+	SubnetName string `json:"subnet_name" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		NetworkID   respjson.Field
+		NetworkName respjson.Field
+		SubnetID    respjson.Field
+		SubnetName  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileShareNetwork) RawJSON() string { return r.JSON.raw }
+func (r *FileShareNetwork) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
