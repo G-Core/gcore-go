@@ -293,6 +293,10 @@ type GPUVirtualClusterServersSettings struct {
 	SSHKeyName string `json:"ssh_key_name" api:"required"`
 	// Optional custom user data
 	UserData string `json:"user_data" api:"required"`
+	// Shows the username that `credentials.username` set at creation. The value is
+	// `null` when the cluster uses only `credentials.ssh_key_name`, or has no
+	// credentials.
+	Username string `json:"username" api:"required"`
 	// List of volumes
 	Volumes []GPUVirtualClusterServersSettingsVolume `json:"volumes" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -302,6 +306,7 @@ type GPUVirtualClusterServersSettings struct {
 		SecurityGroups respjson.Field
 		SSHKeyName     respjson.Field
 		UserData       respjson.Field
+		Username       respjson.Field
 		Volumes        respjson.Field
 		ExtraFields    map[string]respjson.Field
 		raw            string
@@ -344,8 +349,9 @@ func (r *GPUVirtualClusterServersSettingsFileShare) UnmarshalJSON(data []byte) e
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type GPUVirtualClusterServersSettingsInterfaceUnion struct {
-	IPFamily string `json:"ip_family"`
-	Name     string `json:"name"`
+	IPFamily            string `json:"ip_family"`
+	Name                string `json:"name"`
+	PortSecurityEnabled bool   `json:"port_security_enabled"`
 	// This field is a union of
 	// [[]GPUVirtualClusterServersSettingsInterfaceExternalSecurityGroup],
 	// [[]GPUVirtualClusterServersSettingsInterfaceSubnetSecurityGroup],
@@ -363,15 +369,16 @@ type GPUVirtualClusterServersSettingsInterfaceUnion struct {
 	// This field is from variant [GPUVirtualClusterServersSettingsInterfaceAnySubnet].
 	IPAddress string `json:"ip_address"`
 	JSON      struct {
-		IPFamily       respjson.Field
-		Name           respjson.Field
-		SecurityGroups respjson.Field
-		Type           respjson.Field
-		FloatingIP     respjson.Field
-		NetworkID      respjson.Field
-		SubnetID       respjson.Field
-		IPAddress      respjson.Field
-		raw            string
+		IPFamily            respjson.Field
+		Name                respjson.Field
+		PortSecurityEnabled respjson.Field
+		SecurityGroups      respjson.Field
+		Type                respjson.Field
+		FloatingIP          respjson.Field
+		NetworkID           respjson.Field
+		SubnetID            respjson.Field
+		IPAddress           respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -485,17 +492,22 @@ type GPUVirtualClusterServersSettingsInterfaceExternal struct {
 	IPFamily string `json:"ip_family" api:"required"`
 	// Interface name
 	Name string `json:"name" api:"required"`
+	// Shows the port security state of this interface. A `null` value means port
+	// security is on, with the default security group attached. A `true` or `false`
+	// value shows the state set at creation.
+	PortSecurityEnabled bool `json:"port_security_enabled" api:"required"`
 	// Resolved security groups applied to this interface.
 	SecurityGroups []GPUVirtualClusterServersSettingsInterfaceExternalSecurityGroup `json:"security_groups" api:"required"`
 	Type           constant.External                                                `json:"type" default:"external"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		IPFamily       respjson.Field
-		Name           respjson.Field
-		SecurityGroups respjson.Field
-		Type           respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
+		IPFamily            respjson.Field
+		Name                respjson.Field
+		PortSecurityEnabled respjson.Field
+		SecurityGroups      respjson.Field
+		Type                respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -534,6 +546,10 @@ type GPUVirtualClusterServersSettingsInterfaceSubnet struct {
 	Name string `json:"name" api:"required"`
 	// Network ID the subnet belongs to. Port will be plugged in this network
 	NetworkID string `json:"network_id" api:"required"`
+	// Shows the port security state of this interface. A `null` value means port
+	// security is on, with the default security group attached. A `true` or `false`
+	// value shows the state set at creation.
+	PortSecurityEnabled bool `json:"port_security_enabled" api:"required"`
 	// Resolved security groups applied to this interface.
 	SecurityGroups []GPUVirtualClusterServersSettingsInterfaceSubnetSecurityGroup `json:"security_groups" api:"required"`
 	// Port is assigned an IP address from this subnet
@@ -541,14 +557,15 @@ type GPUVirtualClusterServersSettingsInterfaceSubnet struct {
 	Type     constant.Subnet `json:"type" default:"subnet"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		FloatingIP     respjson.Field
-		Name           respjson.Field
-		NetworkID      respjson.Field
-		SecurityGroups respjson.Field
-		SubnetID       respjson.Field
-		Type           respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
+		FloatingIP          respjson.Field
+		Name                respjson.Field
+		NetworkID           respjson.Field
+		PortSecurityEnabled respjson.Field
+		SecurityGroups      respjson.Field
+		SubnetID            respjson.Field
+		Type                respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -612,20 +629,25 @@ type GPUVirtualClusterServersSettingsInterfaceAnySubnet struct {
 	Name string `json:"name" api:"required"`
 	// Network ID the subnet belongs to. Port will be plugged in this network
 	NetworkID string `json:"network_id" api:"required"`
+	// Shows the port security state of this interface. A `null` value means port
+	// security is on, with the default security group attached. A `true` or `false`
+	// value shows the state set at creation.
+	PortSecurityEnabled bool `json:"port_security_enabled" api:"required"`
 	// Resolved security groups applied to this interface.
 	SecurityGroups []GPUVirtualClusterServersSettingsInterfaceAnySubnetSecurityGroup `json:"security_groups" api:"required"`
 	Type           constant.AnySubnet                                                `json:"type" default:"any_subnet"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		FloatingIP     respjson.Field
-		IPAddress      respjson.Field
-		IPFamily       respjson.Field
-		Name           respjson.Field
-		NetworkID      respjson.Field
-		SecurityGroups respjson.Field
-		Type           respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
+		FloatingIP          respjson.Field
+		IPAddress           respjson.Field
+		IPFamily            respjson.Field
+		Name                respjson.Field
+		NetworkID           respjson.Field
+		PortSecurityEnabled respjson.Field
+		SecurityGroups      respjson.Field
+		Type                respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
