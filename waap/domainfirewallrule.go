@@ -88,7 +88,7 @@ func (r *DomainFirewallRuleService) Delete(ctx context.Context, ruleID int64, bo
 }
 
 // Delete Multiple WAAP Firewall Rules
-func (r *DomainFirewallRuleService) DeleteMultiple(ctx context.Context, domainID int64, body DomainFirewallRuleDeleteMultipleParams, opts ...option.RequestOption) (res *DomainFirewallRuleDeleteMultipleResponse, err error) {
+func (r *DomainFirewallRuleService) DeleteMultiple(ctx context.Context, domainID int64, body DomainFirewallRuleDeleteMultipleParams, opts ...option.RequestOption) (res *WaapRulesBulkDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v2/domains/%v/firewall-rules/bulk_delete", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -104,7 +104,7 @@ func (r *DomainFirewallRuleService) Get(ctx context.Context, ruleID int64, query
 }
 
 // Toggle Firewall Rule
-func (r *DomainFirewallRuleService) Toggle(ctx context.Context, action DomainFirewallRuleToggleParamsAction, body DomainFirewallRuleToggleParams, opts ...option.RequestOption) (res *DomainFirewallRuleToggleResponse, err error) {
+func (r *DomainFirewallRuleService) Toggle(ctx context.Context, action DomainFirewallRuleToggleParamsAction, body DomainFirewallRuleToggleParams, opts ...option.RequestOption) (res *WaapRuleToggleResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v2/domains/%v/firewall-rules/%v/%v", body.DomainID, body.RuleID, action)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, &res, opts...)
@@ -256,40 +256,6 @@ type WaapFirewallRuleConditionIPRange struct {
 // Returns the unmodified JSON received from the API
 func (r WaapFirewallRuleConditionIPRange) RawJSON() string { return r.JSON.raw }
 func (r *WaapFirewallRuleConditionIPRange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DomainFirewallRuleDeleteMultipleResponse struct {
-	// Rules IDs deleted by the operation
-	DeletedIDs []int64 `json:"deleted_ids"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		DeletedIDs  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DomainFirewallRuleDeleteMultipleResponse) RawJSON() string { return r.JSON.raw }
-func (r *DomainFirewallRuleDeleteMultipleResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DomainFirewallRuleToggleResponse struct {
-	// Rule enabled status after operation
-	Enabled bool `json:"enabled" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Enabled     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DomainFirewallRuleToggleResponse) RawJSON() string { return r.JSON.raw }
-func (r *DomainFirewallRuleToggleResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

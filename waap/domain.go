@@ -31,6 +31,7 @@ import (
 type DomainService struct {
 	Options         []option.RequestOption
 	Policies        DomainPolicyService
+	PolicyOverrides DomainPolicyOverrideService
 	Settings        DomainSettingService
 	APIPaths        DomainAPIPathService
 	APIPathGroups   DomainAPIPathGroupService
@@ -50,6 +51,7 @@ func NewDomainService(opts ...option.RequestOption) (r DomainService) {
 	r = DomainService{}
 	r.Options = opts
 	r.Policies = NewDomainPolicyService(opts...)
+	r.PolicyOverrides = NewDomainPolicyOverrideService(opts...)
 	r.Settings = NewDomainSettingService(opts...)
 	r.APIPaths = NewDomainAPIPathService(opts...)
 	r.APIPathGroups = NewDomainAPIPathGroupService(opts...)
@@ -114,19 +116,27 @@ func (r *DomainService) Get(ctx context.Context, domainID int64, opts ...option.
 	return res, err
 }
 
-// Retrieve all rule sets linked to a particular domain, each with its policies
-// embedded. Deprecated. Will become unavailable after Sun, 13 Dec 2026. Use
-// [List domain policy rule sets (V2)](#operation/`list_policy_rule_sets_v2_domains__domain_id__rule_sets_get`)
-// for the rule sets and
-// [List domain policies (V2)](#operation/`list_domain_policies_v2_domains__domain_id__policies_get`)
-// for their policies instead
-//
-// Deprecated: deprecated
-func (r *DomainService) ListRuleSets(ctx context.Context, domainID int64, opts ...option.RequestOption) (res *[]WaapRuleSet, err error) {
+// Retrieve a paginated list of policy rule sets linked to a particular domain
+func (r *DomainService) ListRuleSets(ctx context.Context, domainID int64, query DomainListRuleSetsParams, opts ...option.RequestOption) (res *pagination.OffsetPage[WaapRuleSet], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("waap/v1/domains/%v/rule-sets", domainID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	path := fmt.Sprintf("waap/v2/domains/%v/rule-sets", domainID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a paginated list of policy rule sets linked to a particular domain
+func (r *DomainService) ListRuleSetsAutoPaging(ctx context.Context, domainID int64, query DomainListRuleSetsParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[WaapRuleSet] {
+	return pagination.NewOffsetPageAutoPager(r.ListRuleSets(ctx, domainID, query, opts...))
 }
 
 // Represents a WAAP domain, serving as a singular unit within the WAAP service.
@@ -433,7 +443,7 @@ func (r *WaapRequestSummaryPolicyOverride) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Represents a custom rule set with associated rules.
+// Represents a custom rule set.
 type WaapRuleSet struct {
 	// Identifier of the rule set.
 	ID int64 `json:"id" api:"required"`
@@ -443,8 +453,6 @@ type WaapRuleSet struct {
 	IsActive bool `json:"is_active" api:"required"`
 	// Name of the rule set.
 	Name string `json:"name" api:"required"`
-	// Collection of security rules associated with the rule set.
-	Rules []WaapRuleSetRule `json:"rules" api:"required"`
 	// Collection of tags associated with the rule set.
 	Tags []WaapRuleSetTag `json:"tags" api:"required"`
 	// The resource slug associated with the rule set.
@@ -455,7 +463,6 @@ type WaapRuleSet struct {
 		Description  respjson.Field
 		IsActive     respjson.Field
 		Name         respjson.Field
-		Rules        respjson.Field
 		Tags         respjson.Field
 		ResourceSlug respjson.Field
 		ExtraFields  map[string]respjson.Field
@@ -466,45 +473,6 @@ type WaapRuleSet struct {
 // Returns the unmodified JSON received from the API
 func (r WaapRuleSet) RawJSON() string { return r.JSON.raw }
 func (r *WaapRuleSet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Represents a configurable WAAP security rule, also known as a policy.
-type WaapRuleSetRule struct {
-	// Unique identifier for the security rule
-	ID string `json:"id" api:"required"`
-	// Specifies the action taken by the WAAP upon rule activation
-	//
-	// Any of "Allow", "Block", "Captcha", "Gateway", "Handshake", "Monitor",
-	// "Composite".
-	Action string `json:"action" api:"required"`
-	// Detailed description of the security rule
-	Description string `json:"description" api:"required"`
-	// The rule set group name to which the rule belongs
-	Group string `json:"group" api:"required"`
-	// Indicates if the security rule is active
-	Mode bool `json:"mode" api:"required"`
-	// Name of the security rule
-	Name string `json:"name" api:"required"`
-	// Identifier of the rule set to which the rule belongs
-	RuleSetID int64 `json:"rule_set_id" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Action      respjson.Field
-		Description respjson.Field
-		Group       respjson.Field
-		Mode        respjson.Field
-		Name        respjson.Field
-		RuleSetID   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WaapRuleSetRule) RawJSON() string { return r.JSON.raw }
-func (r *WaapRuleSetRule) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -529,6 +497,40 @@ type WaapRuleSetTag struct {
 // Returns the unmodified JSON received from the API
 func (r WaapRuleSetTag) RawJSON() string { return r.JSON.raw }
 func (r *WaapRuleSetTag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WaapRuleToggleResponse struct {
+	// Rule enabled status after operation
+	Enabled bool `json:"enabled" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Enabled     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapRuleToggleResponse) RawJSON() string { return r.JSON.raw }
+func (r *WaapRuleToggleResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WaapRulesBulkDeleteResponse struct {
+	// Rules IDs deleted by the operation
+	DeletedIDs []int64 `json:"deleted_ids"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DeletedIDs  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapRulesBulkDeleteResponse) RawJSON() string { return r.JSON.raw }
+func (r *WaapRulesBulkDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -760,3 +762,20 @@ const (
 	DomainListParamsStatusMonitor DomainListParamsStatus = "monitor"
 	DomainListParamsStatusLocked  DomainListParamsStatus = "locked"
 )
+
+type DomainListRuleSetsParams struct {
+	// Number of items to return
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Number of items to skip
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [DomainListRuleSetsParams]'s query parameters as
+// `url.Values`.
+func (r DomainListRuleSetsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}

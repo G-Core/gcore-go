@@ -97,6 +97,7 @@ TEST_PATHS=(
 	waap/analytics_test.go
 	waap/domain_test.go
 	waap/domainpolicy_test.go
+	waap/domainpolicyoverride_test.go
 	waap/domainsetting_test.go
 	waap/domainapipath_test.go
 	waap/domainapipathgroup_test.go
@@ -110,6 +111,10 @@ TEST_PATHS=(
 	waap/domainfirewallrule_test.go
 	waap/domainadvancedrule_test.go
 	waap/custompageset_test.go
+	waap/firewallrule_test.go
+	waap/filtertemplate_test.go
+	waap/prebilling_test.go
+	waap/ipreputation_test.go
 	waap/advancedrule_test.go
 	waap/tag_test.go
 	waap/organization_test.go

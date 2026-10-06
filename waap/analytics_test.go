@@ -47,6 +47,73 @@ func TestAnalyticsGetEventStatisticsWithOptionalParams(t *testing.T) {
 	}
 }
 
+func TestAnalyticsGetEventsWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Waap.Analytics.GetEvents(context.TODO(), waap.AnalyticsGetEventsParams{
+		Start:                    "2024-04-13T00:00:00+01:00",
+		Countries:                []string{"DE", "MY"},
+		Decision:                 []string{"allowed", "blocked"},
+		Domains:                  []int64{1, 2, 3},
+		End:                      gcore.String("2024-04-14T12:00:00Z"),
+		ExcludeCountries:         []string{"DE", "MY"},
+		ExcludeDecision:          []string{"allowed", "blocked"},
+		ExcludeDomains:           []int64{0},
+		ExcludeHTTPMethods:       []string{"POST", "PUT"},
+		ExcludeIPs:               []string{"1.2.3.4", "2001:678:194::3c25:ddad"},
+		ExcludeJa3:               []string{"e7d705a3286e19ea42f587b344ee6865"},
+		ExcludeJa4:               []string{"t13d3113h2_e8f1e7e78f70_ce5650b735ce"},
+		ExcludeOptionalAction:    []string{"captcha", "challenge"},
+		ExcludeOrganizations:     []string{"Acme corp"},
+		ExcludePath:              []string{"/home", "/users/*/profile"},
+		ExcludeReferenceIDs:      []string{"210b9798eb53baa4e69d31c1071cf03d"},
+		ExcludeRequestIDs:        []string{"96763b8fb655e9f18a2e04097b704e39-458959"},
+		ExcludeSecurityRuleNames: []string{"SQL injection"},
+		ExcludeSessionIDs:        []string{"210b9798eb53baa4e69d31c1071cf03d"},
+		ExcludeStatusCodes:       []int64{100},
+		ExcludeTags:              []string{"mousedevice"},
+		ExcludeUserAgent:         []string{"python-requests", "bot"},
+		ExcludeUserAgentClients:  []string{"OpenAI GPTBot", "Uptimerobot"},
+		ExcludeUserAgentDevices:  []string{"SMART TV"},
+		HasPolicyOverride:        gcore.Bool(true),
+		HTTPMethods:              []string{"GET", "HEAD"},
+		IPs:                      []string{"1.2.3.4", "2001:678:194::3c25:ddad"},
+		Ja3:                      []string{"e7d705a3286e19ea42f587b344ee6865"},
+		Ja4:                      []string{"t13d3113h2_e8f1e7e78f70_ce5650b735ce"},
+		Limit:                    gcore.Int(1),
+		Next:                     gcore.String("next"),
+		OptionalAction:           []string{"captcha", "challenge"},
+		OrderBy:                  waap.AnalyticsGetEventsParamsOrderByRequestTimeAsc,
+		Organizations:            []string{"Example Org", "Acme Corp"},
+		Path:                     []string{"/home", "/users/*/profile"},
+		ReferenceIDs:             []string{"1140fcddf208cbdf01694e8e2f818a68"},
+		RequestIDs:               []string{"96763b8fb655e9f18a2e04097b704e39-458959"},
+		SecurityRuleNames:        []string{"SQL injection"},
+		SessionIDs:               []string{"edab69d73b47cfecc3d3c038ada6c7de"},
+		StatusCodes:              []int64{100},
+		Tags:                     []string{"evasiveclient", "injectionattack"},
+		UserAgent:                []string{"Mozilla/5.0", "python-requests"},
+		UserAgentClients:         []string{"Chrome", "Firefox"},
+		UserAgentDevices:         []string{"mac", "Nokia", "PlayStation"},
+	})
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestAnalyticsGetFiltersWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {

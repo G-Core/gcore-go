@@ -115,7 +115,7 @@ func TestDomainGet(t *testing.T) {
 	}
 }
 
-func TestDomainListRuleSets(t *testing.T) {
+func TestDomainListRuleSetsWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -127,7 +127,14 @@ func TestDomainListRuleSets(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Waap.Domains.ListRuleSets(context.TODO(), 1)
+	_, err := client.Waap.Domains.ListRuleSets(
+		context.TODO(),
+		1,
+		waap.DomainListRuleSetsParams{
+			Limit:  gcore.Int(0),
+			Offset: gcore.Int(0),
+		},
+	)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {

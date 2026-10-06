@@ -13,6 +13,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
@@ -35,6 +36,33 @@ func NewIPInfoService(opts ...option.RequestOption) (r IPInfoService) {
 	r.Options = opts
 	r.Metrics = NewIPInfoMetricService(opts...)
 	return
+}
+
+// Retrieve a time-series of attacks originating from a specified IP address,
+// scoped to the authenticated account's domains
+func (r *IPInfoService) GetAccountAttackTimeSeries(ctx context.Context, query IPInfoGetAccountAttackTimeSeriesParams, opts ...option.RequestOption) (res *[]WaapTimeSeriesAttack, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "waap/v2/ip-info/attack-time-series"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Retrieve comprehensive metrics for an IP address including distinct counts of
+// attack types, domains, paths, and user agents across all account domains
+func (r *IPInfoService) GetAccountCounts(ctx context.Context, query IPInfoGetAccountCountsParams, opts ...option.RequestOption) (res *WaapIPInfoCountsV2, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "waap/v2/ip-info/counts"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Retrieve up to 10 top user agents associated with an IP across all account
+// domains.
+func (r *IPInfoService) GetAccountTopUserAgents(ctx context.Context, query IPInfoGetAccountTopUserAgentsParams, opts ...option.RequestOption) (res *[]WaapTopUserAgentDetail, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "waap/v2/ip-info/top-user-agents"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
 }
 
 // Retrieve a time-series of attacks originating from a specified IP address.
@@ -73,6 +101,33 @@ func (r *IPInfoService) GetDDOSAttackSeries(ctx context.Context, query IPInfoGet
 func (r *IPInfoService) GetIPInfo(ctx context.Context, query IPInfoGetIPInfoParams, opts ...option.RequestOption) (res *WaapIPInfo, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "waap/v1/ip-info/ip-info"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Returns top attack types with associated domains, paths, and counts across all
+// account domains
+func (r *IPInfoService) GetTopAttacks(ctx context.Context, query IPInfoGetTopAttacksParams, opts ...option.RequestOption) (res *[]WaapTopAttack, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "waap/v1/ip-info/top-attacks"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Retrieve top attacked domains for an IP address, scoped to the authenticated
+// account's domains
+func (r *IPInfoService) GetTopDomains(ctx context.Context, query IPInfoGetTopDomainsParams, opts ...option.RequestOption) (res *[]WaapTopDomainDetail, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "waap/v1/ip-info/top-domains"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Retrieve top attacked paths for an IP address, scoped to the authenticated
+// account's domains
+func (r *IPInfoService) GetTopPaths(ctx context.Context, query IPInfoGetTopPathsParams, opts ...option.RequestOption) (res *[]WaapTopPathDetail, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "waap/v2/ip-info/top-paths"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -263,6 +318,41 @@ func (r *WaapIPInfoWhois) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type WaapIPInfoCountsV2 struct {
+	// The number of distinct attack types (rules) that blocked requests from this IP
+	AttackTypes int64 `json:"attack_types" api:"required"`
+	// The number of requests from the IP address that were blocked
+	BlockedRequests int64 `json:"blocked_requests" api:"required"`
+	// The number of distinct domains accessed by this IP
+	Domains int64 `json:"domains" api:"required"`
+	// The number of distinct paths (URLs) accessed by this IP
+	Paths int64 `json:"paths" api:"required"`
+	// The total number of requests made by the IP address
+	TotalRequests int64 `json:"total_requests" api:"required"`
+	// The number of unique sessions from the IP address
+	UniqueSessions int64 `json:"unique_sessions" api:"required"`
+	// The number of distinct user agents used by this IP
+	UserAgents int64 `json:"user_agents" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AttackTypes     respjson.Field
+		BlockedRequests respjson.Field
+		Domains         respjson.Field
+		Paths           respjson.Field
+		TotalRequests   respjson.Field
+		UniqueSessions  respjson.Field
+		UserAgents      respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapIPInfoCountsV2) RawJSON() string { return r.JSON.raw }
+func (r *WaapIPInfoCountsV2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type WaapRuleBlockedRequests struct {
 	// The action taken by the rule
 	Action string `json:"action" api:"required"`
@@ -323,6 +413,120 @@ type WaapTimeSeriesAttackValue struct {
 // Returns the unmodified JSON received from the API
 func (r WaapTimeSeriesAttackValue) RawJSON() string { return r.JSON.raw }
 func (r *WaapTimeSeriesAttackValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WaapTopAttack struct {
+	// The attack type (rule name)
+	AttackType string `json:"attack_type" api:"required"`
+	// Total number of attack requests (blocked + monitored)
+	Attacks int64 `json:"attacks" api:"required"`
+	// Number of blocked attack requests
+	Blocked int64 `json:"blocked" api:"required"`
+	// Full list of domains where this attack type was seen
+	Domains []string `json:"domains"`
+	// Full list of paths where this attack type was seen
+	Paths []string `json:"paths"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AttackType  respjson.Field
+		Attacks     respjson.Field
+		Blocked     respjson.Field
+		Domains     respjson.Field
+		Paths       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapTopAttack) RawJSON() string { return r.JSON.raw }
+func (r *WaapTopAttack) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WaapTopDomainDetail struct {
+	// Distinct rule names seen for this IP+domain, sorted alphabetically.
+	AttackTypes []string `json:"attack_types" api:"required"`
+	// Total detected attacks.
+	Attacks int64 `json:"attacks" api:"required"`
+	// Blocked attacks.
+	Blocked int64 `json:"blocked" api:"required"`
+	// First-seen timestamp for the IP+domain within retention period.
+	Date time.Time `json:"date" api:"required" format:"date-time"`
+	// Domain name.
+	Domain string `json:"domain" api:"required"`
+	// `last_seen` - `first_seen` in seconds within retention.
+	Duration int64 `json:"duration" api:"required"`
+	// Distinct URL paths excluding query strings.
+	Paths int64 `json:"paths" api:"required"`
+	// Total requests.
+	Requests int64 `json:"requests" api:"required"`
+	// Distinct sessions.
+	Sessions int64 `json:"sessions" api:"required"`
+	// Distinct user agents.
+	UserAgents int64 `json:"user_agents" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AttackTypes respjson.Field
+		Attacks     respjson.Field
+		Blocked     respjson.Field
+		Date        respjson.Field
+		Domain      respjson.Field
+		Duration    respjson.Field
+		Paths       respjson.Field
+		Requests    respjson.Field
+		Sessions    respjson.Field
+		UserAgents  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapTopDomainDetail) RawJSON() string { return r.JSON.raw }
+func (r *WaapTopDomainDetail) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WaapTopPathDetail struct {
+	// First seen timestamp for the IP+path within retention period
+	Date time.Time `json:"date" api:"required" format:"date-time"`
+	// Path value as stored in logs
+	Path string `json:"path" api:"required"`
+	// Distinct rule names seen for this IP+path
+	AttackTypes []string `json:"attack_types"`
+	// Total detected attacks (blocked + monitored/suppressed outcomes)
+	Attacks int64 `json:"attacks"`
+	// Blocked attacks
+	Blocked int64 `json:"blocked"`
+	// `last_seen` - `first_seen` in seconds within retention
+	Duration int64 `json:"duration"`
+	// Total requests
+	Requests int64 `json:"requests"`
+	// Distinct sessions
+	Sessions int64 `json:"sessions"`
+	// Distinct user agents
+	UserAgents int64 `json:"user_agents"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Date        respjson.Field
+		Path        respjson.Field
+		AttackTypes respjson.Field
+		Attacks     respjson.Field
+		Blocked     respjson.Field
+		Duration    respjson.Field
+		Requests    respjson.Field
+		Sessions    respjson.Field
+		UserAgents  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapTopPathDetail) RawJSON() string { return r.JSON.raw }
+func (r *WaapTopPathDetail) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -395,6 +599,88 @@ func (r *WaapTopUserAgent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type WaapTopUserAgentDetail struct {
+	// Total number of detected attacks.
+	Attacks int64 `json:"attacks"`
+	// Number of blocked attacks.
+	Blocked int64 `json:"blocked"`
+	// Number of distinct domains.
+	Domains int64 `json:"domains"`
+	// Number of distinct URL paths excluding query strings.
+	Paths int64 `json:"paths"`
+	// Total number of requests.
+	Requests int64 `json:"requests"`
+	// Number of distinct sessions.
+	Sessions int64 `json:"sessions"`
+	// The user agent string; missing values are represented as "".
+	UserAgent string `json:"user_agent"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Attacks     respjson.Field
+		Blocked     respjson.Field
+		Domains     respjson.Field
+		Paths       respjson.Field
+		Requests    respjson.Field
+		Sessions    respjson.Field
+		UserAgent   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapTopUserAgentDetail) RawJSON() string { return r.JSON.raw }
+func (r *WaapTopUserAgentDetail) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type IPInfoGetAccountAttackTimeSeriesParams struct {
+	// The IP address to check
+	IP string `query:"ip" api:"required" format:"ipv4" json:"-"`
+	// Number of days to look back for attack data
+	Days param.Opt[int64] `query:"days,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [IPInfoGetAccountAttackTimeSeriesParams]'s query parameters
+// as `url.Values`.
+func (r IPInfoGetAccountAttackTimeSeriesParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+type IPInfoGetAccountCountsParams struct {
+	// The IP address to check
+	IP string `query:"ip" api:"required" format:"ipv4" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [IPInfoGetAccountCountsParams]'s query parameters as
+// `url.Values`.
+func (r IPInfoGetAccountCountsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+type IPInfoGetAccountTopUserAgentsParams struct {
+	// The IP address to check
+	IP string `query:"ip" api:"required" format:"ipv4" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [IPInfoGetAccountTopUserAgentsParams]'s query parameters as
+// `url.Values`.
+func (r IPInfoGetAccountTopUserAgentsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
 type IPInfoGetAttackTimeSeriesParams struct {
 	// The IP address to check
 	IP string `query:"ip" api:"required" format:"ipv4" json:"-"`
@@ -452,6 +738,51 @@ type IPInfoGetIPInfoParams struct {
 
 // URLQuery serializes [IPInfoGetIPInfoParams]'s query parameters as `url.Values`.
 func (r IPInfoGetIPInfoParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+type IPInfoGetTopAttacksParams struct {
+	// The IP address to check
+	IP string `query:"ip" api:"required" format:"ipv4" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [IPInfoGetTopAttacksParams]'s query parameters as
+// `url.Values`.
+func (r IPInfoGetTopAttacksParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+type IPInfoGetTopDomainsParams struct {
+	// The IP address to check
+	IP string `query:"ip" api:"required" format:"ipv4" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [IPInfoGetTopDomainsParams]'s query parameters as
+// `url.Values`.
+func (r IPInfoGetTopDomainsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+type IPInfoGetTopPathsParams struct {
+	// The IP address to check
+	IP string `query:"ip" api:"required" format:"ipv4" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [IPInfoGetTopPathsParams]'s query parameters as
+// `url.Values`.
+func (r IPInfoGetTopPathsParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,

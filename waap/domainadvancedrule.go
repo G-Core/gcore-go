@@ -96,7 +96,7 @@ func (r *DomainAdvancedRuleService) Get(ctx context.Context, ruleID int64, query
 }
 
 // Toggle Advanced Rule
-func (r *DomainAdvancedRuleService) Toggle(ctx context.Context, action DomainAdvancedRuleToggleParamsAction, body DomainAdvancedRuleToggleParams, opts ...option.RequestOption) (res *DomainAdvancedRuleToggleResponse, err error) {
+func (r *DomainAdvancedRuleService) Toggle(ctx context.Context, action DomainAdvancedRuleToggleParamsAction, body DomainAdvancedRuleToggleParams, opts ...option.RequestOption) (res *WaapRuleToggleResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v2/domains/%v/advanced-rules/%v/%v", body.DomainID, body.RuleID, action)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, &res, opts...)
@@ -253,23 +253,6 @@ const (
 	WaapAdvancedRulePhaseHeaderFilter WaapAdvancedRulePhase = "header_filter"
 	WaapAdvancedRulePhaseBodyFilter   WaapAdvancedRulePhase = "body_filter"
 )
-
-type DomainAdvancedRuleToggleResponse struct {
-	// Rule enabled status after operation
-	Enabled bool `json:"enabled" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Enabled     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DomainAdvancedRuleToggleResponse) RawJSON() string { return r.JSON.raw }
-func (r *DomainAdvancedRuleToggleResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 type DomainAdvancedRuleNewParams struct {
 	// The action that the rule takes when triggered. Only one action can be set per

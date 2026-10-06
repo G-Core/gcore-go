@@ -88,7 +88,7 @@ func (r *DomainCustomRuleService) Delete(ctx context.Context, ruleID int64, body
 }
 
 // Delete Multiple Custom WAAP Rules
-func (r *DomainCustomRuleService) DeleteMultiple(ctx context.Context, domainID int64, body DomainCustomRuleDeleteMultipleParams, opts ...option.RequestOption) (res *DomainCustomRuleDeleteMultipleResponse, err error) {
+func (r *DomainCustomRuleService) DeleteMultiple(ctx context.Context, domainID int64, body DomainCustomRuleDeleteMultipleParams, opts ...option.RequestOption) (res *WaapRulesBulkDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v2/domains/%v/custom-rules/bulk_delete", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -104,7 +104,7 @@ func (r *DomainCustomRuleService) Get(ctx context.Context, ruleID int64, query D
 }
 
 // Toggle Custom Rule
-func (r *DomainCustomRuleService) Toggle(ctx context.Context, action DomainCustomRuleToggleParamsAction, body DomainCustomRuleToggleParams, opts ...option.RequestOption) (res *DomainCustomRuleToggleResponse, err error) {
+func (r *DomainCustomRuleService) Toggle(ctx context.Context, action DomainCustomRuleToggleParamsAction, body DomainCustomRuleToggleParams, opts ...option.RequestOption) (res *WaapRuleToggleResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v2/domains/%v/custom-rules/%v/%v", body.DomainID, body.RuleID, action)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, &res, opts...)
@@ -785,40 +785,6 @@ type WaapCustomRuleConditionUserDefinedTags struct {
 // Returns the unmodified JSON received from the API
 func (r WaapCustomRuleConditionUserDefinedTags) RawJSON() string { return r.JSON.raw }
 func (r *WaapCustomRuleConditionUserDefinedTags) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DomainCustomRuleDeleteMultipleResponse struct {
-	// Rules IDs deleted by the operation
-	DeletedIDs []int64 `json:"deleted_ids"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		DeletedIDs  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DomainCustomRuleDeleteMultipleResponse) RawJSON() string { return r.JSON.raw }
-func (r *DomainCustomRuleDeleteMultipleResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DomainCustomRuleToggleResponse struct {
-	// Rule enabled status after operation
-	Enabled bool `json:"enabled" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Enabled     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DomainCustomRuleToggleResponse) RawJSON() string { return r.JSON.raw }
-func (r *DomainCustomRuleToggleResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

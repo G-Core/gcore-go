@@ -25,13 +25,17 @@ type WaapService struct {
 	Analytics  AnalyticsService
 	// WAAP domains enable Web Application and API Protection for monitoring and
 	// defending web applications against security threats.
-	Domains        DomainService
-	CustomPageSets CustomPageSetService
-	AdvancedRules  AdvancedRuleService
-	Tags           TagService
-	Organizations  OrganizationService
-	Insights       InsightService
-	IPInfo         IPInfoService
+	Domains         DomainService
+	CustomPageSets  CustomPageSetService
+	FirewallRules   FirewallRuleService
+	FilterTemplates FilterTemplateService
+	Prebilling      PrebillingService
+	IPReputation    IPReputationService
+	AdvancedRules   AdvancedRuleService
+	Tags            TagService
+	Organizations   OrganizationService
+	Insights        InsightService
+	IPInfo          IPInfoService
 }
 
 // NewWaapService generates a new service that applies the given options to each
@@ -44,6 +48,10 @@ func NewWaapService(opts ...option.RequestOption) (r WaapService) {
 	r.Analytics = NewAnalyticsService(opts...)
 	r.Domains = NewDomainService(opts...)
 	r.CustomPageSets = NewCustomPageSetService(opts...)
+	r.FirewallRules = NewFirewallRuleService(opts...)
+	r.FilterTemplates = NewFilterTemplateService(opts...)
+	r.Prebilling = NewPrebillingService(opts...)
+	r.IPReputation = NewIPReputationService(opts...)
 	r.AdvancedRules = NewAdvancedRuleService(opts...)
 	r.Tags = NewTagService(opts...)
 	r.Organizations = NewOrganizationService(opts...)
@@ -53,7 +61,7 @@ func NewWaapService(opts ...option.RequestOption) (r WaapService) {
 }
 
 // Get information about WAAP service for the client
-func (r *WaapService) GetAccountOverview(ctx context.Context, opts ...option.RequestOption) (res *WaapGetAccountOverviewResponse, err error) {
+func (r *WaapService) GetAccountOverview(ctx context.Context, opts ...option.RequestOption) (res *WaapAccountOverview, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "waap/v1/clients/me"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -61,15 +69,15 @@ func (r *WaapService) GetAccountOverview(ctx context.Context, opts ...option.Req
 }
 
 // Represents the WAAP service information for a client
-type WaapGetAccountOverviewResponse struct {
+type WaapAccountOverview struct {
 	// The client ID
 	ID int64 `json:"id" api:"required"`
 	// List of enabled features
 	Features []string `json:"features" api:"required"`
 	// Quotas for the client
-	Quotas map[string]WaapGetAccountOverviewResponseQuota `json:"quotas" api:"required"`
+	Quotas map[string]WaapAccountOverviewQuota `json:"quotas" api:"required"`
 	// Information about the WAAP service status
-	Service WaapGetAccountOverviewResponseService `json:"service" api:"required"`
+	Service WaapAccountOverviewService `json:"service" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -82,12 +90,12 @@ type WaapGetAccountOverviewResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WaapGetAccountOverviewResponse) RawJSON() string { return r.JSON.raw }
-func (r *WaapGetAccountOverviewResponse) UnmarshalJSON(data []byte) error {
+func (r WaapAccountOverview) RawJSON() string { return r.JSON.raw }
+func (r *WaapAccountOverview) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WaapGetAccountOverviewResponseQuota struct {
+type WaapAccountOverviewQuota struct {
 	// The maximum allowed number of this resource
 	Allowed int64 `json:"allowed" api:"required"`
 	// The current number of this resource
@@ -102,13 +110,13 @@ type WaapGetAccountOverviewResponseQuota struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WaapGetAccountOverviewResponseQuota) RawJSON() string { return r.JSON.raw }
-func (r *WaapGetAccountOverviewResponseQuota) UnmarshalJSON(data []byte) error {
+func (r WaapAccountOverviewQuota) RawJSON() string { return r.JSON.raw }
+func (r *WaapAccountOverviewQuota) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Information about the WAAP service status
-type WaapGetAccountOverviewResponseService struct {
+type WaapAccountOverviewService struct {
 	// Whether the service is enabled
 	Enabled bool `json:"enabled" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -120,7 +128,7 @@ type WaapGetAccountOverviewResponseService struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WaapGetAccountOverviewResponseService) RawJSON() string { return r.JSON.raw }
-func (r *WaapGetAccountOverviewResponseService) UnmarshalJSON(data []byte) error {
+func (r WaapAccountOverviewService) RawJSON() string { return r.JSON.raw }
+func (r *WaapAccountOverviewService) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
