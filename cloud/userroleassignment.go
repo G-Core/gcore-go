@@ -97,8 +97,7 @@ type RoleAssignment struct {
 	ProjectID int64 `json:"project_id" api:"required"`
 	// User role
 	//
-	// Any of "ClientAdministrator", "InternalNetworkOnlyUser", "Observer",
-	// "ProjectAdministrator", "User".
+	// Any of "ClientAdministrator", "Observer", "ProjectAdministrator", "User".
 	Role RoleAssignmentRole `json:"role" api:"required"`
 	// Updated timestamp
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
@@ -129,11 +128,10 @@ func (r *RoleAssignment) UnmarshalJSON(data []byte) error {
 type RoleAssignmentRole string
 
 const (
-	RoleAssignmentRoleClientAdministrator     RoleAssignmentRole = "ClientAdministrator"
-	RoleAssignmentRoleInternalNetworkOnlyUser RoleAssignmentRole = "InternalNetworkOnlyUser"
-	RoleAssignmentRoleObserver                RoleAssignmentRole = "Observer"
-	RoleAssignmentRoleProjectAdministrator    RoleAssignmentRole = "ProjectAdministrator"
-	RoleAssignmentRoleUser                    RoleAssignmentRole = "User"
+	RoleAssignmentRoleClientAdministrator  RoleAssignmentRole = "ClientAdministrator"
+	RoleAssignmentRoleObserver             RoleAssignmentRole = "Observer"
+	RoleAssignmentRoleProjectAdministrator RoleAssignmentRole = "ProjectAdministrator"
+	RoleAssignmentRoleUser                 RoleAssignmentRole = "User"
 )
 
 type RoleAssignmentUpdatedDeleted struct {
@@ -154,10 +152,9 @@ func (r *RoleAssignmentUpdatedDeleted) UnmarshalJSON(data []byte) error {
 }
 
 type UserRoleAssignmentNewParams struct {
-	// User role. The InternalNetworkOnlyUser value is deprecated. Use User instead.
+	// User role
 	//
-	// Any of "ClientAdministrator", "InternalNetworkOnlyUser", "Observer",
-	// "ProjectAdministrator", "User".
+	// Any of "ClientAdministrator", "Observer", "ProjectAdministrator", "User".
 	Role UserRoleAssignmentNewParamsRole `json:"role,omitzero" api:"required"`
 	// User ID
 	UserID int64 `json:"user_id" api:"required"`
@@ -176,22 +173,20 @@ func (r *UserRoleAssignmentNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// User role. The InternalNetworkOnlyUser value is deprecated. Use User instead.
+// User role
 type UserRoleAssignmentNewParamsRole string
 
 const (
-	UserRoleAssignmentNewParamsRoleClientAdministrator     UserRoleAssignmentNewParamsRole = "ClientAdministrator"
-	UserRoleAssignmentNewParamsRoleInternalNetworkOnlyUser UserRoleAssignmentNewParamsRole = "InternalNetworkOnlyUser"
-	UserRoleAssignmentNewParamsRoleObserver                UserRoleAssignmentNewParamsRole = "Observer"
-	UserRoleAssignmentNewParamsRoleProjectAdministrator    UserRoleAssignmentNewParamsRole = "ProjectAdministrator"
-	UserRoleAssignmentNewParamsRoleUser                    UserRoleAssignmentNewParamsRole = "User"
+	UserRoleAssignmentNewParamsRoleClientAdministrator  UserRoleAssignmentNewParamsRole = "ClientAdministrator"
+	UserRoleAssignmentNewParamsRoleObserver             UserRoleAssignmentNewParamsRole = "Observer"
+	UserRoleAssignmentNewParamsRoleProjectAdministrator UserRoleAssignmentNewParamsRole = "ProjectAdministrator"
+	UserRoleAssignmentNewParamsRoleUser                 UserRoleAssignmentNewParamsRole = "User"
 )
 
 type UserRoleAssignmentUpdateParams struct {
-	// User role. The InternalNetworkOnlyUser value is deprecated. Use User instead.
+	// User role
 	//
-	// Any of "ClientAdministrator", "InternalNetworkOnlyUser", "Observer",
-	// "ProjectAdministrator", "User".
+	// Any of "ClientAdministrator", "Observer", "ProjectAdministrator", "User".
 	Role UserRoleAssignmentUpdateParamsRole `json:"role,omitzero" api:"required"`
 	// User ID
 	UserID int64 `json:"user_id" api:"required"`
@@ -210,15 +205,14 @@ func (r *UserRoleAssignmentUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// User role. The InternalNetworkOnlyUser value is deprecated. Use User instead.
+// User role
 type UserRoleAssignmentUpdateParamsRole string
 
 const (
-	UserRoleAssignmentUpdateParamsRoleClientAdministrator     UserRoleAssignmentUpdateParamsRole = "ClientAdministrator"
-	UserRoleAssignmentUpdateParamsRoleInternalNetworkOnlyUser UserRoleAssignmentUpdateParamsRole = "InternalNetworkOnlyUser"
-	UserRoleAssignmentUpdateParamsRoleObserver                UserRoleAssignmentUpdateParamsRole = "Observer"
-	UserRoleAssignmentUpdateParamsRoleProjectAdministrator    UserRoleAssignmentUpdateParamsRole = "ProjectAdministrator"
-	UserRoleAssignmentUpdateParamsRoleUser                    UserRoleAssignmentUpdateParamsRole = "User"
+	UserRoleAssignmentUpdateParamsRoleClientAdministrator  UserRoleAssignmentUpdateParamsRole = "ClientAdministrator"
+	UserRoleAssignmentUpdateParamsRoleObserver             UserRoleAssignmentUpdateParamsRole = "Observer"
+	UserRoleAssignmentUpdateParamsRoleProjectAdministrator UserRoleAssignmentUpdateParamsRole = "ProjectAdministrator"
+	UserRoleAssignmentUpdateParamsRoleUser                 UserRoleAssignmentUpdateParamsRole = "User"
 )
 
 type UserRoleAssignmentListParams struct {

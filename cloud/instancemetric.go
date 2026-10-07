@@ -73,9 +73,11 @@ type Metrics struct {
 	Disks []MetricsDisk `json:"disks" api:"nullable"`
 	// RAM utilization, %
 	MemoryUtil float64 `json:"memory_util" api:"nullable"`
-	// Network out, bytes per second
+	// Network out, bits per second (the 'Bps' in the field name is historical; the
+	// value is bits, not bytes)
 	NetworkBpsEgress float64 `json:"network_Bps_egress" api:"nullable"`
-	// Network in, bytes per second
+	// Network in, bits per second (the 'Bps' in the field name is historical; the
+	// value is bits, not bytes)
 	NetworkBpsIngress float64 `json:"network_Bps_ingress" api:"nullable"`
 	// Network out, packets per second
 	NetworkPpsEgress float64 `json:"network_pps_egress" api:"nullable"`

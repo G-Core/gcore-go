@@ -988,9 +988,11 @@ type LoadBalancerMetrics struct {
 	CPUUtil float64 `json:"cpu_util" api:"required"`
 	// RAM utilization, %. Null when no data point is available.
 	MemoryUtil float64 `json:"memory_util" api:"required"`
-	// Network out, bytes per second. Null when no data point is available.
+	// Network out, bits per second (the 'Bps' in the field name is historical; the
+	// value is bits, not bytes). Null when no data point is available.
 	NetworkBpsEgress float64 `json:"network_Bps_egress" api:"required"`
-	// Network in, bytes per second. Null when no data point is available.
+	// Network in, bits per second (the 'Bps' in the field name is historical; the
+	// value is bits, not bytes). Null when no data point is available.
 	NetworkBpsIngress float64 `json:"network_Bps_ingress" api:"required"`
 	// Network out, packets per second. Null when no data point is available.
 	NetworkPpsEgress float64 `json:"network_pps_egress" api:"required"`

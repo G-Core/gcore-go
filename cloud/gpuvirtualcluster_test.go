@@ -163,8 +163,9 @@ func TestGPUVirtualClusterListWithOptionalParams(t *testing.T) {
 			Prefix:   []string{"string"},
 			Suffix:   []string{"string"},
 		},
-		IDs:   []string{"1aaaab48-10d0-46d9-80cc-85209284ceb4"},
-		Limit: gcore.Int(10),
+		IDs:       []string{"1aaaab48-10d0-46d9-80cc-85209284ceb4"},
+		Limit:     gcore.Int(10),
+		ManagedBy: []string{"user"},
 		Name: cloud.GPUVirtualClusterListParamsName{
 			Contains: []string{"string"},
 			Exact:    []string{"string"},

@@ -235,6 +235,10 @@ type GPUVirtualCluster struct {
 	Flavor string `json:"flavor" api:"required"`
 	// True if any server in the cluster has pending (not yet applied) settings changes
 	HasPendingChanges bool `json:"has_pending_changes" api:"required"`
+	// User type managing the resource
+	//
+	// Any of "k8s", "user".
+	ManagedBy GPUVirtualClusterManagedBy `json:"managed_by" api:"required"`
 	// Cluster name
 	Name string `json:"name" api:"required"`
 	// Cluster servers count
@@ -261,6 +265,7 @@ type GPUVirtualCluster struct {
 		CreatedAt         respjson.Field
 		Flavor            respjson.Field
 		HasPendingChanges respjson.Field
+		ManagedBy         respjson.Field
 		Name              respjson.Field
 		ServersCount      respjson.Field
 		ServersIDs        respjson.Field
@@ -278,6 +283,14 @@ func (r GPUVirtualCluster) RawJSON() string { return r.JSON.raw }
 func (r *GPUVirtualCluster) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// User type managing the resource
+type GPUVirtualClusterManagedBy string
+
+const (
+	GPUVirtualClusterManagedByK8S  GPUVirtualClusterManagedBy = "k8s"
+	GPUVirtualClusterManagedByUser GPUVirtualClusterManagedBy = "user"
+)
 
 type GPUVirtualClusterServersSettings struct {
 	// List of file shares mounted across the cluster.
@@ -1729,6 +1742,11 @@ type GPUVirtualClusterListParams struct {
 	Flavor GPUVirtualClusterListParamsFlavor `query:"flavor,omitzero" json:"-"`
 	// Return only clusters with these IDs, e.g. `ids=<id1>&ids=<id2>`.
 	IDs []string `query:"ids,omitzero" format:"uuid4" json:"-"`
+	// Filter by who manages the cluster: `user` (default) or `k8s` (Managed
+	// Kubernetes). Pass both to include all, e.g. `managed_by=user&managed_by=k8s`.
+	//
+	// Any of "k8s", "user".
+	ManagedBy []string `query:"managed_by,omitzero" json:"-"`
 	// Filter by name (case-insensitive), e.g. `name[contains]=gpu`,
 	// `name[prefix]=prod-`.
 	Name GPUVirtualClusterListParamsName `query:"name,omitzero" json:"-"`
