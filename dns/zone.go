@@ -688,6 +688,10 @@ type ZoneListParams struct {
 	ExactMatch param.Opt[bool] `query:"exact_match,omitzero" json:"-"`
 	// Zones with RRsets that have healthchecks
 	Healthcheck param.Opt[bool] `query:"healthcheck,omitzero" json:"-"`
+	// Filter by AXFR secondary zone marker (meta.`is_secondary`). true returns only
+	// secondary zones, false returns only zones without that marker (primary zones
+	// have no `is_secondary` key at all), omitted returns all zones.
+	IsSecondary param.Opt[bool] `query:"is_secondary,omitzero" json:"-"`
 	// Max number of records in response
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Amount of records to skip before beginning to write in response.

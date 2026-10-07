@@ -71,6 +71,7 @@ func TestZoneListWithOptionalParams(t *testing.T) {
 		ExactMatch:     gcore.Bool(true),
 		Healthcheck:    gcore.Bool(true),
 		IamResellerID:  []int64{0},
+		IsSecondary:    gcore.Bool(true),
 		Limit:          gcore.Int(0),
 		Name:           []string{"string"},
 		Offset:         gcore.Int(0),
