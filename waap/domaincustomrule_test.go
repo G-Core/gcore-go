@@ -52,6 +52,10 @@ func TestDomainCustomRuleNewWithOptionalParams(t *testing.T) {
 				},
 			},
 			Conditions: []waap.DomainCustomRuleNewParamsCondition{{
+				Asn: waap.DomainCustomRuleNewParamsConditionAsn{
+					Asns:     []int64{1},
+					Negation: gcore.Bool(true),
+				},
 				ContentType: waap.DomainCustomRuleNewParamsConditionContentType{
 					ContentType: []string{"application/xml"},
 					Negation:    gcore.Bool(true),
@@ -187,6 +191,10 @@ func TestDomainCustomRuleUpdateWithOptionalParams(t *testing.T) {
 				},
 			},
 			Conditions: []waap.DomainCustomRuleUpdateParamsCondition{{
+				Asn: waap.DomainCustomRuleUpdateParamsConditionAsn{
+					Asns:     []int64{1},
+					Negation: gcore.Bool(true),
+				},
 				ContentType: waap.DomainCustomRuleUpdateParamsConditionContentType{
 					ContentType: []string{"application/xml"},
 					Negation:    gcore.Bool(true),

@@ -525,6 +525,9 @@ type AnalyticsGetEventsParams struct {
 	Next param.Opt[string] `query:"next,omitzero" json:"-"`
 	// Number of items to return
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Filter data by the ASN (Autonomous System Number) of the originating IP address.
+	// Not supported by `/v1/analytics/requests`.
+	Asns []int64 `query:"asns,omitzero" json:"-"`
 	// Filter data by a country code of the originating IP address in ISO 3166-1
 	// alpha-2 format.
 	Countries []string `query:"countries,omitzero" json:"-"`
@@ -535,6 +538,9 @@ type AnalyticsGetEventsParams struct {
 	// List of domain IDs. Empty list means all domains belonging to the current
 	// account.
 	Domains []int64 `query:"domains,omitzero" json:"-"`
+	// Exclude data by the ASN (Autonomous System Number) of the originating IP
+	// address. Not supported by `/v1/analytics/requests`.
+	ExcludeAsns []int64 `query:"exclude_asns,omitzero" json:"-"`
 	// Exclude data by a country code of the originating IP address in ISO 3166-1
 	// alpha-2 format.
 	ExcludeCountries []string `query:"exclude_countries,omitzero" json:"-"`
@@ -733,6 +739,9 @@ type AnalyticsGetRequestsParams struct {
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Results sorting order.
 	Ordering param.Opt[string] `query:"ordering,omitzero" json:"-"`
+	// Filter data by the ASN (Autonomous System Number) of the originating IP address.
+	// Not supported by `/v1/analytics/requests`.
+	Asns []int64 `query:"asns,omitzero" json:"-"`
 	// Filter data by a country code of the originating IP address in ISO 3166-1
 	// alpha-2 format.
 	Countries []string `query:"countries,omitzero" json:"-"`
@@ -743,6 +752,9 @@ type AnalyticsGetRequestsParams struct {
 	// List of domain IDs. Empty list means all domains belonging to the current
 	// account.
 	Domains []int64 `query:"domains,omitzero" json:"-"`
+	// Exclude data by the ASN (Autonomous System Number) of the originating IP
+	// address. Not supported by `/v1/analytics/requests`.
+	ExcludeAsns []int64 `query:"exclude_asns,omitzero" json:"-"`
 	// Exclude data by a country code of the originating IP address in ISO 3166-1
 	// alpha-2 format.
 	ExcludeCountries []string `query:"exclude_countries,omitzero" json:"-"`
@@ -914,6 +926,9 @@ type AnalyticsGetTrafficFilteredParams struct {
 	//
 	// Any of 60, 300, 600, 900, 1800, 3600, 7200, 10800, 21600, 43200, 86400.
 	BucketSize int64 `query:"bucket_size,omitzero" json:"-"`
+	// Filter data by the ASN (Autonomous System Number) of the originating IP address.
+	// Not supported by `/v1/analytics/requests`.
+	Asns []int64 `query:"asns,omitzero" json:"-"`
 	// Filter data by a country code of the originating IP address in ISO 3166-1
 	// alpha-2 format.
 	Countries []string `query:"countries,omitzero" json:"-"`
@@ -924,6 +939,9 @@ type AnalyticsGetTrafficFilteredParams struct {
 	// List of domain IDs. Empty list means all domains belonging to the current
 	// account.
 	Domains []int64 `query:"domains,omitzero" json:"-"`
+	// Exclude data by the ASN (Autonomous System Number) of the originating IP
+	// address. Not supported by `/v1/analytics/requests`.
+	ExcludeAsns []int64 `query:"exclude_asns,omitzero" json:"-"`
 	// Exclude data by a country code of the originating IP address in ISO 3166-1
 	// alpha-2 format.
 	ExcludeCountries []string `query:"exclude_countries,omitzero" json:"-"`

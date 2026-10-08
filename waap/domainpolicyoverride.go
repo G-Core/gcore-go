@@ -582,7 +582,7 @@ type WaapPolicyOverrideTargetSnapshot struct {
 	Action string `json:"action" api:"nullable"`
 	// The attack category the target detected, if `target_type` is rule
 	AttackType string `json:"attack_type" api:"nullable"`
-	// The target's detection category, if `target_type` is detector
+	// The target's rule category (policy or template), if `target_type` is rule
 	Category string `json:"category" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {

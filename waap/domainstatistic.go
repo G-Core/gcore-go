@@ -692,11 +692,14 @@ type WaapRequestDetailsNetwork struct {
 	Country string `json:"country" api:"required"`
 	// Organization details
 	Organization WaapRequestDetailsNetworkOrganization `json:"organization" api:"required"`
+	// Autonomous System Number, or an empty string when unknown
+	Asn string `json:"asn"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ClientIP     respjson.Field
 		Country      respjson.Field
 		Organization respjson.Field
+		Asn          respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`

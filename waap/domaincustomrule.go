@@ -230,6 +230,9 @@ func (r *WaapCustomRuleActionTag) UnmarshalJSON(data []byte) error {
 // ResponseHeader/ResponseHeaderExists conditions that may exist on rules already
 // stored in Lime but cannot be created or updated through the API.
 type WaapCustomRuleCondition struct {
+	// Match the ASN (Autonomous System Number) the request originated from, as
+	// determined by a WHOIS lookup of the requesting IP
+	Asn WaapCustomRuleConditionAsn `json:"asn"`
 	// Match the requested Content-Type
 	ContentType WaapCustomRuleConditionContentType `json:"content_type"`
 	// Match the country that the request originated from
@@ -274,6 +277,7 @@ type WaapCustomRuleCondition struct {
 	UserDefinedTags WaapCustomRuleConditionUserDefinedTags `json:"user_defined_tags"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Asn                  respjson.Field
 		ContentType          respjson.Field
 		Country              respjson.Field
 		FileExtension        respjson.Field
@@ -302,6 +306,28 @@ type WaapCustomRuleCondition struct {
 // Returns the unmodified JSON received from the API
 func (r WaapCustomRuleCondition) RawJSON() string { return r.JSON.raw }
 func (r *WaapCustomRuleCondition) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the ASN (Autonomous System Number) the request originated from, as
+// determined by a WHOIS lookup of the requesting IP
+type WaapCustomRuleConditionAsn struct {
+	// A list of Autonomous System Numbers (ASNs) to match against
+	Asns []int64 `json:"asns" api:"required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation bool `json:"negation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Asns        respjson.Field
+		Negation    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapCustomRuleConditionAsn) RawJSON() string { return r.JSON.raw }
+func (r *WaapCustomRuleConditionAsn) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -892,6 +918,9 @@ func (r *DomainCustomRuleNewParamsActionTag) UnmarshalJSON(data []byte) error {
 // ResponseHeader/ ResponseHeaderExists condition types, which are only readable on
 // existing rules (see CustomRuleConditionResponse).
 type DomainCustomRuleNewParamsCondition struct {
+	// Match the ASN (Autonomous System Number) the request originated from, as
+	// determined by a WHOIS lookup of the requesting IP
+	Asn DomainCustomRuleNewParamsConditionAsn `json:"asn,omitzero"`
 	// Match the requested Content-Type
 	ContentType DomainCustomRuleNewParamsConditionContentType `json:"content_type,omitzero"`
 	// Match the country that the request originated from
@@ -938,6 +967,26 @@ func (r DomainCustomRuleNewParamsCondition) MarshalJSON() (data []byte, err erro
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *DomainCustomRuleNewParamsCondition) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the ASN (Autonomous System Number) the request originated from, as
+// determined by a WHOIS lookup of the requesting IP
+//
+// The property Asns is required.
+type DomainCustomRuleNewParamsConditionAsn struct {
+	// A list of Autonomous System Numbers (ASNs) to match against
+	Asns []int64 `json:"asns,omitzero" api:"required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleNewParamsConditionAsn) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleNewParamsConditionAsn
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleNewParamsConditionAsn) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1455,6 +1504,9 @@ func (r *DomainCustomRuleUpdateParamsActionTag) UnmarshalJSON(data []byte) error
 // ResponseHeader/ ResponseHeaderExists condition types, which are only readable on
 // existing rules (see CustomRuleConditionResponse).
 type DomainCustomRuleUpdateParamsCondition struct {
+	// Match the ASN (Autonomous System Number) the request originated from, as
+	// determined by a WHOIS lookup of the requesting IP
+	Asn DomainCustomRuleUpdateParamsConditionAsn `json:"asn,omitzero"`
 	// Match the requested Content-Type
 	ContentType DomainCustomRuleUpdateParamsConditionContentType `json:"content_type,omitzero"`
 	// Match the country that the request originated from
@@ -1501,6 +1553,26 @@ func (r DomainCustomRuleUpdateParamsCondition) MarshalJSON() (data []byte, err e
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *DomainCustomRuleUpdateParamsCondition) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Match the ASN (Autonomous System Number) the request originated from, as
+// determined by a WHOIS lookup of the requesting IP
+//
+// The property Asns is required.
+type DomainCustomRuleUpdateParamsConditionAsn struct {
+	// A list of Autonomous System Numbers (ASNs) to match against
+	Asns []int64 `json:"asns,omitzero" api:"required"`
+	// Whether or not to apply a boolean NOT operation to the rule's condition
+	Negation param.Opt[bool] `json:"negation,omitzero"`
+	paramObj
+}
+
+func (r DomainCustomRuleUpdateParamsConditionAsn) MarshalJSON() (data []byte, err error) {
+	type shadow DomainCustomRuleUpdateParamsConditionAsn
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *DomainCustomRuleUpdateParamsConditionAsn) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

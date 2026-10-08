@@ -61,10 +61,12 @@ func TestAnalyticsGetEventsWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Waap.Analytics.GetEvents(context.TODO(), waap.AnalyticsGetEventsParams{
 		Start:                    "2024-04-13T00:00:00+01:00",
+		Asns:                     []int64{15169, 13335},
 		Countries:                []string{"DE", "MY"},
 		Decision:                 []string{"allowed", "blocked"},
 		Domains:                  []int64{1, 2, 3},
 		End:                      gcore.String("2024-04-14T12:00:00Z"),
+		ExcludeAsns:              []int64{15169, 13335},
 		ExcludeCountries:         []string{"DE", "MY"},
 		ExcludeDecision:          []string{"allowed", "blocked"},
 		ExcludeDomains:           []int64{0},
@@ -162,10 +164,12 @@ func TestAnalyticsGetRequestsWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Waap.Analytics.GetRequests(context.TODO(), waap.AnalyticsGetRequestsParams{
 		Start:                    "2024-04-13T00:00:00+01:00",
+		Asns:                     []int64{15169, 13335},
 		Countries:                []string{"DE", "MY"},
 		Decision:                 []string{"allowed", "blocked"},
 		Domains:                  []int64{1, 2, 3},
 		End:                      gcore.String("2024-04-14T12:00:00Z"),
+		ExcludeAsns:              []int64{15169, 13335},
 		ExcludeCountries:         []string{"DE", "MY"},
 		ExcludeDecision:          []string{"allowed", "blocked"},
 		ExcludeDomains:           []int64{0},
@@ -258,11 +262,13 @@ func TestAnalyticsGetTrafficFilteredWithOptionalParams(t *testing.T) {
 	_, err := client.Waap.Analytics.GetTrafficFiltered(context.TODO(), waap.AnalyticsGetTrafficFilteredParams{
 		Resolution:               waap.AnalyticsGetTrafficFilteredParamsResolutionDaily,
 		Start:                    "2024-04-13T00:00:00+01:00",
+		Asns:                     []int64{15169, 13335},
 		BucketSize:               60,
 		Countries:                []string{"DE", "MY"},
 		Decision:                 []string{"allowed", "blocked"},
 		Domains:                  []int64{1, 2, 3},
 		End:                      gcore.String("2024-04-14T12:00:00Z"),
+		ExcludeAsns:              []int64{15169, 13335},
 		ExcludeCountries:         []string{"DE", "MY"},
 		ExcludeDecision:          []string{"allowed", "blocked"},
 		ExcludeDomains:           []int64{0},
