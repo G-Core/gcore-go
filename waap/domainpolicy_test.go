@@ -14,6 +14,37 @@ import (
 	"github.com/G-Core/gcore-go/waap"
 )
 
+func TestDomainPolicyUpdate(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Waap.Domains.Policies.Update(
+		context.TODO(),
+		"policy_id",
+		waap.DomainPolicyUpdateParams{
+			DomainID: 1,
+			WaapDomainPolicySettings: waap.WaapDomainPolicySettingsParam{
+				Mode: true,
+			},
+		},
+	)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestDomainPolicyListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -33,37 +64,6 @@ func TestDomainPolicyListWithOptionalParams(t *testing.T) {
 			Limit:     gcore.Int(0),
 			Offset:    gcore.Int(0),
 			RuleSetID: gcore.Int(0),
-		},
-	)
-	if err != nil {
-		var apierr *gcore.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestDomainPolicyToggle(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := gcore.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.Waap.Domains.Policies.Toggle(
-		context.TODO(),
-		"policy_id",
-		waap.DomainPolicyToggleParams{
-			DomainID: 1,
-			WaapDomainPolicySettings: waap.WaapDomainPolicySettingsParam{
-				Mode: true,
-			},
 		},
 	)
 	if err != nil {

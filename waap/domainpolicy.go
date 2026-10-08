@@ -21,6 +21,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// WAAP security policies are the built-in protection rules of a domain. Each
+// policy can be turned on or off.
+//
 // DomainPolicyService contains methods and other services that help with
 // interacting with the gcore API.
 //
@@ -38,6 +41,18 @@ func NewDomainPolicyService(opts ...option.RequestOption) (r DomainPolicyService
 	r = DomainPolicyService{}
 	r.Options = opts
 	return
+}
+
+// Configure a security policy on a domain.
+func (r *DomainPolicyService) Update(ctx context.Context, policyID string, params DomainPolicyUpdateParams, opts ...option.RequestOption) (res *WaapDomainPolicySettings, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if policyID == "" {
+		err = errors.New("missing required policy_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("waap/v2/domains/%v/policies/%s", params.DomainID, policyID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
+	return res, err
 }
 
 // Retrieve a paginated list of policies linked to a particular domain, optionally
@@ -63,18 +78,6 @@ func (r *DomainPolicyService) List(ctx context.Context, domainID int64, query Do
 // filtered by rule set
 func (r *DomainPolicyService) ListAutoPaging(ctx context.Context, domainID int64, query DomainPolicyListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[WaapDomainPolicy] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, domainID, query, opts...))
-}
-
-// Configure a security policy on a domain.
-func (r *DomainPolicyService) Toggle(ctx context.Context, policyID string, params DomainPolicyToggleParams, opts ...option.RequestOption) (res *WaapDomainPolicySettings, err error) {
-	opts = slices.Concat(r.Options, opts)
-	if policyID == "" {
-		err = errors.New("missing required policy_id parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("waap/v2/domains/%v/policies/%s", params.DomainID, policyID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
-	return res, err
 }
 
 // Represents a configurable WAAP security rule, also known as a policy.
@@ -174,6 +177,21 @@ func (r *WaapDomainPolicySettingsParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type DomainPolicyUpdateParams struct {
+	// The domain ID
+	DomainID int64 `path:"domain_id" api:"required" json:"-"`
+	// Configurable settings of a security rule (a.k.a. policy) on a domain.
+	WaapDomainPolicySettings WaapDomainPolicySettingsParam
+	paramObj
+}
+
+func (r DomainPolicyUpdateParams) MarshalJSON() (data []byte, err error) {
+	return shimjson.Marshal(r.WaapDomainPolicySettings)
+}
+func (r *DomainPolicyUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type DomainPolicyListParams struct {
 	// Filter policies by rule set ID
 	RuleSetID param.Opt[int64] `query:"rule_set_id,omitzero" json:"-"`
@@ -190,19 +208,4 @@ func (r DomainPolicyListParams) URLQuery() (v url.Values, err error) {
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
-}
-
-type DomainPolicyToggleParams struct {
-	// The domain ID
-	DomainID int64 `path:"domain_id" api:"required" json:"-"`
-	// Configurable settings of a security rule (a.k.a. policy) on a domain.
-	WaapDomainPolicySettings WaapDomainPolicySettingsParam
-	paramObj
-}
-
-func (r DomainPolicyToggleParams) MarshalJSON() (data []byte, err error) {
-	return shimjson.Marshal(r.WaapDomainPolicySettings)
-}
-func (r *DomainPolicyToggleParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }

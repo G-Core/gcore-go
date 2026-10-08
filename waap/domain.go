@@ -29,7 +29,9 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewDomainService] method instead.
 type DomainService struct {
-	Options         []option.RequestOption
+	Options []option.RequestOption
+	// WAAP security policies are the built-in protection rules of a domain. Each
+	// policy can be turned on or off.
 	Policies        DomainPolicyService
 	PolicyOverrides DomainPolicyOverrideService
 	Settings        DomainSettingService
