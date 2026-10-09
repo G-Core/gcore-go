@@ -42,8 +42,10 @@ type DomainService struct {
 	InsightSilences DomainInsightSilenceService
 	Statistics      DomainStatisticService
 	CustomRules     DomainCustomRuleService
-	FirewallRules   DomainFirewallRuleService
-	AdvancedRules   DomainAdvancedRuleService
+	// WAAP firewall rules allow or block requests to a domain based on the client IP
+	// address or IP range.
+	FirewallRules DomainFirewallRuleService
+	AdvancedRules DomainAdvancedRuleService
 }
 
 // NewDomainService generates a new service that applies the given options to each

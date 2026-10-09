@@ -18,6 +18,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// WAAP firewall rules allow or block requests to a domain based on the client IP
+// address or IP range.
+//
 // DomainFirewallRuleService contains methods and other services that help with
 // interacting with the gcore API.
 //
