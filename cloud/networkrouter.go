@@ -32,6 +32,7 @@ import (
 // the [NewNetworkRouterService] method instead.
 type NetworkRouterService struct {
 	Options []option.RequestOption
+	Metrics NetworkRouterMetricService
 }
 
 // NewNetworkRouterService generates a new service that applies the given options
@@ -40,6 +41,7 @@ type NetworkRouterService struct {
 func NewNetworkRouterService(opts ...option.RequestOption) (r NetworkRouterService) {
 	r = NetworkRouterService{}
 	r.Options = opts
+	r.Metrics = NewNetworkRouterMetricService(opts...)
 	return
 }
 

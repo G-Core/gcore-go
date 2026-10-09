@@ -34,6 +34,7 @@ TEST_PATHS=(
 	cloud/network_test.go
 	cloud/networksubnet_test.go
 	cloud/networkrouter_test.go
+	cloud/networkroutermetric_test.go
 	cloud/volume_test.go
 	cloud/floatingip_test.go
 	cloud/securitygroup_test.go

@@ -388,6 +388,17 @@ Methods:
 - <code title="post /cloud/v1/routers/{project_id}/{region_id}/{router_id}/detach">client.Cloud.Networks.Routers.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#NetworkRouterService.DetachSubnet">DetachSubnet</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, routerID <a href="https://pkg.go.dev/builtin#string">string</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#NetworkRouterDetachSubnetParams">NetworkRouterDetachSubnetParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#Router">Router</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /cloud/v1/routers/{project_id}/{region_id}/{router_id}">client.Cloud.Networks.Routers.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#NetworkRouterService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, routerID <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#NetworkRouterGetParams">NetworkRouterGetParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#Router">Router</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+#### Metrics
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#RouterMetrics">RouterMetrics</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#RouterMetricsList">RouterMetricsList</a>
+
+Methods:
+
+- <code title="post /cloud/v1/routers/{project_id}/{region_id}/{router_id}/metrics">client.Cloud.Networks.Routers.Metrics.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#NetworkRouterMetricService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, routerID <a href="https://pkg.go.dev/builtin#string">string</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#NetworkRouterMetricListParams">NetworkRouterMetricListParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#RouterMetricsList">RouterMetricsList</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 ## Volumes
 
 Response Types:
