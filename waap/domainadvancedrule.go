@@ -18,6 +18,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// Advanced rules are CEL-expression WAAP rules that allow, block, challenge,
+// monitor or tag requests to a domain.
+//
 // DomainAdvancedRuleService contains methods and other services that help with
 // interacting with the gcore API.
 //

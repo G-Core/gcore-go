@@ -45,6 +45,8 @@ type DomainService struct {
 	// WAAP firewall rules allow or block requests to a domain based on the client IP
 	// address or IP range.
 	FirewallRules DomainFirewallRuleService
+	// Advanced rules are CEL-expression WAAP rules that allow, block, challenge,
+	// monitor or tag requests to a domain.
 	AdvancedRules DomainAdvancedRuleService
 }
 
