@@ -1,5 +1,44 @@
 # Changelog
 
+## [0.59.0](https://github.com/G-Core/gcore-go/compare/v0.58.0...v0.59.0) (2026-10-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* **cdn:** drop create-only origin from gcore_cdn_resource
+* **terraform:** load balancer private VIP only via vip_port_id
+* **waap:** add terraform resource for WAAP domain policies
+* **cloud:** update cloud OpenAPI spec
+* **waap:** map new WAAP endpoints and move rule sets to v2
+
+### Features
+
+* **cloud:** add network object to file share ([4609579](https://github.com/G-Core/gcore-go/commit/4609579b8b676676a7610376e166f185bacf9bdf))
+* **cloud:** add router metrics endpoint ([c677539](https://github.com/G-Core/gcore-go/commit/c6775394065ef5a81b91399709fe71dc4ea01f59))
+* **cloud:** add Volumes.ChangeTypeAndPoll ([2a27b69](https://github.com/G-Core/gcore-go/commit/2a27b69412119957e8e8afe82d0a5e42a4365e8a))
+* **cloud:** update cloud OpenAPI spec ([aea072a](https://github.com/G-Core/gcore-go/commit/aea072af25b97dbda5f62309bce88a16e542e1cf))
+* **dns:** add secondary-zone filter ([4f5291d](https://github.com/G-Core/gcore-go/commit/4f5291d5947f5f48a373341022b5b24d326efbce))
+* **storage:** add location type filter and bucket create config ([d25326c](https://github.com/G-Core/gcore-go/commit/d25326cde55f3949f1e9257ae57eb89bd711c2f6))
+* **terraform:** load balancer private VIP only via vip_port_id ([8dd0c1d](https://github.com/G-Core/gcore-go/commit/8dd0c1d783aeeebde7c4a3ef8b23e3792a2fd515))
+* **waap:** add ASN filters to analytics and ASN condition to custom rules ([27e3839](https://github.com/G-Core/gcore-go/commit/27e3839ddd5bbcac298672538788ebdd29005a4b))
+* **waap:** add gcore_waap_domain_advanced_rule terraform resource and data source ([cbcea25](https://github.com/G-Core/gcore-go/commit/cbcea255b0aedcf9bc1d9fecb10aac9dffbfc5ed))
+* **waap:** add terraform resource for WAAP domain firewall rules ([3560a9b](https://github.com/G-Core/gcore-go/commit/3560a9bbe96b9dd75003500d768adafc53e09a59))
+* **waap:** add terraform resource for WAAP domain policies ([68c385f](https://github.com/G-Core/gcore-go/commit/68c385fb1c2a3cc7ff109f3f63623ea18294906e))
+* **waap:** map new WAAP endpoints and move rule sets to v2 ([e53e4b3](https://github.com/G-Core/gcore-go/commit/e53e4b399d96274a72ac39d44757cfe6651d20fd))
+
+
+### Bug Fixes
+
+* **cdn:** drop create-only origin from gcore_cdn_resource ([acfef9b](https://github.com/G-Core/gcore-go/commit/acfef9bb58ee71c0dac224199b811100ced5c435))
+* **cloud:** allow omitted port IP addresses and null tags ([1ed4e32](https://github.com/G-Core/gcore-go/commit/1ed4e329af0e38789fe68bfd88012602dc9d3b4d))
+* **storage:** make bucket create policy computed_optional in Terraform ([5c9a9b4](https://github.com/G-Core/gcore-go/commit/5c9a9b4ba125adbf42ecda46f84305008b0244be))
+* **storage:** treat bucket CORS allowed_origins as a set ([e1a1dcc](https://github.com/G-Core/gcore-go/commit/e1a1dcc464e177c17db2046ff0c279344407ffb8))
+
+
+### Chores
+
+* **cloud:** update cloud OpenAPI spec ([a136b4b](https://github.com/G-Core/gcore-go/commit/a136b4bb23f2f6a47452a1c8bb728ac69539aab0))
+
 ## [0.58.0](https://github.com/G-Core/gcore-go/compare/v0.57.0...v0.58.0) (2026-09-29)
 
 
