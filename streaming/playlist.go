@@ -593,49 +593,10 @@ type PlaylistNewParams struct {
 	Active param.Opt[bool] `json:"active,omitzero"`
 	// The advertisement ID that will be inserted into the video
 	AdID param.Opt[int64] `json:"ad_id,omitzero"`
-	// Current playlist client ID
-	ClientID param.Opt[int64] `json:"client_id,omitzero"`
 	// Custom field where you can specify user ID in your system
 	ClientUserID param.Opt[int64] `json:"client_user_id,omitzero"`
 	// Enables countdown before playlist start with `playlist_type: live`
 	Countdown param.Opt[bool] `json:"countdown,omitzero"`
-	// A URL to a master playlist HLS (master-cmaf.m3u8) with CMAF-based chunks. Chunks
-	// are in fMP4 container.
-	//
-	// It is possible to use the same suffix-options as described in the "hls_url"
-	// attribute.
-	//
-	// Caution. Solely master.m3u8 (and master[-options].m3u8) is officially documented
-	// and intended for your use. Any additional internal manifests, sub-manifests,
-	// parameters, chunk names, file extensions, and related components are internal
-	// infrastructure entities. These may undergo modifications without prior notice,
-	// in any manner or form. It is strongly advised not to store them in your database
-	// or cache them on your end.
-	HlsCmafURL param.Opt[string] `json:"hls_cmaf_url,omitzero"`
-	// A URL to a master playlist HLS (master.m3u8) with MPEG TS container.
-	//
-	// This URL is a link to the main manifest. But you can also manually specify
-	// suffix-options that will allow you to change the manifest to your request:
-	//
-	// `/playlists/{client_id}_{playlist_id}/master[-cmaf][-min-N][-max-N][-img][-(h264|hevc|av1)].m3u8`
-	// Please see the details in `hls_url` attribute of /videos/{id} method.
-	//
-	// Caution. Solely master.m3u8 (and master[-options].m3u8) is officially documented
-	// and intended for your use. Any additional internal manifests, sub-manifests,
-	// parameters, chunk names, file extensions, and related components are internal
-	// infrastructure entities. These may undergo modifications without prior notice,
-	// in any manner or form. It is strongly advised not to store them in your database
-	// or cache them on your end.
-	HlsURL param.Opt[string] `json:"hls_url,omitzero"`
-	// A URL to a built-in HTML video player with the video inside. It can be inserted
-	// into an iframe on your website and the video will automatically play in all
-	// browsers.
-	//
-	// The player can be opened or shared via this direct link. Also the video player
-	// can be integrated into your web pages using the Iframe tag.
-	//
-	// Please see the details in `iframe_url` attribute of /videos/{id} method.
-	IframeURL param.Opt[string] `json:"iframe_url,omitzero"`
 	// Enables/Disables playlist loop
 	Loop param.Opt[bool] `json:"loop,omitzero"`
 	// Playlist name
@@ -687,49 +648,10 @@ type PlaylistUpdateParams struct {
 	Active param.Opt[bool] `json:"active,omitzero"`
 	// The advertisement ID that will be inserted into the video
 	AdID param.Opt[int64] `json:"ad_id,omitzero"`
-	// Current playlist client ID
-	ClientID param.Opt[int64] `json:"client_id,omitzero"`
 	// Custom field where you can specify user ID in your system
 	ClientUserID param.Opt[int64] `json:"client_user_id,omitzero"`
 	// Enables countdown before playlist start with `playlist_type: live`
 	Countdown param.Opt[bool] `json:"countdown,omitzero"`
-	// A URL to a master playlist HLS (master-cmaf.m3u8) with CMAF-based chunks. Chunks
-	// are in fMP4 container.
-	//
-	// It is possible to use the same suffix-options as described in the "hls_url"
-	// attribute.
-	//
-	// Caution. Solely master.m3u8 (and master[-options].m3u8) is officially documented
-	// and intended for your use. Any additional internal manifests, sub-manifests,
-	// parameters, chunk names, file extensions, and related components are internal
-	// infrastructure entities. These may undergo modifications without prior notice,
-	// in any manner or form. It is strongly advised not to store them in your database
-	// or cache them on your end.
-	HlsCmafURL param.Opt[string] `json:"hls_cmaf_url,omitzero"`
-	// A URL to a master playlist HLS (master.m3u8) with MPEG TS container.
-	//
-	// This URL is a link to the main manifest. But you can also manually specify
-	// suffix-options that will allow you to change the manifest to your request:
-	//
-	// `/playlists/{client_id}_{playlist_id}/master[-cmaf][-min-N][-max-N][-img][-(h264|hevc|av1)].m3u8`
-	// Please see the details in `hls_url` attribute of /videos/{id} method.
-	//
-	// Caution. Solely master.m3u8 (and master[-options].m3u8) is officially documented
-	// and intended for your use. Any additional internal manifests, sub-manifests,
-	// parameters, chunk names, file extensions, and related components are internal
-	// infrastructure entities. These may undergo modifications without prior notice,
-	// in any manner or form. It is strongly advised not to store them in your database
-	// or cache them on your end.
-	HlsURL param.Opt[string] `json:"hls_url,omitzero"`
-	// A URL to a built-in HTML video player with the video inside. It can be inserted
-	// into an iframe on your website and the video will automatically play in all
-	// browsers.
-	//
-	// The player can be opened or shared via this direct link. Also the video player
-	// can be integrated into your web pages using the Iframe tag.
-	//
-	// Please see the details in `iframe_url` attribute of /videos/{id} method.
-	IframeURL param.Opt[string] `json:"iframe_url,omitzero"`
 	// Enables/Disables playlist loop
 	Loop param.Opt[bool] `json:"loop,omitzero"`
 	// Playlist name

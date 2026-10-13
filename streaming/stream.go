@@ -327,6 +327,9 @@ type Stream struct {
 	// To use RTMPS just manually change the protocol name from "rtmp://" to
 	// "rtmps://".
 	//
+	// If your encoder or camera does not support a query string ("?") in the URL,
+	// replace "?" with "/", for example: rtmp://vp-push.domain.com/in/123/08cd54f0.
+	//
 	// The backup logs are as follows: In PUSH mode, you initiate sending a stream from
 	// your machine. If your stream stops or breaks for some reason and it stops coming
 	// to the main server, then after 3-10 seconds of waiting the stream will turn off
@@ -514,6 +517,9 @@ type Stream struct {
 	//
 	// To use RTMPS just manually change the protocol name from "rtmp://" to
 	// "rtmps://".
+	//
+	// If your encoder or camera does not support a query string ("?") in the URL,
+	// replace "?" with "/", for example: rtmp://vp-push.domain.com/in/123/08cd54f0.
 	//
 	// Use only 1 protocol of sending a master stream: either only RTMP/S (`push_url`),
 	// or only SRT (`push_url_srt`).
