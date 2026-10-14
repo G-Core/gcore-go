@@ -269,10 +269,13 @@ type InferenceDeployment struct {
 	//   - `DISABLED` - The instance is disabled and not accepting any requests.
 	//   - `PENDING` - The instance is running but scaled to zero. It will be
 	//     automatically scaled up when a request is made.
+	//   - `FAILED` - The instance has a persistent failure. A short error does not cause
+	//     this status. The `error_message` field of the respective container object in
+	//     the `containers` collection explains the failure reason.
 	//   - `DELETING` - The instance is being deleted.
 	//
-	// Any of "ACTIVE", "DELETING", "DEPLOYING", "DISABLED", "PARTIALLYDEPLOYED",
-	// "PENDING".
+	// Any of "ACTIVE", "DELETING", "DEPLOYING", "DISABLED", "FAILED",
+	// "PARTIALLYDEPLOYED", "PENDING".
 	Status InferenceDeploymentStatus `json:"status" api:"required"`
 	// Specifies the duration in seconds without any requests after which the
 	// containers will be downscaled to their minimum scale value as defined by
@@ -645,6 +648,9 @@ func (r *InferenceDeploymentProbes) UnmarshalJSON(data []byte) error {
 //   - `DISABLED` - The instance is disabled and not accepting any requests.
 //   - `PENDING` - The instance is running but scaled to zero. It will be
 //     automatically scaled up when a request is made.
+//   - `FAILED` - The instance has a persistent failure. A short error does not cause
+//     this status. The `error_message` field of the respective container object in
+//     the `containers` collection explains the failure reason.
 //   - `DELETING` - The instance is being deleted.
 type InferenceDeploymentStatus string
 
@@ -653,6 +659,7 @@ const (
 	InferenceDeploymentStatusDeleting          InferenceDeploymentStatus = "DELETING"
 	InferenceDeploymentStatusDeploying         InferenceDeploymentStatus = "DEPLOYING"
 	InferenceDeploymentStatusDisabled          InferenceDeploymentStatus = "DISABLED"
+	InferenceDeploymentStatusFailed            InferenceDeploymentStatus = "FAILED"
 	InferenceDeploymentStatusPartiallydeployed InferenceDeploymentStatus = "PARTIALLYDEPLOYED"
 	InferenceDeploymentStatusPending           InferenceDeploymentStatus = "PENDING"
 )
