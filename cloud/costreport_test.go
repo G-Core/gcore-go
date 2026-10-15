@@ -15,55 +15,6 @@ import (
 	"github.com/G-Core/gcore-go/option"
 )
 
-func TestCostReportGetAggregatedWithOptionalParams(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := gcore.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.Cloud.CostReports.GetAggregated(context.TODO(), cloud.CostReportGetAggregatedParams{
-		TimeFrom:       time.Now(),
-		TimeTo:         time.Now(),
-		EnableLastDay:  gcore.Bool(false),
-		Projects:       []int64{16, 17, 18, 19, 20},
-		Regions:        []int64{1, 2, 3},
-		ResponseFormat: cloud.CostReportGetAggregatedParamsResponseFormatCsvTotals,
-		Rounding:       gcore.Bool(true),
-		SchemaFilter: cloud.CostReportGetAggregatedParamsSchemaFilterUnion{
-			OfInstance: &cloud.CostReportGetAggregatedParamsSchemaFilterInstance{
-				Field:  "flavor",
-				Values: []string{"g1-standard-1-2"},
-			},
-		},
-		Tags: cloud.CostReportGetAggregatedParamsTags{
-			Conditions: []cloud.CostReportGetAggregatedParamsTagsCondition{{
-				Key:    gcore.String("os_version"),
-				Strict: gcore.Bool(true),
-				Value:  gcore.String("22.04"),
-			}, {
-				Key:    gcore.String("os_version"),
-				Strict: gcore.Bool(true),
-				Value:  gcore.String("23.04"),
-			}},
-			ConditionType: "OR",
-		},
-		Types: []string{"egress_traffic", "instance"},
-	})
-	if err != nil {
-		var apierr *gcore.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
 func TestCostReportGetAggregatedMonthlyWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -112,6 +63,49 @@ func TestCostReportGetAggregatedMonthlyWithOptionalParams(t *testing.T) {
 	}
 }
 
+func TestCostReportGetBreakdownWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Cloud.CostReports.GetBreakdown(context.TODO(), cloud.CostReportGetBreakdownParams{
+		TimeFrom:       time.Now(),
+		TimeTo:         time.Now(),
+		EnableLastDay:  gcore.Bool(false),
+		GroupBy:        cloud.CostReportGetBreakdownParamsGroupByRegion,
+		ProjectIDs:     []int64{16, 17, 18, 19, 20},
+		RegionIDs:      []int64{0, 76},
+		ResponseFormat: cloud.CostReportGetBreakdownParamsResponseFormatCsvRecords,
+		Tags: cloud.CostReportGetBreakdownParamsTags{
+			Conditions: []cloud.CostReportGetBreakdownParamsTagsCondition{{
+				Key:    gcore.String("os_version"),
+				Strict: gcore.Bool(true),
+				Value:  gcore.String("22.04"),
+			}, {
+				Key:    gcore.String("os_version"),
+				Strict: gcore.Bool(true),
+				Value:  gcore.String("23.04"),
+			}},
+			ConditionType: "OR",
+		},
+		Types: []string{"egress_traffic", "instance"},
+	})
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestCostReportGetDetailedWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -130,26 +124,11 @@ func TestCostReportGetDetailedWithOptionalParams(t *testing.T) {
 		EnableLastDay:  gcore.Bool(false),
 		Limit:          gcore.Int(10),
 		Offset:         gcore.Int(0),
-		OrderBy:        []string{"project.asc", "region.desc"},
-		Projects:       []int64{16, 17, 18, 19, 20},
-		Regions:        []int64{1, 2, 3},
+		OrderBy:        []string{"cost.desc"},
+		ProjectIDs:     []int64{16, 17, 18, 19, 20},
+		RegionIDs:      []int64{0, 76},
 		ResponseFormat: cloud.CostReportGetDetailedParamsResponseFormatCsvRecords,
-		Rounding:       gcore.Bool(true),
-		SchemaFilter: cloud.CostReportGetDetailedParamsSchemaFilterUnion{
-			OfInstance: &cloud.CostReportGetDetailedParamsSchemaFilterInstance{
-				Field:  "flavor",
-				Values: []string{"g1-standard-1-2"},
-			},
-		},
-		Sorting: []cloud.CostReportGetDetailedParamsSorting{{
-			BillingValue: "asc",
-			FirstSeen:    "asc",
-			LastName:     "asc",
-			LastSeen:     "asc",
-			Project:      "asc",
-			Region:       "asc",
-			Type:         "asc",
-		}},
+		Search:         gcore.String("amsterdam"),
 		Tags: cloud.CostReportGetDetailedParamsTags{
 			Conditions: []cloud.CostReportGetDetailedParamsTagsCondition{{
 				Key:    gcore.String("os_version"),
