@@ -71,7 +71,7 @@ func NewDomainService(opts ...option.RequestOption) (r DomainService) {
 	return
 }
 
-// Set Domain Status
+// Update domain
 func (r *DomainService) Update(ctx context.Context, domainID int64, body DomainUpdateParams, opts ...option.RequestOption) (res *WaapDetailedDomain, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v2/domains/%v", domainID)
@@ -122,7 +122,10 @@ func (r *DomainService) Get(ctx context.Context, domainID int64, opts ...option.
 	return res, err
 }
 
-// Retrieve a paginated list of policy rule sets linked to a particular domain
+// Retrieve a paginated list of policy rule sets available for a particular domain.
+// Use
+// [List domain policies](#operation/`list_domain_policies_v2_domains__domain_id__policies_get`)
+// to fetch the policies.
 func (r *DomainService) ListRuleSets(ctx context.Context, domainID int64, query DomainListRuleSetsParams, opts ...option.RequestOption) (res *pagination.OffsetPage[WaapRuleSet], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -140,7 +143,10 @@ func (r *DomainService) ListRuleSets(ctx context.Context, domainID int64, query 
 	return res, nil
 }
 
-// Retrieve a paginated list of policy rule sets linked to a particular domain
+// Retrieve a paginated list of policy rule sets available for a particular domain.
+// Use
+// [List domain policies](#operation/`list_domain_policies_v2_domains__domain_id__policies_get`)
+// to fetch the policies.
 func (r *DomainService) ListRuleSetsAutoPaging(ctx context.Context, domainID int64, query DomainListRuleSetsParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[WaapRuleSet] {
 	return pagination.NewOffsetPageAutoPager(r.ListRuleSets(ctx, domainID, query, opts...))
 }

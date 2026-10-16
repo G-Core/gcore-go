@@ -80,6 +80,18 @@ func (r *DomainPolicyService) ListAutoPaging(ctx context.Context, domainID int64
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, domainID, query, opts...))
 }
 
+// Retrieve the configuration of a security policy on a domain.
+func (r *DomainPolicyService) Get(ctx context.Context, policyID string, query DomainPolicyGetParams, opts ...option.RequestOption) (res *WaapDomainPolicySettings, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if policyID == "" {
+		err = errors.New("missing required policy_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("waap/v2/domains/%v/policies/%s", query.DomainID, policyID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
 // Represents a configurable WAAP security rule, also known as a policy.
 type WaapDomainPolicy struct {
 	// Unique identifier for the security rule
@@ -208,4 +220,10 @@ func (r DomainPolicyListParams) URLQuery() (v url.Values, err error) {
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
+}
+
+type DomainPolicyGetParams struct {
+	// The domain ID
+	DomainID int64 `path:"domain_id" api:"required" json:"-"`
+	paramObj
 }
