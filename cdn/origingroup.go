@@ -167,8 +167,8 @@ type OriginGroupsNoneAuth struct {
 	// an S3 origin.
 	//
 	// Host origins have a `source` field with the hostname or IP. S3 origins have
-	// `origin_type: s3` and a `config` object with S3 credentials. Both types can be
-	// mixed in the same origin group.
+	// `origin_type: s3` and a `config` object with S3 credentials or a Gcore Object
+	// Storage binding. Both types can be mixed in the same origin group.
 	Sources []OriginGroupsNoneAuthSourceUnion `json:"sources" api:"required"`
 	// **Deprecated.** No longer necessary. Defaults to `none`.
 	//
@@ -298,29 +298,32 @@ func (r *OriginGroupsNoneAuthSourceUnion) UnmarshalJSON(data []byte) error {
 // [OriginGroupsNoneAuthSourceUnion].
 type OriginGroupsNoneAuthSourceUnionConfig struct {
 	// This field is from variant [OriginGroupsNoneAuthSourceS3SourceConfig].
-	S3AccessKeyID string `json:"s3_access_key_id"`
-	// This field is from variant [OriginGroupsNoneAuthSourceS3SourceConfig].
 	S3BucketName string `json:"s3_bucket_name"`
 	// This field is from variant [OriginGroupsNoneAuthSourceS3SourceConfig].
-	S3SecretAccessKey string `json:"s3_secret_access_key"`
-	// This field is from variant [OriginGroupsNoneAuthSourceS3SourceConfig].
 	S3Type string `json:"s3_type"`
+	// This field is from variant [OriginGroupsNoneAuthSourceS3SourceConfig].
+	S3AccessKeyID string `json:"s3_access_key_id"`
 	// This field is from variant [OriginGroupsNoneAuthSourceS3SourceConfig].
 	S3AuthType string `json:"s3_auth_type"`
 	// This field is from variant [OriginGroupsNoneAuthSourceS3SourceConfig].
 	S3Region string `json:"s3_region"`
 	// This field is from variant [OriginGroupsNoneAuthSourceS3SourceConfig].
+	S3SecretAccessKey string `json:"s3_secret_access_key"`
+	// This field is from variant [OriginGroupsNoneAuthSourceS3SourceConfig].
 	S3StorageHostname string `json:"s3_storage_hostname"`
+	// This field is from variant [OriginGroupsNoneAuthSourceS3SourceConfig].
+	StorageID int64 `json:"storage_id"`
 	// This field is from variant [OriginGroupsNoneAuthSourceFastEdgeSourceConfig].
 	AppID string `json:"app_id"`
 	JSON  struct {
-		S3AccessKeyID     respjson.Field
 		S3BucketName      respjson.Field
-		S3SecretAccessKey respjson.Field
 		S3Type            respjson.Field
+		S3AccessKeyID     respjson.Field
 		S3AuthType        respjson.Field
 		S3Region          respjson.Field
+		S3SecretAccessKey respjson.Field
 		S3StorageHostname respjson.Field
+		StorageID         respjson.Field
 		AppID             respjson.Field
 		raw               string
 	} `json:"-"`
@@ -353,6 +356,10 @@ type OriginGroupsNoneAuthSourceHostSource struct {
 	Enabled bool `json:"enabled"`
 	// Per-origin Host header override. When set, the CDN sends this value as the Host
 	// header when requesting content from this origin instead of the default.
+	//
+	// Not accepted for an origin bound to a Gcore Object Storage (`s3_type` is
+	// `gcore`): any non-null value is rejected, and the field is returned as `null`
+	// for such origins.
 	HostHeaderOverride string `json:"host_header_override" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -374,6 +381,17 @@ func (r *OriginGroupsNoneAuthSourceHostSource) UnmarshalJSON(data []byte) error 
 // An S3 origin source.
 type OriginGroupsNoneAuthSourceS3Source struct {
 	// S3 storage configuration. Required when `origin_type` is `s3`.
+	//
+	// To use your Gcore Object Storage as the origin, set `s3_type` to `gcore` and
+	// send only `storage_id` and `s3_bucket_name`. The CDN configures the connection
+	// for you, and the response returns only `s3_type`, `storage_id`, `s3_bucket_name`
+	// and `s3_auth_type`. For such an origin:
+	//
+	//   - The CDN pulls content over HTTPS, regardless of the resource's
+	//     `originProtocol`.
+	//   - The CDN has read-only access to the bucket.
+	//   - The CDN manages the Host header sent to the storage, so `host_header_override`
+	//     is not accepted and is returned as `null`.
 	Config OriginGroupsNoneAuthSourceS3SourceConfig `json:"config" api:"required"`
 	// Origin type. Present in responses for S3 and FastEdge sources.
 	//
@@ -405,6 +423,10 @@ type OriginGroupsNoneAuthSourceS3Source struct {
 	Enabled bool `json:"enabled"`
 	// Per-origin Host header override. When set, the CDN sends this value as the Host
 	// header when requesting content from this origin instead of the default.
+	//
+	// Not accepted for an origin bound to a Gcore Object Storage (`s3_type` is
+	// `gcore`): any non-null value is rejected, and the field is returned as `null`
+	// for such origins.
 	HostHeaderOverride string `json:"host_header_override" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -425,52 +447,84 @@ func (r *OriginGroupsNoneAuthSourceS3Source) UnmarshalJSON(data []byte) error {
 }
 
 // S3 storage configuration. Required when `origin_type` is `s3`.
+//
+// To use your Gcore Object Storage as the origin, set `s3_type` to `gcore` and
+// send only `storage_id` and `s3_bucket_name`. The CDN configures the connection
+// for you, and the response returns only `s3_type`, `storage_id`, `s3_bucket_name`
+// and `s3_auth_type`. For such an origin:
+//
+//   - The CDN pulls content over HTTPS, regardless of the resource's
+//     `originProtocol`.
+//   - The CDN has read-only access to the bucket.
+//   - The CDN manages the Host header sent to the storage, so `host_header_override`
+//     is not accepted and is returned as `null`.
 type OriginGroupsNoneAuthSourceS3SourceConfig struct {
+	// S3 bucket name.
+	//
+	// If `s3_type` is `gcore`, the bucket must exist in the selected storage.
+	S3BucketName string `json:"s3_bucket_name" api:"required"`
+	// Storage type compatible with S3.
+	//
+	// Possible values:
+	//
+	//   - **amazon** - AWS S3 storage.
+	//   - **other** - Other (not AWS) S3 compatible storage.
+	//   - **gcore** - Your Gcore Object Storage. Select the storage and bucket, and the
+	//     CDN configures the connection.
+	//
+	// Any of "amazon", "other", "gcore".
+	S3Type string `json:"s3_type" api:"required"`
 	// Access key ID for the S3 account. Masked as `SECRET_VALUE` in responses.
+	//
+	// The parameter is required if `s3_type` is `amazon` or `other`. Not allowed if
+	// `s3_type` is `gcore`: the CDN fills it and does not return it.
 	//
 	// Restrictions:
 	//
 	// - Latin letters (A-Z, a-z), numbers (0-9), colon, dash, and underscore.
 	// - From 4 to 255 characters.
-	S3AccessKeyID string `json:"s3_access_key_id" api:"required"`
-	// S3 bucket name.
-	S3BucketName string `json:"s3_bucket_name" api:"required"`
+	S3AccessKeyID string `json:"s3_access_key_id"`
+	// S3 authentication type.
+	S3AuthType string `json:"s3_auth_type"`
+	// S3 storage region.
+	//
+	// The parameter is required if `s3_type` is `amazon`. Not allowed if `s3_type` is
+	// `gcore`: the CDN fills it and does not return it.
+	S3Region string `json:"s3_region" api:"nullable"`
 	// Secret access key for the S3 account. Masked as `SECRET_VALUE` in responses.
+	//
+	// The parameter is required if `s3_type` is `amazon` or `other`. Not allowed if
+	// `s3_type` is `gcore`: the CDN fills it and does not return it.
 	//
 	// Restrictions:
 	//
 	//   - Latin letters (A-Z, a-z), numbers (0-9), pluses, slashes, dashes, colons and
 	//     underscores.
 	//   - From 16 to 255 characters.
-	S3SecretAccessKey string `json:"s3_secret_access_key" api:"required"`
-	// Storage type compatible with S3.
-	//
-	// Possible values:
-	//
-	// - **amazon** - AWS S3 storage.
-	// - **other** - Other (not AWS) S3 compatible storage.
-	//
-	// Any of "amazon", "other".
-	S3Type string `json:"s3_type" api:"required"`
-	// S3 authentication type.
-	S3AuthType string `json:"s3_auth_type"`
-	// S3 storage region.
-	//
-	// The parameter is required if `s3_type` is `amazon`.
-	S3Region string `json:"s3_region" api:"nullable"`
+	S3SecretAccessKey string `json:"s3_secret_access_key"`
 	// S3 storage hostname.
 	//
-	// The parameter is required if `s3_type` is `other`.
+	// The parameter is required if `s3_type` is `other`. Not allowed if `s3_type` is
+	// `gcore`: the CDN fills it and does not return it.
+	//
+	// Must be a public address: private and reserved IP addresses, `localhost`, and
+	// hostnames that resolve to them are rejected.
 	S3StorageHostname string `json:"s3_storage_hostname" api:"nullable"`
+	// ID of your Gcore Object Storage.
+	//
+	// The parameter is required if `s3_type` is `gcore`, and not allowed otherwise.
+	// The storage must be active and of the Standard type.
+	StorageID int64 `json:"storage_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		S3AccessKeyID     respjson.Field
 		S3BucketName      respjson.Field
-		S3SecretAccessKey respjson.Field
 		S3Type            respjson.Field
+		S3AccessKeyID     respjson.Field
 		S3AuthType        respjson.Field
 		S3Region          respjson.Field
+		S3SecretAccessKey respjson.Field
 		S3StorageHostname respjson.Field
+		StorageID         respjson.Field
 		ExtraFields       map[string]respjson.Field
 		raw               string
 	} `json:"-"`
@@ -516,6 +570,10 @@ type OriginGroupsNoneAuthSourceFastEdgeSource struct {
 	Enabled bool `json:"enabled"`
 	// Per-origin Host header override. When set, the CDN sends this value as the Host
 	// header when requesting content from this origin instead of the default.
+	//
+	// Not accepted for an origin bound to a Gcore Object Storage (`s3_type` is
+	// `gcore`): any non-null value is rejected, and the field is returned as `null`
+	// for such origins.
 	HostHeaderOverride string `json:"host_header_override" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -539,8 +597,8 @@ func (r *OriginGroupsNoneAuthSourceFastEdgeSource) UnmarshalJSON(data []byte) er
 type OriginGroupsNoneAuthSourceFastEdgeSourceConfig struct {
 	// ID of the FastEdge application served as origin (string, matching the existing
 	// fastedge option's convention). The CDN dispatches requests to the local FastEdge
-	// runtime on the edge node using this identifier. The application must belong to
-	// the requesting client, be enabled, and have `wasi-http` API type.
+	// runtime on the edge node using this identifier. The application must be in your
+	// account, be enabled, and have `wasi-http` API type.
 	AppID string `json:"app_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -681,6 +739,9 @@ type OriginGroupsAwsSignatureV4Auth struct {
 	// S3 storage hostname.
 	//
 	// The parameter is required, if "s3_type": other.
+	//
+	// Must be a public address: private and reserved IP addresses, `localhost`, and
+	// hostnames that resolve to them are rejected.
 	S3StorageHostname string `json:"s3_storage_hostname"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -920,6 +981,10 @@ type OriginGroupNewParamsBodyNoneAuthSourceHostSource struct {
 	Source string `json:"source" api:"required"`
 	// Per-origin Host header override. When set, the CDN sends this value as the Host
 	// header when requesting content from this origin instead of the default.
+	//
+	// Not accepted for an origin bound to a Gcore Object Storage (`s3_type` is
+	// `gcore`): any non-null value is rejected, and the field is returned as `null`
+	// for such origins.
 	HostHeaderOverride param.Opt[string] `json:"host_header_override,omitzero"`
 	// Defines whether the origin is a backup, meaning that it will not be used until
 	// one of active origins become unavailable.
@@ -952,9 +1017,24 @@ func (r *OriginGroupNewParamsBodyNoneAuthSourceHostSource) UnmarshalJSON(data []
 // The property Config is required.
 type OriginGroupNewParamsBodyNoneAuthSourceS3Source struct {
 	// S3 storage configuration. Required when `origin_type` is `s3`.
+	//
+	// To use your Gcore Object Storage as the origin, set `s3_type` to `gcore` and
+	// send only `storage_id` and `s3_bucket_name`. The CDN configures the connection
+	// for you, and the response returns only `s3_type`, `storage_id`, `s3_bucket_name`
+	// and `s3_auth_type`. For such an origin:
+	//
+	//   - The CDN pulls content over HTTPS, regardless of the resource's
+	//     `originProtocol`.
+	//   - The CDN has read-only access to the bucket.
+	//   - The CDN manages the Host header sent to the storage, so `host_header_override`
+	//     is not accepted and is returned as `null`.
 	Config OriginGroupNewParamsBodyNoneAuthSourceS3SourceConfig `json:"config,omitzero" api:"required"`
 	// Per-origin Host header override. When set, the CDN sends this value as the Host
 	// header when requesting content from this origin instead of the default.
+	//
+	// Not accepted for an origin bound to a Gcore Object Storage (`s3_type` is
+	// `gcore`): any non-null value is rejected, and the field is returned as `null`
+	// for such origins.
 	HostHeaderOverride param.Opt[string] `json:"host_header_override,omitzero"`
 	// Defines whether the origin is a backup, meaning that it will not be used until
 	// one of active origins become unavailable.
@@ -1003,45 +1083,75 @@ func init() {
 
 // S3 storage configuration. Required when `origin_type` is `s3`.
 //
-// The properties S3AccessKeyID, S3BucketName, S3SecretAccessKey, S3Type are
-// required.
+// To use your Gcore Object Storage as the origin, set `s3_type` to `gcore` and
+// send only `storage_id` and `s3_bucket_name`. The CDN configures the connection
+// for you, and the response returns only `s3_type`, `storage_id`, `s3_bucket_name`
+// and `s3_auth_type`. For such an origin:
+//
+//   - The CDN pulls content over HTTPS, regardless of the resource's
+//     `originProtocol`.
+//   - The CDN has read-only access to the bucket.
+//   - The CDN manages the Host header sent to the storage, so `host_header_override`
+//     is not accepted and is returned as `null`.
+//
+// The properties S3BucketName, S3Type are required.
 type OriginGroupNewParamsBodyNoneAuthSourceS3SourceConfig struct {
+	// S3 bucket name.
+	//
+	// If `s3_type` is `gcore`, the bucket must exist in the selected storage.
+	S3BucketName string `json:"s3_bucket_name" api:"required"`
+	// Storage type compatible with S3.
+	//
+	// Possible values:
+	//
+	//   - **amazon** - AWS S3 storage.
+	//   - **other** - Other (not AWS) S3 compatible storage.
+	//   - **gcore** - Your Gcore Object Storage. Select the storage and bucket, and the
+	//     CDN configures the connection.
+	//
+	// Any of "amazon", "other", "gcore".
+	S3Type string `json:"s3_type,omitzero" api:"required"`
+	// S3 storage region.
+	//
+	// The parameter is required if `s3_type` is `amazon`. Not allowed if `s3_type` is
+	// `gcore`: the CDN fills it and does not return it.
+	S3Region param.Opt[string] `json:"s3_region,omitzero"`
+	// S3 storage hostname.
+	//
+	// The parameter is required if `s3_type` is `other`. Not allowed if `s3_type` is
+	// `gcore`: the CDN fills it and does not return it.
+	//
+	// Must be a public address: private and reserved IP addresses, `localhost`, and
+	// hostnames that resolve to them are rejected.
+	S3StorageHostname param.Opt[string] `json:"s3_storage_hostname,omitzero"`
 	// Access key ID for the S3 account. Masked as `SECRET_VALUE` in responses.
+	//
+	// The parameter is required if `s3_type` is `amazon` or `other`. Not allowed if
+	// `s3_type` is `gcore`: the CDN fills it and does not return it.
 	//
 	// Restrictions:
 	//
 	// - Latin letters (A-Z, a-z), numbers (0-9), colon, dash, and underscore.
 	// - From 4 to 255 characters.
-	S3AccessKeyID string `json:"s3_access_key_id" api:"required"`
-	// S3 bucket name.
-	S3BucketName string `json:"s3_bucket_name" api:"required"`
+	S3AccessKeyID param.Opt[string] `json:"s3_access_key_id,omitzero"`
+	// S3 authentication type.
+	S3AuthType param.Opt[string] `json:"s3_auth_type,omitzero"`
 	// Secret access key for the S3 account. Masked as `SECRET_VALUE` in responses.
+	//
+	// The parameter is required if `s3_type` is `amazon` or `other`. Not allowed if
+	// `s3_type` is `gcore`: the CDN fills it and does not return it.
 	//
 	// Restrictions:
 	//
 	//   - Latin letters (A-Z, a-z), numbers (0-9), pluses, slashes, dashes, colons and
 	//     underscores.
 	//   - From 16 to 255 characters.
-	S3SecretAccessKey string `json:"s3_secret_access_key" api:"required"`
-	// Storage type compatible with S3.
+	S3SecretAccessKey param.Opt[string] `json:"s3_secret_access_key,omitzero"`
+	// ID of your Gcore Object Storage.
 	//
-	// Possible values:
-	//
-	// - **amazon** - AWS S3 storage.
-	// - **other** - Other (not AWS) S3 compatible storage.
-	//
-	// Any of "amazon", "other".
-	S3Type string `json:"s3_type,omitzero" api:"required"`
-	// S3 storage region.
-	//
-	// The parameter is required if `s3_type` is `amazon`.
-	S3Region param.Opt[string] `json:"s3_region,omitzero"`
-	// S3 storage hostname.
-	//
-	// The parameter is required if `s3_type` is `other`.
-	S3StorageHostname param.Opt[string] `json:"s3_storage_hostname,omitzero"`
-	// S3 authentication type.
-	S3AuthType param.Opt[string] `json:"s3_auth_type,omitzero"`
+	// The parameter is required if `s3_type` is `gcore`, and not allowed otherwise.
+	// The storage must be active and of the Standard type.
+	StorageID param.Opt[int64] `json:"storage_id,omitzero"`
 	paramObj
 }
 
@@ -1055,7 +1165,7 @@ func (r *OriginGroupNewParamsBodyNoneAuthSourceS3SourceConfig) UnmarshalJSON(dat
 
 func init() {
 	apijson.RegisterFieldValidator[OriginGroupNewParamsBodyNoneAuthSourceS3SourceConfig](
-		"s3_type", "amazon", "other",
+		"s3_type", "amazon", "other", "gcore",
 	)
 }
 
@@ -1076,6 +1186,10 @@ type OriginGroupNewParamsBodyNoneAuthSourceFastEdgeSource struct {
 	OriginType string `json:"origin_type,omitzero" api:"required"`
 	// Per-origin Host header override. When set, the CDN sends this value as the Host
 	// header when requesting content from this origin instead of the default.
+	//
+	// Not accepted for an origin bound to a Gcore Object Storage (`s3_type` is
+	// `gcore`): any non-null value is rejected, and the field is returned as `null`
+	// for such origins.
 	HostHeaderOverride param.Opt[string] `json:"host_header_override,omitzero"`
 	// Defines whether the origin is a backup, meaning that it will not be used until
 	// one of active origins become unavailable.
@@ -1117,8 +1231,8 @@ func init() {
 type OriginGroupNewParamsBodyNoneAuthSourceFastEdgeSourceConfig struct {
 	// ID of the FastEdge application served as origin (string, matching the existing
 	// fastedge option's convention). The CDN dispatches requests to the local FastEdge
-	// runtime on the edge node using this identifier. The application must belong to
-	// the requesting client, be enabled, and have `wasi-http` API type.
+	// runtime on the edge node using this identifier. The application must be in your
+	// account, be enabled, and have `wasi-http` API type.
 	AppID string `json:"app_id" api:"required"`
 	paramObj
 }
@@ -1235,6 +1349,9 @@ type OriginGroupNewParamsBodyAwsSignatureV4Auth struct {
 	// S3 storage hostname.
 	//
 	// The parameter is required, if "s3_type": other.
+	//
+	// Must be a public address: private and reserved IP addresses, `localhost`, and
+	// hostnames that resolve to them are rejected.
 	S3StorageHostname param.Opt[string] `json:"s3_storage_hostname,omitzero"`
 	paramObj
 }
@@ -1445,6 +1562,10 @@ type OriginGroupUpdateParamsBodyNoneAuthSourceHostSource struct {
 	Source string `json:"source" api:"required"`
 	// Per-origin Host header override. When set, the CDN sends this value as the Host
 	// header when requesting content from this origin instead of the default.
+	//
+	// Not accepted for an origin bound to a Gcore Object Storage (`s3_type` is
+	// `gcore`): any non-null value is rejected, and the field is returned as `null`
+	// for such origins.
 	HostHeaderOverride param.Opt[string] `json:"host_header_override,omitzero"`
 	// Defines whether the origin is a backup, meaning that it will not be used until
 	// one of active origins become unavailable.
@@ -1477,9 +1598,24 @@ func (r *OriginGroupUpdateParamsBodyNoneAuthSourceHostSource) UnmarshalJSON(data
 // The property Config is required.
 type OriginGroupUpdateParamsBodyNoneAuthSourceS3Source struct {
 	// S3 storage configuration. Required when `origin_type` is `s3`.
+	//
+	// To use your Gcore Object Storage as the origin, set `s3_type` to `gcore` and
+	// send only `storage_id` and `s3_bucket_name`. The CDN configures the connection
+	// for you, and the response returns only `s3_type`, `storage_id`, `s3_bucket_name`
+	// and `s3_auth_type`. For such an origin:
+	//
+	//   - The CDN pulls content over HTTPS, regardless of the resource's
+	//     `originProtocol`.
+	//   - The CDN has read-only access to the bucket.
+	//   - The CDN manages the Host header sent to the storage, so `host_header_override`
+	//     is not accepted and is returned as `null`.
 	Config OriginGroupUpdateParamsBodyNoneAuthSourceS3SourceConfig `json:"config,omitzero" api:"required"`
 	// Per-origin Host header override. When set, the CDN sends this value as the Host
 	// header when requesting content from this origin instead of the default.
+	//
+	// Not accepted for an origin bound to a Gcore Object Storage (`s3_type` is
+	// `gcore`): any non-null value is rejected, and the field is returned as `null`
+	// for such origins.
 	HostHeaderOverride param.Opt[string] `json:"host_header_override,omitzero"`
 	// Defines whether the origin is a backup, meaning that it will not be used until
 	// one of active origins become unavailable.
@@ -1528,45 +1664,75 @@ func init() {
 
 // S3 storage configuration. Required when `origin_type` is `s3`.
 //
-// The properties S3AccessKeyID, S3BucketName, S3SecretAccessKey, S3Type are
-// required.
+// To use your Gcore Object Storage as the origin, set `s3_type` to `gcore` and
+// send only `storage_id` and `s3_bucket_name`. The CDN configures the connection
+// for you, and the response returns only `s3_type`, `storage_id`, `s3_bucket_name`
+// and `s3_auth_type`. For such an origin:
+//
+//   - The CDN pulls content over HTTPS, regardless of the resource's
+//     `originProtocol`.
+//   - The CDN has read-only access to the bucket.
+//   - The CDN manages the Host header sent to the storage, so `host_header_override`
+//     is not accepted and is returned as `null`.
+//
+// The properties S3BucketName, S3Type are required.
 type OriginGroupUpdateParamsBodyNoneAuthSourceS3SourceConfig struct {
+	// S3 bucket name.
+	//
+	// If `s3_type` is `gcore`, the bucket must exist in the selected storage.
+	S3BucketName string `json:"s3_bucket_name" api:"required"`
+	// Storage type compatible with S3.
+	//
+	// Possible values:
+	//
+	//   - **amazon** - AWS S3 storage.
+	//   - **other** - Other (not AWS) S3 compatible storage.
+	//   - **gcore** - Your Gcore Object Storage. Select the storage and bucket, and the
+	//     CDN configures the connection.
+	//
+	// Any of "amazon", "other", "gcore".
+	S3Type string `json:"s3_type,omitzero" api:"required"`
+	// S3 storage region.
+	//
+	// The parameter is required if `s3_type` is `amazon`. Not allowed if `s3_type` is
+	// `gcore`: the CDN fills it and does not return it.
+	S3Region param.Opt[string] `json:"s3_region,omitzero"`
+	// S3 storage hostname.
+	//
+	// The parameter is required if `s3_type` is `other`. Not allowed if `s3_type` is
+	// `gcore`: the CDN fills it and does not return it.
+	//
+	// Must be a public address: private and reserved IP addresses, `localhost`, and
+	// hostnames that resolve to them are rejected.
+	S3StorageHostname param.Opt[string] `json:"s3_storage_hostname,omitzero"`
 	// Access key ID for the S3 account. Masked as `SECRET_VALUE` in responses.
+	//
+	// The parameter is required if `s3_type` is `amazon` or `other`. Not allowed if
+	// `s3_type` is `gcore`: the CDN fills it and does not return it.
 	//
 	// Restrictions:
 	//
 	// - Latin letters (A-Z, a-z), numbers (0-9), colon, dash, and underscore.
 	// - From 4 to 255 characters.
-	S3AccessKeyID string `json:"s3_access_key_id" api:"required"`
-	// S3 bucket name.
-	S3BucketName string `json:"s3_bucket_name" api:"required"`
+	S3AccessKeyID param.Opt[string] `json:"s3_access_key_id,omitzero"`
+	// S3 authentication type.
+	S3AuthType param.Opt[string] `json:"s3_auth_type,omitzero"`
 	// Secret access key for the S3 account. Masked as `SECRET_VALUE` in responses.
+	//
+	// The parameter is required if `s3_type` is `amazon` or `other`. Not allowed if
+	// `s3_type` is `gcore`: the CDN fills it and does not return it.
 	//
 	// Restrictions:
 	//
 	//   - Latin letters (A-Z, a-z), numbers (0-9), pluses, slashes, dashes, colons and
 	//     underscores.
 	//   - From 16 to 255 characters.
-	S3SecretAccessKey string `json:"s3_secret_access_key" api:"required"`
-	// Storage type compatible with S3.
+	S3SecretAccessKey param.Opt[string] `json:"s3_secret_access_key,omitzero"`
+	// ID of your Gcore Object Storage.
 	//
-	// Possible values:
-	//
-	// - **amazon** - AWS S3 storage.
-	// - **other** - Other (not AWS) S3 compatible storage.
-	//
-	// Any of "amazon", "other".
-	S3Type string `json:"s3_type,omitzero" api:"required"`
-	// S3 storage region.
-	//
-	// The parameter is required if `s3_type` is `amazon`.
-	S3Region param.Opt[string] `json:"s3_region,omitzero"`
-	// S3 storage hostname.
-	//
-	// The parameter is required if `s3_type` is `other`.
-	S3StorageHostname param.Opt[string] `json:"s3_storage_hostname,omitzero"`
-	// S3 authentication type.
-	S3AuthType param.Opt[string] `json:"s3_auth_type,omitzero"`
+	// The parameter is required if `s3_type` is `gcore`, and not allowed otherwise.
+	// The storage must be active and of the Standard type.
+	StorageID param.Opt[int64] `json:"storage_id,omitzero"`
 	paramObj
 }
 
@@ -1580,7 +1746,7 @@ func (r *OriginGroupUpdateParamsBodyNoneAuthSourceS3SourceConfig) UnmarshalJSON(
 
 func init() {
 	apijson.RegisterFieldValidator[OriginGroupUpdateParamsBodyNoneAuthSourceS3SourceConfig](
-		"s3_type", "amazon", "other",
+		"s3_type", "amazon", "other", "gcore",
 	)
 }
 
@@ -1601,6 +1767,10 @@ type OriginGroupUpdateParamsBodyNoneAuthSourceFastEdgeSource struct {
 	OriginType string `json:"origin_type,omitzero" api:"required"`
 	// Per-origin Host header override. When set, the CDN sends this value as the Host
 	// header when requesting content from this origin instead of the default.
+	//
+	// Not accepted for an origin bound to a Gcore Object Storage (`s3_type` is
+	// `gcore`): any non-null value is rejected, and the field is returned as `null`
+	// for such origins.
 	HostHeaderOverride param.Opt[string] `json:"host_header_override,omitzero"`
 	// Defines whether the origin is a backup, meaning that it will not be used until
 	// one of active origins become unavailable.
@@ -1642,8 +1812,8 @@ func init() {
 type OriginGroupUpdateParamsBodyNoneAuthSourceFastEdgeSourceConfig struct {
 	// ID of the FastEdge application served as origin (string, matching the existing
 	// fastedge option's convention). The CDN dispatches requests to the local FastEdge
-	// runtime on the edge node using this identifier. The application must belong to
-	// the requesting client, be enabled, and have `wasi-http` API type.
+	// runtime on the edge node using this identifier. The application must be in your
+	// account, be enabled, and have `wasi-http` API type.
 	AppID string `json:"app_id" api:"required"`
 	paramObj
 }
@@ -1765,6 +1935,9 @@ type OriginGroupUpdateParamsBodyAwsSignatureV4Auth struct {
 	// S3 storage hostname.
 	//
 	// The parameter is required, if "s3_type": other.
+	//
+	// Must be a public address: private and reserved IP addresses, `localhost`, and
+	// hostnames that resolve to them are rejected.
 	S3StorageHostname param.Opt[string] `json:"s3_storage_hostname,omitzero"`
 	paramObj
 }
@@ -2002,6 +2175,10 @@ type OriginGroupReplaceParamsBodyNoneAuthSourceHostSource struct {
 	Source string `json:"source" api:"required"`
 	// Per-origin Host header override. When set, the CDN sends this value as the Host
 	// header when requesting content from this origin instead of the default.
+	//
+	// Not accepted for an origin bound to a Gcore Object Storage (`s3_type` is
+	// `gcore`): any non-null value is rejected, and the field is returned as `null`
+	// for such origins.
 	HostHeaderOverride param.Opt[string] `json:"host_header_override,omitzero"`
 	// Defines whether the origin is a backup, meaning that it will not be used until
 	// one of active origins become unavailable.
@@ -2034,9 +2211,24 @@ func (r *OriginGroupReplaceParamsBodyNoneAuthSourceHostSource) UnmarshalJSON(dat
 // The property Config is required.
 type OriginGroupReplaceParamsBodyNoneAuthSourceS3Source struct {
 	// S3 storage configuration. Required when `origin_type` is `s3`.
+	//
+	// To use your Gcore Object Storage as the origin, set `s3_type` to `gcore` and
+	// send only `storage_id` and `s3_bucket_name`. The CDN configures the connection
+	// for you, and the response returns only `s3_type`, `storage_id`, `s3_bucket_name`
+	// and `s3_auth_type`. For such an origin:
+	//
+	//   - The CDN pulls content over HTTPS, regardless of the resource's
+	//     `originProtocol`.
+	//   - The CDN has read-only access to the bucket.
+	//   - The CDN manages the Host header sent to the storage, so `host_header_override`
+	//     is not accepted and is returned as `null`.
 	Config OriginGroupReplaceParamsBodyNoneAuthSourceS3SourceConfig `json:"config,omitzero" api:"required"`
 	// Per-origin Host header override. When set, the CDN sends this value as the Host
 	// header when requesting content from this origin instead of the default.
+	//
+	// Not accepted for an origin bound to a Gcore Object Storage (`s3_type` is
+	// `gcore`): any non-null value is rejected, and the field is returned as `null`
+	// for such origins.
 	HostHeaderOverride param.Opt[string] `json:"host_header_override,omitzero"`
 	// Defines whether the origin is a backup, meaning that it will not be used until
 	// one of active origins become unavailable.
@@ -2085,45 +2277,75 @@ func init() {
 
 // S3 storage configuration. Required when `origin_type` is `s3`.
 //
-// The properties S3AccessKeyID, S3BucketName, S3SecretAccessKey, S3Type are
-// required.
+// To use your Gcore Object Storage as the origin, set `s3_type` to `gcore` and
+// send only `storage_id` and `s3_bucket_name`. The CDN configures the connection
+// for you, and the response returns only `s3_type`, `storage_id`, `s3_bucket_name`
+// and `s3_auth_type`. For such an origin:
+//
+//   - The CDN pulls content over HTTPS, regardless of the resource's
+//     `originProtocol`.
+//   - The CDN has read-only access to the bucket.
+//   - The CDN manages the Host header sent to the storage, so `host_header_override`
+//     is not accepted and is returned as `null`.
+//
+// The properties S3BucketName, S3Type are required.
 type OriginGroupReplaceParamsBodyNoneAuthSourceS3SourceConfig struct {
+	// S3 bucket name.
+	//
+	// If `s3_type` is `gcore`, the bucket must exist in the selected storage.
+	S3BucketName string `json:"s3_bucket_name" api:"required"`
+	// Storage type compatible with S3.
+	//
+	// Possible values:
+	//
+	//   - **amazon** - AWS S3 storage.
+	//   - **other** - Other (not AWS) S3 compatible storage.
+	//   - **gcore** - Your Gcore Object Storage. Select the storage and bucket, and the
+	//     CDN configures the connection.
+	//
+	// Any of "amazon", "other", "gcore".
+	S3Type string `json:"s3_type,omitzero" api:"required"`
+	// S3 storage region.
+	//
+	// The parameter is required if `s3_type` is `amazon`. Not allowed if `s3_type` is
+	// `gcore`: the CDN fills it and does not return it.
+	S3Region param.Opt[string] `json:"s3_region,omitzero"`
+	// S3 storage hostname.
+	//
+	// The parameter is required if `s3_type` is `other`. Not allowed if `s3_type` is
+	// `gcore`: the CDN fills it and does not return it.
+	//
+	// Must be a public address: private and reserved IP addresses, `localhost`, and
+	// hostnames that resolve to them are rejected.
+	S3StorageHostname param.Opt[string] `json:"s3_storage_hostname,omitzero"`
 	// Access key ID for the S3 account. Masked as `SECRET_VALUE` in responses.
+	//
+	// The parameter is required if `s3_type` is `amazon` or `other`. Not allowed if
+	// `s3_type` is `gcore`: the CDN fills it and does not return it.
 	//
 	// Restrictions:
 	//
 	// - Latin letters (A-Z, a-z), numbers (0-9), colon, dash, and underscore.
 	// - From 4 to 255 characters.
-	S3AccessKeyID string `json:"s3_access_key_id" api:"required"`
-	// S3 bucket name.
-	S3BucketName string `json:"s3_bucket_name" api:"required"`
+	S3AccessKeyID param.Opt[string] `json:"s3_access_key_id,omitzero"`
+	// S3 authentication type.
+	S3AuthType param.Opt[string] `json:"s3_auth_type,omitzero"`
 	// Secret access key for the S3 account. Masked as `SECRET_VALUE` in responses.
+	//
+	// The parameter is required if `s3_type` is `amazon` or `other`. Not allowed if
+	// `s3_type` is `gcore`: the CDN fills it and does not return it.
 	//
 	// Restrictions:
 	//
 	//   - Latin letters (A-Z, a-z), numbers (0-9), pluses, slashes, dashes, colons and
 	//     underscores.
 	//   - From 16 to 255 characters.
-	S3SecretAccessKey string `json:"s3_secret_access_key" api:"required"`
-	// Storage type compatible with S3.
+	S3SecretAccessKey param.Opt[string] `json:"s3_secret_access_key,omitzero"`
+	// ID of your Gcore Object Storage.
 	//
-	// Possible values:
-	//
-	// - **amazon** - AWS S3 storage.
-	// - **other** - Other (not AWS) S3 compatible storage.
-	//
-	// Any of "amazon", "other".
-	S3Type string `json:"s3_type,omitzero" api:"required"`
-	// S3 storage region.
-	//
-	// The parameter is required if `s3_type` is `amazon`.
-	S3Region param.Opt[string] `json:"s3_region,omitzero"`
-	// S3 storage hostname.
-	//
-	// The parameter is required if `s3_type` is `other`.
-	S3StorageHostname param.Opt[string] `json:"s3_storage_hostname,omitzero"`
-	// S3 authentication type.
-	S3AuthType param.Opt[string] `json:"s3_auth_type,omitzero"`
+	// The parameter is required if `s3_type` is `gcore`, and not allowed otherwise.
+	// The storage must be active and of the Standard type.
+	StorageID param.Opt[int64] `json:"storage_id,omitzero"`
 	paramObj
 }
 
@@ -2137,7 +2359,7 @@ func (r *OriginGroupReplaceParamsBodyNoneAuthSourceS3SourceConfig) UnmarshalJSON
 
 func init() {
 	apijson.RegisterFieldValidator[OriginGroupReplaceParamsBodyNoneAuthSourceS3SourceConfig](
-		"s3_type", "amazon", "other",
+		"s3_type", "amazon", "other", "gcore",
 	)
 }
 
@@ -2158,6 +2380,10 @@ type OriginGroupReplaceParamsBodyNoneAuthSourceFastEdgeSource struct {
 	OriginType string `json:"origin_type,omitzero" api:"required"`
 	// Per-origin Host header override. When set, the CDN sends this value as the Host
 	// header when requesting content from this origin instead of the default.
+	//
+	// Not accepted for an origin bound to a Gcore Object Storage (`s3_type` is
+	// `gcore`): any non-null value is rejected, and the field is returned as `null`
+	// for such origins.
 	HostHeaderOverride param.Opt[string] `json:"host_header_override,omitzero"`
 	// Defines whether the origin is a backup, meaning that it will not be used until
 	// one of active origins become unavailable.
@@ -2199,8 +2425,8 @@ func init() {
 type OriginGroupReplaceParamsBodyNoneAuthSourceFastEdgeSourceConfig struct {
 	// ID of the FastEdge application served as origin (string, matching the existing
 	// fastedge option's convention). The CDN dispatches requests to the local FastEdge
-	// runtime on the edge node using this identifier. The application must belong to
-	// the requesting client, be enabled, and have `wasi-http` API type.
+	// runtime on the edge node using this identifier. The application must be in your
+	// account, be enabled, and have `wasi-http` API type.
 	AppID string `json:"app_id" api:"required"`
 	paramObj
 }
@@ -2324,6 +2550,9 @@ type OriginGroupReplaceParamsBodyAwsSignatureV4Auth struct {
 	// S3 storage hostname.
 	//
 	// The parameter is required, if "s3_type": other.
+	//
+	// Must be a public address: private and reserved IP addresses, `localhost`, and
+	// hostnames that resolve to them are rejected.
 	S3StorageHostname param.Opt[string] `json:"s3_storage_hostname,omitzero"`
 	paramObj
 }

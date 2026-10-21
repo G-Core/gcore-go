@@ -254,6 +254,10 @@ type CDNResource struct {
 	//
 	// If protocol is not specified, HTTP is used to connect to an origin server.
 	//
+	// If an enabled origin in the resource's origin group is bound to a Gcore Object
+	// Storage (`s3_type` is `gcore`), the CDN connects to every origin in that group
+	// over HTTPS regardless of this setting.
+	//
 	// Any of "HTTP", "HTTPS", "MATCH".
 	OriginProtocol CDNResourceOriginProtocol `json:"originProtocol"`
 	// Defines whether the CDN resource has a preset applied.
@@ -932,7 +936,7 @@ type CDNResourceOptionsCors struct {
 	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value if the
 	//     origin matches one of the listed domains** - Content will be uploaded only for
 	//     requests from the domains specified in the field.
-	//     `"value": ["domain.com", "second.dom.com"]`
+	//     `"value": ["example.com", "example.org"]`
 	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value** -
 	//     Content will be uploaded for requests from any domain, and the domain from
 	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
@@ -1752,8 +1756,8 @@ type CDNResourceOptionsIPAddressACL struct {
 	//
 	// Examples:
 	//
-	// - `192.168.3.2/32`
-	// - `2a03:d000:2980:7::8/128`
+	// - `192.0.2.10/32`
+	// - `2001:db8::8/128`
 	ExceptedValues []string `json:"excepted_values" api:"required" format:"ipv4net or ipv6net"`
 	// IP access policy type.
 	//
@@ -2923,6 +2927,10 @@ func (r *CDNResourceOptionsWebsockets) UnmarshalJSON(data []byte) error {
 //     origin source should be available for the CDN both through HTTP and HTTPS).
 //
 // If protocol is not specified, HTTP is used to connect to an origin server.
+//
+// If an enabled origin in the resource's origin group is bound to a Gcore Object
+// Storage (`s3_type` is `gcore`), the CDN connects to every origin in that group
+// over HTTPS regardless of this setting.
 type CDNResourceOriginProtocol string
 
 const (
@@ -3050,6 +3058,10 @@ type CDNResourceNewParams struct {
 	//     origin source should be available for the CDN both through HTTP and HTTPS).
 	//
 	// If protocol is not specified, HTTP is used to connect to an origin server.
+	//
+	// If an enabled origin in the resource's origin group is bound to a Gcore Object
+	// Storage (`s3_type` is `gcore`), the CDN connects to every origin in that group
+	// over HTTPS regardless of this setting.
 	//
 	// Any of "HTTP", "HTTPS", "MATCH".
 	OriginProtocol CDNResourceNewParamsOriginProtocol `json:"originProtocol,omitzero"`
@@ -3507,7 +3519,7 @@ type CDNResourceNewParamsOptionsCors struct {
 	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value if the
 	//     origin matches one of the listed domains** - Content will be uploaded only for
 	//     requests from the domains specified in the field.
-	//     `"value": ["domain.com", "second.dom.com"]`
+	//     `"value": ["example.com", "example.org"]`
 	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value** -
 	//     Content will be uploaded for requests from any domain, and the domain from
 	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
@@ -4258,8 +4270,8 @@ type CDNResourceNewParamsOptionsIPAddressACL struct {
 	//
 	// Examples:
 	//
-	// - `192.168.3.2/32`
-	// - `2a03:d000:2980:7::8/128`
+	// - `192.0.2.10/32`
+	// - `2001:db8::8/128`
 	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"ipv4net or ipv6net"`
 	// IP access policy type.
 	//
@@ -5386,6 +5398,10 @@ func (r *CDNResourceNewParamsOptionsWebsockets) UnmarshalJSON(data []byte) error
 //     origin source should be available for the CDN both through HTTP and HTTPS).
 //
 // If protocol is not specified, HTTP is used to connect to an origin server.
+//
+// If an enabled origin in the resource's origin group is bound to a Gcore Object
+// Storage (`s3_type` is `gcore`), the CDN connects to every origin in that group
+// over HTTPS regardless of this setting.
 type CDNResourceNewParamsOriginProtocol string
 
 const (
@@ -5450,6 +5466,10 @@ type CDNResourceUpdateParams struct {
 	//     origin source should be available for the CDN both through HTTP and HTTPS).
 	//
 	// If protocol is not specified, HTTP is used to connect to an origin server.
+	//
+	// If an enabled origin in the resource's origin group is bound to a Gcore Object
+	// Storage (`s3_type` is `gcore`), the CDN connects to every origin in that group
+	// over HTTPS regardless of this setting.
 	//
 	// Any of "HTTP", "HTTPS", "MATCH".
 	OriginProtocol CDNResourceUpdateParamsOriginProtocol `json:"originProtocol,omitzero"`
@@ -5907,7 +5927,7 @@ type CDNResourceUpdateParamsOptionsCors struct {
 	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value if the
 	//     origin matches one of the listed domains** - Content will be uploaded only for
 	//     requests from the domains specified in the field.
-	//     `"value": ["domain.com", "second.dom.com"]`
+	//     `"value": ["example.com", "example.org"]`
 	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value** -
 	//     Content will be uploaded for requests from any domain, and the domain from
 	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
@@ -6658,8 +6678,8 @@ type CDNResourceUpdateParamsOptionsIPAddressACL struct {
 	//
 	// Examples:
 	//
-	// - `192.168.3.2/32`
-	// - `2a03:d000:2980:7::8/128`
+	// - `192.0.2.10/32`
+	// - `2001:db8::8/128`
 	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"ipv4net or ipv6net"`
 	// IP access policy type.
 	//
@@ -7786,6 +7806,10 @@ func (r *CDNResourceUpdateParamsOptionsWebsockets) UnmarshalJSON(data []byte) er
 //     origin source should be available for the CDN both through HTTP and HTTPS).
 //
 // If protocol is not specified, HTTP is used to connect to an origin server.
+//
+// If an enabled origin in the resource's origin group is bound to a Gcore Object
+// Storage (`s3_type` is `gcore`), the CDN connects to every origin in that group
+// over HTTPS regardless of this setting.
 type CDNResourceUpdateParamsOriginProtocol string
 
 const (
@@ -7907,6 +7931,14 @@ type CDNResourceListParams struct {
 	// - **true** - CDN resource is used for Streaming platform.
 	// - **false** - CDN resource is not used for Streaming platform.
 	VpEnabled param.Opt[bool] `query:"vp_enabled,omitzero" json:"-"`
+	// Filters CDN resources by whether they are linked to a WAAP domain. A CDN
+	// resource stays linked when WAAP is turned off on it.
+	//
+	// Possible values:
+	//
+	// - **true** - CDN resource is not linked to a WAAP domain.
+	// - **false** - CDN resource is linked to a WAAP domain.
+	WaapDomainIDIsnull param.Opt[bool] `query:"waap_domain_id__isnull,omitzero" json:"-"`
 	// Protocol used by CDN servers to request content from an origin source.
 	//
 	// Any of "HTTP", "HTTPS", "MATCH".
@@ -8121,6 +8153,10 @@ type CDNResourceReplaceParams struct {
 	//     origin source should be available for the CDN both through HTTP and HTTPS).
 	//
 	// If protocol is not specified, HTTP is used to connect to an origin server.
+	//
+	// If an enabled origin in the resource's origin group is bound to a Gcore Object
+	// Storage (`s3_type` is `gcore`), the CDN connects to every origin in that group
+	// over HTTPS regardless of this setting.
 	//
 	// Any of "HTTP", "HTTPS", "MATCH".
 	OriginProtocol CDNResourceReplaceParamsOriginProtocol `json:"originProtocol,omitzero"`
@@ -8578,7 +8614,7 @@ type CDNResourceReplaceParamsOptionsCors struct {
 	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value if the
 	//     origin matches one of the listed domains** - Content will be uploaded only for
 	//     requests from the domains specified in the field.
-	//     `"value": ["domain.com", "second.dom.com"]`
+	//     `"value": ["example.com", "example.org"]`
 	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value** -
 	//     Content will be uploaded for requests from any domain, and the domain from
 	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
@@ -9329,8 +9365,8 @@ type CDNResourceReplaceParamsOptionsIPAddressACL struct {
 	//
 	// Examples:
 	//
-	// - `192.168.3.2/32`
-	// - `2a03:d000:2980:7::8/128`
+	// - `192.0.2.10/32`
+	// - `2001:db8::8/128`
 	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"ipv4net or ipv6net"`
 	// IP access policy type.
 	//
@@ -10457,6 +10493,10 @@ func (r *CDNResourceReplaceParamsOptionsWebsockets) UnmarshalJSON(data []byte) e
 //     origin source should be available for the CDN both through HTTP and HTTPS).
 //
 // If protocol is not specified, HTTP is used to connect to an origin server.
+//
+// If an enabled origin in the resource's origin group is bound to a Gcore Object
+// Storage (`s3_type` is `gcore`), the CDN connects to every origin in that group
+// over HTTPS regardless of this setting.
 type CDNResourceReplaceParamsOriginProtocol string
 
 const (

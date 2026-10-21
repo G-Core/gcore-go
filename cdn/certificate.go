@@ -180,17 +180,13 @@ type SslCertificateUsageAlias struct {
 	//
 	// Possible values:
 	//
-	//   - **pending** – The certificate has not been issued yet; the alias is not
+	//   - `inactive` – The alias or its CDN resource is disabled; the alias is not
 	//     served.
-	//   - **active** – The alias is served with its certificate.
-	//   - **`ssl_issuing`** – A new certificate is being issued; the current one keeps
-	//     being served.
-	//   - **`ssl_error`** – Certificate issuance failed; a previously issued certificate
-	//     keeps being served.
-	//   - **inactive** – The alias or its CDN resource is disabled; the alias is not
-	//     served.
+	//   - `pending` – The alias configuration has not reached the CDN yet.
+	//   - `http_only` – The alias is served over HTTP only.
+	//   - `active` – The alias is served over HTTP and HTTPS.
 	//
-	// Any of "pending", "active", "ssl_issuing", "ssl_error", "inactive".
+	// Any of "inactive", "pending", "http_only", "active".
 	Status string `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -336,19 +332,19 @@ type SslRequestStatus struct {
 	//
 	// Possible values:
 	//
-	// - **true** - Issuing process is active.
-	// - **false** - Issuing process is completed.
+	// - `true` – Issuing process is active.
+	// - `false` – Issuing process is completed.
 	Active bool `json:"active"`
 	// Number of attempts to issue the Let's Encrypt certificate.
 	AttemptsCount int64 `json:"attempts_count"`
 	// Date when the process of issuing a Let's Encrypt certificate was finished (ISO
 	// 8601/RFC 3339 format, UTC).
 	//
-	// The field is **null** if the issuing process is not finished.
+	// The field is `null` if the issuing process is not finished.
 	Finished string `json:"finished" api:"nullable"`
 	// Detailed information about last attempt to issue a Let's Encrypt certificate.
 	//
-	// The field is **null** until the first attempt of the issuing process has been
+	// The field is `null` until the first attempt of the issuing process has been
 	// recorded.
 	LatestStatus SslRequestStatusLatestStatus `json:"latest_status" api:"nullable"`
 	// Time of the next scheduled attempt to issue the Let's Encrypt certificate (ISO
@@ -385,7 +381,7 @@ func (r *SslRequestStatus) UnmarshalJSON(data []byte) error {
 
 // Detailed information about last attempt to issue a Let's Encrypt certificate.
 //
-// The field is **null** until the first attempt of the issuing process has been
+// The field is `null` until the first attempt of the issuing process has been
 // recorded.
 type SslRequestStatusLatestStatus struct {
 	// ID of the attempt to issue the Let's Encrypt certificate.
@@ -408,9 +404,11 @@ type SslRequestStatusLatestStatus struct {
 	//
 	// Possible values:
 	//
-	// - **Done** - Attempt is successful. Let's Encrypt certificate was issued.
-	// - **Failed** - Attempt failed. Let's Encrypt certificate was not issued.
-	// - **Cancelled** - Attempt is canceled. Let's Encrypt certificate was not issued.
+	//   - `DONE` – Attempt is successful. Let's Encrypt certificate was issued.
+	//   - `FAILED` – Attempt failed. Let's Encrypt certificate was not issued.
+	//   - `CANCELLED` – Attempt is cancelled. Let's Encrypt certificate was not issued.
+	//   - `FORBIDDEN` – Issuing of Let's Encrypt certificates is disabled for your
+	//     account. Let's Encrypt certificate was not issued.
 	Status string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -452,9 +450,11 @@ type SslRequestStatusStatus struct {
 	//
 	// Possible values:
 	//
-	// - **Done** - Attempt is successful. Let's Encrypt certificate was issued.
-	// - **Failed** - Attempt failed. Let's Encrypt certificate was not issued.
-	// - **Cancelled** - Attempt is canceled. Let's Encrypt certificate was not issued.
+	//   - `DONE` – Attempt is successful. Let's Encrypt certificate was issued.
+	//   - `FAILED` – Attempt failed. Let's Encrypt certificate was not issued.
+	//   - `CANCELLED` – Attempt is cancelled. Let's Encrypt certificate was not issued.
+	//   - `FORBIDDEN` – Issuing of Let's Encrypt certificates is disabled for your
+	//     account. Let's Encrypt certificate was not issued.
 	Status string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {

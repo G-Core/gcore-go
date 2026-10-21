@@ -32,7 +32,7 @@ func TestOriginGroupNewWithOptionalParams(t *testing.T) {
 			Name: "YourOriginGroup",
 			Sources: []cdn.OriginGroupNewParamsBodyNoneAuthSourceUnion{{
 				OfHostSource: &cdn.OriginGroupNewParamsBodyNoneAuthSourceHostSource{
-					Source:             "yourwebsite.com",
+					Source:             "origin.example.com",
 					Backup:             gcore.Bool(false),
 					Enabled:            gcore.Bool(true),
 					HostHeaderOverride: param.Null[string](),
@@ -75,7 +75,7 @@ func TestOriginGroupUpdateWithOptionalParams(t *testing.T) {
 				ProxyNextUpstream: []string{"error", "timeout", "invalid_header", "http_500", "http_502", "http_503", "http_504"},
 				Sources: []cdn.OriginGroupUpdateParamsBodyNoneAuthSourceUnion{{
 					OfHostSource: &cdn.OriginGroupUpdateParamsBodyNoneAuthSourceHostSource{
-						Source:             "yourdomain.com",
+						Source:             "origin.example.org",
 						Backup:             gcore.Bool(false),
 						Enabled:            gcore.Bool(true),
 						HostHeaderOverride: param.Null[string](),
@@ -186,7 +186,7 @@ func TestOriginGroupReplaceWithOptionalParams(t *testing.T) {
 				Name: "YourOriginGroup",
 				Sources: []cdn.OriginGroupReplaceParamsBodyNoneAuthSourceUnion{{
 					OfHostSource: &cdn.OriginGroupReplaceParamsBodyNoneAuthSourceHostSource{
-						Source:             "yourdomain.com",
+						Source:             "origin.example.org",
 						Backup:             gcore.Bool(false),
 						Enabled:            gcore.Bool(true),
 						HostHeaderOverride: param.Null[string](),

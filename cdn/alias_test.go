@@ -27,11 +27,12 @@ func TestAliasNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.CDN.Aliases.New(context.TODO(), cdn.AliasNewParams{
-		Cname:      "shop.customer.com",
-		ResourceID: 4567,
-		Active:     gcore.Bool(true),
-		Automated:  gcore.Bool(true),
-		SslID:      gcore.Int(890),
+		Cname:         "shop.example.com",
+		ResourceID:    4567,
+		Active:        gcore.Bool(true),
+		Automated:     gcore.Bool(true),
+		ChallengeType: cdn.AliasNewParamsChallengeTypeHTTP01,
+		SslID:         gcore.Int(890),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -58,9 +59,10 @@ func TestAliasUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		0,
 		cdn.AliasUpdateParams{
-			Active:    gcore.Bool(false),
-			Automated: gcore.Bool(true),
-			SslID:     gcore.Int(891),
+			Active:        gcore.Bool(false),
+			Automated:     gcore.Bool(true),
+			ChallengeType: cdn.AliasUpdateParamsChallengeTypeHTTP01,
+			SslID:         gcore.Int(891),
 		},
 	)
 	if err != nil {
@@ -148,9 +150,10 @@ func TestAliasNewMultiple(t *testing.T) {
 	)
 	_, err := client.CDN.Aliases.NewMultiple(context.TODO(), cdn.AliasNewMultipleParams{
 		Items: []cdn.AliasNewMultipleParamsItem{{
-			Cname:     "shop.customer.com",
-			Automated: gcore.Bool(false),
-			SslID:     gcore.Int(890),
+			Cname:         "shop.example.com",
+			Automated:     gcore.Bool(false),
+			ChallengeType: "http_01",
+			SslID:         gcore.Int(890),
 		}},
 		ResourceID: 4567,
 	})
@@ -176,7 +179,7 @@ func TestAliasDeleteMultipleWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.CDN.Aliases.DeleteMultiple(context.TODO(), cdn.AliasDeleteMultipleParams{
-		Cnames: []string{"a.customer.com", "b.customer.com"},
+		Cnames: []string{"shop.example.com", "www.example.com"},
 		IDs:    []int64{1, 2, 3},
 	})
 	if err != nil {

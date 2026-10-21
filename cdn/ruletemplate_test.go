@@ -49,7 +49,7 @@ func TestRuleTemplateNewWithOptionalParams(t *testing.T) {
 			},
 			Cors: cdn.RuleTemplateNewParamsOptionsCors{
 				Enabled: true,
-				Value:   []string{"domain.com", "domain2.com"},
+				Value:   []string{"example.com", "example.org"},
 				Always:  gcore.Bool(true),
 			},
 			CountryACL: cdn.RuleTemplateNewParamsOptionsCountryACL{
@@ -139,7 +139,7 @@ func TestRuleTemplateNewWithOptionalParams(t *testing.T) {
 			},
 			HostHeader: cdn.RuleTemplateNewParamsOptionsHostHeader{
 				Enabled: true,
-				Value:   "host.com",
+				Value:   "example.com",
 			},
 			IgnoreCookie: cdn.RuleTemplateNewParamsOptionsIgnoreCookie{
 				Enabled: true,
@@ -158,7 +158,7 @@ func TestRuleTemplateNewWithOptionalParams(t *testing.T) {
 			},
 			IPAddressACL: cdn.RuleTemplateNewParamsOptionsIPAddressACL{
 				Enabled:        true,
-				ExceptedValues: []string{"192.168.1.100/32"},
+				ExceptedValues: []string{"192.0.2.20/32"},
 				PolicyType:     "deny",
 			},
 			LimitBandwidth: cdn.RuleTemplateNewParamsOptionsLimitBandwidth{
@@ -208,7 +208,7 @@ func TestRuleTemplateNewWithOptionalParams(t *testing.T) {
 			},
 			ReferrerACL: cdn.RuleTemplateNewParamsOptionsReferrerACL{
 				Enabled:        true,
-				ExceptedValues: []string{"example.com", "*.example.net"},
+				ExceptedValues: []string{"example.com", "*.example.org"},
 				PolicyType:     "deny",
 			},
 			ResponseHeadersHidingPolicy: cdn.RuleTemplateNewParamsOptionsResponseHeadersHidingPolicy{
@@ -330,7 +330,7 @@ func TestRuleTemplateUpdateWithOptionalParams(t *testing.T) {
 				},
 				Cors: cdn.RuleTemplateUpdateParamsOptionsCors{
 					Enabled: true,
-					Value:   []string{"domain.com", "domain2.com"},
+					Value:   []string{"example.com", "example.org"},
 					Always:  gcore.Bool(true),
 				},
 				CountryACL: cdn.RuleTemplateUpdateParamsOptionsCountryACL{
@@ -420,7 +420,7 @@ func TestRuleTemplateUpdateWithOptionalParams(t *testing.T) {
 				},
 				HostHeader: cdn.RuleTemplateUpdateParamsOptionsHostHeader{
 					Enabled: true,
-					Value:   "host.com",
+					Value:   "example.com",
 				},
 				IgnoreCookie: cdn.RuleTemplateUpdateParamsOptionsIgnoreCookie{
 					Enabled: true,
@@ -439,7 +439,7 @@ func TestRuleTemplateUpdateWithOptionalParams(t *testing.T) {
 				},
 				IPAddressACL: cdn.RuleTemplateUpdateParamsOptionsIPAddressACL{
 					Enabled:        true,
-					ExceptedValues: []string{"192.168.1.100/32"},
+					ExceptedValues: []string{"192.0.2.20/32"},
 					PolicyType:     "deny",
 				},
 				LimitBandwidth: cdn.RuleTemplateUpdateParamsOptionsLimitBandwidth{
@@ -489,7 +489,7 @@ func TestRuleTemplateUpdateWithOptionalParams(t *testing.T) {
 				},
 				ReferrerACL: cdn.RuleTemplateUpdateParamsOptionsReferrerACL{
 					Enabled:        true,
-					ExceptedValues: []string{"example.com", "*.example.net"},
+					ExceptedValues: []string{"example.com", "*.example.org"},
 					PolicyType:     "deny",
 				},
 				ResponseHeadersHidingPolicy: cdn.RuleTemplateUpdateParamsOptionsResponseHeadersHidingPolicy{
@@ -685,7 +685,7 @@ func TestRuleTemplateReplaceWithOptionalParams(t *testing.T) {
 				},
 				Cors: cdn.RuleTemplateReplaceParamsOptionsCors{
 					Enabled: true,
-					Value:   []string{"domain.com", "domain2.com"},
+					Value:   []string{"example.com", "example.org"},
 					Always:  gcore.Bool(true),
 				},
 				CountryACL: cdn.RuleTemplateReplaceParamsOptionsCountryACL{
@@ -775,7 +775,7 @@ func TestRuleTemplateReplaceWithOptionalParams(t *testing.T) {
 				},
 				HostHeader: cdn.RuleTemplateReplaceParamsOptionsHostHeader{
 					Enabled: true,
-					Value:   "host.com",
+					Value:   "example.com",
 				},
 				IgnoreCookie: cdn.RuleTemplateReplaceParamsOptionsIgnoreCookie{
 					Enabled: true,
@@ -794,7 +794,7 @@ func TestRuleTemplateReplaceWithOptionalParams(t *testing.T) {
 				},
 				IPAddressACL: cdn.RuleTemplateReplaceParamsOptionsIPAddressACL{
 					Enabled:        true,
-					ExceptedValues: []string{"192.168.1.100/32"},
+					ExceptedValues: []string{"192.0.2.20/32"},
 					PolicyType:     "deny",
 				},
 				LimitBandwidth: cdn.RuleTemplateReplaceParamsOptionsLimitBandwidth{
@@ -844,7 +844,7 @@ func TestRuleTemplateReplaceWithOptionalParams(t *testing.T) {
 				},
 				ReferrerACL: cdn.RuleTemplateReplaceParamsOptionsReferrerACL{
 					Enabled:        true,
-					ExceptedValues: []string{"example.com", "*.example.net"},
+					ExceptedValues: []string{"example.com", "*.example.org"},
 					PolicyType:     "deny",
 				},
 				ResponseHeadersHidingPolicy: cdn.RuleTemplateReplaceParamsOptionsResponseHeadersHidingPolicy{

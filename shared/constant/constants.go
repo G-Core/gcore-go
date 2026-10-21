@@ -22,6 +22,7 @@ type AICluster string                       // Always "ai_cluster"
 type AIVirtualCluster string                // Always "ai_virtual_cluster"
 type AnySubnet string                       // Always "any_subnet"
 type Apptemplate string                     // Always "apptemplate"
+type AzureBlob string                       // Always "azure_blob"
 type Backup string                          // Always "backup"
 type Baremetal string                       // Always "baremetal"
 type BasicVm string                         // Always "basic_vm"
@@ -43,6 +44,7 @@ type FileShare string                       // Always "file_share"
 type Fixed string                           // Always "fixed"
 type Floating string                        // Always "floating"
 type Floatingip string                      // Always "floatingip"
+type Ftp string                             // Always "ftp"
 type Functions string                       // Always "functions"
 type FunctionsCalls string                  // Always "functions_calls"
 type FunctionsTraffic string                // Always "functions_traffic"
@@ -51,6 +53,7 @@ type Gbminutes string                       // Always "gbminutes"
 type GBs string                             // Always "GBS"
 type GiB string                             // Always "GiB"
 type HardReboot string                      // Always "hard_reboot"
+type HTTP string                            // Always "http"
 type Image string                           // Always "image"
 type Inference string                       // Always "inference"
 type Instance string                        // Always "instance"
@@ -73,7 +76,14 @@ type Reject string                          // Always "REJECT"
 type Replace string                         // Always "replace"
 type ReservedFixedIP string                 // Always "reserved_fixed_ip"
 type Resize string                          // Always "resize"
+type S3Amazon string                        // Always "s3_amazon"
+type S3Gcore string                         // Always "s3_gcore"
+type S3Oss string                           // Always "s3_oss"
+type S3Other string                         // Always "s3_other"
+type S3V1 string                            // Always "s3_v1"
 type Scale string                           // Always "scale"
+type Sftp string                            // Always "sftp"
+type Sls string                             // Always "sls"
 type Snapshot string                        // Always "snapshot"
 type SoftReboot string                      // Always "soft_reboot"
 type Standard string                        // Always "standard"
@@ -87,6 +97,7 @@ func (c AICluster) Default() AICluster               { return "ai_cluster" }
 func (c AIVirtualCluster) Default() AIVirtualCluster { return "ai_virtual_cluster" }
 func (c AnySubnet) Default() AnySubnet               { return "any_subnet" }
 func (c Apptemplate) Default() Apptemplate           { return "apptemplate" }
+func (c AzureBlob) Default() AzureBlob               { return "azure_blob" }
 func (c Backup) Default() Backup                     { return "backup" }
 func (c Baremetal) Default() Baremetal               { return "baremetal" }
 func (c BasicVm) Default() BasicVm                   { return "basic_vm" }
@@ -112,6 +123,7 @@ func (c FileShare) Default() FileShare                         { return "file_sh
 func (c Fixed) Default() Fixed                                 { return "fixed" }
 func (c Floating) Default() Floating                           { return "floating" }
 func (c Floatingip) Default() Floatingip                       { return "floatingip" }
+func (c Ftp) Default() Ftp                                     { return "ftp" }
 func (c Functions) Default() Functions                         { return "functions" }
 func (c FunctionsCalls) Default() FunctionsCalls               { return "functions_calls" }
 func (c FunctionsTraffic) Default() FunctionsTraffic           { return "functions_traffic" }
@@ -120,6 +132,7 @@ func (c Gbminutes) Default() Gbminutes                         { return "gbminut
 func (c GBs) Default() GBs                                     { return "GBS" }
 func (c GiB) Default() GiB                                     { return "GiB" }
 func (c HardReboot) Default() HardReboot                       { return "hard_reboot" }
+func (c HTTP) Default() HTTP                                   { return "http" }
 func (c Image) Default() Image                                 { return "image" }
 func (c Inference) Default() Inference                         { return "inference" }
 func (c Instance) Default() Instance                           { return "instance" }
@@ -142,7 +155,14 @@ func (c Reject) Default() Reject                               { return "REJECT"
 func (c Replace) Default() Replace                             { return "replace" }
 func (c ReservedFixedIP) Default() ReservedFixedIP             { return "reserved_fixed_ip" }
 func (c Resize) Default() Resize                               { return "resize" }
+func (c S3Amazon) Default() S3Amazon                           { return "s3_amazon" }
+func (c S3Gcore) Default() S3Gcore                             { return "s3_gcore" }
+func (c S3Oss) Default() S3Oss                                 { return "s3_oss" }
+func (c S3Other) Default() S3Other                             { return "s3_other" }
+func (c S3V1) Default() S3V1                                   { return "s3_v1" }
 func (c Scale) Default() Scale                                 { return "scale" }
+func (c Sftp) Default() Sftp                                   { return "sftp" }
+func (c Sls) Default() Sls                                     { return "sls" }
 func (c Snapshot) Default() Snapshot                           { return "snapshot" }
 func (c SoftReboot) Default() SoftReboot                       { return "soft_reboot" }
 func (c Standard) Default() Standard                           { return "standard" }
@@ -156,6 +176,7 @@ func (c AICluster) MarshalJSON() ([]byte, error)                       { return 
 func (c AIVirtualCluster) MarshalJSON() ([]byte, error)                { return marshalString(c) }
 func (c AnySubnet) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
 func (c Apptemplate) MarshalJSON() ([]byte, error)                     { return marshalString(c) }
+func (c AzureBlob) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
 func (c Backup) MarshalJSON() ([]byte, error)                          { return marshalString(c) }
 func (c Baremetal) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
 func (c BasicVm) MarshalJSON() ([]byte, error)                         { return marshalString(c) }
@@ -177,6 +198,7 @@ func (c FileShare) MarshalJSON() ([]byte, error)                       { return 
 func (c Fixed) MarshalJSON() ([]byte, error)                           { return marshalString(c) }
 func (c Floating) MarshalJSON() ([]byte, error)                        { return marshalString(c) }
 func (c Floatingip) MarshalJSON() ([]byte, error)                      { return marshalString(c) }
+func (c Ftp) MarshalJSON() ([]byte, error)                             { return marshalString(c) }
 func (c Functions) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
 func (c FunctionsCalls) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
 func (c FunctionsTraffic) MarshalJSON() ([]byte, error)                { return marshalString(c) }
@@ -185,6 +207,7 @@ func (c Gbminutes) MarshalJSON() ([]byte, error)                       { return 
 func (c GBs) MarshalJSON() ([]byte, error)                             { return marshalString(c) }
 func (c GiB) MarshalJSON() ([]byte, error)                             { return marshalString(c) }
 func (c HardReboot) MarshalJSON() ([]byte, error)                      { return marshalString(c) }
+func (c HTTP) MarshalJSON() ([]byte, error)                            { return marshalString(c) }
 func (c Image) MarshalJSON() ([]byte, error)                           { return marshalString(c) }
 func (c Inference) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
 func (c Instance) MarshalJSON() ([]byte, error)                        { return marshalString(c) }
@@ -207,7 +230,14 @@ func (c Reject) MarshalJSON() ([]byte, error)                          { return 
 func (c Replace) MarshalJSON() ([]byte, error)                         { return marshalString(c) }
 func (c ReservedFixedIP) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c Resize) MarshalJSON() ([]byte, error)                          { return marshalString(c) }
+func (c S3Amazon) MarshalJSON() ([]byte, error)                        { return marshalString(c) }
+func (c S3Gcore) MarshalJSON() ([]byte, error)                         { return marshalString(c) }
+func (c S3Oss) MarshalJSON() ([]byte, error)                           { return marshalString(c) }
+func (c S3Other) MarshalJSON() ([]byte, error)                         { return marshalString(c) }
+func (c S3V1) MarshalJSON() ([]byte, error)                            { return marshalString(c) }
 func (c Scale) MarshalJSON() ([]byte, error)                           { return marshalString(c) }
+func (c Sftp) MarshalJSON() ([]byte, error)                            { return marshalString(c) }
+func (c Sls) MarshalJSON() ([]byte, error)                             { return marshalString(c) }
 func (c Snapshot) MarshalJSON() ([]byte, error)                        { return marshalString(c) }
 func (c SoftReboot) MarshalJSON() ([]byte, error)                      { return marshalString(c) }
 func (c Standard) MarshalJSON() ([]byte, error)                        { return marshalString(c) }

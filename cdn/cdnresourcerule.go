@@ -169,6 +169,9 @@ type CDNResourceRule struct {
 	//   - **null** - `originProtocol` setting is inherited from the CDN resource
 	//     settings.
 	//
+	// If an enabled origin among the origins this rule pulls from is bound to a Gcore
+	// Object Storage (`s3_type` is `gcore`), HTTPS is used regardless of this setting.
+	//
 	// Any of "HTTPS", "HTTP", "MATCH".
 	OverrideOriginProtocol CDNResourceRuleOverrideOriginProtocol `json:"overrideOriginProtocol" api:"nullable"`
 	// Defines whether the rule has an applied preset.
@@ -685,7 +688,7 @@ type CDNResourceRuleOptionsCors struct {
 	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value if the
 	//     origin matches one of the listed domains** - Content will be uploaded only for
 	//     requests from the domains specified in the field.
-	//     `"value": ["domain.com", "second.dom.com"]`
+	//     `"value": ["example.com", "example.org"]`
 	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value** -
 	//     Content will be uploaded for requests from any domain, and the domain from
 	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
@@ -1445,8 +1448,8 @@ type CDNResourceRuleOptionsIPAddressACL struct {
 	//
 	// Examples:
 	//
-	// - `192.168.3.2/32`
-	// - `2a03:d000:2980:7::8/128`
+	// - `192.0.2.10/32`
+	// - `2001:db8::8/128`
 	ExceptedValues []string `json:"excepted_values" api:"required" format:"ipv4net or ipv6net"`
 	// IP access policy type.
 	//
@@ -2421,6 +2424,9 @@ const (
 //     protocols.
 //   - **null** - `originProtocol` setting is inherited from the CDN resource
 //     settings.
+//
+// If an enabled origin among the origins this rule pulls from is bound to a Gcore
+// Object Storage (`s3_type` is `gcore`), HTTPS is used regardless of this setting.
 type CDNResourceRuleOverrideOriginProtocol string
 
 const (
@@ -2502,6 +2508,9 @@ type CDNResourceRuleNewParams struct {
 	//     protocols.
 	//   - **null** - `originProtocol` setting is inherited from the CDN resource
 	//     settings.
+	//
+	// If an enabled origin among the origins this rule pulls from is bound to a Gcore
+	// Object Storage (`s3_type` is `gcore`), HTTPS is used regardless of this setting.
 	//
 	// Any of "HTTPS", "HTTP", "MATCH".
 	OverrideOriginProtocol CDNResourceRuleNewParamsOverrideOriginProtocol `json:"overrideOriginProtocol,omitzero"`
@@ -2924,7 +2933,7 @@ type CDNResourceRuleNewParamsOptionsCors struct {
 	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value if the
 	//     origin matches one of the listed domains** - Content will be uploaded only for
 	//     requests from the domains specified in the field.
-	//     `"value": ["domain.com", "second.dom.com"]`
+	//     `"value": ["example.com", "example.org"]`
 	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value** -
 	//     Content will be uploaded for requests from any domain, and the domain from
 	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
@@ -3619,8 +3628,8 @@ type CDNResourceRuleNewParamsOptionsIPAddressACL struct {
 	//
 	// Examples:
 	//
-	// - `192.168.3.2/32`
-	// - `2a03:d000:2980:7::8/128`
+	// - `192.0.2.10/32`
+	// - `2001:db8::8/128`
 	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"ipv4net or ipv6net"`
 	// IP access policy type.
 	//
@@ -4560,6 +4569,9 @@ func (r *CDNResourceRuleNewParamsOptionsWebsockets) UnmarshalJSON(data []byte) e
 //     protocols.
 //   - **null** - `originProtocol` setting is inherited from the CDN resource
 //     settings.
+//
+// If an enabled origin among the origins this rule pulls from is bound to a Gcore
+// Object Storage (`s3_type` is `gcore`), HTTPS is used regardless of this setting.
 type CDNResourceRuleNewParamsOverrideOriginProtocol string
 
 const (
@@ -4617,6 +4629,9 @@ type CDNResourceRuleUpdateParams struct {
 	//     protocols.
 	//   - **null** - `originProtocol` setting is inherited from the CDN resource
 	//     settings.
+	//
+	// If an enabled origin among the origins this rule pulls from is bound to a Gcore
+	// Object Storage (`s3_type` is `gcore`), HTTPS is used regardless of this setting.
 	//
 	// Any of "HTTPS", "HTTP", "MATCH".
 	OverrideOriginProtocol CDNResourceRuleUpdateParamsOverrideOriginProtocol `json:"overrideOriginProtocol,omitzero"`
@@ -5039,7 +5054,7 @@ type CDNResourceRuleUpdateParamsOptionsCors struct {
 	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value if the
 	//     origin matches one of the listed domains** - Content will be uploaded only for
 	//     requests from the domains specified in the field.
-	//     `"value": ["domain.com", "second.dom.com"]`
+	//     `"value": ["example.com", "example.org"]`
 	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value** -
 	//     Content will be uploaded for requests from any domain, and the domain from
 	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
@@ -5734,8 +5749,8 @@ type CDNResourceRuleUpdateParamsOptionsIPAddressACL struct {
 	//
 	// Examples:
 	//
-	// - `192.168.3.2/32`
-	// - `2a03:d000:2980:7::8/128`
+	// - `192.0.2.10/32`
+	// - `2001:db8::8/128`
 	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"ipv4net or ipv6net"`
 	// IP access policy type.
 	//
@@ -6675,6 +6690,9 @@ func (r *CDNResourceRuleUpdateParamsOptionsWebsockets) UnmarshalJSON(data []byte
 //     protocols.
 //   - **null** - `originProtocol` setting is inherited from the CDN resource
 //     settings.
+//
+// If an enabled origin among the origins this rule pulls from is bound to a Gcore
+// Object Storage (`s3_type` is `gcore`), HTTPS is used regardless of this setting.
 type CDNResourceRuleUpdateParamsOverrideOriginProtocol string
 
 const (
@@ -6759,6 +6777,9 @@ type CDNResourceRuleReplaceParams struct {
 	//     protocols.
 	//   - **null** - `originProtocol` setting is inherited from the CDN resource
 	//     settings.
+	//
+	// If an enabled origin among the origins this rule pulls from is bound to a Gcore
+	// Object Storage (`s3_type` is `gcore`), HTTPS is used regardless of this setting.
 	//
 	// Any of "HTTPS", "HTTP", "MATCH".
 	OverrideOriginProtocol CDNResourceRuleReplaceParamsOverrideOriginProtocol `json:"overrideOriginProtocol,omitzero"`
@@ -7181,7 +7202,7 @@ type CDNResourceRuleReplaceParamsOptionsCors struct {
 	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value if the
 	//     origin matches one of the listed domains** - Content will be uploaded only for
 	//     requests from the domains specified in the field.
-	//     `"value": ["domain.com", "second.dom.com"]`
+	//     `"value": ["example.com", "example.org"]`
 	//   - **Adds "$http_origin" as the Access-Control-Allow-Origin header value** -
 	//     Content will be uploaded for requests from any domain, and the domain from
 	//     which the request was sent will be added to the "Access-Control-Allow-Origin"
@@ -7876,8 +7897,8 @@ type CDNResourceRuleReplaceParamsOptionsIPAddressACL struct {
 	//
 	// Examples:
 	//
-	// - `192.168.3.2/32`
-	// - `2a03:d000:2980:7::8/128`
+	// - `192.0.2.10/32`
+	// - `2001:db8::8/128`
 	ExceptedValues []string `json:"excepted_values,omitzero" api:"required" format:"ipv4net or ipv6net"`
 	// IP access policy type.
 	//
@@ -8817,6 +8838,9 @@ func (r *CDNResourceRuleReplaceParamsOptionsWebsockets) UnmarshalJSON(data []byt
 //     protocols.
 //   - **null** - `originProtocol` setting is inherited from the CDN resource
 //     settings.
+//
+// If an enabled origin among the origins this rule pulls from is bound to a Gcore
+// Object Storage (`s3_type` is `gcore`), HTTPS is used regardless of this setting.
 type CDNResourceRuleReplaceParamsOverrideOriginProtocol string
 
 const (

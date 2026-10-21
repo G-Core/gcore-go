@@ -27,20 +27,21 @@ func TestLogsUploaderTargetNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.CDN.LogsUploader.Targets.New(context.TODO(), cdn.LogsUploaderTargetNewParams{
-		Config: cdn.LogsUploaderTargetNewParamsConfigUnion{
-			OfS3GcoreConfig: &cdn.LogsUploaderTargetNewParamsConfigS3GcoreConfig{
-				AccessKeyID:     gcore.String("access_key_id"),
-				BucketName:      gcore.String("bucket_name"),
-				Directory:       gcore.String("directory"),
-				Endpoint:        gcore.String("endpoint"),
-				Region:          gcore.String("region"),
-				SecretAccessKey: gcore.String("secret_access_key"),
-				UsePathStyle:    gcore.Bool(true),
+		OfS3Gcore: &cdn.LogsUploaderTargetNewParamsBodyS3Gcore{
+			Config: cdn.LogsUploaderTargetNewParamsBodyS3GcoreConfigUnion{
+				OfS3GcoreConfig: &cdn.LogsUploaderTargetNewParamsBodyS3GcoreConfigS3GcoreConfig{
+					AccessKeyID:     gcore.String("access_key_id"),
+					BucketName:      gcore.String("bucket_name"),
+					Directory:       gcore.String("directory"),
+					Endpoint:        gcore.String("endpoint"),
+					Region:          gcore.String("region"),
+					SecretAccessKey: gcore.String("secret_access_key"),
+					UsePathStyle:    gcore.Bool(true),
+				},
 			},
+			Description: gcore.String("description"),
+			Name:        gcore.String("name"),
 		},
-		StorageType: cdn.LogsUploaderTargetNewParamsStorageTypeS3Gcore,
-		Description: gcore.String("description"),
-		Name:        gcore.String("name"),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -179,20 +180,21 @@ func TestLogsUploaderTargetReplaceWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		0,
 		cdn.LogsUploaderTargetReplaceParams{
-			Config: cdn.LogsUploaderTargetReplaceParamsConfigUnion{
-				OfS3GcoreConfig: &cdn.LogsUploaderTargetReplaceParamsConfigS3GcoreConfig{
-					AccessKeyID:     gcore.String("access_key_id"),
-					BucketName:      gcore.String("bucket_name"),
-					Directory:       gcore.String("directory"),
-					Endpoint:        gcore.String("endpoint"),
-					Region:          gcore.String("region"),
-					SecretAccessKey: gcore.String("secret_access_key"),
-					UsePathStyle:    gcore.Bool(true),
+			OfS3Gcore: &cdn.LogsUploaderTargetReplaceParamsBodyS3Gcore{
+				Config: cdn.LogsUploaderTargetReplaceParamsBodyS3GcoreConfigUnion{
+					OfS3GcoreConfig: &cdn.LogsUploaderTargetReplaceParamsBodyS3GcoreConfigS3GcoreConfig{
+						AccessKeyID:     gcore.String("access_key_id"),
+						BucketName:      gcore.String("bucket_name"),
+						Directory:       gcore.String("directory"),
+						Endpoint:        gcore.String("endpoint"),
+						Region:          gcore.String("region"),
+						SecretAccessKey: gcore.String("secret_access_key"),
+						UsePathStyle:    gcore.Bool(true),
+					},
 				},
+				Description: gcore.String("description"),
+				Name:        gcore.String("name"),
 			},
-			StorageType: cdn.LogsUploaderTargetReplaceParamsStorageTypeS3Gcore,
-			Description: gcore.String("description"),
-			Name:        gcore.String("name"),
 		},
 	)
 	if err != nil {

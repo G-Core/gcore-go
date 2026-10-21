@@ -54,7 +54,7 @@ func TestCDNResourceRuleNewWithOptionalParams(t *testing.T) {
 				},
 				Cors: cdn.CDNResourceRuleNewParamsOptionsCors{
 					Enabled: true,
-					Value:   []string{"domain.com", "domain2.com"},
+					Value:   []string{"example.com", "example.org"},
 					Always:  gcore.Bool(true),
 				},
 				CountryACL: cdn.CDNResourceRuleNewParamsOptionsCountryACL{
@@ -144,7 +144,7 @@ func TestCDNResourceRuleNewWithOptionalParams(t *testing.T) {
 				},
 				HostHeader: cdn.CDNResourceRuleNewParamsOptionsHostHeader{
 					Enabled: true,
-					Value:   "host.com",
+					Value:   "example.com",
 				},
 				IgnoreCookie: cdn.CDNResourceRuleNewParamsOptionsIgnoreCookie{
 					Enabled: true,
@@ -163,7 +163,7 @@ func TestCDNResourceRuleNewWithOptionalParams(t *testing.T) {
 				},
 				IPAddressACL: cdn.CDNResourceRuleNewParamsOptionsIPAddressACL{
 					Enabled:        true,
-					ExceptedValues: []string{"192.168.1.100/32"},
+					ExceptedValues: []string{"192.0.2.20/32"},
 					PolicyType:     "deny",
 				},
 				LimitBandwidth: cdn.CDNResourceRuleNewParamsOptionsLimitBandwidth{
@@ -213,7 +213,7 @@ func TestCDNResourceRuleNewWithOptionalParams(t *testing.T) {
 				},
 				ReferrerACL: cdn.CDNResourceRuleNewParamsOptionsReferrerACL{
 					Enabled:        true,
-					ExceptedValues: []string{"example.com", "*.example.net"},
+					ExceptedValues: []string{"example.com", "*.example.org"},
 					PolicyType:     "deny",
 				},
 				ResponseHeadersHidingPolicy: cdn.CDNResourceRuleNewParamsOptionsResponseHeadersHidingPolicy{
@@ -339,7 +339,7 @@ func TestCDNResourceRuleUpdateWithOptionalParams(t *testing.T) {
 				},
 				Cors: cdn.CDNResourceRuleUpdateParamsOptionsCors{
 					Enabled: true,
-					Value:   []string{"domain.com", "domain2.com"},
+					Value:   []string{"example.com", "example.org"},
 					Always:  gcore.Bool(true),
 				},
 				CountryACL: cdn.CDNResourceRuleUpdateParamsOptionsCountryACL{
@@ -429,7 +429,7 @@ func TestCDNResourceRuleUpdateWithOptionalParams(t *testing.T) {
 				},
 				HostHeader: cdn.CDNResourceRuleUpdateParamsOptionsHostHeader{
 					Enabled: true,
-					Value:   "host.com",
+					Value:   "example.com",
 				},
 				IgnoreCookie: cdn.CDNResourceRuleUpdateParamsOptionsIgnoreCookie{
 					Enabled: true,
@@ -448,7 +448,7 @@ func TestCDNResourceRuleUpdateWithOptionalParams(t *testing.T) {
 				},
 				IPAddressACL: cdn.CDNResourceRuleUpdateParamsOptionsIPAddressACL{
 					Enabled:        true,
-					ExceptedValues: []string{"192.168.1.100/32"},
+					ExceptedValues: []string{"192.0.2.20/32"},
 					PolicyType:     "deny",
 				},
 				LimitBandwidth: cdn.CDNResourceRuleUpdateParamsOptionsLimitBandwidth{
@@ -498,7 +498,7 @@ func TestCDNResourceRuleUpdateWithOptionalParams(t *testing.T) {
 				},
 				ReferrerACL: cdn.CDNResourceRuleUpdateParamsOptionsReferrerACL{
 					Enabled:        true,
-					ExceptedValues: []string{"example.com", "*.example.net"},
+					ExceptedValues: []string{"example.com", "*.example.org"},
 					PolicyType:     "deny",
 				},
 				ResponseHeadersHidingPolicy: cdn.CDNResourceRuleUpdateParamsOptionsResponseHeadersHidingPolicy{
@@ -713,7 +713,7 @@ func TestCDNResourceRuleReplaceWithOptionalParams(t *testing.T) {
 				},
 				Cors: cdn.CDNResourceRuleReplaceParamsOptionsCors{
 					Enabled: true,
-					Value:   []string{"domain.com", "domain2.com"},
+					Value:   []string{"example.com", "example.org"},
 					Always:  gcore.Bool(true),
 				},
 				CountryACL: cdn.CDNResourceRuleReplaceParamsOptionsCountryACL{
@@ -803,7 +803,7 @@ func TestCDNResourceRuleReplaceWithOptionalParams(t *testing.T) {
 				},
 				HostHeader: cdn.CDNResourceRuleReplaceParamsOptionsHostHeader{
 					Enabled: true,
-					Value:   "host.com",
+					Value:   "example.com",
 				},
 				IgnoreCookie: cdn.CDNResourceRuleReplaceParamsOptionsIgnoreCookie{
 					Enabled: true,
@@ -822,7 +822,7 @@ func TestCDNResourceRuleReplaceWithOptionalParams(t *testing.T) {
 				},
 				IPAddressACL: cdn.CDNResourceRuleReplaceParamsOptionsIPAddressACL{
 					Enabled:        true,
-					ExceptedValues: []string{"192.168.1.100/32"},
+					ExceptedValues: []string{"192.0.2.20/32"},
 					PolicyType:     "deny",
 				},
 				LimitBandwidth: cdn.CDNResourceRuleReplaceParamsOptionsLimitBandwidth{
@@ -872,7 +872,7 @@ func TestCDNResourceRuleReplaceWithOptionalParams(t *testing.T) {
 				},
 				ReferrerACL: cdn.CDNResourceRuleReplaceParamsOptionsReferrerACL{
 					Enabled:        true,
-					ExceptedValues: []string{"example.com", "*.example.net"},
+					ExceptedValues: []string{"example.com", "*.example.org"},
 					PolicyType:     "deny",
 				},
 				ResponseHeadersHidingPolicy: cdn.CDNResourceRuleReplaceParamsOptionsResponseHeadersHidingPolicy{
