@@ -405,6 +405,14 @@ var andPollMethods = []struct {
 		_, err := client.Cloud.LoadBalancers.Pools.UpdateAndPoll(ctx, "id", cloud.LoadBalancerPoolUpdateParams{})
 		return err
 	}},
+	{"LoadBalancerPoolHealthMonitor.NewAndPoll", func(ctx context.Context, client gcore.Client) error {
+		_, err := client.Cloud.LoadBalancers.Pools.HealthMonitors.NewAndPoll(ctx, "id", cloud.LoadBalancerPoolHealthMonitorNewParams{})
+		return err
+	}},
+	{"LoadBalancerPoolHealthMonitor.UpdateAndPoll", func(ctx context.Context, client gcore.Client) error {
+		_, err := client.Cloud.LoadBalancers.Pools.HealthMonitors.UpdateAndPoll(ctx, "id", cloud.LoadBalancerPoolHealthMonitorUpdateParams{})
+		return err
+	}},
 	{"LoadBalancerPoolMember.DeleteAndPoll", func(ctx context.Context, client gcore.Client) error {
 		return client.Cloud.LoadBalancers.Pools.Members.DeleteAndPoll(ctx, "id", cloud.LoadBalancerPoolMemberDeleteParams{PoolID: "id"})
 	}},
@@ -527,7 +535,7 @@ func TestAndPollMethodsSucceed(t *testing.T) {
 // TestAndPollMethodsCount is a canary: if codegen or a spec change adds/removes
 // an *AndPoll method, this reminds us to keep the table in sync.
 func TestAndPollMethodsCount(t *testing.T) {
-	const want = 98
+	const want = 100
 	if got := len(andPollMethods); got != want {
 		t.Fatalf("andPollMethods has %d entries, want %d; update the table in this file", got, want)
 	}

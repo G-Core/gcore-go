@@ -119,6 +119,10 @@ var updateAndPollMethods = []struct {
 		_, err := client.Cloud.LoadBalancers.Pools.UpdateAndPoll(ctx, "id", cloud.LoadBalancerPoolUpdateParams{})
 		return err
 	}},
+	{"LoadBalancerPoolHealthMonitor.UpdateAndPoll", func(ctx context.Context, client gcore.Client) error {
+		_, err := client.Cloud.LoadBalancers.Pools.HealthMonitors.UpdateAndPoll(ctx, "id", cloud.LoadBalancerPoolHealthMonitorUpdateParams{})
+		return err
+	}},
 	{"NetworkRouter.UpdateAndPoll", func(ctx context.Context, client gcore.Client) error {
 		_, err := client.Cloud.Networks.Routers.UpdateAndPoll(ctx, "id", cloud.NetworkRouterUpdateParams{})
 		return err
@@ -165,7 +169,7 @@ func TestUpdateAndPollWithTask(t *testing.T) {
 // TestUpdateAndPollMethodsCount is a canary: if codegen or a spec change adds or
 // removes an *UpdateAndPoll method, this reminds us to keep the table in sync.
 func TestUpdateAndPollMethodsCount(t *testing.T) {
-	const want = 10
+	const want = 11
 	if got := len(updateAndPollMethods); got != want {
 		t.Fatalf("updateAndPollMethods has %d entries, want %d; update the table in this file", got, want)
 	}
