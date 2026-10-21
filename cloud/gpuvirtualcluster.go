@@ -803,9 +803,10 @@ type GPUVirtualClusterNewParams struct {
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
 	// can be associated with a resource, enabling efficient filtering and grouping for
 	// better organization and management. Both tag keys and values have a maximum
-	// length of 255 characters. Some tags are read-only and cannot be modified by the
-	// user. Tags are also integrated with cost reports, allowing cost data to be
-	// filtered based on tag keys or values.
+	// length of 255 characters. Tag keys and values cannot contain characters from
+	// U+0080 to U+00FF. Some tags are read-only and cannot be modified by the user.
+	// Tags are also integrated with cost reports, allowing cost data to be filtered
+	// based on tag keys or values.
 	Tags map[string]string `json:"tags,omitzero"`
 	paramObj
 }
@@ -1351,7 +1352,8 @@ type GPUVirtualClusterNewParamsServersSettingsVolumeNew struct {
 	Type string `json:"type,omitzero" api:"required"`
 	// Flag indicating whether the volume is deleted on instance termination
 	DeleteOnTermination param.Opt[bool] `json:"delete_on_termination,omitzero"`
-	// Tags associated with the volume
+	// Tags associated with the volume. Tag keys and values cannot contain characters
+	// from U+0080 to U+00FF.
 	Tags map[string]string `json:"tags,omitzero"`
 	// This field can be elided, and will marshal its zero value as "new".
 	Source constant.New `json:"source" default:"new"`
@@ -1388,7 +1390,8 @@ type GPUVirtualClusterNewParamsServersSettingsVolumeImage struct {
 	Type string `json:"type,omitzero" api:"required"`
 	// Flag indicating whether the volume is deleted on instance termination
 	DeleteOnTermination param.Opt[bool] `json:"delete_on_termination,omitzero"`
-	// Tags associated with the volume
+	// Tags associated with the volume. Tag keys and values cannot contain characters
+	// from U+0080 to U+00FF.
 	Tags map[string]string `json:"tags,omitzero"`
 	// This field can be elided, and will marshal its zero value as "image".
 	Source constant.Image `json:"source" default:"image"`
@@ -1668,7 +1671,8 @@ type GPUVirtualClusterUpdateParamsServersSettingsVolumeNew struct {
 	Type string `json:"type,omitzero" api:"required"`
 	// Flag indicating whether the volume is deleted on instance termination
 	DeleteOnTermination param.Opt[bool] `json:"delete_on_termination,omitzero"`
-	// Tags associated with the volume
+	// Tags associated with the volume. Tag keys and values cannot contain characters
+	// from U+0080 to U+00FF.
 	Tags map[string]string `json:"tags,omitzero"`
 	// This field can be elided, and will marshal its zero value as "new".
 	Source constant.New `json:"source" default:"new"`
@@ -1705,7 +1709,8 @@ type GPUVirtualClusterUpdateParamsServersSettingsVolumeImage struct {
 	Type string `json:"type,omitzero" api:"required"`
 	// Flag indicating whether the volume is deleted on instance termination
 	DeleteOnTermination param.Opt[bool] `json:"delete_on_termination,omitzero"`
-	// Tags associated with the volume
+	// Tags associated with the volume. Tag keys and values cannot contain characters
+	// from U+0080 to U+00FF.
 	Tags map[string]string `json:"tags,omitzero"`
 	// This field can be elided, and will marshal its zero value as "image".
 	Source constant.Image `json:"source" default:"image"`

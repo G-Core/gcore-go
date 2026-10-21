@@ -578,9 +578,10 @@ type InstanceNewParams struct {
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
 	// can be associated with a resource, enabling efficient filtering and grouping for
 	// better organization and management. Both tag keys and values have a maximum
-	// length of 255 characters. Some tags are read-only and cannot be modified by the
-	// user. Tags are also integrated with cost reports, allowing cost data to be
-	// filtered based on tag keys or values.
+	// length of 255 characters. Tag keys and values cannot contain characters from
+	// U+0080 to U+00FF. Some tags are read-only and cannot be modified by the user.
+	// Tags are also integrated with cost reports, allowing cost data to be filtered
+	// based on tag keys or values.
 	Tags map[string]string `json:"tags,omitzero"`
 	paramObj
 }
@@ -1505,9 +1506,10 @@ type InstanceNewParamsVolumeNewVolume struct {
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
 	// can be associated with a resource, enabling efficient filtering and grouping for
 	// better organization and management. Both tag keys and values have a maximum
-	// length of 255 characters. Some tags are read-only and cannot be modified by the
-	// user. Tags are also integrated with cost reports, allowing cost data to be
-	// filtered based on tag keys or values.
+	// length of 255 characters. Tag keys and values cannot contain characters from
+	// U+0080 to U+00FF. Some tags are read-only and cannot be modified by the user.
+	// Tags are also integrated with cost reports, allowing cost data to be filtered
+	// based on tag keys or values.
 	Tags map[string]string `json:"tags,omitzero"`
 	// Volume type name. Supported values:
 	//
@@ -1567,9 +1569,10 @@ type InstanceNewParamsVolumeImage struct {
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
 	// can be associated with a resource, enabling efficient filtering and grouping for
 	// better organization and management. Both tag keys and values have a maximum
-	// length of 255 characters. Some tags are read-only and cannot be modified by the
-	// user. Tags are also integrated with cost reports, allowing cost data to be
-	// filtered based on tag keys or values.
+	// length of 255 characters. Tag keys and values cannot contain characters from
+	// U+0080 to U+00FF. Some tags are read-only and cannot be modified by the user.
+	// Tags are also integrated with cost reports, allowing cost data to be filtered
+	// based on tag keys or values.
 	Tags map[string]string `json:"tags,omitzero"`
 	// Volume type name. Supported values:
 	//
@@ -1627,9 +1630,10 @@ type InstanceNewParamsVolumeSnapshot struct {
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
 	// can be associated with a resource, enabling efficient filtering and grouping for
 	// better organization and management. Both tag keys and values have a maximum
-	// length of 255 characters. Some tags are read-only and cannot be modified by the
-	// user. Tags are also integrated with cost reports, allowing cost data to be
-	// filtered based on tag keys or values.
+	// length of 255 characters. Tag keys and values cannot contain characters from
+	// U+0080 to U+00FF. Some tags are read-only and cannot be modified by the user.
+	// Tags are also integrated with cost reports, allowing cost data to be filtered
+	// based on tag keys or values.
 	Tags map[string]string `json:"tags,omitzero"`
 	// Specifies the volume type. If omitted, the type from the source volume will be
 	// used by default.
@@ -1677,9 +1681,10 @@ type InstanceNewParamsVolumeApptemplate struct {
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
 	// can be associated with a resource, enabling efficient filtering and grouping for
 	// better organization and management. Both tag keys and values have a maximum
-	// length of 255 characters. Some tags are read-only and cannot be modified by the
-	// user. Tags are also integrated with cost reports, allowing cost data to be
-	// filtered based on tag keys or values.
+	// length of 255 characters. Tag keys and values cannot contain characters from
+	// U+0080 to U+00FF. Some tags are read-only and cannot be modified by the user.
+	// Tags are also integrated with cost reports, allowing cost data to be filtered
+	// based on tag keys or values.
 	Tags map[string]string `json:"tags,omitzero"`
 	// Volume type name. Supported values:
 	//
@@ -1731,9 +1736,10 @@ type InstanceNewParamsVolumeExistingVolume struct {
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
 	// can be associated with a resource, enabling efficient filtering and grouping for
 	// better organization and management. Both tag keys and values have a maximum
-	// length of 255 characters. Some tags are read-only and cannot be modified by the
-	// user. Tags are also integrated with cost reports, allowing cost data to be
-	// filtered based on tag keys or values.
+	// length of 255 characters. Tag keys and values cannot contain characters from
+	// U+0080 to U+00FF. Some tags are read-only and cannot be modified by the user.
+	// Tags are also integrated with cost reports, allowing cost data to be filtered
+	// based on tag keys or values.
 	Tags map[string]string `json:"tags,omitzero"`
 	// Existing available volume will be attached to the instance.
 	//

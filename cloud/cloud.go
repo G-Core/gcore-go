@@ -2138,12 +2138,12 @@ func (r *Subnet) UnmarshalJSON(data []byte) error {
 // values.
 type Tag struct {
 	// Tag key. Maximum 255 characters. Cannot contain spaces, tabs, newlines, empty
-	// string or '=' character.
+	// string or '=' character. Cannot contain characters from U+0080 to U+00FF.
 	Key string `json:"key" api:"required"`
 	// If true, the tag is read-only and cannot be modified by the user
 	ReadOnly bool `json:"read_only" api:"required"`
 	// Tag value. Maximum 255 characters. Cannot contain spaces, tabs, newlines, empty
-	// string or '=' character.
+	// string or '=' character. Cannot contain characters from U+0080 to U+00FF.
 	Value string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
