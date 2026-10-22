@@ -18,6 +18,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// WAAP custom rules allow, block, challenge, monitor or tag requests to a domain
+// when all of their conditions match.
+//
 // DomainCustomRuleService contains methods and other services that help with
 // interacting with the gcore API.
 //

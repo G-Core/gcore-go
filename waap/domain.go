@@ -41,7 +41,9 @@ type DomainService struct {
 	Insights        DomainInsightService
 	InsightSilences DomainInsightSilenceService
 	Statistics      DomainStatisticService
-	CustomRules     DomainCustomRuleService
+	// WAAP custom rules allow, block, challenge, monitor or tag requests to a domain
+	// when all of their conditions match.
+	CustomRules DomainCustomRuleService
 	// WAAP firewall rules allow or block requests to a domain based on the client IP
 	// address or IP range.
 	FirewallRules DomainFirewallRuleService
