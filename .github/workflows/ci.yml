@@ -34,3 +34,25 @@ jobs:
 
       - name: Run lints
         run: ./scripts/lint
+
+  # The generator only emits this job when the spec has a hosted URL, which stlc
+  # does not set. scripts/mock serves the embedded spec, so the job runs without one.
+  test:
+    timeout-minutes: 10
+    name: test
+    runs-on: ubuntu-latest
+    if: github.event_name != 'push' || github.event.head_commit.message != 'codegen metadata'
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: ./go.mod
+
+      - name: Bootstrap
+        run: ./scripts/bootstrap
+
+      - name: Run tests
+        run: ./scripts/test
