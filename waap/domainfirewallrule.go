@@ -40,7 +40,7 @@ func NewDomainFirewallRuleService(opts ...option.RequestOption) (r DomainFirewal
 	return
 }
 
-// Create a firewall rule
+// Create firewall rule
 func (r *DomainFirewallRuleService) New(ctx context.Context, domainID int64, body DomainFirewallRuleNewParams, opts ...option.RequestOption) (res *WaapFirewallRule, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v/firewall-rules", domainID)
@@ -81,7 +81,7 @@ func (r *DomainFirewallRuleService) ListAutoPaging(ctx context.Context, domainID
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, domainID, query, opts...))
 }
 
-// Delete a firewall rule
+// Delete firewall rule
 func (r *DomainFirewallRuleService) Delete(ctx context.Context, ruleID int64, body DomainFirewallRuleDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -90,7 +90,7 @@ func (r *DomainFirewallRuleService) Delete(ctx context.Context, ruleID int64, bo
 	return err
 }
 
-// Delete Multiple WAAP Firewall Rules
+// Delete multiple WAAP firewall rules
 func (r *DomainFirewallRuleService) DeleteMultiple(ctx context.Context, domainID int64, body DomainFirewallRuleDeleteMultipleParams, opts ...option.RequestOption) (res *WaapRulesBulkDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v2/domains/%v/firewall-rules/bulk_delete", domainID)
@@ -106,7 +106,7 @@ func (r *DomainFirewallRuleService) Get(ctx context.Context, ruleID int64, query
 	return res, err
 }
 
-// Toggle Firewall Rule
+// Toggle firewall rule
 func (r *DomainFirewallRuleService) Toggle(ctx context.Context, action DomainFirewallRuleToggleParamsAction, body DomainFirewallRuleToggleParams, opts ...option.RequestOption) (res *WaapRuleToggleResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v2/domains/%v/firewall-rules/%v/%v", body.DomainID, body.RuleID, action)
@@ -125,7 +125,7 @@ type WaapFirewallRule struct {
 	Enabled bool `json:"enabled" api:"required"`
 	// The name assigned to the rule
 	Name string `json:"name" api:"required"`
-	// The description assigned to the rule
+	// A human-readable description.
 	Description string `json:"description"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -174,9 +174,10 @@ type WaapFirewallRuleActionBlock struct {
 	// How long a rule's block action will apply to subsequent requests. Can be
 	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
 	// represent time format (seconds, minutes, hours, or days). Empty time intervals
-	// are not allowed.
+	// are not allowed. If not specified, the action is applied only to the request
+	// that triggers the rule.
 	ActionDuration string `json:"action_duration"`
-	// A custom HTTP status code that the WAAP returns if a rule blocks a request
+	// An HTTP status code that the WAAP returns if a rule blocks a request.
 	//
 	// Any of 403, 405, 418, 429.
 	StatusCode int64 `json:"status_code"`
@@ -271,7 +272,7 @@ type DomainFirewallRuleNewParams struct {
 	Enabled bool `json:"enabled" api:"required"`
 	// The name assigned to the rule
 	Name string `json:"name" api:"required"`
-	// The description assigned to the rule
+	// A human-readable description.
 	Description param.Opt[string] `json:"description,omitzero"`
 	paramObj
 }
@@ -308,9 +309,10 @@ type DomainFirewallRuleNewParamsActionBlock struct {
 	// How long a rule's block action will apply to subsequent requests. Can be
 	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
 	// represent time format (seconds, minutes, hours, or days). Empty time intervals
-	// are not allowed.
+	// are not allowed. If not specified, the action is applied only to the request
+	// that triggers the rule.
 	ActionDuration param.Opt[string] `json:"action_duration,omitzero"`
-	// A custom HTTP status code that the WAAP returns if a rule blocks a request
+	// An HTTP status code that the WAAP returns if a rule blocks a request.
 	//
 	// Any of 403, 405, 418, 429.
 	StatusCode int64 `json:"status_code,omitzero"`
@@ -392,13 +394,14 @@ func (r *DomainFirewallRuleNewParamsConditionIPRange) UnmarshalJSON(data []byte)
 type DomainFirewallRuleUpdateParams struct {
 	// The domain ID
 	DomainID int64 `path:"domain_id" api:"required" json:"-"`
-	// The description assigned to the rule
+	// A human-readable description. When set to empty string, erases any value set
+	// earlier.
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Whether or not the rule is enabled
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// The name assigned to the rule
 	Name param.Opt[string] `json:"name,omitzero"`
-	// The action that a firewall rule takes when triggered
+	// The action that the rule takes when triggered
 	Action DomainFirewallRuleUpdateParamsAction `json:"action,omitzero"`
 	// The condition required for the WAAP engine to trigger the rule.
 	Conditions []DomainFirewallRuleUpdateParamsCondition `json:"conditions,omitzero"`
@@ -413,7 +416,7 @@ func (r *DomainFirewallRuleUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The action that a firewall rule takes when triggered
+// The action that the rule takes when triggered
 type DomainFirewallRuleUpdateParamsAction struct {
 	// The WAAP allows the request
 	Allow map[string]any `json:"allow,omitzero"`
@@ -437,9 +440,10 @@ type DomainFirewallRuleUpdateParamsActionBlock struct {
 	// How long a rule's block action will apply to subsequent requests. Can be
 	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
 	// represent time format (seconds, minutes, hours, or days). Empty time intervals
-	// are not allowed.
+	// are not allowed. If not specified, the action is applied only to the request
+	// that triggers the rule.
 	ActionDuration param.Opt[string] `json:"action_duration,omitzero"`
-	// A custom HTTP status code that the WAAP returns if a rule blocks a request
+	// An HTTP status code that the WAAP returns if a rule blocks a request.
 	//
 	// Any of 403, 405, 418, 429.
 	StatusCode int64 `json:"status_code,omitzero"`

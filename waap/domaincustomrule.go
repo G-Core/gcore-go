@@ -37,7 +37,7 @@ func NewDomainCustomRuleService(opts ...option.RequestOption) (r DomainCustomRul
 	return
 }
 
-// Create a custom rule
+// Create custom rule
 func (r *DomainCustomRuleService) New(ctx context.Context, domainID int64, body DomainCustomRuleNewParams, opts ...option.RequestOption) (res *WaapCustomRule, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v/custom-rules", domainID)
@@ -78,7 +78,7 @@ func (r *DomainCustomRuleService) ListAutoPaging(ctx context.Context, domainID i
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, domainID, query, opts...))
 }
 
-// Delete a custom rule
+// Delete custom rule
 func (r *DomainCustomRuleService) Delete(ctx context.Context, ruleID int64, body DomainCustomRuleDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -87,7 +87,7 @@ func (r *DomainCustomRuleService) Delete(ctx context.Context, ruleID int64, body
 	return err
 }
 
-// Delete Multiple Custom WAAP Rules
+// Delete multiple custom WAAP rules
 func (r *DomainCustomRuleService) DeleteMultiple(ctx context.Context, domainID int64, body DomainCustomRuleDeleteMultipleParams, opts ...option.RequestOption) (res *WaapRulesBulkDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v2/domains/%v/custom-rules/bulk_delete", domainID)
@@ -103,7 +103,7 @@ func (r *DomainCustomRuleService) Get(ctx context.Context, ruleID int64, query D
 	return res, err
 }
 
-// Toggle Custom Rule
+// Toggle custom rule
 func (r *DomainCustomRuleService) Toggle(ctx context.Context, action DomainCustomRuleToggleParamsAction, body DomainCustomRuleToggleParams, opts ...option.RequestOption) (res *WaapRuleToggleResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v2/domains/%v/custom-rules/%v/%v", body.DomainID, body.RuleID, action)
@@ -125,7 +125,7 @@ type WaapCustomRule struct {
 	Enabled bool `json:"enabled" api:"required"`
 	// The name assigned to the rule
 	Name string `json:"name" api:"required"`
-	// The description assigned to the rule
+	// A human-readable description.
 	Description string `json:"description"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -187,9 +187,10 @@ type WaapCustomRuleActionBlock struct {
 	// How long a rule's block action will apply to subsequent requests. Can be
 	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
 	// represent time format (seconds, minutes, hours, or days). Empty time intervals
-	// are not allowed.
+	// are not allowed. If not specified, the action is applied only to the request
+	// that triggers the rule.
 	ActionDuration string `json:"action_duration"`
-	// A custom HTTP status code that the WAAP returns if a rule blocks a request
+	// An HTTP status code that the WAAP returns if a rule blocks a request.
 	//
 	// Any of 403, 405, 418, 429.
 	StatusCode int64 `json:"status_code"`
@@ -825,7 +826,7 @@ type DomainCustomRuleNewParams struct {
 	Enabled bool `json:"enabled" api:"required"`
 	// The name assigned to the rule
 	Name string `json:"name" api:"required"`
-	// The description assigned to the rule
+	// A human-readable description.
 	Description param.Opt[string] `json:"description,omitzero"`
 	paramObj
 }
@@ -871,9 +872,10 @@ type DomainCustomRuleNewParamsActionBlock struct {
 	// How long a rule's block action will apply to subsequent requests. Can be
 	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
 	// represent time format (seconds, minutes, hours, or days). Empty time intervals
-	// are not allowed.
+	// are not allowed. If not specified, the action is applied only to the request
+	// that triggers the rule.
 	ActionDuration param.Opt[string] `json:"action_duration,omitzero"`
-	// A custom HTTP status code that the WAAP returns if a rule blocks a request
+	// An HTTP status code that the WAAP returns if a rule blocks a request.
 	//
 	// Any of 403, 405, 418, 429.
 	StatusCode int64 `json:"status_code,omitzero"`
@@ -1403,13 +1405,14 @@ func (r *DomainCustomRuleNewParamsConditionUserDefinedTags) UnmarshalJSON(data [
 type DomainCustomRuleUpdateParams struct {
 	// The domain ID
 	DomainID int64 `path:"domain_id" api:"required" json:"-"`
-	// The description assigned to the rule
+	// A human-readable description. When set to empty string, erases any value set
+	// earlier.
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Whether or not the rule is enabled
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// The name assigned to the rule
 	Name param.Opt[string] `json:"name,omitzero"`
-	// The action that a WAAP rule takes when triggered.
+	// The action that the rule takes when triggered
 	Action DomainCustomRuleUpdateParamsAction `json:"action,omitzero"`
 	// The conditions required for the WAAP engine to trigger the rule. Rules may have
 	// between 1 and 5 conditions. All conditions must pass for the rule to trigger
@@ -1425,7 +1428,7 @@ func (r *DomainCustomRuleUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The action that a WAAP rule takes when triggered.
+// The action that the rule takes when triggered
 type DomainCustomRuleUpdateParamsAction struct {
 	// The WAAP allows the request
 	Allow map[string]any `json:"allow,omitzero"`
@@ -1457,9 +1460,10 @@ type DomainCustomRuleUpdateParamsActionBlock struct {
 	// How long a rule's block action will apply to subsequent requests. Can be
 	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
 	// represent time format (seconds, minutes, hours, or days). Empty time intervals
-	// are not allowed.
+	// are not allowed. If not specified, the action is applied only to the request
+	// that triggers the rule.
 	ActionDuration param.Opt[string] `json:"action_duration,omitzero"`
-	// A custom HTTP status code that the WAAP returns if a rule blocks a request
+	// An HTTP status code that the WAAP returns if a rule blocks a request.
 	//
 	// Any of 403, 405, 418, 429.
 	StatusCode int64 `json:"status_code,omitzero"`

@@ -75,7 +75,7 @@ type WaapAccountFirewallRule struct {
 	Enabled bool `json:"enabled" api:"required"`
 	// The name assigned to the rule
 	Name string `json:"name" api:"required"`
-	// The description assigned to the rule
+	// A human-readable description.
 	Description string `json:"description"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -125,9 +125,10 @@ type WaapAccountFirewallRuleActionBlock struct {
 	// How long a rule's block action will apply to subsequent requests. Can be
 	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
 	// represent time format (seconds, minutes, hours, or days). Empty time intervals
-	// are not allowed.
+	// are not allowed. If not specified, the action is applied only to the request
+	// that triggers the rule.
 	ActionDuration string `json:"action_duration"`
-	// A custom HTTP status code that the WAAP returns if a rule blocks a request
+	// An HTTP status code that the WAAP returns if a rule blocks a request.
 	//
 	// Any of 403, 405, 418, 429.
 	StatusCode int64 `json:"status_code"`

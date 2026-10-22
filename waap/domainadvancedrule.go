@@ -40,7 +40,7 @@ func NewDomainAdvancedRuleService(opts ...option.RequestOption) (r DomainAdvance
 	return
 }
 
-// Create an advanced rule
+// Create advanced rule
 func (r *DomainAdvancedRuleService) New(ctx context.Context, domainID int64, body DomainAdvancedRuleNewParams, opts ...option.RequestOption) (res *WaapAdvancedRule, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v1/domains/%v/advanced-rules", domainID)
@@ -81,7 +81,7 @@ func (r *DomainAdvancedRuleService) ListAutoPaging(ctx context.Context, domainID
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, domainID, query, opts...))
 }
 
-// Delete an advanced rule
+// Delete advanced rule
 func (r *DomainAdvancedRuleService) Delete(ctx context.Context, ruleID int64, body DomainAdvancedRuleDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -98,7 +98,7 @@ func (r *DomainAdvancedRuleService) Get(ctx context.Context, ruleID int64, query
 	return res, err
 }
 
-// Toggle Advanced Rule
+// Toggle advanced rule
 func (r *DomainAdvancedRuleService) Toggle(ctx context.Context, action DomainAdvancedRuleToggleParamsAction, body DomainAdvancedRuleToggleParams, opts ...option.RequestOption) (res *WaapRuleToggleResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("waap/v2/domains/%v/advanced-rules/%v/%v", body.DomainID, body.RuleID, action)
@@ -124,7 +124,7 @@ type WaapAdvancedRule struct {
 	// More info can be found here:
 	// https://gcore.com/docs/waap/waap-rules/advanced-rules
 	Source string `json:"source" api:"required"`
-	// The description assigned to the rule
+	// A human-readable description.
 	Description string `json:"description"`
 	// The WAAP request/response phase for applying the rule. Default is "access".
 	//
@@ -200,9 +200,10 @@ type WaapAdvancedRuleActionBlock struct {
 	// How long a rule's block action will apply to subsequent requests. Can be
 	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
 	// represent time format (seconds, minutes, hours, or days). Empty time intervals
-	// are not allowed.
+	// are not allowed. If not specified, the action is applied only to the request
+	// that triggers the rule.
 	ActionDuration string `json:"action_duration"`
-	// A custom HTTP status code that the WAAP returns if a rule blocks a request
+	// An HTTP status code that the WAAP returns if a rule blocks a request.
 	//
 	// Any of 403, 405, 418, 429.
 	StatusCode int64 `json:"status_code"`
@@ -272,7 +273,7 @@ type DomainAdvancedRuleNewParams struct {
 	// More info can be found here:
 	// https://gcore.com/docs/waap/waap-rules/advanced-rules
 	Source string `json:"source" api:"required"`
-	// The description assigned to the rule
+	// A human-readable description.
 	Description param.Opt[string] `json:"description,omitzero"`
 	// The WAAP request/response phase for applying the rule. Default is "access".
 	//
@@ -331,9 +332,10 @@ type DomainAdvancedRuleNewParamsActionBlock struct {
 	// How long a rule's block action will apply to subsequent requests. Can be
 	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
 	// represent time format (seconds, minutes, hours, or days). Empty time intervals
-	// are not allowed.
+	// are not allowed. If not specified, the action is applied only to the request
+	// that triggers the rule.
 	ActionDuration param.Opt[string] `json:"action_duration,omitzero"`
-	// A custom HTTP status code that the WAAP returns if a rule blocks a request
+	// An HTTP status code that the WAAP returns if a rule blocks a request.
 	//
 	// Any of 403, 405, 418, 429.
 	StatusCode int64 `json:"status_code,omitzero"`
@@ -392,7 +394,8 @@ const (
 type DomainAdvancedRuleUpdateParams struct {
 	// The domain ID
 	DomainID int64 `path:"domain_id" api:"required" json:"-"`
-	// The description assigned to the rule
+	// A human-readable description. When set to empty string, erases any value set
+	// earlier.
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Whether or not the rule is enabled
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -405,7 +408,7 @@ type DomainAdvancedRuleUpdateParams struct {
 	// More info can be found here:
 	// https://gcore.com/docs/waap/waap-rules/advanced-rules
 	Source param.Opt[string] `json:"source,omitzero"`
-	// The action that a WAAP rule takes when triggered.
+	// The action that the rule takes when triggered
 	Action DomainAdvancedRuleUpdateParamsAction `json:"action,omitzero"`
 	// The WAAP request/response phase for applying the rule.
 	//
@@ -431,7 +434,7 @@ func (r *DomainAdvancedRuleUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The action that a WAAP rule takes when triggered.
+// The action that the rule takes when triggered
 type DomainAdvancedRuleUpdateParamsAction struct {
 	// The WAAP allows the request
 	Allow map[string]any `json:"allow,omitzero"`
@@ -463,9 +466,10 @@ type DomainAdvancedRuleUpdateParamsActionBlock struct {
 	// How long a rule's block action will apply to subsequent requests. Can be
 	// specified in seconds or by using a numeral followed by 's', 'm', 'h', or 'd' to
 	// represent time format (seconds, minutes, hours, or days). Empty time intervals
-	// are not allowed.
+	// are not allowed. If not specified, the action is applied only to the request
+	// that triggers the rule.
 	ActionDuration param.Opt[string] `json:"action_duration,omitzero"`
-	// A custom HTTP status code that the WAAP returns if a rule blocks a request
+	// An HTTP status code that the WAAP returns if a rule blocks a request.
 	//
 	// Any of 403, 405, 418, 429.
 	StatusCode int64 `json:"status_code,omitzero"`

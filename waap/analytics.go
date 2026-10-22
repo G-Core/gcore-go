@@ -306,7 +306,11 @@ const (
 type WaapEventSummaryPolicyOverride struct {
 	// ID of the policy override applied to this request.
 	ID int64 `json:"id" api:"required"`
-	// Match evidence keyed by target reference, such as 'ID861'. For legacy records,
+	// Match evidence keyed by target reference: a detector ID such as 'ID861', or a
+	// rule ID such as '94'. A detector entry holds 'field' and 'pattern_found'. A rule
+	// entry holds the rule's metadata, such as 'action' and 'rule_name', and for a
+	// rule based on a detector result also that match's 'field' and 'pattern_found'.
+	// 'pattern_found' is empty when the matched content is hidden. For legacy records,
 	// evidence is retained only for the first matched target; subsequent matched
 	// targets have empty objects.
 	Matched map[string]any `json:"matched" api:"required"`
