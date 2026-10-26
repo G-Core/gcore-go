@@ -39,6 +39,9 @@ go get -u 'github.com/G-Core/gcore-go@v0.59.0'
 
 This library requires Go 1.22+.
 
+See the [proposed Go version support policy](GO_VERSION_POLICY.md) for the support window
+and how minimum-version changes would be announced.
+
 ## Usage
 
 The full API of this library can be found in [api.md](api.md).
