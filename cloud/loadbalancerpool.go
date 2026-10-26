@@ -28,7 +28,9 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewLoadBalancerPoolService] method instead.
 type LoadBalancerPoolService struct {
-	Options        []option.RequestOption
+	Options []option.RequestOption
+	// Pool health monitors probe backend members to decide whether they can receive
+	// traffic. A pool has at most one health monitor.
 	HealthMonitors LoadBalancerPoolHealthMonitorService
 	// Pool members represent backend instances that receive load-balanced traffic from
 	// a pool.

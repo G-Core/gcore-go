@@ -15,6 +15,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/param"
 )
 
+// Pool health monitors probe backend members to decide whether they can receive
+// traffic. A pool has at most one health monitor.
+//
 // LoadBalancerPoolHealthMonitorService contains methods and other services that
 // help with interacting with the gcore API.
 //
