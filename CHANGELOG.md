@@ -1,5 +1,39 @@
 # Changelog
 
+## [0.60.0](https://github.com/G-Core/gcore-go/compare/v0.59.0...v0.60.0) (2026-10-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* **cloud:** migrate cost reports to v2 endpoints
+* **streaming:** remove read-only fields from playlist params
+
+### Features
+
+* **cloud:** add FAILED inference instance status, deprecate include_prices on flavor lists ([37c35d3](https://github.com/G-Core/gcore-go/commit/37c35d3a4dcda2140efa04520c74f97e514b33b4))
+* **cloud:** add NewAndPoll and UpdateAndPoll for load balancer pool health monitors ([2ba5016](https://github.com/G-Core/gcore-go/commit/2ba5016eb505a31ff56f0cc435952eae05d402ae))
+* **cloud:** generate terraform resource and data source for load balancer pool health monitors ([edf01db](https://github.com/G-Core/gcore-go/commit/edf01db8feab15137cc2a3282b63078b12ade02c))
+* **cloud:** migrate cost reports to v2 endpoints ([598e4bb](https://github.com/G-Core/gcore-go/commit/598e4bbe39b8386bb77c42f5a89f666abc71c041))
+* **waap:** add gcore_waap_domain_custom_rule terraform resource ([ff1d7b7](https://github.com/G-Core/gcore-go/commit/ff1d7b70161d4daa779e71e751fa62f30d8b4279))
+* **waap:** add get method for domain policies ([9e28a21](https://github.com/G-Core/gcore-go/commit/9e28a2194ab8293df679e4d7d08e508aff453a89))
+
+
+### Bug Fixes
+
+* **cloud:** update cloud OpenAPI spec ([c187238](https://github.com/G-Core/gcore-go/commit/c1872384fd8ecb488792f74bbfc4ae2faa0b782b))
+* **streaming:** remove read-only fields from playlist params ([4bda130](https://github.com/G-Core/gcore-go/commit/4bda130c0b3cf78655dd58ef0c9dd16a1ad90445))
+* **waap:** disallow null in rule update params ([1d47691](https://github.com/G-Core/gcore-go/commit/1d47691351ee552e5c5b0b2715f7fb75ad99c254))
+
+
+### Chores
+
+* **cdn:** update cdn OpenAPI spec ([5bccf7e](https://github.com/G-Core/gcore-go/commit/5bccf7ee34dba31d7f086d914c61966a347b031a))
+* **cloud:** update cloud OpenAPI spec ([6c61385](https://github.com/G-Core/gcore-go/commit/6c613852a3c0ceb9e544a1b8dc146f71e337cdc1))
+* **iam:** update iam OpenAPI spec ([d859e0d](https://github.com/G-Core/gcore-go/commit/d859e0d10ca691dcdadbf828ef7876775d786d96))
+* reseal custom code from G-Core/terraform-provider-gcore-staging@d7efa5e0667412b0a4e9f71a6fc5b45613dce915 ([5d2eef4](https://github.com/G-Core/gcore-go/commit/5d2eef475db53d3a0b1bd4b4a13bfa60b573613c))
+* **waap:** update waap OpenAPI spec ([dcb01e9](https://github.com/G-Core/gcore-go/commit/dcb01e91ca1acd711b451201319ccafc27c7804d))
+* **waap:** update waap OpenAPI spec ([2b57928](https://github.com/G-Core/gcore-go/commit/2b57928919c1ed81a8eb797ed9eec9327f180860))
+
 ## [0.59.0](https://github.com/G-Core/gcore-go/compare/v0.58.0...v0.59.0) (2026-10-12)
 
 
