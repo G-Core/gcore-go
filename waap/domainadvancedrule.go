@@ -106,13 +106,15 @@ func (r *DomainAdvancedRuleService) Toggle(ctx context.Context, action DomainAdv
 	return res, err
 }
 
-// An advanced WAAP rule applied to a domain
+// Full advanced rule representation
 type WaapAdvancedRule struct {
 	// The unique identifier for the rule
 	ID int64 `json:"id" api:"required"`
 	// The action that the rule takes when triggered. Only one action can be set per
 	// rule.
 	Action WaapAdvancedRuleAction `json:"action" api:"required"`
+	// A description assigned to the rule.
+	Description string `json:"description" api:"required"`
 	// Whether or not the rule is enabled
 	Enabled bool `json:"enabled" api:"required"`
 	// The name assigned to the rule
@@ -124,8 +126,6 @@ type WaapAdvancedRule struct {
 	// More info can be found here:
 	// https://gcore.com/docs/waap/waap-rules/advanced-rules
 	Source string `json:"source" api:"required"`
-	// A human-readable description.
-	Description string `json:"description"`
 	// The WAAP request/response phase for applying the rule. Default is "access".
 	//
 	// The "access" phase is responsible for modifying the request before it is sent to
@@ -143,10 +143,10 @@ type WaapAdvancedRule struct {
 	JSON struct {
 		ID          respjson.Field
 		Action      respjson.Field
+		Description respjson.Field
 		Enabled     respjson.Field
 		Name        respjson.Field
 		Source      respjson.Field
-		Description respjson.Field
 		Phase       respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string

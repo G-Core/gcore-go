@@ -644,6 +644,13 @@ type AnalyticsGetEventsParams struct {
 	// Include entries whose tag exactly equals any supplied value. Omit or provide an
 	// empty list to apply no tag filter.
 	Tags []string `query:"tags,omitzero" json:"-"`
+	// Include entries that have any of the given traffic types.
+	//
+	// Any of "policy_allowed", "policy_blocked", "custom_rule_allowed",
+	// "custom_blocked", "legit_requests", "sanctioned", "dynamic", "api", "static",
+	// "ajax", "redirects", "monitor", "err_40x", "err_50x", "passed_to_origin",
+	// "timeout", "other", "ddos", "legit", "monitored".
+	TrafficTypes []string `query:"traffic_types,omitzero" json:"-"`
 	// Include entries whose user agent contains any of the supplied texts,
 	// case-insensitive partial match. Omit or provide an empty list to apply no user
 	// agent text filter.
@@ -854,6 +861,13 @@ type AnalyticsGetRequestsParams struct {
 	// Include entries whose tag exactly equals any supplied value. Omit or provide an
 	// empty list to apply no tag filter.
 	Tags []string `query:"tags,omitzero" json:"-"`
+	// Include entries that have any of the given traffic types.
+	//
+	// Any of "policy_allowed", "policy_blocked", "custom_rule_allowed",
+	// "custom_blocked", "legit_requests", "sanctioned", "dynamic", "api", "static",
+	// "ajax", "redirects", "monitor", "err_40x", "err_50x", "passed_to_origin",
+	// "timeout", "other", "ddos", "legit", "monitored".
+	TrafficTypes []string `query:"traffic_types,omitzero" json:"-"`
 	// Include entries whose user agent contains any of the supplied texts,
 	// case-insensitive partial match. Omit or provide an empty list to apply no user
 	// agent text filter.
@@ -1041,6 +1055,13 @@ type AnalyticsGetTrafficFilteredParams struct {
 	// Include entries whose tag exactly equals any supplied value. Omit or provide an
 	// empty list to apply no tag filter.
 	Tags []string `query:"tags,omitzero" json:"-"`
+	// Include entries that have any of the given traffic types.
+	//
+	// Any of "policy_allowed", "policy_blocked", "custom_rule_allowed",
+	// "custom_blocked", "legit_requests", "sanctioned", "dynamic", "api", "static",
+	// "ajax", "redirects", "monitor", "err_40x", "err_50x", "passed_to_origin",
+	// "timeout", "other", "ddos", "legit", "monitored".
+	TrafficTypes []string `query:"traffic_types,omitzero" json:"-"`
 	// Include entries whose user agent contains any of the supplied texts,
 	// case-insensitive partial match. Omit or provide an empty list to apply no user
 	// agent text filter.

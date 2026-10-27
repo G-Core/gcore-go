@@ -63,29 +63,29 @@ func (r *FirewallRuleService) ListAutoPaging(ctx context.Context, query Firewall
 
 // Firewall rule response for account-level queries with domain information
 type WaapAccountFirewallRule struct {
-	// The unique identifier of the rule
+	// The unique identifier for the rule
 	ID int64 `json:"id" api:"required"`
 	// The action that the rule takes when triggered
 	Action WaapAccountFirewallRuleAction `json:"action" api:"required"`
 	// The condition required for the WAAP engine to trigger the rule.
 	Conditions []WaapAccountFirewallRuleCondition `json:"conditions" api:"required"`
+	// A description assigned to the rule.
+	Description string `json:"description" api:"required"`
 	// The domain this firewall rule belongs to
 	Domain WaapAccountFirewallRuleDomain `json:"domain" api:"required"`
 	// Whether or not the rule is enabled
 	Enabled bool `json:"enabled" api:"required"`
 	// The name assigned to the rule
 	Name string `json:"name" api:"required"`
-	// A human-readable description.
-	Description string `json:"description"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		Action      respjson.Field
 		Conditions  respjson.Field
+		Description respjson.Field
 		Domain      respjson.Field
 		Enabled     respjson.Field
 		Name        respjson.Field
-		Description respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`

@@ -114,7 +114,7 @@ func (r *DomainCustomRuleService) Toggle(ctx context.Context, action DomainCusto
 	return res, err
 }
 
-// An WAAP rule applied to a domain
+// Full custom rule representation
 type WaapCustomRule struct {
 	// The unique identifier for the rule
 	ID int64 `json:"id" api:"required"`
@@ -124,20 +124,20 @@ type WaapCustomRule struct {
 	// The conditions required for the WAAP engine to trigger the rule. Rules may have
 	// between 1 and 5 conditions. All conditions must pass for the rule to trigger
 	Conditions []WaapCustomRuleCondition `json:"conditions" api:"required"`
+	// A description assigned to the rule.
+	Description string `json:"description" api:"required"`
 	// Whether or not the rule is enabled
 	Enabled bool `json:"enabled" api:"required"`
 	// The name assigned to the rule
 	Name string `json:"name" api:"required"`
-	// A human-readable description.
-	Description string `json:"description"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		Action      respjson.Field
 		Conditions  respjson.Field
+		Description respjson.Field
 		Enabled     respjson.Field
 		Name        respjson.Field
-		Description respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`

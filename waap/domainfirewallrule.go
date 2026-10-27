@@ -114,27 +114,28 @@ func (r *DomainFirewallRuleService) Toggle(ctx context.Context, action DomainFir
 	return res, err
 }
 
+// Full firewall rule representation
 type WaapFirewallRule struct {
-	// The unique identifier of the rule
+	// The unique identifier for the rule
 	ID int64 `json:"id" api:"required"`
 	// The action that the rule takes when triggered
 	Action WaapFirewallRuleAction `json:"action" api:"required"`
 	// The condition required for the WAAP engine to trigger the rule.
 	Conditions []WaapFirewallRuleCondition `json:"conditions" api:"required"`
+	// A description assigned to the rule.
+	Description string `json:"description" api:"required"`
 	// Whether or not the rule is enabled
 	Enabled bool `json:"enabled" api:"required"`
 	// The name assigned to the rule
 	Name string `json:"name" api:"required"`
-	// A human-readable description.
-	Description string `json:"description"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		Action      respjson.Field
 		Conditions  respjson.Field
+		Description respjson.Field
 		Enabled     respjson.Field
 		Name        respjson.Field
-		Description respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
