@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"slices"
+	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -49,12 +50,11 @@ func NewCertificateService(opts ...option.RequestOption) (r CertificateService) 
 // Additionally, you can add a Let's Encrypt certificate. In this case, certificate
 // and private key will be generated automatically after attaching this certificate
 // to your CDN resource.
-func (r *CertificateService) New(ctx context.Context, body CertificateNewParams, opts ...option.RequestOption) (err error) {
+func (r *CertificateService) New(ctx context.Context, body CertificateNewParams, opts ...option.RequestOption) (res *SslDetail, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "cdn/sslData"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return err
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
 }
 
 // Get information about SSL certificates.
@@ -246,20 +246,22 @@ type SslDetail struct {
 	// Possible values:
 	//
 	// - **true** - Certificate was issued automatically.
-	// - **false** - Certificate was added by a use.
+	// - **false** - Certificate was added by a user.
 	Automated bool `json:"automated"`
 	// Name of the certification center issued the SSL certificate.
-	CertIssuer string `json:"cert_issuer"`
+	CertIssuer string `json:"cert_issuer" api:"nullable"`
 	// Alternative domain names that the SSL certificate secures.
-	CertSubjectAlt string `json:"cert_subject_alt"`
+	CertSubjectAlt string `json:"cert_subject_alt" api:"nullable"`
 	// Domain name that the SSL certificate secures.
-	CertSubjectCn string `json:"cert_subject_cn"`
-	// Defines whether the certificate has been deleted. Parameter is **deprecated**.
+	CertSubjectCn string `json:"cert_subject_cn" api:"nullable"`
+	// Defines whether the certificate has been deleted.
 	//
 	// Possible values:
 	//
 	// - **true** - Certificate has been deleted.
 	// - **false** - Certificate has not been deleted.
+	//
+	// Deprecated: deprecated
 	Deleted bool `json:"deleted"`
 	// Defines whether the SSL certificate is used by a CDN resource or an alias.
 	//
@@ -271,11 +273,11 @@ type SslDetail struct {
 	// SSL certificate name.
 	Name string `json:"name"`
 	// Parameter is **deprecated**.
-	SslCertificateChain string `json:"sslCertificateChain"`
+	SslCertificateChain string `json:"sslCertificateChain" api:"nullable"`
 	// Date when certificate become untrusted (ISO 8601/RFC 3339 format, UTC.)
-	ValidityNotAfter string `json:"validity_not_after"`
+	ValidityNotAfter time.Time `json:"validity_not_after" api:"nullable" format:"date-time"`
 	// Date when certificate become valid (ISO 8601/RFC 3339 format, UTC.)
-	ValidityNotBefore string `json:"validity_not_before"`
+	ValidityNotBefore time.Time `json:"validity_not_before" api:"nullable" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                  respjson.Field
@@ -518,6 +520,10 @@ type CertificateNewParamsBodyOwnCertificate struct {
 	//   - **false** - SSL certificate will not be verified to be signed by a trusted
 	//     certificate authority.
 	ValidateRootCa param.Opt[bool] `json:"validate_root_ca,omitzero"`
+	// Must be **false** or omitted for a certificate you upload.
+	//
+	// Any of false.
+	Automated bool `json:"automated,omitzero"`
 	paramObj
 }
 
@@ -529,10 +535,18 @@ func (r *CertificateNewParamsBodyOwnCertificate) UnmarshalJSON(data []byte) erro
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func init() {
+	apijson.RegisterFieldValidator[CertificateNewParamsBodyOwnCertificate](
+		"automated", false,
+	)
+}
+
 // The properties Automated, Name are required.
 type CertificateNewParamsBodyLetSEncryptCertificate struct {
 	// Must be **true** to issue certificate automatically.
-	Automated bool `json:"automated" api:"required"`
+	//
+	// Any of true.
+	Automated bool `json:"automated,omitzero" api:"required"`
 	// SSL certificate name. It must be unique.
 	Name string `json:"name" api:"required"`
 	paramObj
@@ -544,6 +558,12 @@ func (r CertificateNewParamsBodyLetSEncryptCertificate) MarshalJSON() (data []by
 }
 func (r *CertificateNewParamsBodyLetSEncryptCertificate) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[CertificateNewParamsBodyLetSEncryptCertificate](
+		"automated", true,
+	)
 }
 
 type CertificateListParams struct {
@@ -564,7 +584,7 @@ type CertificateListParams struct {
 	// UTC.)
 	//
 	// Response will contain only certificates valid until the specified time.
-	ValidityNotAfterLte param.Opt[string] `query:"validity_not_after_lte,omitzero" json:"-"`
+	ValidityNotAfterLte param.Opt[time.Time] `query:"validity_not_after_lte,omitzero" format:"date-time" json:"-"`
 	paramObj
 }
 
@@ -612,6 +632,10 @@ type CertificateReplaceParams struct {
 	//   - **false** - SSL certificate will not be verified to be signed by a trusted
 	//     certificate authority.
 	ValidateRootCa param.Opt[bool] `json:"validate_root_ca,omitzero"`
+	// Must be **false** or omitted for a certificate you upload.
+	//
+	// Any of false.
+	Automated bool `json:"automated,omitzero"`
 	paramObj
 }
 

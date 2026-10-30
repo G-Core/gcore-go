@@ -355,8 +355,7 @@ type RuleTemplateOptions struct {
 	// The time limit for receiving a partial response from the origin. If no response
 	// is received within this time, the connection will be closed.
 	//
-	// **Note:** When used with a WebSocket connection, this option supports values
-	// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
+	// When the option is not set, the timeout is 30 seconds.
 	ProxyReadTimeout RuleTemplateOptionsProxyReadTimeout `json:"proxy_read_timeout" api:"nullable"`
 	// Files with the specified query parameters are cached as one object, files with
 	// other parameters are cached as different objects.
@@ -1595,8 +1594,7 @@ func (r *RuleTemplateOptionsProxyConnectTimeout) UnmarshalJSON(data []byte) erro
 // The time limit for receiving a partial response from the origin. If no response
 // is received within this time, the connection will be closed.
 //
-// **Note:** When used with a WebSocket connection, this option supports values
-// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
+// When the option is not set, the timeout is 30 seconds.
 type RuleTemplateOptionsProxyReadTimeout struct {
 	// Controls the option state.
 	//
@@ -1607,7 +1605,7 @@ type RuleTemplateOptionsProxyReadTimeout struct {
 	Enabled bool `json:"enabled" api:"required"`
 	// Timeout value in seconds.
 	//
-	// Supported range: **1s - 30s**.
+	// Supported range: **1s - 120s**.
 	Value string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2622,8 +2620,7 @@ type RuleTemplateNewParamsOptions struct {
 	// The time limit for receiving a partial response from the origin. If no response
 	// is received within this time, the connection will be closed.
 	//
-	// **Note:** When used with a WebSocket connection, this option supports values
-	// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
+	// When the option is not set, the timeout is 30 seconds.
 	ProxyReadTimeout RuleTemplateNewParamsOptionsProxyReadTimeout `json:"proxy_read_timeout,omitzero"`
 	// Files with the specified query parameters are cached as one object, files with
 	// other parameters are cached as different objects.
@@ -3743,8 +3740,7 @@ func (r *RuleTemplateNewParamsOptionsProxyConnectTimeout) UnmarshalJSON(data []b
 // The time limit for receiving a partial response from the origin. If no response
 // is received within this time, the connection will be closed.
 //
-// **Note:** When used with a WebSocket connection, this option supports values
-// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
+// When the option is not set, the timeout is 30 seconds.
 //
 // The properties Enabled, Value are required.
 type RuleTemplateNewParamsOptionsProxyReadTimeout struct {
@@ -3757,7 +3753,7 @@ type RuleTemplateNewParamsOptionsProxyReadTimeout struct {
 	Enabled bool `json:"enabled" api:"required"`
 	// Timeout value in seconds.
 	//
-	// Supported range: **1s - 30s**.
+	// Supported range: **1s - 120s**.
 	Value string `json:"value" api:"required"`
 	paramObj
 }
@@ -4730,8 +4726,7 @@ type RuleTemplateUpdateParamsOptions struct {
 	// The time limit for receiving a partial response from the origin. If no response
 	// is received within this time, the connection will be closed.
 	//
-	// **Note:** When used with a WebSocket connection, this option supports values
-	// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
+	// When the option is not set, the timeout is 30 seconds.
 	ProxyReadTimeout RuleTemplateUpdateParamsOptionsProxyReadTimeout `json:"proxy_read_timeout,omitzero"`
 	// Files with the specified query parameters are cached as one object, files with
 	// other parameters are cached as different objects.
@@ -5851,8 +5846,7 @@ func (r *RuleTemplateUpdateParamsOptionsProxyConnectTimeout) UnmarshalJSON(data 
 // The time limit for receiving a partial response from the origin. If no response
 // is received within this time, the connection will be closed.
 //
-// **Note:** When used with a WebSocket connection, this option supports values
-// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
+// When the option is not set, the timeout is 30 seconds.
 //
 // The properties Enabled, Value are required.
 type RuleTemplateUpdateParamsOptionsProxyReadTimeout struct {
@@ -5865,7 +5859,7 @@ type RuleTemplateUpdateParamsOptionsProxyReadTimeout struct {
 	Enabled bool `json:"enabled" api:"required"`
 	// Timeout value in seconds.
 	//
-	// Supported range: **1s - 30s**.
+	// Supported range: **1s - 120s**.
 	Value string `json:"value" api:"required"`
 	paramObj
 }
@@ -6854,8 +6848,7 @@ type RuleTemplateReplaceParamsOptions struct {
 	// The time limit for receiving a partial response from the origin. If no response
 	// is received within this time, the connection will be closed.
 	//
-	// **Note:** When used with a WebSocket connection, this option supports values
-	// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
+	// When the option is not set, the timeout is 30 seconds.
 	ProxyReadTimeout RuleTemplateReplaceParamsOptionsProxyReadTimeout `json:"proxy_read_timeout,omitzero"`
 	// Files with the specified query parameters are cached as one object, files with
 	// other parameters are cached as different objects.
@@ -7975,8 +7968,7 @@ func (r *RuleTemplateReplaceParamsOptionsProxyConnectTimeout) UnmarshalJSON(data
 // The time limit for receiving a partial response from the origin. If no response
 // is received within this time, the connection will be closed.
 //
-// **Note:** When used with a WebSocket connection, this option supports values
-// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
+// When the option is not set, the timeout is 30 seconds.
 //
 // The properties Enabled, Value are required.
 type RuleTemplateReplaceParamsOptionsProxyReadTimeout struct {
@@ -7989,7 +7981,7 @@ type RuleTemplateReplaceParamsOptionsProxyReadTimeout struct {
 	Enabled bool `json:"enabled" api:"required"`
 	// Timeout value in seconds.
 	//
-	// Supported range: **1s - 30s**.
+	// Supported range: **1s - 120s**.
 	Value string `json:"value" api:"required"`
 	paramObj
 }

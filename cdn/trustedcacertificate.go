@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"slices"
+	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -107,17 +108,19 @@ type CaCertificate struct {
 	// CA certificate ID.
 	ID int64 `json:"id"`
 	// Name of the certification center that issued the CA certificate.
-	CertIssuer string `json:"cert_issuer"`
+	CertIssuer string `json:"cert_issuer" api:"nullable"`
 	// Alternative domain names that the CA certificate secures.
-	CertSubjectAlt string `json:"cert_subject_alt"`
+	CertSubjectAlt string `json:"cert_subject_alt" api:"nullable"`
 	// Domain name that the CA certificate secures.
-	CertSubjectCn string `json:"cert_subject_cn"`
-	// Defines whether the certificate has been deleted. Parameter is **deprecated**.
+	CertSubjectCn string `json:"cert_subject_cn" api:"nullable"`
+	// Defines whether the certificate has been deleted.
 	//
 	// Possible values:
 	//
 	// - **true** - Certificate has been deleted.
 	// - **false** - Certificate has not been deleted.
+	//
+	// Deprecated: deprecated
 	Deleted bool `json:"deleted"`
 	// Defines whether the CA certificate is used by a CDN resource.
 	//
@@ -131,9 +134,9 @@ type CaCertificate struct {
 	// Parameter is **deprecated**.
 	SslCertificateChain string `json:"sslCertificateChain"`
 	// Date when the CA certificate become untrusted (ISO 8601/RFC 3339 format, UTC.)
-	ValidityNotAfter string `json:"validity_not_after"`
+	ValidityNotAfter time.Time `json:"validity_not_after" format:"date-time"`
 	// Date when the CA certificate become valid (ISO 8601/RFC 3339 format, UTC.)
-	ValidityNotBefore string `json:"validity_not_before"`
+	ValidityNotBefore time.Time `json:"validity_not_before" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                  respjson.Field
@@ -220,7 +223,7 @@ type TrustedCaCertificateListParams struct {
 	// UTC.)
 	//
 	// Response will contain certificates valid until the specified time.
-	ValidityNotAfterLte param.Opt[string] `query:"validity_not_after_lte,omitzero" json:"-"`
+	ValidityNotAfterLte param.Opt[time.Time] `query:"validity_not_after_lte,omitzero" format:"date-time" json:"-"`
 	paramObj
 }
 

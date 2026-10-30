@@ -388,8 +388,7 @@ type CDNResourceRuleOptions struct {
 	// The time limit for receiving a partial response from the origin. If no response
 	// is received within this time, the connection will be closed.
 	//
-	// **Note:** When used with a WebSocket connection, this option supports values
-	// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
+	// When the option is not set, the timeout is 30 seconds.
 	ProxyReadTimeout CDNResourceRuleOptionsProxyReadTimeout `json:"proxy_read_timeout" api:"nullable"`
 	// Files with the specified query parameters are cached as one object, files with
 	// other parameters are cached as different objects.
@@ -1628,8 +1627,7 @@ func (r *CDNResourceRuleOptionsProxyConnectTimeout) UnmarshalJSON(data []byte) e
 // The time limit for receiving a partial response from the origin. If no response
 // is received within this time, the connection will be closed.
 //
-// **Note:** When used with a WebSocket connection, this option supports values
-// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
+// When the option is not set, the timeout is 30 seconds.
 type CDNResourceRuleOptionsProxyReadTimeout struct {
 	// Controls the option state.
 	//
@@ -1640,7 +1638,7 @@ type CDNResourceRuleOptionsProxyReadTimeout struct {
 	Enabled bool `json:"enabled" api:"required"`
 	// Timeout value in seconds.
 	//
-	// Supported range: **1s - 30s**.
+	// Supported range: **1s - 120s**.
 	Value string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2684,8 +2682,7 @@ type CDNResourceRuleNewParamsOptions struct {
 	// The time limit for receiving a partial response from the origin. If no response
 	// is received within this time, the connection will be closed.
 	//
-	// **Note:** When used with a WebSocket connection, this option supports values
-	// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
+	// When the option is not set, the timeout is 30 seconds.
 	ProxyReadTimeout CDNResourceRuleNewParamsOptionsProxyReadTimeout `json:"proxy_read_timeout,omitzero"`
 	// Files with the specified query parameters are cached as one object, files with
 	// other parameters are cached as different objects.
@@ -3805,8 +3802,7 @@ func (r *CDNResourceRuleNewParamsOptionsProxyConnectTimeout) UnmarshalJSON(data 
 // The time limit for receiving a partial response from the origin. If no response
 // is received within this time, the connection will be closed.
 //
-// **Note:** When used with a WebSocket connection, this option supports values
-// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
+// When the option is not set, the timeout is 30 seconds.
 //
 // The properties Enabled, Value are required.
 type CDNResourceRuleNewParamsOptionsProxyReadTimeout struct {
@@ -3819,7 +3815,7 @@ type CDNResourceRuleNewParamsOptionsProxyReadTimeout struct {
 	Enabled bool `json:"enabled" api:"required"`
 	// Timeout value in seconds.
 	//
-	// Supported range: **1s - 30s**.
+	// Supported range: **1s - 120s**.
 	Value string `json:"value" api:"required"`
 	paramObj
 }
@@ -4805,8 +4801,7 @@ type CDNResourceRuleUpdateParamsOptions struct {
 	// The time limit for receiving a partial response from the origin. If no response
 	// is received within this time, the connection will be closed.
 	//
-	// **Note:** When used with a WebSocket connection, this option supports values
-	// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
+	// When the option is not set, the timeout is 30 seconds.
 	ProxyReadTimeout CDNResourceRuleUpdateParamsOptionsProxyReadTimeout `json:"proxy_read_timeout,omitzero"`
 	// Files with the specified query parameters are cached as one object, files with
 	// other parameters are cached as different objects.
@@ -5926,8 +5921,7 @@ func (r *CDNResourceRuleUpdateParamsOptionsProxyConnectTimeout) UnmarshalJSON(da
 // The time limit for receiving a partial response from the origin. If no response
 // is received within this time, the connection will be closed.
 //
-// **Note:** When used with a WebSocket connection, this option supports values
-// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
+// When the option is not set, the timeout is 30 seconds.
 //
 // The properties Enabled, Value are required.
 type CDNResourceRuleUpdateParamsOptionsProxyReadTimeout struct {
@@ -5940,7 +5934,7 @@ type CDNResourceRuleUpdateParamsOptionsProxyReadTimeout struct {
 	Enabled bool `json:"enabled" api:"required"`
 	// Timeout value in seconds.
 	//
-	// Supported range: **1s - 30s**.
+	// Supported range: **1s - 120s**.
 	Value string `json:"value" api:"required"`
 	paramObj
 }
@@ -6953,8 +6947,7 @@ type CDNResourceRuleReplaceParamsOptions struct {
 	// The time limit for receiving a partial response from the origin. If no response
 	// is received within this time, the connection will be closed.
 	//
-	// **Note:** When used with a WebSocket connection, this option supports values
-	// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
+	// When the option is not set, the timeout is 30 seconds.
 	ProxyReadTimeout CDNResourceRuleReplaceParamsOptionsProxyReadTimeout `json:"proxy_read_timeout,omitzero"`
 	// Files with the specified query parameters are cached as one object, files with
 	// other parameters are cached as different objects.
@@ -8074,8 +8067,7 @@ func (r *CDNResourceRuleReplaceParamsOptionsProxyConnectTimeout) UnmarshalJSON(d
 // The time limit for receiving a partial response from the origin. If no response
 // is received within this time, the connection will be closed.
 //
-// **Note:** When used with a WebSocket connection, this option supports values
-// only in the range 1–20 seconds (instead of the usual 1–30 seconds).
+// When the option is not set, the timeout is 30 seconds.
 //
 // The properties Enabled, Value are required.
 type CDNResourceRuleReplaceParamsOptionsProxyReadTimeout struct {
@@ -8088,7 +8080,7 @@ type CDNResourceRuleReplaceParamsOptionsProxyReadTimeout struct {
 	Enabled bool `json:"enabled" api:"required"`
 	// Timeout value in seconds.
 	//
-	// Supported range: **1s - 30s**.
+	// Supported range: **1s - 120s**.
 	Value string `json:"value" api:"required"`
 	paramObj
 }
