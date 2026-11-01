@@ -422,6 +422,52 @@ type Stream struct {
 	// Read more information in the article "How Low Latency streaming works" in the
 	// Knowledge Base.
 	HlsCmafURL string `json:"hls_cmaf_url"`
+	// Show closed captions (CEA-608) in the HLS MPEG-TS output.
+	//
+	// Values:
+	//
+	//   - true – the HLS MPEG-TS master playlist (`master_mpegts.m3u8`) advertises the
+	//     captions track
+	//   - false – the playlist is unchanged
+	//
+	// **Input.** Your source must carry CEA-608 captions on channel CC1, embedded in
+	// the H.264 video (SEI user data), for both RTMP/RTMPS and SRT push. The platform
+	// does not create captions and cannot detect them in the source. If the stream has
+	// no captions, players will show a caption track with no text, so enable this only
+	// for sources with captions. Other caption channels (CC2–CC4) and CEA-708 services
+	// are not advertised.
+	//
+	// **Output.** HLS MPEG-TS only, in the `hls_mpegts_url` master playlist. DASH and
+	// HLS CMAF outputs are not changed. The master playlist gets one captions entry,
+	// and every video variant is linked to it:
+	//
+	// ```text
+	// #EXT-X-MEDIA:TYPE=CLOSED-CAPTIONS,GROUP-ID="cc",NAME="CC1",LANGUAGE="en",INSTREAM-ID="CC1",AUTOSELECT=YES
+	// #EXT-X-STREAM-INF:BANDWIDTH=985600,RESOLUTION=688x468,CODECS="avc1.64001e,mp4a.40.2",CLOSED-CAPTIONS="cc"
+	// ```
+	//
+	// The track name `CC1` and language `en` are fixed and cannot be changed.
+	//
+	// **How to turn on and check:**
+	//
+	//  1. Set `hls_mpegts_cc_tag` to `true` when creating the stream, or update an
+	//     existing stream.
+	//  2. Start (or restart) the push. The setting is applied when the stream starts,
+	//     so a stream that is already live will not change until you restart it.
+	//  3. Open the `hls_mpegts_url` in a player with closed captions support, for
+	//     example Safari, or the hls.js demo player. Choose the "CC1" track in the
+	//     captions menu.
+	//
+	// **FFmpeg example.** Pass the captions through when you re-encode the video.
+	// Option `-a53cc 1` keeps CEA-608 data in the H.264 stream:
+	//
+	// ```text
+	// ffmpeg -re -i input_with_captions.ts -c:v libx264 -pix_fmt yuv420p -profile:v main -g 60 -a53cc 1 -c:a aac -b:a 128k -f flv "rtmp://<push_url>"
+	// ```
+	//
+	// You can check that your file or stream has captions with
+	// `ccextractor input_with_captions.ts`.
+	HlsMpegtsCcTag bool `json:"hls_mpegts_cc_tag"`
 	// Add `#EXT-X-ENDLIST` tag within .m3u8 playlist after the last segment of a live
 	// stream when broadcast is ended.
 	HlsMpegtsEndlistTag bool `json:"hls_mpegts_endlist_tag"`
@@ -778,6 +824,7 @@ type Stream struct {
 		FinishedAtPrimary         respjson.Field
 		FrameRate                 respjson.Field
 		HlsCmafURL                respjson.Field
+		HlsMpegtsCcTag            respjson.Field
 		HlsMpegtsEndlistTag       respjson.Field
 		HlsMpegtsURL              respjson.Field
 		HTMLOverlay               respjson.Field
@@ -1080,6 +1127,52 @@ type StreamNewParams struct {
 	// - true – DVR is enabled
 	// - false – DVR is disabled
 	DvrEnabled param.Opt[bool] `json:"dvr_enabled,omitzero"`
+	// Show closed captions (CEA-608) in the HLS MPEG-TS output.
+	//
+	// Values:
+	//
+	//   - true – the HLS MPEG-TS master playlist (`master_mpegts.m3u8`) advertises the
+	//     captions track
+	//   - false – the playlist is unchanged
+	//
+	// **Input.** Your source must carry CEA-608 captions on channel CC1, embedded in
+	// the H.264 video (SEI user data), for both RTMP/RTMPS and SRT push. The platform
+	// does not create captions and cannot detect them in the source. If the stream has
+	// no captions, players will show a caption track with no text, so enable this only
+	// for sources with captions. Other caption channels (CC2–CC4) and CEA-708 services
+	// are not advertised.
+	//
+	// **Output.** HLS MPEG-TS only, in the `hls_mpegts_url` master playlist. DASH and
+	// HLS CMAF outputs are not changed. The master playlist gets one captions entry,
+	// and every video variant is linked to it:
+	//
+	// ```text
+	// #EXT-X-MEDIA:TYPE=CLOSED-CAPTIONS,GROUP-ID="cc",NAME="CC1",LANGUAGE="en",INSTREAM-ID="CC1",AUTOSELECT=YES
+	// #EXT-X-STREAM-INF:BANDWIDTH=985600,RESOLUTION=688x468,CODECS="avc1.64001e,mp4a.40.2",CLOSED-CAPTIONS="cc"
+	// ```
+	//
+	// The track name `CC1` and language `en` are fixed and cannot be changed.
+	//
+	// **How to turn on and check:**
+	//
+	//  1. Set `hls_mpegts_cc_tag` to `true` when creating the stream, or update an
+	//     existing stream.
+	//  2. Start (or restart) the push. The setting is applied when the stream starts,
+	//     so a stream that is already live will not change until you restart it.
+	//  3. Open the `hls_mpegts_url` in a player with closed captions support, for
+	//     example Safari, or the hls.js demo player. Choose the "CC1" track in the
+	//     captions menu.
+	//
+	// **FFmpeg example.** Pass the captions through when you re-encode the video.
+	// Option `-a53cc 1` keeps CEA-608 data in the H.264 stream:
+	//
+	// ```text
+	// ffmpeg -re -i input_with_captions.ts -c:v libx264 -pix_fmt yuv420p -profile:v main -g 60 -a53cc 1 -c:a aac -b:a 128k -f flv "rtmp://<push_url>"
+	// ```
+	//
+	// You can check that your file or stream has captions with
+	// `ccextractor input_with_captions.ts`.
+	HlsMpegtsCcTag param.Opt[bool] `json:"hls_mpegts_cc_tag,omitzero"`
 	// Add `#EXT-X-ENDLIST` tag within .m3u8 playlist after the last segment of a live
 	// stream when broadcast is ended.
 	HlsMpegtsEndlistTag param.Opt[bool] `json:"hls_mpegts_endlist_tag,omitzero"`
@@ -1267,6 +1360,52 @@ type StreamUpdateParamsStream struct {
 	// - true – DVR is enabled
 	// - false – DVR is disabled
 	DvrEnabled param.Opt[bool] `json:"dvr_enabled,omitzero"`
+	// Show closed captions (CEA-608) in the HLS MPEG-TS output.
+	//
+	// Values:
+	//
+	//   - true – the HLS MPEG-TS master playlist (`master_mpegts.m3u8`) advertises the
+	//     captions track
+	//   - false – the playlist is unchanged
+	//
+	// **Input.** Your source must carry CEA-608 captions on channel CC1, embedded in
+	// the H.264 video (SEI user data), for both RTMP/RTMPS and SRT push. The platform
+	// does not create captions and cannot detect them in the source. If the stream has
+	// no captions, players will show a caption track with no text, so enable this only
+	// for sources with captions. Other caption channels (CC2–CC4) and CEA-708 services
+	// are not advertised.
+	//
+	// **Output.** HLS MPEG-TS only, in the `hls_mpegts_url` master playlist. DASH and
+	// HLS CMAF outputs are not changed. The master playlist gets one captions entry,
+	// and every video variant is linked to it:
+	//
+	// ```text
+	// #EXT-X-MEDIA:TYPE=CLOSED-CAPTIONS,GROUP-ID="cc",NAME="CC1",LANGUAGE="en",INSTREAM-ID="CC1",AUTOSELECT=YES
+	// #EXT-X-STREAM-INF:BANDWIDTH=985600,RESOLUTION=688x468,CODECS="avc1.64001e,mp4a.40.2",CLOSED-CAPTIONS="cc"
+	// ```
+	//
+	// The track name `CC1` and language `en` are fixed and cannot be changed.
+	//
+	// **How to turn on and check:**
+	//
+	//  1. Set `hls_mpegts_cc_tag` to `true` when creating the stream, or update an
+	//     existing stream.
+	//  2. Start (or restart) the push. The setting is applied when the stream starts,
+	//     so a stream that is already live will not change until you restart it.
+	//  3. Open the `hls_mpegts_url` in a player with closed captions support, for
+	//     example Safari, or the hls.js demo player. Choose the "CC1" track in the
+	//     captions menu.
+	//
+	// **FFmpeg example.** Pass the captions through when you re-encode the video.
+	// Option `-a53cc 1` keeps CEA-608 data in the H.264 stream:
+	//
+	// ```text
+	// ffmpeg -re -i input_with_captions.ts -c:v libx264 -pix_fmt yuv420p -profile:v main -g 60 -a53cc 1 -c:a aac -b:a 128k -f flv "rtmp://<push_url>"
+	// ```
+	//
+	// You can check that your file or stream has captions with
+	// `ccextractor input_with_captions.ts`.
+	HlsMpegtsCcTag param.Opt[bool] `json:"hls_mpegts_cc_tag,omitzero"`
 	// Add `#EXT-X-ENDLIST` tag within .m3u8 playlist after the last segment of a live
 	// stream when broadcast is ended.
 	HlsMpegtsEndlistTag param.Opt[bool] `json:"hls_mpegts_endlist_tag,omitzero"`
