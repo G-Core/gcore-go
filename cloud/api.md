@@ -418,6 +418,17 @@ Methods:
 - <code title="post /cloud/v1/volumes/{project_id}/{region_id}/{volume_id}/extend">client.Cloud.Volumes.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#VolumeService.Resize">Resize</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, volumeID <a href="https://pkg.go.dev/builtin#string">string</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#VolumeResizeParams">VolumeResizeParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#TaskIDList">TaskIDList</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="post /cloud/v1/volumes/{project_id}/{region_id}/{volume_id}/revert">client.Cloud.Volumes.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#VolumeService.RevertToLastSnapshot">RevertToLastSnapshot</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, volumeID <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#VolumeRevertToLastSnapshotParams">VolumeRevertToLastSnapshotParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
 
+### Types
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#VolumeType">VolumeType</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#VolumeTypeList">VolumeTypeList</a>
+
+Methods:
+
+- <code title="get /cloud/v1/volumes/types">client.Cloud.Volumes.Types.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#VolumeTypeService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#VolumeTypeListParams">VolumeTypeListParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#VolumeTypeList">VolumeTypeList</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 ## FloatingIPs
 
 Response Types:

@@ -32,6 +32,9 @@ import (
 // the [NewVolumeService] method instead.
 type VolumeService struct {
 	Options []option.RequestOption
+	// Volume types describe the operations each type supports and its QoS profile,
+	// optionally limited to one region.
+	Types VolumeTypeService
 }
 
 // NewVolumeService generates a new service that applies the given options to each
@@ -40,6 +43,7 @@ type VolumeService struct {
 func NewVolumeService(opts ...option.RequestOption) (r VolumeService) {
 	r = VolumeService{}
 	r.Options = opts
+	r.Types = NewVolumeTypeService(opts...)
 	return
 }
 
