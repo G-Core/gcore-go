@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/G-Core/gcore-go"
+	"github.com/G-Core/gcore-go/cloud"
 	"github.com/G-Core/gcore-go/option"
 )
 
@@ -77,7 +78,7 @@ func main() {
 func getCapacityByRegion(client *gcore.Client) {
 	fmt.Println("\n=== GET CAPACITY BY REGION ===")
 
-	capacities, err := client.Cloud.Inference.GetCapacityByRegion(context.Background())
+	capacities, err := client.Cloud.Inference.GetCapacityByRegion(context.Background(), cloud.InferenceGetCapacityByRegionParams{})
 	if err != nil {
 		fmt.Printf("Error getting capacity by region: %v\n", err)
 		return
