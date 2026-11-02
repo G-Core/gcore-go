@@ -43,6 +43,8 @@ func main() {
 		log.Fatal("GCORE_CLOUD_INSTANCE_ID environment variable is not set")
 	}
 
+	listVolumeTypes(&client, cloudRegionID)
+
 	// Create a volume and use its ID for other operations
 	volumeID := createVolume(&client)
 	listAllVolumes(&client)
@@ -53,6 +55,32 @@ func main() {
 	attachVolumeToInstance(&client, volumeID, instanceID)
 	detachVolumeToInstance(&client, volumeID, instanceID)
 	deleteVolume(&client, volumeID)
+}
+
+func listVolumeTypes(client *gcore.Client, regionID int64) {
+	fmt.Println("\n=== LIST VOLUME TYPES ===")
+
+	// With RegionID, the list shows only the types that the region supports
+	params := cloud.VolumeTypeListParams{
+		RegionID: param.NewOpt(regionID),
+	}
+
+	volumeTypes, err := client.Cloud.Volumes.Types.List(context.Background(), params)
+	if err != nil {
+		log.Fatalf("Error listing volume types: %v", err)
+	}
+
+	for i, volumeType := range volumeTypes.Results {
+		capabilities := volumeType.Capabilities
+		fmt.Printf("  %d. Volume type: %s, Resizable: %t, Retypable: %t, Snapshottable: %t, Attachable to boot: %t\n",
+			i+1, volumeType.Name, capabilities.Resizable, capabilities.Retypable, capabilities.Snapshottable, capabilities.AttachableToBoot)
+		// Qos is null if the type has no QoS limits
+		if volumeType.JSON.Qos.Valid() {
+			fmt.Printf("     QoS: IOPS per GiB: %g, Max IOPS: %d\n", volumeType.Qos.IopsPerGib, volumeType.Qos.IopsMax)
+		}
+	}
+
+	fmt.Println("========================")
 }
 
 func createVolume(client *gcore.Client) string {
