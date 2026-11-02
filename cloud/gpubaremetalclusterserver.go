@@ -226,35 +226,30 @@ func (r *GPUBaremetalClusterServerService) Reboot(ctx context.Context, instanceI
 	return res, err
 }
 
-// Use
-// `POST /v3/gpu/baremetal/{project_id}/{region_id}/clusters/{cluster_id}/servers/{server_id}/apply_settings`
-// instead.
+// Rebuild a single server in a bare metal GPU cluster with a chosen image, user
+// data, and SSH key. Any parameter that is omitted falls back to the cluster's
+// current settings.
 //
-// Perform a rebuild operation on a bare metal GPU cluster server. During the
-// rebuild process, the server receive a new image, SSH key, and user data.
-// Important: Before triggering a rebuild, the cluster must have updated server
-// settings to apply. These cluster settings must be patched using the following
-// endpoint: PATCH
-// '/v3/gpu/baremetal/{`project_id`}/{`region_id`}/clusters/{`cluster_id`}'
-//
-// Deprecated: deprecated
-func (r *GPUBaremetalClusterServerService) Rebuild(ctx context.Context, serverID string, body GPUBaremetalClusterServerRebuildParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+// The server is marked with pending changes (`has_pending_changes=true`) until the
+// cluster settings are reapplied via
+// `POST /v3/gpu/baremetal/{project_id}/{region_id}/clusters/{cluster_id}/apply_settings`.
+func (r *GPUBaremetalClusterServerService) Rebuild(ctx context.Context, serverID string, params GPUBaremetalClusterServerRebuildParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
 	}
-	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.Valid() {
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return nil, err
 	}
-	if !body.RegionID.Valid() {
+	if !params.RegionID.Valid() {
 		err = errors.New("missing required region_id parameter")
 		return nil, err
 	}
-	if body.ClusterID == "" {
+	if params.ClusterID == "" {
 		err = errors.New("missing required cluster_id parameter")
 		return nil, err
 	}
@@ -262,8 +257,8 @@ func (r *GPUBaremetalClusterServerService) Rebuild(ctx context.Context, serverID
 		err = errors.New("missing required server_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("cloud/v3/gpu/baremetal/%v/%v/clusters/%s/servers/%s/rebuild", body.ProjectID.Value, body.RegionID.Value, body.ClusterID, serverID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
+	path := fmt.Sprintf("cloud/v4/gpu/baremetal/%v/%v/clusters/%s/servers/%s/rebuild", params.ProjectID.Value, params.RegionID.Value, params.ClusterID, serverID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -936,7 +931,23 @@ type GPUBaremetalClusterServerRebuildParams struct {
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Cluster unique identifier
 	ClusterID string `path:"cluster_id" api:"required" format:"uuid4" json:"-"`
+	// New or existing image to rebuild the node with. Omit to keep the cluster's
+	// current image.
+	ImageID param.Opt[string] `json:"image_id,omitzero" format:"uuid4"`
+	// New or existing SSH keypair name. Omit to keep the cluster's current SSH key.
+	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
+	// New or existing user data (Base64-encoded). Omit to keep the cluster's current
+	// user data.
+	UserData param.Opt[string] `json:"user_data,omitzero"`
 	paramObj
+}
+
+func (r GPUBaremetalClusterServerRebuildParams) MarshalJSON() (data []byte, err error) {
+	type shadow GPUBaremetalClusterServerRebuildParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GPUBaremetalClusterServerRebuildParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type GPUBaremetalClusterServerReplaceParams struct {
