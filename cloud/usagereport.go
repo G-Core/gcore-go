@@ -3948,6 +3948,7 @@ func init() {
 	)
 }
 
+// Represents a single tag filtering condition.
 type UsageReportGetParamsTagsCondition struct {
 	// The name of the tag to filter (e.g., 'os_version').
 	Key param.Opt[string] `json:"key,omitzero"`

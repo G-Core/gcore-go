@@ -197,6 +197,10 @@ type TaskCreatedResources struct {
 	AIClusters []string `json:"ai_clusters"`
 	// IDs of created API keys
 	APIKeys []string `json:"api_keys"`
+	// IDs of created bare metal servers
+	BaremetalServer []string `json:"baremetal_server"`
+	// IDs of created basic VMs
+	BasicVm []string `json:"basic_vm"`
 	// IDs of created CaaS containers
 	CaasContainers []string `json:"caas_containers"`
 	// IDs of created GPU clusters
@@ -269,6 +273,8 @@ type TaskCreatedResources struct {
 	JSON struct {
 		AIClusters         respjson.Field
 		APIKeys            respjson.Field
+		BaremetalServer    respjson.Field
+		BasicVm            respjson.Field
 		CaasContainers     respjson.Field
 		Clusters           respjson.Field
 		DDOSProfiles       respjson.Field

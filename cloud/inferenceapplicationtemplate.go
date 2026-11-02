@@ -7,11 +7,15 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
+	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
+	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
@@ -39,11 +43,30 @@ func NewInferenceApplicationTemplateService(opts ...option.RequestOption) (r Inf
 // documentation, tags, and a set of configurable components (e.g., `model`, `ui`).
 // Components define parameters, supported deployment flavors, and other attributes
 // required to create a fully functional application deployment.
-func (r *InferenceApplicationTemplateService) List(ctx context.Context, opts ...option.RequestOption) (res *InferenceApplicationTemplateList, err error) {
+func (r *InferenceApplicationTemplateService) List(ctx context.Context, query InferenceApplicationTemplateListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[InferenceApplicationTemplate], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "cloud/v3/inference/applications/catalog"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Returns a list of available machine learning application templates from the
+// catalog. Each template includes metadata such as name, description, cover image,
+// documentation, tags, and a set of configurable components (e.g., `model`, `ui`).
+// Components define parameters, supported deployment flavors, and other attributes
+// required to create a fully functional application deployment.
+func (r *InferenceApplicationTemplateService) ListAutoPaging(ctx context.Context, query InferenceApplicationTemplateListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[InferenceApplicationTemplate] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
 // Retrieves detailed information about a specific machine learning application
@@ -214,4 +237,22 @@ type InferenceApplicationTemplateList struct {
 func (r InferenceApplicationTemplateList) RawJSON() string { return r.JSON.raw }
 func (r *InferenceApplicationTemplateList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type InferenceApplicationTemplateListParams struct {
+	// Optional. Limit the number of returned items
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [InferenceApplicationTemplateListParams]'s query parameters
+// as `url.Values`.
+func (r InferenceApplicationTemplateListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
 }

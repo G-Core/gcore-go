@@ -367,6 +367,8 @@ type FileShareShareSettingsUnion struct {
 	// This field is from variant [FileShareShareSettingsVast].
 	PathLength string `json:"path_length"`
 	// This field is from variant [FileShareShareSettingsVast].
+	Quota FileShareShareSettingsVastQuota `json:"quota"`
+	// This field is from variant [FileShareShareSettingsVast].
 	RootSquash bool `json:"root_squash"`
 	// This field is from variant [FileShareShareSettingsVast].
 	TrashAccess bool `json:"trash_access"`
@@ -377,6 +379,7 @@ type FileShareShareSettingsUnion struct {
 		Uid               respjson.Field
 		AllowedCharacters respjson.Field
 		PathLength        respjson.Field
+		Quota             respjson.Field
 		RootSquash        respjson.Field
 		TrashAccess       respjson.Field
 		raw               string
@@ -485,6 +488,9 @@ type FileShareShareSettingsVast struct {
 	AllowedCharacters string `json:"allowed_characters" api:"required"`
 	// Any of "LCD", "NPL".
 	PathLength string `json:"path_length" api:"required"`
+	// User and group quotas of the file share. The value is `null` if quotas are
+	// disabled or if the quotas are not available.
+	Quota FileShareShareSettingsVastQuota `json:"quota" api:"required"`
 	// Enables or disables root squash for NFS clients.
 	//
 	//   - If `true`, root squash is enabled: the root user is mapped to nobody for all
@@ -501,6 +507,7 @@ type FileShareShareSettingsVast struct {
 	JSON struct {
 		AllowedCharacters respjson.Field
 		PathLength        respjson.Field
+		Quota             respjson.Field
 		RootSquash        respjson.Field
 		TrashAccess       respjson.Field
 		TypeName          respjson.Field
@@ -512,6 +519,131 @@ type FileShareShareSettingsVast struct {
 // Returns the unmodified JSON received from the API
 func (r FileShareShareSettingsVast) RawJSON() string { return r.JSON.raw }
 func (r *FileShareShareSettingsVast) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// User and group quotas of the file share. The value is `null` if quotas are
+// disabled or if the quotas are not available.
+type FileShareShareSettingsVastQuota struct {
+	// Quota for each group without an override. The value is `null` if there is no
+	// default.
+	DefaultGroupQuota FileShareShareSettingsVastQuotaDefaultGroupQuota `json:"default_group_quota" api:"required"`
+	// Quota for each user without an override. The value is `null` if there is no
+	// default.
+	DefaultUserQuota FileShareShareSettingsVastQuotaDefaultUserQuota `json:"default_user_quota" api:"required"`
+	// Quotas for specified users and groups.
+	Overrides []FileShareShareSettingsVastQuotaOverride `json:"overrides" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DefaultGroupQuota respjson.Field
+		DefaultUserQuota  respjson.Field
+		Overrides         respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileShareShareSettingsVastQuota) RawJSON() string { return r.JSON.raw }
+func (r *FileShareShareSettingsVastQuota) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Quota for each group without an override. The value is `null` if there is no
+// default.
+type FileShareShareSettingsVastQuotaDefaultGroupQuota struct {
+	// Time after the usage goes above `soft_limit`, in the `D HH:MM:SS` format.
+	GracePeriod string `json:"grace_period" api:"required"`
+	// Maximum capacity in bytes. Write operations fail when the usage reaches this
+	// limit.
+	HardLimit int64 `json:"hard_limit" api:"required"`
+	// Capacity in bytes that starts the grace period.
+	SoftLimit int64 `json:"soft_limit" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		GracePeriod respjson.Field
+		HardLimit   respjson.Field
+		SoftLimit   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileShareShareSettingsVastQuotaDefaultGroupQuota) RawJSON() string { return r.JSON.raw }
+func (r *FileShareShareSettingsVastQuotaDefaultGroupQuota) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Quota for each user without an override. The value is `null` if there is no
+// default.
+type FileShareShareSettingsVastQuotaDefaultUserQuota struct {
+	// Time after the usage goes above `soft_limit`, in the `D HH:MM:SS` format.
+	GracePeriod string `json:"grace_period" api:"required"`
+	// Maximum capacity in bytes. Write operations fail when the usage reaches this
+	// limit.
+	HardLimit int64 `json:"hard_limit" api:"required"`
+	// Capacity in bytes that starts the grace period.
+	SoftLimit int64 `json:"soft_limit" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		GracePeriod respjson.Field
+		HardLimit   respjson.Field
+		SoftLimit   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileShareShareSettingsVastQuotaDefaultUserQuota) RawJSON() string { return r.JSON.raw }
+func (r *FileShareShareSettingsVastQuotaDefaultUserQuota) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type FileShareShareSettingsVastQuotaOverride struct {
+	// Time after the usage goes above `soft_limit`, in the `D HH:MM:SS` format.
+	GracePeriod string `json:"grace_period" api:"required"`
+	// Maximum capacity in bytes. Write operations fail when the usage reaches this
+	// limit.
+	HardLimit int64 `json:"hard_limit" api:"required"`
+	// Numeric user ID or group ID.
+	Identifier int64 `json:"identifier" api:"required"`
+	// Type of `identifier`. The value `uid` is for a user and `gid` is for a group.
+	//
+	// Any of "gid", "uid".
+	IdentifierType string `json:"identifier_type" api:"required"`
+	// Capacity in bytes that starts the grace period.
+	SoftLimit int64 `json:"soft_limit" api:"required"`
+	// Usage state of the quota. `OK` means that the usage is below the limits.
+	// `SOFT_EXCEEDED`, `INODE_SOFT_EXCEEDED` and `SOFT_BOTH_EXCEEDED` mean that the
+	// capacity, the number of files or both are above the soft limit. `GRACE_EXPIRED`
+	// means that the grace period is over and write operations fail. `HARD_EXCEEDED`,
+	// `INODE_HARD_EXCEEDED` and `HARD_BOTH_EXCEEDED` mean that the capacity, the
+	// number of files or both are at the hard limit and write operations fail.
+	// `FAILED` means that the system cannot get the state. `UNKNOWN` means that the
+	// state is not available.
+	//
+	// Any of "FAILED", "GRACE_EXPIRED", "HARD_BOTH_EXCEEDED", "HARD_EXCEEDED",
+	// "INODE_HARD_EXCEEDED", "INODE_SOFT_EXCEEDED", "OK", "SOFT_BOTH_EXCEEDED",
+	// "SOFT_EXCEEDED", "UNKNOWN".
+	State string `json:"state" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		GracePeriod    respjson.Field
+		HardLimit      respjson.Field
+		Identifier     respjson.Field
+		IdentifierType respjson.Field
+		SoftLimit      respjson.Field
+		State          respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileShareShareSettingsVastQuotaOverride) RawJSON() string { return r.JSON.raw }
+func (r *FileShareShareSettingsVastQuotaOverride) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -846,6 +978,9 @@ type FileShareNewParamsBodyCreateVastFileShareSerializerShareSettings struct {
 	//
 	// Any of "LCD", "NPL".
 	PathLength string `json:"path_length,omitzero"`
+	// Default user and group quotas. Use the update request to add quotas for
+	// specified users and groups after they write to the file share.
+	Quota FileShareNewParamsBodyCreateVastFileShareSerializerShareSettingsQuota `json:"quota,omitzero"`
 	paramObj
 }
 
@@ -864,6 +999,74 @@ func init() {
 	apijson.RegisterFieldValidator[FileShareNewParamsBodyCreateVastFileShareSerializerShareSettings](
 		"path_length", "LCD", "NPL",
 	)
+}
+
+// Default user and group quotas. Use the update request to add quotas for
+// specified users and groups after they write to the file share.
+type FileShareNewParamsBodyCreateVastFileShareSerializerShareSettingsQuota struct {
+	// Quota for each group without an override.
+	DefaultGroupQuota FileShareNewParamsBodyCreateVastFileShareSerializerShareSettingsQuotaDefaultGroupQuota `json:"default_group_quota,omitzero"`
+	// Quota for each user without an override.
+	DefaultUserQuota FileShareNewParamsBodyCreateVastFileShareSerializerShareSettingsQuotaDefaultUserQuota `json:"default_user_quota,omitzero"`
+	paramObj
+}
+
+func (r FileShareNewParamsBodyCreateVastFileShareSerializerShareSettingsQuota) MarshalJSON() (data []byte, err error) {
+	type shadow FileShareNewParamsBodyCreateVastFileShareSerializerShareSettingsQuota
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *FileShareNewParamsBodyCreateVastFileShareSerializerShareSettingsQuota) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Quota for each group without an override.
+//
+// The property HardLimit is required.
+type FileShareNewParamsBodyCreateVastFileShareSerializerShareSettingsQuotaDefaultGroupQuota struct {
+	// Maximum capacity in bytes. Write operations fail when the usage reaches this
+	// limit. It must not be more than the file share size.
+	HardLimit int64 `json:"hard_limit" api:"required"`
+	// Time after the usage goes above `soft_limit`, in the `D HH:MM:SS` format. The
+	// maximum is 365 days. You must also specify `soft_limit`.
+	GracePeriod param.Opt[string] `json:"grace_period,omitzero"`
+	// Capacity in bytes that starts the grace period. Write operations fail when the
+	// grace period ends and the usage is still above this limit. It must not be more
+	// than `hard_limit`.
+	SoftLimit param.Opt[int64] `json:"soft_limit,omitzero"`
+	paramObj
+}
+
+func (r FileShareNewParamsBodyCreateVastFileShareSerializerShareSettingsQuotaDefaultGroupQuota) MarshalJSON() (data []byte, err error) {
+	type shadow FileShareNewParamsBodyCreateVastFileShareSerializerShareSettingsQuotaDefaultGroupQuota
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *FileShareNewParamsBodyCreateVastFileShareSerializerShareSettingsQuotaDefaultGroupQuota) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Quota for each user without an override.
+//
+// The property HardLimit is required.
+type FileShareNewParamsBodyCreateVastFileShareSerializerShareSettingsQuotaDefaultUserQuota struct {
+	// Maximum capacity in bytes. Write operations fail when the usage reaches this
+	// limit. It must not be more than the file share size.
+	HardLimit int64 `json:"hard_limit" api:"required"`
+	// Time after the usage goes above `soft_limit`, in the `D HH:MM:SS` format. The
+	// maximum is 365 days. You must also specify `soft_limit`.
+	GracePeriod param.Opt[string] `json:"grace_period,omitzero"`
+	// Capacity in bytes that starts the grace period. Write operations fail when the
+	// grace period ends and the usage is still above this limit. It must not be more
+	// than `hard_limit`.
+	SoftLimit param.Opt[int64] `json:"soft_limit,omitzero"`
+	paramObj
+}
+
+func (r FileShareNewParamsBodyCreateVastFileShareSerializerShareSettingsQuotaDefaultUserQuota) MarshalJSON() (data []byte, err error) {
+	type shadow FileShareNewParamsBodyCreateVastFileShareSerializerShareSettingsQuotaDefaultUserQuota
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *FileShareNewParamsBodyCreateVastFileShareSerializerShareSettingsQuotaDefaultUserQuota) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type FileShareUpdateParams struct {
@@ -972,6 +1175,12 @@ type FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializer str
 	//
 	// Omit this field to keep the current setting.
 	TrashAccess param.Opt[bool] `json:"trash_access,omitzero"`
+	// User and group quotas. Send an object to enable quotas and change the specified
+	// fields. Send `null` to disable quotas. When you disable quotas, the system
+	// removes the default quotas and all overrides. You cannot restore them.
+	//
+	// Omit this field to keep the current setting.
+	Quota FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializerQuota `json:"quota,omitzero"`
 	// Determines which characters are allowed in file names. Choose between:
 	//
 	//   - Lowest Common Denominator (LCD), allows only characters allowed by all VAST
@@ -1012,6 +1221,135 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializer](
 		"path_length", "LCD", "NPL",
+	)
+}
+
+// User and group quotas. Send an object to enable quotas and change the specified
+// fields. Send `null` to disable quotas. When you disable quotas, the system
+// removes the default quotas and all overrides. You cannot restore them.
+//
+// Omit this field to keep the current setting.
+type FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializerQuota struct {
+	// Quota for each group without an override. The specified fields change and the
+	// other fields keep their current values. Set it to `null` to remove the default.
+	DefaultGroupQuota FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializerQuotaDefaultGroupQuota `json:"default_group_quota,omitzero"`
+	// Quota for each user without an override. The specified fields change and the
+	// other fields keep their current values. Set it to `null` to remove the default.
+	DefaultUserQuota FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializerQuotaDefaultUserQuota `json:"default_user_quota,omitzero"`
+	// Quotas for specified users and groups. This list replaces all current overrides.
+	// Send an empty list to remove all overrides.
+	OverrideItems []FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializerQuotaOverride `json:"overrides,omitzero"`
+	paramObj
+}
+
+func (r FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializerQuota) MarshalJSON() (data []byte, err error) {
+	type shadow FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializerQuota
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializerQuota) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Quota for each group without an override. The specified fields change and the
+// other fields keep their current values. Set it to `null` to remove the default.
+type FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializerQuotaDefaultGroupQuota struct {
+	// Time after the usage goes above `soft_limit`, in the `D HH:MM:SS` format. The
+	// maximum is 365 days. The quota must have a `soft_limit`. Set it to `null` to
+	// remove the grace period.
+	//
+	// Omit this field to keep the current setting.
+	GracePeriod param.Opt[string] `json:"grace_period,omitzero"`
+	// Capacity in bytes that starts the grace period. Write operations fail when the
+	// grace period ends and the usage is still above this limit. It must not be more
+	// than `hard_limit`. Set it to `null` to remove the soft limit and the grace
+	// period.
+	//
+	// Omit this field to keep the current setting.
+	SoftLimit param.Opt[int64] `json:"soft_limit,omitzero"`
+	// Maximum capacity in bytes. Write operations fail when the usage reaches this
+	// limit. It must not be more than the file share size. It is necessary if the file
+	// share does not have this quota yet.
+	//
+	// Omit this field to keep the current setting.
+	HardLimit param.Opt[int64] `json:"hard_limit,omitzero"`
+	paramObj
+}
+
+func (r FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializerQuotaDefaultGroupQuota) MarshalJSON() (data []byte, err error) {
+	type shadow FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializerQuotaDefaultGroupQuota
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializerQuotaDefaultGroupQuota) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Quota for each user without an override. The specified fields change and the
+// other fields keep their current values. Set it to `null` to remove the default.
+type FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializerQuotaDefaultUserQuota struct {
+	// Time after the usage goes above `soft_limit`, in the `D HH:MM:SS` format. The
+	// maximum is 365 days. The quota must have a `soft_limit`. Set it to `null` to
+	// remove the grace period.
+	//
+	// Omit this field to keep the current setting.
+	GracePeriod param.Opt[string] `json:"grace_period,omitzero"`
+	// Capacity in bytes that starts the grace period. Write operations fail when the
+	// grace period ends and the usage is still above this limit. It must not be more
+	// than `hard_limit`. Set it to `null` to remove the soft limit and the grace
+	// period.
+	//
+	// Omit this field to keep the current setting.
+	SoftLimit param.Opt[int64] `json:"soft_limit,omitzero"`
+	// Maximum capacity in bytes. Write operations fail when the usage reaches this
+	// limit. It must not be more than the file share size. It is necessary if the file
+	// share does not have this quota yet.
+	//
+	// Omit this field to keep the current setting.
+	HardLimit param.Opt[int64] `json:"hard_limit,omitzero"`
+	paramObj
+}
+
+func (r FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializerQuotaDefaultUserQuota) MarshalJSON() (data []byte, err error) {
+	type shadow FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializerQuotaDefaultUserQuota
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializerQuotaDefaultUserQuota) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties HardLimit, Identifier, IdentifierType are required.
+type FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializerQuotaOverride struct {
+	// Maximum capacity in bytes. Write operations fail when the usage reaches this
+	// limit. It must not be more than the file share size.
+	HardLimit int64 `json:"hard_limit" api:"required"`
+	// Numeric user ID or group ID. Before you set a quota for a user or group, it must
+	// write a file to the file share. If it did not write a file, the update task
+	// fails.
+	Identifier int64 `json:"identifier" api:"required"`
+	// Type of `identifier`. Use `uid` for a user and `gid` for a group.
+	//
+	// Any of "gid", "uid".
+	IdentifierType string `json:"identifier_type,omitzero" api:"required"`
+	// Time after the usage goes above `soft_limit`, in the `D HH:MM:SS` format. The
+	// maximum is 365 days. You must also specify `soft_limit`.
+	GracePeriod param.Opt[string] `json:"grace_period,omitzero"`
+	// Capacity in bytes that starts the grace period. Write operations fail when the
+	// grace period ends and the usage is still above this limit. It must not be more
+	// than `hard_limit`.
+	SoftLimit param.Opt[int64] `json:"soft_limit,omitzero"`
+	paramObj
+}
+
+func (r FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializerQuotaOverride) MarshalJSON() (data []byte, err error) {
+	type shadow FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializerQuotaOverride
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializerQuotaOverride) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[FileShareUpdateParamsShareSettingsUpdateVastFileShareSettingsSerializerQuotaOverride](
+		"identifier_type", "gid", "uid",
 	)
 }
 

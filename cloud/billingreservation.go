@@ -60,11 +60,14 @@ type BillingReservation struct {
 	ResourceCount int64 `json:"resource_count" api:"required"`
 	// Resource name
 	ResourceName string `json:"resource_name" api:"required"`
-	// Unit name (e.g., 'H' for hours)
+	// Unit name. Always 'H' (hours).
 	UnitName string `json:"unit_name" api:"required"`
-	// Unit size per month (e.g., 744 hours)
+	// Hours in one month for the monthly prices. A reservation with an hourly commit
+	// uses the calendar hours of the month of `time_from`, limited to the reservation
+	// period. Other reservations use 744 hours.
 	UnitSizeMonth string `json:"unit_size_month" api:"required"`
-	// Unit size month multiplied by count of resources in the reservation
+	// Total hours of the reservation for all resources. A reservation with an hourly
+	// commit counts the real hours. Other reservations count 744 hours for each month.
 	UnitSizeTotal string `json:"unit_size_total" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -95,11 +98,13 @@ type BillingReservationActiveOvercommit struct {
 	ActiveFrom time.Time `json:"active_from" api:"required" format:"date-time"`
 	// Billing plan item ID
 	PlanItemID int64 `json:"plan_item_id" api:"required"`
-	// Price per month
+	// Price per month, per one resource: the price per unit multiplied by
+	// `unit_size_month`
 	PricePerMonth string `json:"price_per_month" api:"required"`
 	// Price per unit (hourly)
 	PricePerUnit string `json:"price_per_unit" api:"required"`
-	// Total price for the reservation period
+	// Total price for the reservation period for the full reserved amount. A
+	// reservation with an hourly commit counts the real hours.
 	PriceTotal string `json:"price_total" api:"required"`
 	// Billing subscription ID for overcommit
 	SubscriptionID int64 `json:"subscription_id" api:"required"`
@@ -128,11 +133,13 @@ type BillingReservationCommit struct {
 	ActiveFrom time.Time `json:"active_from" api:"required" format:"date-time"`
 	// Billing subscription active to date
 	ActiveTo time.Time `json:"active_to" api:"required" format:"date-time"`
-	// Price per month, per one resource
+	// Price per month, per one resource: the price per unit multiplied by
+	// `unit_size_month`
 	PricePerMonth string `json:"price_per_month" api:"required"`
 	// Price per unit, per one resource (hourly)
 	PricePerUnit string `json:"price_per_unit" api:"required"`
-	// Total price for the reservation period for the full reserved amount
+	// Total price for the reservation period for the full reserved amount. A
+	// reservation with an hourly commit counts the real hours.
 	PriceTotal string `json:"price_total" api:"required"`
 	// Billing subscription ID for commit
 	SubscriptionID int64 `json:"subscription_id" api:"required"`

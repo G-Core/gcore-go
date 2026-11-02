@@ -2888,6 +2888,7 @@ func init() {
 	)
 }
 
+// Represents a single tag filtering condition.
 type CostReportGetAggregatedMonthlyParamsTagsCondition struct {
 	// The name of the tag to filter (e.g., 'os_version').
 	Key param.Opt[string] `json:"key,omitzero"`
@@ -2999,6 +3000,7 @@ func init() {
 	)
 }
 
+// Represents a single tag filtering condition.
 type CostReportGetBreakdownParamsTagsCondition struct {
 	// The name of the tag to filter (e.g., 'os_version').
 	Key param.Opt[string] `json:"key,omitzero"`
@@ -3112,6 +3114,7 @@ func init() {
 	)
 }
 
+// Represents a single tag filtering condition.
 type CostReportGetDetailedParamsTagsCondition struct {
 	// The name of the tag to filter (e.g., 'os_version').
 	Key param.Opt[string] `json:"key,omitzero"`

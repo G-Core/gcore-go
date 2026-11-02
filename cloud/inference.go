@@ -5,11 +5,14 @@ package cloud
 import (
 	"context"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
+	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
@@ -53,10 +56,10 @@ func NewInferenceService(opts ...option.RequestOption) (r InferenceService) {
 }
 
 // Get inference capacity by region
-func (r *InferenceService) GetCapacityByRegion(ctx context.Context, opts ...option.RequestOption) (res *InferenceRegionCapacityList, err error) {
+func (r *InferenceService) GetCapacityByRegion(ctx context.Context, query InferenceGetCapacityByRegionParams, opts ...option.RequestOption) (res *InferenceRegionCapacityList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "cloud/v3/inference/capacity"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
 
@@ -118,4 +121,22 @@ type InferenceRegionCapacityList struct {
 func (r InferenceRegionCapacityList) RawJSON() string { return r.JSON.raw }
 func (r *InferenceRegionCapacityList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type InferenceGetCapacityByRegionParams struct {
+	// Optional. Limit the number of returned items
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Optional. Offset value is used to exclude the first set of records from the
+	// result
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [InferenceGetCapacityByRegionParams]'s query parameters as
+// `url.Values`.
+func (r InferenceGetCapacityByRegionParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
 }
