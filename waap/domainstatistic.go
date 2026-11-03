@@ -63,7 +63,9 @@ func (r *DomainStatisticService) GetDDOSAttacksAutoPaging(ctx context.Context, d
 	return pagination.NewOffsetPageAutoPager(r.GetDDOSAttacks(ctx, domainID, query, opts...))
 }
 
-// Returns the top DDoS counts grouped by URL, User-Agent or IP
+// Returns the top DDoS counts grouped by URL, User-Agent, IP, COUNTRY or JA4.
+// Requests without a country or a JA4 fingerprint are excluded from those
+// groupings. Countries are ISO 3166-1 alpha-2 codes
 func (r *DomainStatisticService) GetDDOSInfo(ctx context.Context, domainID int64, query DomainStatisticGetDDOSInfoParams, opts ...option.RequestOption) (res *pagination.OffsetPage[WaapDDOSInfo], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -81,7 +83,9 @@ func (r *DomainStatisticService) GetDDOSInfo(ctx context.Context, domainID int64
 	return res, nil
 }
 
-// Returns the top DDoS counts grouped by URL, User-Agent or IP
+// Returns the top DDoS counts grouped by URL, User-Agent, IP, COUNTRY or JA4.
+// Requests without a country or a JA4 fingerprint are excluded from those
+// groupings. Countries are ISO 3166-1 alpha-2 codes
 func (r *DomainStatisticService) GetDDOSInfoAutoPaging(ctx context.Context, domainID int64, query DomainStatisticGetDDOSInfoParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[WaapDDOSInfo] {
 	return pagination.NewOffsetPageAutoPager(r.GetDDOSInfo(ctx, domainID, query, opts...))
 }
@@ -489,7 +493,7 @@ type WaapDDOSInfo struct {
 	Count int64 `json:"count" api:"required"`
 	// The value for the grouped by type
 	Identity string `json:"identity" api:"required"`
-	// Any of "URL", "IP", "User-Agent".
+	// Any of "URL", "User-Agent", "IP", "COUNTRY", "JA4".
 	Type WaapDDOSInfoType `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -511,8 +515,10 @@ type WaapDDOSInfoType string
 
 const (
 	WaapDDOSInfoTypeURL       WaapDDOSInfoType = "URL"
-	WaapDDOSInfoTypeIP        WaapDDOSInfoType = "IP"
 	WaapDDOSInfoTypeUserAgent WaapDDOSInfoType = "User-Agent"
+	WaapDDOSInfoTypeIP        WaapDDOSInfoType = "IP"
+	WaapDDOSInfoTypeCountry   WaapDDOSInfoType = "COUNTRY"
+	WaapDDOSInfoTypeJa4       WaapDDOSInfoType = "JA4"
 )
 
 // A collection of event metrics over a time span
@@ -953,7 +959,7 @@ const (
 type DomainStatisticGetDDOSInfoParams struct {
 	// The identity of the requests to group by
 	//
-	// Any of "URL", "User-Agent", "IP".
+	// Any of "URL", "User-Agent", "IP", "COUNTRY", "JA4".
 	GroupBy DomainStatisticGetDDOSInfoParamsGroupBy `query:"group_by,omitzero" api:"required" json:"-"`
 	// Filter data items starting from a specified date in ISO 8601 format
 	Start string `query:"start" api:"required" json:"-"`
@@ -983,6 +989,8 @@ const (
 	DomainStatisticGetDDOSInfoParamsGroupByURL       DomainStatisticGetDDOSInfoParamsGroupBy = "URL"
 	DomainStatisticGetDDOSInfoParamsGroupByUserAgent DomainStatisticGetDDOSInfoParamsGroupBy = "User-Agent"
 	DomainStatisticGetDDOSInfoParamsGroupByIP        DomainStatisticGetDDOSInfoParamsGroupBy = "IP"
+	DomainStatisticGetDDOSInfoParamsGroupByCountry   DomainStatisticGetDDOSInfoParamsGroupBy = "COUNTRY"
+	DomainStatisticGetDDOSInfoParamsGroupByJa4       DomainStatisticGetDDOSInfoParamsGroupBy = "JA4"
 )
 
 type DomainStatisticGetEventsAggregatedParams struct {

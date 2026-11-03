@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"slices"
+	"time"
 
 	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
@@ -36,6 +37,39 @@ func NewAnalyticsService(opts ...option.RequestOption) (r AnalyticsService) {
 	r = AnalyticsService{}
 	r.Options = opts
 	return
+}
+
+// Retrieves security events with the same filters, ordering and cursor pagination
+// as [Get security events (V2)](#operation/`get_events_v2_analytics_events_get`).
+// Each event carries its request details: everything
+// [Get request details](/docs/api-reference/waap/analytics/get-request-details)
+// returns, except the request headers. A page holds up to 1000 events. Requires
+// the `analytics_requests` permission.
+func (r *AnalyticsService) GetDetailedEvents(ctx context.Context, query AnalyticsGetDetailedEventsParams, opts ...option.RequestOption) (res *pagination.CursorPageWaap[WaapDetailedEvent], err error) {
+	var raw *http.Response
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	path := "waap/v1/analytics/detailed_events"
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieves security events with the same filters, ordering and cursor pagination
+// as [Get security events (V2)](#operation/`get_events_v2_analytics_events_get`).
+// Each event carries its request details: everything
+// [Get request details](/docs/api-reference/waap/analytics/get-request-details)
+// returns, except the request headers. A page holds up to 1000 events. Requires
+// the `analytics_requests` permission.
+func (r *AnalyticsService) GetDetailedEventsAutoPaging(ctx context.Context, query AnalyticsGetDetailedEventsParams, opts ...option.RequestOption) *pagination.CursorPageWaapAutoPager[WaapDetailedEvent] {
+	return pagination.NewCursorPageWaapAutoPager(r.GetDetailedEvents(ctx, query, opts...))
 }
 
 // Retrieves event statistics per given dimension of a request characteristics. A
@@ -189,6 +223,385 @@ type WaapCompactTrafficMetrics struct {
 // Returns the unmodified JSON received from the API
 func (r WaapCompactTrafficMetrics) RawJSON() string { return r.JSON.raw }
 func (r *WaapCompactTrafficMetrics) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A security event with its request details, without the request headers.
+type WaapDetailedEvent struct {
+	// Request ID
+	ID string `json:"id" api:"required"`
+	// Request action
+	Action string `json:"action" api:"required"`
+	// List of common tags
+	CommonTags []WaapDetailedEventCommonTag `json:"common_tags" api:"required"`
+	// Content type of request
+	ContentType string `json:"content_type" api:"required"`
+	// Domain name
+	Domain string `json:"domain" api:"required"`
+	// Domain ID
+	DomainID int64 `json:"domain_id" api:"required"`
+	// Status code for http request
+	HTTPStatusCode int64 `json:"http_status_code" api:"required"`
+	// HTTP version of request
+	HTTPVersion string `json:"http_version" api:"required"`
+	// ID of challenge that was generated
+	IncidentID string `json:"incident_id" api:"required"`
+	// Request method
+	Method string `json:"method" api:"required"`
+	// Network details
+	Network WaapDetailedEventNetwork `json:"network" api:"required"`
+	// Request path
+	Path string `json:"path" api:"required"`
+	// List of shield tags
+	PatternMatchedTags []WaapDetailedEventPatternMatchedTag `json:"pattern_matched_tags" api:"required"`
+	// The query string of the request
+	QueryString string `json:"query_string" api:"required"`
+	// Reference ID to identify user sanction
+	ReferenceID string `json:"reference_id" api:"required"`
+	// The time of the request
+	RequestTime time.Time `json:"request_time" api:"required" format:"date-time"`
+	// The type of the request that generated an event
+	RequestType string `json:"request_type" api:"required"`
+	// The real domain name
+	RequestedDomain string `json:"requested_domain" api:"required"`
+	// Time took to process all request
+	ResponseTime string `json:"response_time" api:"required"`
+	// The result of a request
+	//
+	// Any of "passed", "blocked", "suppressed", "".
+	Result WaapDetailedEventResult `json:"result" api:"required"`
+	// ID of the triggered rule
+	RuleID string `json:"rule_id" api:"required"`
+	// Name of the triggered rule
+	RuleName string `json:"rule_name" api:"required"`
+	// The URI scheme of the request that generated an event
+	Scheme string `json:"scheme" api:"required"`
+	// The session ID associated with the request.
+	SessionID string `json:"session_id" api:"required"`
+	// The number requests in session
+	SessionRequestCount string `json:"session_request_count" api:"required"`
+	// List of traffic types
+	TrafficTypes []string `json:"traffic_types" api:"required"`
+	// User agent
+	UserAgent WaapDetailedEventUserAgent `json:"user_agent" api:"required"`
+	// The decision made for processing the request through the WAAP.
+	//
+	// Any of "passed", "allowed", "monitored", "blocked", "".
+	Decision WaapDetailedEventDecision `json:"decision"`
+	// Rules that matched the request and triggered the event decision.
+	Detector []WaapDetailedEventDetector `json:"detector"`
+	// JA3 TLS client fingerprint as a 32-character lowercase hexadecimal MD5 hash, or
+	// an empty string when the record has no JA3 value.
+	Ja3 string `json:"ja3"`
+	// JA4 TLS client fingerprint in the form `<ja4_a>_<ja4_b>_<ja4_c>` (a 10-character
+	// prefix and two 12-character lowercase hexadecimal hashes), or an empty string
+	// when the record has no JA4 value.
+	Ja4 string `json:"ja4"`
+	// An optional action that may be applied in addition to the primary decision.
+	//
+	// Any of "captcha", "challenge", "".
+	OptionalAction WaapDetailedEventOptionalAction `json:"optional_action"`
+	// Applied overrides with id, t, and matched metadata keyed by target ID. Does not
+	// replace the final decision.
+	PolicyOverride []WaapDetailedEventPolicyOverride `json:"policy_override"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                  respjson.Field
+		Action              respjson.Field
+		CommonTags          respjson.Field
+		ContentType         respjson.Field
+		Domain              respjson.Field
+		DomainID            respjson.Field
+		HTTPStatusCode      respjson.Field
+		HTTPVersion         respjson.Field
+		IncidentID          respjson.Field
+		Method              respjson.Field
+		Network             respjson.Field
+		Path                respjson.Field
+		PatternMatchedTags  respjson.Field
+		QueryString         respjson.Field
+		ReferenceID         respjson.Field
+		RequestTime         respjson.Field
+		RequestType         respjson.Field
+		RequestedDomain     respjson.Field
+		ResponseTime        respjson.Field
+		Result              respjson.Field
+		RuleID              respjson.Field
+		RuleName            respjson.Field
+		Scheme              respjson.Field
+		SessionID           respjson.Field
+		SessionRequestCount respjson.Field
+		TrafficTypes        respjson.Field
+		UserAgent           respjson.Field
+		Decision            respjson.Field
+		Detector            respjson.Field
+		Ja3                 respjson.Field
+		Ja4                 respjson.Field
+		OptionalAction      respjson.Field
+		PolicyOverride      respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapDetailedEvent) RawJSON() string { return r.JSON.raw }
+func (r *WaapDetailedEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Common tag details
+type WaapDetailedEventCommonTag struct {
+	// Tag description information
+	Description string `json:"description" api:"required"`
+	// The tag's display name
+	DisplayName string `json:"display_name" api:"required"`
+	// Tag name
+	Tag string `json:"tag" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Description respjson.Field
+		DisplayName respjson.Field
+		Tag         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapDetailedEventCommonTag) RawJSON() string { return r.JSON.raw }
+func (r *WaapDetailedEventCommonTag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Network details
+type WaapDetailedEventNetwork struct {
+	// Client IP
+	ClientIP string `json:"client_ip" api:"required"`
+	// Country code
+	Country string `json:"country" api:"required"`
+	// Organization details
+	Organization WaapDetailedEventNetworkOrganization `json:"organization" api:"required"`
+	// Autonomous System Number, or an empty string when unknown
+	Asn string `json:"asn"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ClientIP     respjson.Field
+		Country      respjson.Field
+		Organization respjson.Field
+		Asn          respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapDetailedEventNetwork) RawJSON() string { return r.JSON.raw }
+func (r *WaapDetailedEventNetwork) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Organization details
+type WaapDetailedEventNetworkOrganization struct {
+	// Organization name
+	Name string `json:"name" api:"required"`
+	// Network range
+	Subnet string `json:"subnet" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Subnet      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapDetailedEventNetworkOrganization) RawJSON() string { return r.JSON.raw }
+func (r *WaapDetailedEventNetworkOrganization) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Pattern matched tag details
+type WaapDetailedEventPatternMatchedTag struct {
+	// Tag description information
+	Description string `json:"description" api:"required"`
+	// The tag's display name
+	DisplayName string `json:"display_name" api:"required"`
+	// The phase in which the tag was triggered: access -> Request, `header_filter` ->
+	// `response_header`, `body_filter` -> `response_body`
+	ExecutionPhase string `json:"execution_phase" api:"required"`
+	// The entity to which the variable that triggered the tag belong to. For example:
+	// `request_headers`, uri, cookies etc.
+	Field string `json:"field" api:"required"`
+	// The name of the variable which holds the value that triggered the tag
+	FieldName string `json:"field_name" api:"required"`
+	// The name of the detected regexp pattern
+	PatternName string `json:"pattern_name" api:"required"`
+	// The pattern which triggered the tag
+	PatternValue string `json:"pattern_value" api:"required"`
+	// Tag name
+	Tag string `json:"tag" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Description    respjson.Field
+		DisplayName    respjson.Field
+		ExecutionPhase respjson.Field
+		Field          respjson.Field
+		FieldName      respjson.Field
+		PatternName    respjson.Field
+		PatternValue   respjson.Field
+		Tag            respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapDetailedEventPatternMatchedTag) RawJSON() string { return r.JSON.raw }
+func (r *WaapDetailedEventPatternMatchedTag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The result of a request
+type WaapDetailedEventResult string
+
+const (
+	WaapDetailedEventResultPassed     WaapDetailedEventResult = "passed"
+	WaapDetailedEventResultBlocked    WaapDetailedEventResult = "blocked"
+	WaapDetailedEventResultSuppressed WaapDetailedEventResult = "suppressed"
+	WaapDetailedEventResultEmpty      WaapDetailedEventResult = ""
+)
+
+// User agent
+type WaapDetailedEventUserAgent struct {
+	// User agent browser
+	BaseBrowser string `json:"base_browser" api:"required"`
+	// User agent browser version
+	BaseBrowserVersion string `json:"base_browser_version" api:"required"`
+	// Client from User agent header
+	Client string `json:"client" api:"required"`
+	// User agent client type
+	ClientType string `json:"client_type" api:"required"`
+	// User agent client version
+	ClientVersion string `json:"client_version" api:"required"`
+	// User agent cpu
+	CPU string `json:"cpu" api:"required"`
+	// User agent device
+	Device string `json:"device" api:"required"`
+	// User agent device type
+	DeviceType string `json:"device_type" api:"required"`
+	// User agent
+	FullString string `json:"full_string" api:"required"`
+	// User agent os
+	Os string `json:"os" api:"required"`
+	// User agent engine
+	RenderingEngine string `json:"rendering_engine" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BaseBrowser        respjson.Field
+		BaseBrowserVersion respjson.Field
+		Client             respjson.Field
+		ClientType         respjson.Field
+		ClientVersion      respjson.Field
+		CPU                respjson.Field
+		Device             respjson.Field
+		DeviceType         respjson.Field
+		FullString         respjson.Field
+		Os                 respjson.Field
+		RenderingEngine    respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapDetailedEventUserAgent) RawJSON() string { return r.JSON.raw }
+func (r *WaapDetailedEventUserAgent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The decision made for processing the request through the WAAP.
+type WaapDetailedEventDecision string
+
+const (
+	WaapDetailedEventDecisionPassed    WaapDetailedEventDecision = "passed"
+	WaapDetailedEventDecisionAllowed   WaapDetailedEventDecision = "allowed"
+	WaapDetailedEventDecisionMonitored WaapDetailedEventDecision = "monitored"
+	WaapDetailedEventDecisionBlocked   WaapDetailedEventDecision = "blocked"
+	WaapDetailedEventDecisionEmpty     WaapDetailedEventDecision = ""
+)
+
+// A rule that matched the request, with the matched subject and content.
+type WaapDetailedEventDetector struct {
+	// The content that matched the rule
+	MatchedContent string `json:"matched_content" api:"required"`
+	// ID of the rule that matched
+	RuleID string `json:"rule_id" api:"required"`
+	// Name of the rule that matched
+	RuleName string `json:"rule_name" api:"required"`
+	// The name of the variable whose value triggered the rule
+	SubjectField string `json:"subject_field" api:"required"`
+	// The entity to which the matched variable belongs (e.g. `request_headers`, uri,
+	// cookies)
+	SubjectType string `json:"subject_type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		MatchedContent respjson.Field
+		RuleID         respjson.Field
+		RuleName       respjson.Field
+		SubjectField   respjson.Field
+		SubjectType    respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapDetailedEventDetector) RawJSON() string { return r.JSON.raw }
+func (r *WaapDetailedEventDetector) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// An optional action that may be applied in addition to the primary decision.
+type WaapDetailedEventOptionalAction string
+
+const (
+	WaapDetailedEventOptionalActionCaptcha   WaapDetailedEventOptionalAction = "captcha"
+	WaapDetailedEventOptionalActionChallenge WaapDetailedEventOptionalAction = "challenge"
+	WaapDetailedEventOptionalActionEmpty     WaapDetailedEventOptionalAction = ""
+)
+
+// An override that applied to a request, with its match metadata.
+type WaapDetailedEventPolicyOverride struct {
+	// ID of the policy override applied to this request.
+	ID int64 `json:"id" api:"required"`
+	// Match evidence keyed by target reference: a detector ID such as 'ID861', or a
+	// rule ID such as '94'. A detector entry holds 'field' and 'pattern_found'. A rule
+	// entry holds the rule's metadata, such as 'action' and 'rule_name', and for a
+	// rule based on a detector result also that match's 'field' and 'pattern_found'.
+	// 'pattern_found' is empty when the matched content is hidden. For legacy records,
+	// evidence is retained only for the first matched target; subsequent matched
+	// targets have empty objects.
+	Matched map[string]any `json:"matched" api:"required"`
+	// Type of target affected by the override: 'waf_rule' for a detector or
+	// 'static_rule_template' for a rule.
+	//
+	// Any of "waf_rule", "static_rule_template".
+	T string `json:"t" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Matched     respjson.Field
+		T           respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WaapDetailedEventPolicyOverride) RawJSON() string { return r.JSON.raw }
+func (r *WaapDetailedEventPolicyOverride) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -462,6 +875,171 @@ func (r WaapSimpleEventStatisticsReferenceDomainReference) RawJSON() string { re
 func (r *WaapSimpleEventStatisticsReferenceDomainReference) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type AnalyticsGetDetailedEventsParams struct {
+	// Filter data items starting from a specified date in ISO 8601 format
+	Start string `query:"start" api:"required" json:"-"`
+	// Filter data items up to a specified end date in ISO 8601 format. If not
+	// provided, defaults to the current date and time.
+	End param.Opt[string] `query:"end,omitzero" json:"-"`
+	// True selects events with applied overrides; false excludes them. Omit to include
+	// both.
+	HasPolicyOverride param.Opt[bool] `query:"has_policy_override,omitzero" json:"-"`
+	// Cursor value to fetch next page of events log.
+	Next param.Opt[string] `query:"next,omitzero" json:"-"`
+	// Number of items to return
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Filter data by the ASN (Autonomous System Number) of the originating IP address.
+	// Not supported by `/v1/analytics/requests`.
+	Asns []int64 `query:"asns,omitzero" json:"-"`
+	// Filter data by a country code of the originating IP address in ISO 3166-1
+	// alpha-2 format.
+	Countries []string `query:"countries,omitzero" json:"-"`
+	// Filter data by decision.
+	//
+	// Any of "blocked", "monitored", "allowed", "passed".
+	Decision []string `query:"decision,omitzero" json:"-"`
+	// List of domain IDs. Empty list means all domains belonging to the current
+	// account.
+	Domains []int64 `query:"domains,omitzero" json:"-"`
+	// Exclude data by the ASN (Autonomous System Number) of the originating IP
+	// address. Not supported by `/v1/analytics/requests`.
+	ExcludeAsns []int64 `query:"exclude_asns,omitzero" json:"-"`
+	// Exclude data by a country code of the originating IP address in ISO 3166-1
+	// alpha-2 format.
+	ExcludeCountries []string `query:"exclude_countries,omitzero" json:"-"`
+	// Exclude entries that match any of the given decisions.
+	//
+	// Any of "blocked", "monitored", "allowed", "passed".
+	ExcludeDecision []string `query:"exclude_decision,omitzero" json:"-"`
+	// Exclude data by domain ID.
+	ExcludeDomains []int64 `query:"exclude_domains,omitzero" json:"-"`
+	// Exclude entries with any of the given HTTP methods.
+	//
+	// Any of "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT", "TRACE".
+	ExcludeHTTPMethods []string `query:"exclude_http_methods,omitzero" json:"-"`
+	// Exclude traffic data by client IP.
+	ExcludeIPs []string `query:"exclude_ips,omitzero" format:"ipvanyaddress" json:"-"`
+	// Exclude entries whose JA3 TLS client fingerprint matches any of the supplied
+	// values. Each value must be exactly 32 hexadecimal characters, mixed case
+	// allowed, normalized to lowercase. Supply multiple values to exclude any of them.
+	// Omit the parameter to apply no JA3 exclusion.
+	ExcludeJa3 []string `query:"exclude_ja3,omitzero" json:"-"`
+	// Exclude entries whose JA4 TLS client fingerprint equals any of the supplied
+	// values. An item must match the JA4 form `<ja4_a>_<ja4_b>_<ja4_c>` (a
+	// 10-character prefix and two 12-character hexadecimal hashes, mixed case allowed,
+	// normalized to lowercase). Omit the parameter to apply no JA4 exclusion.
+	ExcludeJa4 []string `query:"exclude_ja4,omitzero" json:"-"`
+	// Exclude entries that match any of the given optional action values.
+	//
+	// Any of "captcha", "challenge".
+	ExcludeOptionalAction []string `query:"exclude_optional_action,omitzero" json:"-"`
+	// Exclude entries whose organization exactly equals any supplied value. Omit or
+	// provide an empty list to apply no organization exclusion.
+	ExcludeOrganizations []string `query:"exclude_organizations,omitzero" json:"-"`
+	// Exclude entries that match the given URL path pattern; '\*' is wildcard.
+	ExcludePath []string `query:"exclude_path,omitzero" json:"-"`
+	// Exclude data by reference IDs.
+	ExcludeReferenceIDs []string `query:"exclude_reference_ids,omitzero" json:"-"`
+	// Exclude data by request IDs.
+	ExcludeRequestIDs []string `query:"exclude_request_ids,omitzero" json:"-"`
+	// Exclude data by name of a security rule matched the request.
+	ExcludeSecurityRuleNames []string `query:"exclude_security_rule_names,omitzero" json:"-"`
+	// Exclude data by session IDs.
+	ExcludeSessionIDs []string `query:"exclude_session_ids,omitzero" json:"-"`
+	// Exclude entries with any of the given HTTP response status codes.
+	ExcludeStatusCodes []int64 `query:"exclude_status_codes,omitzero" json:"-"`
+	// Exclude entries whose tag exactly equals any supplied value. Omit or provide an
+	// empty list to apply no tag exclusion.
+	ExcludeTags []string `query:"exclude_tags,omitzero" json:"-"`
+	// Exclude entries whose user agent contains any of the supplied texts,
+	// case-insensitive partial match. Omit or provide an empty list to apply no user
+	// agent text exclusion.
+	ExcludeUserAgent []string `query:"exclude_user_agent,omitzero" json:"-"`
+	// Exclude entries whose parsed user agent client exactly equals any supplied
+	// value. Omit or provide an empty list to apply no user agent client exclusion.
+	ExcludeUserAgentClients []string `query:"exclude_user_agent_clients,omitzero" json:"-"`
+	// Exclude entries whose parsed user agent device exactly equals any supplied
+	// value. Omit or provide an empty list to apply no user agent device exclusion.
+	ExcludeUserAgentDevices []string `query:"exclude_user_agent_devices,omitzero" json:"-"`
+	// Filter by HTTP methods
+	//
+	// Any of "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT", "TRACE".
+	HTTPMethods []string `query:"http_methods,omitzero" json:"-"`
+	// Filter traffic data by client IP.
+	IPs []string `query:"ips,omitzero" format:"ipvanyaddress" json:"-"`
+	// Filter by JA3 TLS client fingerprint. Each value must be exactly 32 hexadecimal
+	// characters, mixed case allowed, normalized to lowercase. Supply multiple values
+	// to match any of them. Omit the parameter to apply no JA3 filter.
+	Ja3 []string `query:"ja3,omitzero" json:"-"`
+	// Filter by JA4 TLS client fingerprint. When present, the value must match the JA4
+	// form `<ja4_a>_<ja4_b>_<ja4_c>` (a 10-character prefix and two 12-character
+	// hexadecimal hashes, mixed case allowed, normalized to lowercase). Supply
+	// multiple values to match any of them. Omit the parameter entirely to apply no
+	// JA4 filter.
+	Ja4 []string `query:"ja4,omitzero" json:"-"`
+	// Filter data by optional action.
+	//
+	// Any of "captcha", "challenge".
+	OptionalAction []string `query:"optional_action,omitzero" json:"-"`
+	// Result sorting order.
+	//
+	// Any of "request_time.asc", "request_time.desc".
+	OrderBy AnalyticsGetDetailedEventsParamsOrderBy `query:"order_by,omitzero" json:"-"`
+	// Include entries whose organization exactly equals any supplied value. Omit or
+	// provide an empty list to apply no organization filter.
+	Organizations []string `query:"organizations,omitzero" json:"-"`
+	// Filter by URL path. '\*' is wildcard.
+	Path []string `query:"path,omitzero" json:"-"`
+	// Filter data by reference IDs.
+	ReferenceIDs []string `query:"reference_ids,omitzero" json:"-"`
+	// Filter data by request IDs.
+	RequestIDs []string `query:"request_ids,omitzero" json:"-"`
+	// Filter data by name of a security rule matched the request.
+	SecurityRuleNames []string `query:"security_rule_names,omitzero" json:"-"`
+	// Filter data by session IDs.
+	SessionIDs []string `query:"session_ids,omitzero" json:"-"`
+	// Filter data by HTTP response status code.
+	StatusCodes []int64 `query:"status_codes,omitzero" json:"-"`
+	// Include entries whose tag exactly equals any supplied value. Omit or provide an
+	// empty list to apply no tag filter.
+	Tags []string `query:"tags,omitzero" json:"-"`
+	// Include entries that have any of the given traffic types.
+	//
+	// Any of "policy_allowed", "policy_blocked", "custom_rule_allowed",
+	// "custom_blocked", "legit_requests", "sanctioned", "dynamic", "api", "static",
+	// "ajax", "redirects", "monitor", "err_40x", "err_50x", "passed_to_origin",
+	// "timeout", "other", "ddos", "legit", "monitored".
+	TrafficTypes []string `query:"traffic_types,omitzero" json:"-"`
+	// Include entries whose user agent contains any of the supplied texts,
+	// case-insensitive partial match. Omit or provide an empty list to apply no user
+	// agent text filter.
+	UserAgent []string `query:"user_agent,omitzero" json:"-"`
+	// Include entries whose parsed user agent client exactly equals any supplied
+	// value. Omit or provide an empty list to apply no user agent client filter.
+	UserAgentClients []string `query:"user_agent_clients,omitzero" json:"-"`
+	// Include entries whose parsed user agent device exactly equals any supplied
+	// value. Omit or provide an empty list to apply no user agent device filter.
+	UserAgentDevices []string `query:"user_agent_devices,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [AnalyticsGetDetailedEventsParams]'s query parameters as
+// `url.Values`.
+func (r AnalyticsGetDetailedEventsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatDots,
+	})
+}
+
+// Result sorting order.
+type AnalyticsGetDetailedEventsParamsOrderBy string
+
+const (
+	AnalyticsGetDetailedEventsParamsOrderByRequestTimeAsc  AnalyticsGetDetailedEventsParamsOrderBy = "request_time.asc"
+	AnalyticsGetDetailedEventsParamsOrderByRequestTimeDesc AnalyticsGetDetailedEventsParamsOrderBy = "request_time.desc"
+)
 
 type AnalyticsGetEventStatisticsParams struct {
 	// Filter data items starting from a specified date in ISO 8601 format
