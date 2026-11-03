@@ -1,5 +1,43 @@
 # Changelog
 
+## [0.61.0](https://github.com/G-Core/gcore-go/compare/v0.60.0...v0.61.0) (2026-11-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* **cloud:** add file share quotas and paginate inference templates
+* **cdn:** return the created SSL certificate and type validity dates
+* **terraform:** remove inline rules from the security group resource
+* **cloud:** remove healthmonitor from gcore_cloud_load_balancer_pool
+
+### Features
+
+* **cdn:** return the created SSL certificate and type validity dates ([2235987](https://github.com/G-Core/gcore-go/commit/22359873afce8f20ee472863879f40365d89c4a7))
+* **cloud:** add file share quotas and paginate inference templates ([44d290a](https://github.com/G-Core/gcore-go/commit/44d290a5e82e8b094e6e4d8a4c60074fd61fb971))
+* **cloud:** add volume types list ([d68696e](https://github.com/G-Core/gcore-go/commit/d68696eab3ee264cca343d7b750bec90f39ed642))
+* **cloud:** add volume types list to the volume examples ([e14a7b4](https://github.com/G-Core/gcore-go/commit/e14a7b4ff5b9e383a02c67b957e6baebace7fa33))
+* **cloud:** point GPU bare metal cluster server rebuild to v4 ([7b47a3b](https://github.com/G-Core/gcore-go/commit/7b47a3b48eb9605b26d626a3815d2820dae2bcfc))
+* **cloud:** remove healthmonitor from gcore_cloud_load_balancer_pool ([3ccd5ca](https://github.com/G-Core/gcore-go/commit/3ccd5ca9540bb758369876594f81adaa10173d97))
+* **streaming:** add hls_mpegts_cc_tag to streams ([a4b9a41](https://github.com/G-Core/gcore-go/commit/a4b9a41db15512962b79e909da842ec49bbe32c0))
+* **waap:** add traffic_types filter to analytics endpoints ([fa5299e](https://github.com/G-Core/gcore-go/commit/fa5299ef3beed866cabdc585f9a6a3762e94119b))
+
+
+### Bug Fixes
+
+* **cloud:** update cloud examples for regenerated types ([a98d0fd](https://github.com/G-Core/gcore-go/commit/a98d0fd6d402cb24ad19f86767710d05fddedcac))
+* **terraform:** remove inline rules from the security group resource ([ac3f95f](https://github.com/G-Core/gcore-go/commit/ac3f95fc9ab6c55f15c569d003a40cb79d386b76))
+
+
+### Chores
+
+* **cdn:** update cdn OpenAPI spec ([753f11a](https://github.com/G-Core/gcore-go/commit/753f11adb51f4b045d96f9cd7b0da1589ea26a16))
+* **iam:** update iam OpenAPI spec ([8a75d86](https://github.com/G-Core/gcore-go/commit/8a75d86848e44c055c1c35299e1b1382be2fcbf5))
+
+
+### Documentation
+
+* describe GitHub App authentication ([51af421](https://github.com/G-Core/gcore-go/commit/51af421b9021e482992dd9b20e1c8ea0e52b45b3))
+
 ## [0.60.0](https://github.com/G-Core/gcore-go/compare/v0.59.0...v0.60.0) (2026-10-27)
 
 
