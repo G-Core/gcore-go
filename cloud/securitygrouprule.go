@@ -39,6 +39,10 @@ func NewSecurityGroupRuleService(opts ...option.RequestOption) (r SecurityGroupR
 
 // Add a new rule to an existing security group. Returns a task ID for tracking the
 // asynchronous operation.
+//
+// In a security group of a Kubernetes cluster, the description `system` marks the
+// rules that the cluster manages. A request that adds a rule with this description
+// gets 400.
 func (r *SecurityGroupRuleService) New(ctx context.Context, groupID string, params SecurityGroupRuleNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -66,6 +70,10 @@ func (r *SecurityGroupRuleService) New(ctx context.Context, groupID string, para
 
 // Delete a specific rule from a security group. Returns a task ID for tracking the
 // asynchronous operation.
+//
+// A security group of a Kubernetes cluster can have system rules with the
+// description `system`. The cluster manages these rules. A request to delete one
+// gets 403.
 func (r *SecurityGroupRuleService) Delete(ctx context.Context, ruleID string, body SecurityGroupRuleDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
