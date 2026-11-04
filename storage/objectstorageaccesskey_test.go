@@ -7,6 +7,7 @@ import (
 	"errors"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/G-Core/gcore-go"
 	"github.com/G-Core/gcore-go/internal/testutil"
@@ -30,7 +31,9 @@ func TestObjectStorageAccessKeyNewWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		0,
 		storage.ObjectStorageAccessKeyNewParams{
-			ReadOnly: gcore.Bool(false),
+			ExpiresAt:      gcore.Time(time.Now()),
+			ReadOnly:       gcore.Bool(false),
+			AcceptLanguage: gcore.String("de-DE,de;q=0.9,en;q=0.8"),
 		},
 	)
 	if err != nil {
@@ -58,9 +61,10 @@ func TestObjectStorageAccessKeyListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		0,
 		storage.ObjectStorageAccessKeyListParams{
-			Limit:   gcore.Int(1),
-			Offset:  gcore.Int(0),
-			OrderBy: gcore.String("order_by"),
+			Limit:          gcore.Int(1),
+			Offset:         gcore.Int(0),
+			OrderBy:        gcore.String("order_by"),
+			AcceptLanguage: gcore.String("de-DE,de;q=0.9,en;q=0.8"),
 		},
 	)
 	if err != nil {
@@ -72,7 +76,7 @@ func TestObjectStorageAccessKeyListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestObjectStorageAccessKeyDelete(t *testing.T) {
+func TestObjectStorageAccessKeyDeleteWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -88,7 +92,8 @@ func TestObjectStorageAccessKeyDelete(t *testing.T) {
 		context.TODO(),
 		"access_key",
 		storage.ObjectStorageAccessKeyDeleteParams{
-			StorageID: 0,
+			StorageID:      0,
+			AcceptLanguage: gcore.String("de-DE,de;q=0.9,en;q=0.8"),
 		},
 	)
 	if err != nil {
@@ -100,7 +105,7 @@ func TestObjectStorageAccessKeyDelete(t *testing.T) {
 	}
 }
 
-func TestObjectStorageAccessKeyGet(t *testing.T) {
+func TestObjectStorageAccessKeyGetWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -116,7 +121,8 @@ func TestObjectStorageAccessKeyGet(t *testing.T) {
 		context.TODO(),
 		"access_key",
 		storage.ObjectStorageAccessKeyGetParams{
-			StorageID: 0,
+			StorageID:      0,
+			AcceptLanguage: gcore.String("de-DE,de;q=0.9,en;q=0.8"),
 		},
 	)
 	if err != nil {

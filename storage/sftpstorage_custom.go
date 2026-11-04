@@ -74,7 +74,7 @@ func (r *SftpStorageService) NewAndPoll(ctx context.Context, body SftpStorageNew
 	)
 
 	for {
-		s, err := r.Get(pollingCtx, created.ID, pollOpts...)
+		s, err := r.Get(pollingCtx, created.ID, SftpStorageGetParams{AcceptLanguage: body.AcceptLanguage}, pollOpts...)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get sftp storage status: %w", err)
 		}
@@ -156,7 +156,7 @@ func (r *SftpStorageService) UpdateAndPoll(ctx context.Context, storageID int64,
 	)
 
 	for {
-		s, err := r.Get(pollingCtx, storageID, pollOpts...)
+		s, err := r.Get(pollingCtx, storageID, SftpStorageGetParams{AcceptLanguage: body.AcceptLanguage}, pollOpts...)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get sftp storage status: %w", err)
 		}
@@ -194,8 +194,8 @@ func (r *SftpStorageService) UpdateAndPoll(ctx context.Context, storageID int64,
 // removed. Polling completes when Get returns 404 or the polled
 // provisioning_status reaches "deleted". Polling reuses the
 // polling_interval_seconds and polling_timeout_seconds client options.
-func (r *SftpStorageService) DeleteAndPoll(ctx context.Context, storageID int64, opts ...option.RequestOption) error {
-	if err := r.Delete(ctx, storageID, opts...); err != nil {
+func (r *SftpStorageService) DeleteAndPoll(ctx context.Context, storageID int64, body SftpStorageDeleteParams, opts ...option.RequestOption) error {
+	if err := r.Delete(ctx, storageID, body, opts...); err != nil {
 		return err
 	}
 
@@ -223,7 +223,7 @@ func (r *SftpStorageService) DeleteAndPoll(ctx context.Context, storageID int64,
 	)
 
 	for {
-		s, err := r.Get(pollingCtx, storageID, pollOpts...)
+		s, err := r.Get(pollingCtx, storageID, SftpStorageGetParams{AcceptLanguage: body.AcceptLanguage}, pollOpts...)
 		if err != nil {
 			var apiErr *Error
 			if errors.As(err, &apiErr) && apiErr.StatusCode == http.StatusNotFound {

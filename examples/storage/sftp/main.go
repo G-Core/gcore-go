@@ -68,7 +68,7 @@ func runSimple(ctx context.Context, client *gcore.Client) {
 
 	// --- Delete + poll ----------------------------------------------------
 	fmt.Println("\n=== DeleteAndPoll ===")
-	if err := client.Storage.SftpStorages.DeleteAndPoll(ctx, created.ID); err != nil {
+	if err := client.Storage.SftpStorages.DeleteAndPoll(ctx, created.ID, storage.SftpStorageDeleteParams{}); err != nil {
 		log.Fatalf("DeleteAndPoll failed: %v", err)
 	}
 	fmt.Printf("deleted: id=%d\n", created.ID)
@@ -129,7 +129,7 @@ func runTerraformStyle(ctx context.Context, client *gcore.Client) {
 
 	// --- Delete + poll (Terraform style) ----------------------------------
 	fmt.Println("\n=== DeleteAndPoll (Terraform-style options) ===")
-	if err := client.Storage.SftpStorages.DeleteAndPoll(ctx, created.ID); err != nil {
+	if err := client.Storage.SftpStorages.DeleteAndPoll(ctx, created.ID, storage.SftpStorageDeleteParams{}); err != nil {
 		log.Fatalf("DeleteAndPoll (tf) failed: %v", err)
 	}
 	fmt.Printf("deleted: id=%d\n", created.ID)

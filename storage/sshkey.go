@@ -43,20 +43,26 @@ func NewSSHKeyService(opts ...option.RequestOption) (r SSHKeyService) {
 
 // Creates an SSH public key for SFTP storage access. These keys are used for
 // passwordless authentication to SFTP storages.
-func (r *SSHKeyService) New(ctx context.Context, body SSHKeyNewParams, opts ...option.RequestOption) (res *SSHKey, err error) {
+func (r *SSHKeyService) New(ctx context.Context, params SSHKeyNewParams, opts ...option.RequestOption) (res *SSHKey, err error) {
+	if !param.IsOmitted(params.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", params.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "storage/v4/ssh_keys"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
 // Returns a paginated list of all SSH public keys for SFTP storage access.
-func (r *SSHKeyService) List(ctx context.Context, query SSHKeyListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[SSHKey], err error) {
+func (r *SSHKeyService) List(ctx context.Context, params SSHKeyListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[SSHKey], err error) {
 	var raw *http.Response
+	if !param.IsOmitted(params.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", params.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "storage/v4/ssh_keys"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -69,13 +75,16 @@ func (r *SSHKeyService) List(ctx context.Context, query SSHKeyListParams, opts .
 }
 
 // Returns a paginated list of all SSH public keys for SFTP storage access.
-func (r *SSHKeyService) ListAutoPaging(ctx context.Context, query SSHKeyListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[SSHKey] {
-	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
+func (r *SSHKeyService) ListAutoPaging(ctx context.Context, params SSHKeyListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[SSHKey] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
 // Removes an SSH public key. This will revoke SFTP access for any storages using
 // this key.
-func (r *SSHKeyService) Delete(ctx context.Context, sshKeyID int64, opts ...option.RequestOption) (err error) {
+func (r *SSHKeyService) Delete(ctx context.Context, sshKeyID int64, body SSHKeyDeleteParams, opts ...option.RequestOption) (err error) {
+	if !param.IsOmitted(body.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", body.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("storage/v4/ssh_keys/%v", sshKeyID)
@@ -84,7 +93,10 @@ func (r *SSHKeyService) Delete(ctx context.Context, sshKeyID int64, opts ...opti
 }
 
 // Retrieves a single SSH key by ID.
-func (r *SSHKeyService) Get(ctx context.Context, sshKeyID int64, opts ...option.RequestOption) (res *SSHKey, err error) {
+func (r *SSHKeyService) Get(ctx context.Context, sshKeyID int64, query SSHKeyGetParams, opts ...option.RequestOption) (res *SSHKey, err error) {
+	if !param.IsOmitted(query.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", query.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("storage/v4/ssh_keys/%v", sshKeyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -121,7 +133,8 @@ type SSHKeyNewParams struct {
 	// User-defined name for the SSH key
 	Name string `json:"name" api:"required"`
 	// The SSH public key content (ssh-rsa or ssh-ed25519 format)
-	PublicKey string `json:"public_key" api:"required"`
+	PublicKey      string            `json:"public_key" api:"required"`
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
 	paramObj
 }
 
@@ -139,8 +152,9 @@ type SSHKeyListParams struct {
 	// Filter by name (partial match)
 	Name param.Opt[string] `query:"name,omitzero" json:"-"`
 	// Number of items to skip
-	Offset  param.Opt[int64]  `query:"offset,omitzero" json:"-"`
-	OrderBy param.Opt[string] `query:"order_by,omitzero" json:"-"`
+	Offset         param.Opt[int64]  `query:"offset,omitzero" json:"-"`
+	OrderBy        param.Opt[string] `query:"order_by,omitzero" json:"-"`
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
 	paramObj
 }
 
@@ -150,4 +164,14 @@ func (r SSHKeyListParams) URLQuery() (v url.Values, err error) {
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatDots,
 	})
+}
+
+type SSHKeyDeleteParams struct {
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
+	paramObj
+}
+
+type SSHKeyGetParams struct {
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
+	paramObj
 }

@@ -27,10 +27,12 @@ func TestStatisticGetUsageAggregatedWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Storage.Statistics.GetUsageAggregated(context.TODO(), storage.StatisticGetUsageAggregatedParams{
-		From:      gcore.String("2006-01-02"),
-		Locations: []string{"s-region-1", "s-region-2"},
-		Storages:  []string{"123-myStorage"},
-		To:        gcore.String("2006-01-02"),
+		From:           gcore.String("2006-01-02"),
+		Locations:      []string{"s-region-1", "s-region-2"},
+		StorageIDs:     []int64{12345},
+		Storages:       []string{"123-myStorage"},
+		To:             gcore.String("2006-01-02"),
+		AcceptLanguage: gcore.String("de-DE,de;q=0.9,en;q=0.8"),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -54,13 +56,15 @@ func TestStatisticGetUsageSeriesWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Storage.Statistics.GetUsageSeries(context.TODO(), storage.StatisticGetUsageSeriesParams{
-		From:        gcore.String("2006-01-02"),
-		Granularity: gcore.String("12h"),
-		Locations:   []string{"s-region-1", "s-region-2"},
-		Source:      gcore.Int(0),
-		Storages:    []string{"123-myStorage"},
-		To:          gcore.String("2006-01-02"),
-		TsString:    gcore.Bool(true),
+		From:           gcore.String("2006-01-02"),
+		Granularity:    gcore.String("12h"),
+		Locations:      []string{"s-region-1", "s-region-2"},
+		Source:         gcore.Int(0),
+		StorageIDs:     []int64{12345},
+		Storages:       []string{"123-myStorage"},
+		To:             gcore.String("2006-01-02"),
+		TsString:       gcore.Bool(true),
+		AcceptLanguage: gcore.String("de-DE,de;q=0.9,en;q=0.8"),
 	})
 	if err != nil {
 		var apierr *gcore.Error

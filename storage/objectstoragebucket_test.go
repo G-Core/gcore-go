@@ -40,6 +40,7 @@ func TestObjectStorageBucketNewWithOptionalParams(t *testing.T) {
 			Policy: storage.ObjectStorageBucketNewParamsPolicy{
 				IsPublic: gcore.Bool(true),
 			},
+			AcceptLanguage: gcore.String("de-DE,de;q=0.9,en;q=0.8"),
 		},
 	)
 	if err != nil {
@@ -77,6 +78,7 @@ func TestObjectStorageBucketUpdateWithOptionalParams(t *testing.T) {
 			Policy: storage.ObjectStorageBucketUpdateParamsPolicy{
 				IsPublic: gcore.Bool(true),
 			},
+			AcceptLanguage: gcore.String("de-DE,de;q=0.9,en;q=0.8"),
 		},
 	)
 	if err != nil {
@@ -104,8 +106,9 @@ func TestObjectStorageBucketListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		0,
 		storage.ObjectStorageBucketListParams{
-			Limit:  gcore.Int(1),
-			Offset: gcore.Int(0),
+			Limit:          gcore.Int(1),
+			Offset:         gcore.Int(0),
+			AcceptLanguage: gcore.String("de-DE,de;q=0.9,en;q=0.8"),
 		},
 	)
 	if err != nil {
@@ -117,7 +120,7 @@ func TestObjectStorageBucketListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestObjectStorageBucketDelete(t *testing.T) {
+func TestObjectStorageBucketDeleteWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -133,7 +136,8 @@ func TestObjectStorageBucketDelete(t *testing.T) {
 		context.TODO(),
 		"name",
 		storage.ObjectStorageBucketDeleteParams{
-			StorageID: 0,
+			StorageID:      0,
+			AcceptLanguage: gcore.String("de-DE,de;q=0.9,en;q=0.8"),
 		},
 	)
 	if err != nil {
@@ -145,7 +149,7 @@ func TestObjectStorageBucketDelete(t *testing.T) {
 	}
 }
 
-func TestObjectStorageBucketGet(t *testing.T) {
+func TestObjectStorageBucketGetWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -161,7 +165,8 @@ func TestObjectStorageBucketGet(t *testing.T) {
 		context.TODO(),
 		"name",
 		storage.ObjectStorageBucketGetParams{
-			StorageID: 0,
+			StorageID:      0,
+			AcceptLanguage: gcore.String("de-DE,de;q=0.9,en;q=0.8"),
 		},
 	)
 	if err != nil {

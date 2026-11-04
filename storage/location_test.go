@@ -27,10 +27,11 @@ func TestLocationListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Storage.Locations.List(context.TODO(), storage.LocationListParams{
-		Limit:   gcore.Int(1),
-		Offset:  gcore.Int(0),
-		OrderBy: gcore.String("order_by"),
-		Type:    storage.LocationListParamsTypeStandard,
+		Limit:          gcore.Int(1),
+		Offset:         gcore.Int(0),
+		OrderBy:        gcore.String("order_by"),
+		Type:           storage.LocationListParamsTypeStandard,
+		AcceptLanguage: gcore.String("de-DE,de;q=0.9,en;q=0.8"),
 	})
 	if err != nil {
 		var apierr *gcore.Error

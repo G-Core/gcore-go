@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/storage"
 )
 
-func TestObjectStorageNew(t *testing.T) {
+func TestObjectStorageNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,8 +27,9 @@ func TestObjectStorageNew(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Storage.ObjectStorages.New(context.TODO(), storage.ObjectStorageNewParams{
-		LocationName: "s-region-1",
-		Name:         "my-storage-prod",
+		LocationName:   "s-region-1",
+		Name:           "my-storage-prod",
+		AcceptLanguage: gcore.String("de-DE,de;q=0.9,en;q=0.8"),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -61,6 +62,7 @@ func TestObjectStorageListWithOptionalParams(t *testing.T) {
 		ProvisioningStatus: storage.ObjectStorageListParamsProvisioningStatusActive,
 		ShowDeleted:        gcore.Bool(true),
 		Type:               storage.ObjectStorageListParamsTypeStandard,
+		AcceptLanguage:     gcore.String("de-DE,de;q=0.9,en;q=0.8"),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -71,7 +73,7 @@ func TestObjectStorageListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestObjectStorageDelete(t *testing.T) {
+func TestObjectStorageDeleteWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -83,7 +85,13 @@ func TestObjectStorageDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Storage.ObjectStorages.Delete(context.TODO(), 0)
+	err := client.Storage.ObjectStorages.Delete(
+		context.TODO(),
+		0,
+		storage.ObjectStorageDeleteParams{
+			AcceptLanguage: gcore.String("de-DE,de;q=0.9,en;q=0.8"),
+		},
+	)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -93,7 +101,7 @@ func TestObjectStorageDelete(t *testing.T) {
 	}
 }
 
-func TestObjectStorageGet(t *testing.T) {
+func TestObjectStorageGetWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -105,7 +113,13 @@ func TestObjectStorageGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Storage.ObjectStorages.Get(context.TODO(), 0)
+	_, err := client.Storage.ObjectStorages.Get(
+		context.TODO(),
+		0,
+		storage.ObjectStorageGetParams{
+			AcceptLanguage: gcore.String("de-DE,de;q=0.9,en;q=0.8"),
+		},
+	)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -115,7 +129,7 @@ func TestObjectStorageGet(t *testing.T) {
 	}
 }
 
-func TestObjectStorageRestore(t *testing.T) {
+func TestObjectStorageRestoreWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -127,7 +141,13 @@ func TestObjectStorageRestore(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Storage.ObjectStorages.Restore(context.TODO(), 0)
+	err := client.Storage.ObjectStorages.Restore(
+		context.TODO(),
+		0,
+		storage.ObjectStorageRestoreParams{
+			AcceptLanguage: gcore.String("de-DE,de;q=0.9,en;q=0.8"),
+		},
+	)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {

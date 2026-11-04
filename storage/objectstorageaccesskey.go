@@ -45,20 +45,26 @@ func NewObjectStorageAccessKeyService(opts ...option.RequestOption) (r ObjectSto
 // Creates a new access key for an S3-compatible storage. Returns the new access
 // key and secret key. Standard storages are limited to 10 access keys; Fast
 // storages are limited to 2 access keys.
-func (r *ObjectStorageAccessKeyService) New(ctx context.Context, storageID int64, body ObjectStorageAccessKeyNewParams, opts ...option.RequestOption) (res *AccessKeyCreated, err error) {
+func (r *ObjectStorageAccessKeyService) New(ctx context.Context, storageID int64, params ObjectStorageAccessKeyNewParams, opts ...option.RequestOption) (res *AccessKeyCreated, err error) {
+	if !param.IsOmitted(params.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", params.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("storage/v4/object_storages/%v/access_keys", storageID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
 // Returns a list of access keys for an S3-compatible storage.
-func (r *ObjectStorageAccessKeyService) List(ctx context.Context, storageID int64, query ObjectStorageAccessKeyListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[AccessKey], err error) {
+func (r *ObjectStorageAccessKeyService) List(ctx context.Context, storageID int64, params ObjectStorageAccessKeyListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[AccessKey], err error) {
 	var raw *http.Response
+	if !param.IsOmitted(params.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", params.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := fmt.Sprintf("storage/v4/object_storages/%v/access_keys", storageID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -71,31 +77,39 @@ func (r *ObjectStorageAccessKeyService) List(ctx context.Context, storageID int6
 }
 
 // Returns a list of access keys for an S3-compatible storage.
-func (r *ObjectStorageAccessKeyService) ListAutoPaging(ctx context.Context, storageID int64, query ObjectStorageAccessKeyListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[AccessKey] {
-	return pagination.NewOffsetPageAutoPager(r.List(ctx, storageID, query, opts...))
+func (r *ObjectStorageAccessKeyService) ListAutoPaging(ctx context.Context, storageID int64, params ObjectStorageAccessKeyListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[AccessKey] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, storageID, params, opts...))
 }
 
 // Deletes an access key from an S3-compatible storage.
-func (r *ObjectStorageAccessKeyService) Delete(ctx context.Context, accessKey string, body ObjectStorageAccessKeyDeleteParams, opts ...option.RequestOption) (err error) {
+func (r *ObjectStorageAccessKeyService) Delete(ctx context.Context, accessKey string, params ObjectStorageAccessKeyDeleteParams, opts ...option.RequestOption) (err error) {
+	if !param.IsOmitted(params.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", params.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if accessKey == "" {
 		err = errors.New("missing required access_key parameter")
 		return err
 	}
-	path := fmt.Sprintf("storage/v4/object_storages/%v/access_keys/%s", body.StorageID, accessKey)
+	path := fmt.Sprintf("storage/v4/object_storages/%v/access_keys/%s", params.StorageID, accessKey)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
 
-// Returns details of a specific access key for an S3-compatible storage.
-func (r *ObjectStorageAccessKeyService) Get(ctx context.Context, accessKey string, query ObjectStorageAccessKeyGetParams, opts ...option.RequestOption) (res *AccessKey, err error) {
+// Returns details of a specific access key for an S3-compatible storage. The
+// `valid` flag is false once the key has expired and it is being cleaned up; an
+// unknown key returns 404.
+func (r *ObjectStorageAccessKeyService) Get(ctx context.Context, accessKey string, params ObjectStorageAccessKeyGetParams, opts ...option.RequestOption) (res *AccessKey, err error) {
+	if !param.IsOmitted(params.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", params.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	if accessKey == "" {
 		err = errors.New("missing required access_key parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("storage/v4/object_storages/%v/access_keys/%s", query.StorageID, accessKey)
+	path := fmt.Sprintf("storage/v4/object_storages/%v/access_keys/%s", params.StorageID, accessKey)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -106,13 +120,22 @@ type AccessKey struct {
 	AccessKey string `json:"access_key" api:"required"`
 	// ISO 8601 timestamp when the access key was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// ISO 8601 timestamp when the key expires, or null for a key that never expires.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// True for a key scoped to read-only data access.
 	ReadOnly bool `json:"read_only" api:"required"`
+	// False once the key's `expires_at` has passed; the key is removed by the
+	// background cleanup shortly afterwards. Always true for a key with no expiry. A
+	// key that does not exist returns 404, so false never means "missing". Reflects
+	// the cached state, not a live backend check.
+	Valid bool `json:"valid" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AccessKey   respjson.Field
 		CreatedAt   respjson.Field
+		ExpiresAt   respjson.Field
 		ReadOnly    respjson.Field
+		Valid       respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -130,6 +153,8 @@ type AccessKeyCreated struct {
 	AccessKey string `json:"access_key" api:"required"`
 	// ISO 8601 timestamp when the access key was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// ISO 8601 timestamp when the key expires, or null for a key that never expires.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// True for a key scoped to read-only data access.
 	ReadOnly bool `json:"read_only" api:"required"`
 	// Secret key used as the password in S3 authentication. Save this now — it cannot
@@ -139,6 +164,7 @@ type AccessKeyCreated struct {
 	JSON struct {
 		AccessKey   respjson.Field
 		CreatedAt   respjson.Field
+		ExpiresAt   respjson.Field
 		ReadOnly    respjson.Field
 		SecretKey   respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -153,10 +179,17 @@ func (r *AccessKeyCreated) UnmarshalJSON(data []byte) error {
 }
 
 type ObjectStorageAccessKeyNewParams struct {
+	// ISO 8601 timestamp (RFC3339) after which the key is deleted from the backend and
+	// the cache. Must be in the future and within the next 5 minutes. A key created
+	// with an expiry is hidden from the access-key list and does not count toward the
+	// per-storage limit, so it is suited to short-lived browser/file-manager use. Omit
+	// for a key that never expires.
+	ExpiresAt param.Opt[time.Time] `json:"expires_at,omitzero" format:"date-time"`
 	// Request a key scoped to read-only data access. Only supported for Standard
 	// storages; a Fast storage rejects true. Defaults to false (full read-write) when
 	// omitted.
-	ReadOnly param.Opt[bool] `json:"read_only,omitzero"`
+	ReadOnly       param.Opt[bool]   `json:"read_only,omitzero"`
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
 	paramObj
 }
 
@@ -172,8 +205,9 @@ type ObjectStorageAccessKeyListParams struct {
 	// Max number of records in response
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Number of records to skip before beginning to return results
-	Offset  param.Opt[int64]  `query:"offset,omitzero" json:"-"`
-	OrderBy param.Opt[string] `query:"order_by,omitzero" json:"-"`
+	Offset         param.Opt[int64]  `query:"offset,omitzero" json:"-"`
+	OrderBy        param.Opt[string] `query:"order_by,omitzero" json:"-"`
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
 	paramObj
 }
 
@@ -187,11 +221,13 @@ func (r ObjectStorageAccessKeyListParams) URLQuery() (v url.Values, err error) {
 }
 
 type ObjectStorageAccessKeyDeleteParams struct {
-	StorageID int64 `path:"storage_id" api:"required" json:"-"`
+	StorageID      int64             `path:"storage_id" api:"required" json:"-"`
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
 	paramObj
 }
 
 type ObjectStorageAccessKeyGetParams struct {
-	StorageID int64 `path:"storage_id" api:"required" json:"-"`
+	StorageID      int64             `path:"storage_id" api:"required" json:"-"`
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
 	paramObj
 }

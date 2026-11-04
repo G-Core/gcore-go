@@ -77,7 +77,7 @@ func (r *ObjectStorageService) NewAndPoll(ctx context.Context, body ObjectStorag
 	)
 
 	for {
-		s3, err := r.Get(pollingCtx, created.ID, pollOpts...)
+		s3, err := r.Get(pollingCtx, created.ID, ObjectStorageGetParams{AcceptLanguage: body.AcceptLanguage}, pollOpts...)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get object storage status: %w", err)
 		}
@@ -125,8 +125,8 @@ func (r *ObjectStorageService) NewAndPoll(ctx context.Context, body ObjectStorag
 //
 // Returns nil on confirmed deletion. Returns an error if Delete itself fails or
 // polling times out / is cancelled.
-func (r *ObjectStorageService) DeleteAndPoll(ctx context.Context, storageID int64, opts ...option.RequestOption) error {
-	if err := r.Delete(ctx, storageID, opts...); err != nil {
+func (r *ObjectStorageService) DeleteAndPoll(ctx context.Context, storageID int64, body ObjectStorageDeleteParams, opts ...option.RequestOption) error {
+	if err := r.Delete(ctx, storageID, body, opts...); err != nil {
 		return err
 	}
 
@@ -154,7 +154,7 @@ func (r *ObjectStorageService) DeleteAndPoll(ctx context.Context, storageID int6
 	)
 
 	for {
-		s3, err := r.Get(pollingCtx, storageID, pollOpts...)
+		s3, err := r.Get(pollingCtx, storageID, ObjectStorageGetParams{AcceptLanguage: body.AcceptLanguage}, pollOpts...)
 		if err != nil {
 			var apiErr *Error
 			if errors.As(err, &apiErr) && apiErr.StatusCode == http.StatusNotFound {
@@ -187,8 +187,8 @@ func (r *ObjectStorageService) DeleteAndPoll(ctx context.Context, storageID int6
 // callers that need the active S3Storage afterwards can call
 // [ObjectStorageService.Get], or pass option.WithResponseBodyInto to capture it
 // from the final replay Get below.
-func (r *ObjectStorageService) RestoreAndPoll(ctx context.Context, storageID int64, opts ...option.RequestOption) error {
-	if err := r.Restore(ctx, storageID, opts...); err != nil {
+func (r *ObjectStorageService) RestoreAndPoll(ctx context.Context, storageID int64, body ObjectStorageRestoreParams, opts ...option.RequestOption) error {
+	if err := r.Restore(ctx, storageID, body, opts...); err != nil {
 		return err
 	}
 
@@ -216,7 +216,7 @@ func (r *ObjectStorageService) RestoreAndPoll(ctx context.Context, storageID int
 	)
 
 	for {
-		s3, err := r.Get(pollingCtx, storageID, pollOpts...)
+		s3, err := r.Get(pollingCtx, storageID, ObjectStorageGetParams{AcceptLanguage: body.AcceptLanguage}, pollOpts...)
 		if err != nil {
 			return fmt.Errorf("failed to get object storage status: %w", err)
 		}
@@ -226,7 +226,7 @@ func (r *ObjectStorageService) RestoreAndPoll(ctx context.Context, storageID int
 			// (terraform provider pattern) has nothing to capture from the POST.
 			// Replay the final Get with the caller's full opts so their captured
 			// response is populated with the active S3Storage payload.
-			_, err := r.Get(pollingCtx, storageID, opts...)
+			_, err := r.Get(pollingCtx, storageID, ObjectStorageGetParams{AcceptLanguage: body.AcceptLanguage}, opts...)
 			return err
 		}
 

@@ -62,7 +62,7 @@ func createStorage(client *gcore.Client) int64 {
 func getStorage(client *gcore.Client, storageID int64) {
 	fmt.Println("\n=== GET STORAGE ===")
 
-	storageDetails, err := client.Storage.ObjectStorages.Get(context.Background(), storageID)
+	storageDetails, err := client.Storage.ObjectStorages.Get(context.Background(), storageID, storage.ObjectStorageGetParams{})
 	if err != nil {
 		fmt.Printf("Error getting storage details: %v\n", err)
 		fmt.Println("==================")
@@ -98,7 +98,7 @@ func listStorages(client *gcore.Client) {
 func deleteStorage(client *gcore.Client, storageID int64) {
 	fmt.Println("\n=== DELETE STORAGE ===")
 
-	err := client.Storage.ObjectStorages.Delete(context.Background(), storageID)
+	err := client.Storage.ObjectStorages.Delete(context.Background(), storageID, storage.ObjectStorageDeleteParams{})
 	if err != nil {
 		fmt.Printf("Error deleting storage %d: %v\n", storageID, err)
 		fmt.Println("======================")

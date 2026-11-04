@@ -101,7 +101,7 @@ func getStorageDetails(client *gcore.Client, s3StorageID, sftpStorageID int64) {
 	ctx := context.Background()
 
 	// Get S3 storage details
-	s3Details, err := client.Storage.ObjectStorages.Get(ctx, s3StorageID)
+	s3Details, err := client.Storage.ObjectStorages.Get(ctx, s3StorageID, storage.ObjectStorageGetParams{})
 	if err != nil {
 		fmt.Printf("Error getting S3 storage details: %v\n", err)
 	} else {
@@ -112,7 +112,7 @@ func getStorageDetails(client *gcore.Client, s3StorageID, sftpStorageID int64) {
 	}
 
 	// Get SFTP storage details
-	sftpDetails, err := client.Storage.SftpStorages.Get(ctx, sftpStorageID)
+	sftpDetails, err := client.Storage.SftpStorages.Get(ctx, sftpStorageID, storage.SftpStorageGetParams{})
 	if err != nil {
 		fmt.Printf("Error getting SFTP storage details: %v\n", err)
 	} else {
@@ -249,7 +249,7 @@ func cleanup(client *gcore.Client, s3StorageID, sftpStorageID int64) {
 	ctx := context.Background()
 
 	// Delete S3 storage
-	err := client.Storage.ObjectStorages.Delete(ctx, s3StorageID)
+	err := client.Storage.ObjectStorages.Delete(ctx, s3StorageID, storage.ObjectStorageDeleteParams{})
 	if err != nil {
 		fmt.Printf("Error deleting storage %d: %v\n", s3StorageID, err)
 	} else {
@@ -257,7 +257,7 @@ func cleanup(client *gcore.Client, s3StorageID, sftpStorageID int64) {
 	}
 
 	// Delete SFTP storage and wait until it's fully removed
-	err = client.Storage.SftpStorages.DeleteAndPoll(ctx, sftpStorageID)
+	err = client.Storage.SftpStorages.DeleteAndPoll(ctx, sftpStorageID, storage.SftpStorageDeleteParams{})
 	if err != nil {
 		fmt.Printf("Error deleting storage %d: %v\n", sftpStorageID, err)
 	} else {

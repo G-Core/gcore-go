@@ -36,6 +36,7 @@ func TestSftpStorageNewWithOptionalParams(t *testing.T) {
 		Password:            gcore.String("password"),
 		ServerAlias:         gcore.String("my-storage.example.com"),
 		SSHKeyIDs:           []int64{1, 2, 3},
+		AcceptLanguage:      gcore.String("de-DE,de;q=0.9,en;q=0.8"),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -69,6 +70,7 @@ func TestSftpStorageUpdateWithOptionalParams(t *testing.T) {
 			PasswordMode:        storage.SftpStorageUpdateParamsPasswordModeAuto,
 			ServerAlias:         gcore.String("my-storage.example.com"),
 			SSHKeyIDs:           []int64{1, 2, 3},
+			AcceptLanguage:      gcore.String("de-DE,de;q=0.9,en;q=0.8"),
 		},
 	)
 	if err != nil {
@@ -101,6 +103,7 @@ func TestSftpStorageListWithOptionalParams(t *testing.T) {
 		OrderBy:            gcore.String("order_by"),
 		ProvisioningStatus: storage.SftpStorageListParamsProvisioningStatusActive,
 		ShowDeleted:        gcore.Bool(true),
+		AcceptLanguage:     gcore.String("de-DE,de;q=0.9,en;q=0.8"),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -111,7 +114,7 @@ func TestSftpStorageListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestSftpStorageDelete(t *testing.T) {
+func TestSftpStorageDeleteWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -123,7 +126,13 @@ func TestSftpStorageDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Storage.SftpStorages.Delete(context.TODO(), 0)
+	err := client.Storage.SftpStorages.Delete(
+		context.TODO(),
+		0,
+		storage.SftpStorageDeleteParams{
+			AcceptLanguage: gcore.String("de-DE,de;q=0.9,en;q=0.8"),
+		},
+	)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -133,7 +142,7 @@ func TestSftpStorageDelete(t *testing.T) {
 	}
 }
 
-func TestSftpStorageGet(t *testing.T) {
+func TestSftpStorageGetWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -145,7 +154,13 @@ func TestSftpStorageGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Storage.SftpStorages.Get(context.TODO(), 0)
+	_, err := client.Storage.SftpStorages.Get(
+		context.TODO(),
+		0,
+		storage.SftpStorageGetParams{
+			AcceptLanguage: gcore.String("de-DE,de;q=0.9,en;q=0.8"),
+		},
+	)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {

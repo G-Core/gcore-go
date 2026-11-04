@@ -42,10 +42,13 @@ func NewObjectStorageBucketService(opts ...option.RequestOption) (r ObjectStorag
 }
 
 // Creates a new bucket within an S3-compatible storage.
-func (r *ObjectStorageBucketService) New(ctx context.Context, storageID int64, body ObjectStorageBucketNewParams, opts ...option.RequestOption) (res *Bucket, err error) {
+func (r *ObjectStorageBucketService) New(ctx context.Context, storageID int64, params ObjectStorageBucketNewParams, opts ...option.RequestOption) (res *Bucket, err error) {
+	if !param.IsOmitted(params.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", params.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("storage/v4/object_storages/%v/buckets", storageID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -54,9 +57,13 @@ func (r *ObjectStorageBucketService) New(ctx context.Context, storageID int64, b
 //
 // Lifecycle: set `expiration_days` to a positive integer to enable, null or 0 to
 // remove. Negative values return 400. CORS: set `allowed_origins` to a non-empty
-// array to configure, empty array to remove. Policy: set `is_public` to true/false
-// to update.
+// array to configure, empty array to remove. S3 Fast storages do not support CORS:
+// any cors object returns 400, omit it or send null. Policy: set `is_public` to
+// true/false to update.
 func (r *ObjectStorageBucketService) Update(ctx context.Context, name string, params ObjectStorageBucketUpdateParams, opts ...option.RequestOption) (res *Bucket, err error) {
+	if !param.IsOmitted(params.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", params.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	if name == "" {
 		err = errors.New("missing required name parameter")
@@ -70,12 +77,15 @@ func (r *ObjectStorageBucketService) Update(ctx context.Context, name string, pa
 // Returns a paginated list of buckets for an S3-compatible storage, including each
 // bucket's CORS, Lifecycle, and Policy configuration. Results are sorted
 // alphabetically by bucket name (ascending).
-func (r *ObjectStorageBucketService) List(ctx context.Context, storageID int64, query ObjectStorageBucketListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Bucket], err error) {
+func (r *ObjectStorageBucketService) List(ctx context.Context, storageID int64, params ObjectStorageBucketListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Bucket], err error) {
 	var raw *http.Response
+	if !param.IsOmitted(params.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", params.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := fmt.Sprintf("storage/v4/object_storages/%v/buckets", storageID)
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -90,8 +100,8 @@ func (r *ObjectStorageBucketService) List(ctx context.Context, storageID int64, 
 // Returns a paginated list of buckets for an S3-compatible storage, including each
 // bucket's CORS, Lifecycle, and Policy configuration. Results are sorted
 // alphabetically by bucket name (ascending).
-func (r *ObjectStorageBucketService) ListAutoPaging(ctx context.Context, storageID int64, query ObjectStorageBucketListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Bucket] {
-	return pagination.NewOffsetPageAutoPager(r.List(ctx, storageID, query, opts...))
+func (r *ObjectStorageBucketService) ListAutoPaging(ctx context.Context, storageID int64, params ObjectStorageBucketListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Bucket] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, storageID, params, opts...))
 }
 
 // Removes a bucket from an S3-compatible storage. All objects in the bucket will
@@ -100,32 +110,40 @@ func (r *ObjectStorageBucketService) ListAutoPaging(ctx context.Context, storage
 // Returns 409 when CDN still uses the bucket as an origin or a logs-uploader
 // target — unbind it in CDN first — or when that could not be verified, in which
 // case the bucket is left in place and the request can be retried.
-func (r *ObjectStorageBucketService) Delete(ctx context.Context, name string, body ObjectStorageBucketDeleteParams, opts ...option.RequestOption) (err error) {
+func (r *ObjectStorageBucketService) Delete(ctx context.Context, name string, params ObjectStorageBucketDeleteParams, opts ...option.RequestOption) (err error) {
+	if !param.IsOmitted(params.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", params.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if name == "" {
 		err = errors.New("missing required name parameter")
 		return err
 	}
-	path := fmt.Sprintf("storage/v4/object_storages/%v/buckets/%s", body.StorageID, name)
+	path := fmt.Sprintf("storage/v4/object_storages/%v/buckets/%s", params.StorageID, name)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
 
 // Returns bucket configuration including CORS, Lifecycle, and Policy settings in a
 // consolidated response.
-func (r *ObjectStorageBucketService) Get(ctx context.Context, name string, query ObjectStorageBucketGetParams, opts ...option.RequestOption) (res *Bucket, err error) {
+func (r *ObjectStorageBucketService) Get(ctx context.Context, name string, params ObjectStorageBucketGetParams, opts ...option.RequestOption) (res *Bucket, err error) {
+	if !param.IsOmitted(params.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", params.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	if name == "" {
 		err = errors.New("missing required name parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("storage/v4/object_storages/%v/buckets/%s", query.StorageID, name)
+	path := fmt.Sprintf("storage/v4/object_storages/%v/buckets/%s", params.StorageID, name)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
 
 type Bucket struct {
+	// On S3 Fast storages CORS is managed by the platform: the platform defaults are
+	// reported and cannot be changed.
 	Cors      BucketCors      `json:"cors" api:"required"`
 	Lifecycle BucketLifecycle `json:"lifecycle" api:"required"`
 	// Globally unique bucket name within the storage. Used as the path prefix when
@@ -153,6 +171,8 @@ func (r *Bucket) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// On S3 Fast storages CORS is managed by the platform: the platform defaults are
+// reported and cannot be changed.
 type BucketCors struct {
 	// Web domains allowed to make direct browser requests to this bucket (e.g.,
 	// "https://myapp.com"). Use "\*" to allow any origin.
@@ -209,7 +229,10 @@ func (r *BucketPolicy) UnmarshalJSON(data []byte) error {
 
 type ObjectStorageBucketNewParams struct {
 	// Name of the bucket to create
-	Name      string                                `json:"name" api:"required"`
+	Name           string            `json:"name" api:"required"`
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
+	// Not supported on S3 Fast storages: any CORS object returns 400, omit it or send
+	// null.
 	Cors      ObjectStorageBucketNewParamsCors      `json:"cors,omitzero"`
 	Lifecycle ObjectStorageBucketNewParamsLifecycle `json:"lifecycle,omitzero"`
 	Policy    ObjectStorageBucketNewParamsPolicy    `json:"policy,omitzero"`
@@ -224,9 +247,11 @@ func (r *ObjectStorageBucketNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Not supported on S3 Fast storages: any CORS object returns 400, omit it or send
+// null.
 type ObjectStorageBucketNewParamsCors struct {
 	// Web domains allowed to make direct browser requests. Send an empty array to
-	// remove CORS configuration.
+	// remove CORS. Not applicable to S3 Fast storages.
 	AllowedOrigins []string `json:"allowed_origins,omitzero"`
 	paramObj
 }
@@ -270,7 +295,10 @@ func (r *ObjectStorageBucketNewParamsPolicy) UnmarshalJSON(data []byte) error {
 }
 
 type ObjectStorageBucketUpdateParams struct {
-	StorageID int64                                    `path:"storage_id" api:"required" json:"-"`
+	StorageID      int64             `path:"storage_id" api:"required" json:"-"`
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
+	// Not supported on S3 Fast storages: any CORS object returns 400, omit it or send
+	// null.
 	Cors      ObjectStorageBucketUpdateParamsCors      `json:"cors,omitzero"`
 	Lifecycle ObjectStorageBucketUpdateParamsLifecycle `json:"lifecycle,omitzero"`
 	Policy    ObjectStorageBucketUpdateParamsPolicy    `json:"policy,omitzero"`
@@ -285,9 +313,11 @@ func (r *ObjectStorageBucketUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Not supported on S3 Fast storages: any CORS object returns 400, omit it or send
+// null.
 type ObjectStorageBucketUpdateParamsCors struct {
 	// Web domains allowed to make direct browser requests. Send an empty array to
-	// remove CORS configuration.
+	// remove CORS. Not applicable to S3 Fast storages.
 	AllowedOrigins []string `json:"allowed_origins,omitzero"`
 	paramObj
 }
@@ -334,7 +364,8 @@ type ObjectStorageBucketListParams struct {
 	// Max number of records in response
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Number of records to skip before beginning to return results
-	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	Offset         param.Opt[int64]  `query:"offset,omitzero" json:"-"`
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
 	paramObj
 }
 
@@ -348,11 +379,13 @@ func (r ObjectStorageBucketListParams) URLQuery() (v url.Values, err error) {
 }
 
 type ObjectStorageBucketDeleteParams struct {
-	StorageID int64 `path:"storage_id" api:"required" json:"-"`
+	StorageID      int64             `path:"storage_id" api:"required" json:"-"`
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
 	paramObj
 }
 
 type ObjectStorageBucketGetParams struct {
-	StorageID int64 `path:"storage_id" api:"required" json:"-"`
+	StorageID      int64             `path:"storage_id" api:"required" json:"-"`
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
 	paramObj
 }

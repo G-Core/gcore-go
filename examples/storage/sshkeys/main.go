@@ -88,7 +88,7 @@ func listSSHKeys(client *gcore.Client) {
 func getSSHKey(client *gcore.Client, keyID int64) {
 	fmt.Println("\n=== GET SSH KEY ===")
 
-	key, err := client.Storage.SSHKeys.Get(context.Background(), keyID)
+	key, err := client.Storage.SSHKeys.Get(context.Background(), keyID, storage.SSHKeyGetParams{})
 	if err != nil {
 		fmt.Printf("Error getting SSH key: %v\n", err)
 		fmt.Println("==================")
@@ -180,7 +180,7 @@ func cleanup(client *gcore.Client, storageID int64, keyIDs ...int64) {
 	ctx := context.Background()
 
 	// Delete the SFTP storage and wait for it to be fully removed
-	if err := client.Storage.SftpStorages.DeleteAndPoll(ctx, storageID); err != nil {
+	if err := client.Storage.SftpStorages.DeleteAndPoll(ctx, storageID, storage.SftpStorageDeleteParams{}); err != nil {
 		fmt.Printf("Error deleting storage %d: %v\n", storageID, err)
 	} else {
 		fmt.Printf("Storage %d deleted successfully\n", storageID)
@@ -188,7 +188,7 @@ func cleanup(client *gcore.Client, storageID int64, keyIDs ...int64) {
 
 	// Delete the SSH keys
 	for _, keyID := range keyIDs {
-		err := client.Storage.SSHKeys.Delete(ctx, keyID)
+		err := client.Storage.SSHKeys.Delete(ctx, keyID, storage.SSHKeyDeleteParams{})
 		if err != nil {
 			fmt.Printf("Error deleting SSH key %d: %v\n", keyID, err)
 		} else {

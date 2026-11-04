@@ -4,6 +4,7 @@ package storage
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"net/url"
 	"slices"
@@ -42,12 +43,15 @@ func NewLocationService(opts ...option.RequestOption) (r LocationService) {
 // currently accepting new storage creation are returned. Use the `type` query
 // parameter to restrict the result to a location type (object storage performance
 // tier or sftp).
-func (r *LocationService) List(ctx context.Context, query LocationListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Location], err error) {
+func (r *LocationService) List(ctx context.Context, params LocationListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Location], err error) {
 	var raw *http.Response
+	if !param.IsOmitted(params.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", params.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "storage/v4/locations"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -63,8 +67,8 @@ func (r *LocationService) List(ctx context.Context, query LocationListParams, op
 // currently accepting new storage creation are returned. Use the `type` query
 // parameter to restrict the result to a location type (object storage performance
 // tier or sftp).
-func (r *LocationService) ListAutoPaging(ctx context.Context, query LocationListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Location] {
-	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
+func (r *LocationService) ListAutoPaging(ctx context.Context, params LocationListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Location] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
 type Location struct {
@@ -110,8 +114,9 @@ type LocationListParams struct {
 	// Max number of records in response
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Number of records to skip before beginning to return results
-	Offset  param.Opt[int64]  `query:"offset,omitzero" json:"-"`
-	OrderBy param.Opt[string] `query:"order_by,omitzero" json:"-"`
+	Offset         param.Opt[int64]  `query:"offset,omitzero" json:"-"`
+	OrderBy        param.Opt[string] `query:"order_by,omitzero" json:"-"`
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
 	// Filter by location type: object storage performance tier (standard, fast) or
 	// sftp
 	//

@@ -43,10 +43,13 @@ func NewSftpStorageService(opts ...option.RequestOption) (r SftpStorageService) 
 
 // Creates a new SFTP storage instance in the specified location and returns the
 // storage details including credentials.
-func (r *SftpStorageService) New(ctx context.Context, body SftpStorageNewParams, opts ...option.RequestOption) (res *SftpStorageCreated, err error) {
+func (r *SftpStorageService) New(ctx context.Context, params SftpStorageNewParams, opts ...option.RequestOption) (res *SftpStorageCreated, err error) {
+	if !param.IsOmitted(params.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", params.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "storage/v4/sftp_storages"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -56,20 +59,26 @@ func (r *SftpStorageService) New(ctx context.Context, body SftpStorageNewParams,
 // it and returns it once, "set" uses the "password" field and returns it once,
 // "none" removes it. "password" is only read when `password_mode` is "set" and
 // must be omitted otherwise. "ssh_key_ids": [] clears all keys.
-func (r *SftpStorageService) Update(ctx context.Context, storageID int64, body SftpStorageUpdateParams, opts ...option.RequestOption) (res *SftpStorageCreated, err error) {
+func (r *SftpStorageService) Update(ctx context.Context, storageID int64, params SftpStorageUpdateParams, opts ...option.RequestOption) (res *SftpStorageCreated, err error) {
+	if !param.IsOmitted(params.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", params.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("storage/v4/sftp_storages/%v", storageID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return res, err
 }
 
 // Returns a paginated list of SFTP storage instances for the authenticated client.
-func (r *SftpStorageService) List(ctx context.Context, query SftpStorageListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[SftpStorage], err error) {
+func (r *SftpStorageService) List(ctx context.Context, params SftpStorageListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[SftpStorage], err error) {
 	var raw *http.Response
+	if !param.IsOmitted(params.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", params.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "storage/v4/sftp_storages"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -82,12 +91,15 @@ func (r *SftpStorageService) List(ctx context.Context, query SftpStorageListPara
 }
 
 // Returns a paginated list of SFTP storage instances for the authenticated client.
-func (r *SftpStorageService) ListAutoPaging(ctx context.Context, query SftpStorageListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[SftpStorage] {
-	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
+func (r *SftpStorageService) ListAutoPaging(ctx context.Context, params SftpStorageListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[SftpStorage] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
 // Deletes an SFTP storage instance. This operation cannot be undone.
-func (r *SftpStorageService) Delete(ctx context.Context, storageID int64, opts ...option.RequestOption) (err error) {
+func (r *SftpStorageService) Delete(ctx context.Context, storageID int64, body SftpStorageDeleteParams, opts ...option.RequestOption) (err error) {
+	if !param.IsOmitted(body.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", body.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("storage/v4/sftp_storages/%v", storageID)
@@ -96,7 +108,10 @@ func (r *SftpStorageService) Delete(ctx context.Context, storageID int64, opts .
 }
 
 // Returns details of a specific SFTP storage instance (without credentials).
-func (r *SftpStorageService) Get(ctx context.Context, storageID int64, opts ...option.RequestOption) (res *SftpStorage, err error) {
+func (r *SftpStorageService) Get(ctx context.Context, storageID int64, query SftpStorageGetParams, opts ...option.RequestOption) (res *SftpStorage, err error) {
+	if !param.IsOmitted(query.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", query.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("storage/v4/sftp_storages/%v", storageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -270,7 +285,8 @@ type SftpStorageNewParams struct {
 	// omitted when `password_mode` is 'auto' or 'none'.
 	Password param.Opt[string] `json:"password,omitzero"`
 	// Custom domain alias for accessing the storage. Omit for no alias.
-	ServerAlias param.Opt[string] `json:"server_alias,omitzero"`
+	ServerAlias    param.Opt[string] `json:"server_alias,omitzero"`
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
 	// SSH key IDs to associate with this storage at creation time. If omitted, no keys
 	// are linked.
 	SSHKeyIDs []int64 `json:"ssh_key_ids,omitzero"`
@@ -308,7 +324,8 @@ type SftpStorageUpdateParams struct {
 	// omitted for any other `password_mode` (or when `password_mode` is absent).
 	Password param.Opt[string] `json:"password,omitzero"`
 	// Custom domain alias for accessing the storage. Empty string to remove.
-	ServerAlias param.Opt[string] `json:"server_alias,omitzero"`
+	ServerAlias    param.Opt[string] `json:"server_alias,omitzero"`
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
 	// Password handling mode. Omit to leave password unchanged. 'auto': regenerate
 	// password (returned in response) 'set': use the password provided in password
 	// (returned in response) 'none': remove password
@@ -353,7 +370,8 @@ type SftpStorageListParams struct {
 	Offset  param.Opt[int64]  `query:"offset,omitzero" json:"-"`
 	OrderBy param.Opt[string] `query:"order_by,omitzero" json:"-"`
 	// Include deleted storages
-	ShowDeleted param.Opt[bool] `query:"show_deleted,omitzero" json:"-"`
+	ShowDeleted    param.Opt[bool]   `query:"show_deleted,omitzero" json:"-"`
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
 	// Filter by provisioning status
 	//
 	// Any of "active", "creating", "updating", "deleting", "deleted".
@@ -379,3 +397,13 @@ const (
 	SftpStorageListParamsProvisioningStatusDeleting SftpStorageListParamsProvisioningStatus = "deleting"
 	SftpStorageListParamsProvisioningStatusDeleted  SftpStorageListParamsProvisioningStatus = "deleted"
 )
+
+type SftpStorageDeleteParams struct {
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
+	paramObj
+}
+
+type SftpStorageGetParams struct {
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
+	paramObj
+}

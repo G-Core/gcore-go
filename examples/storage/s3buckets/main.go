@@ -73,7 +73,7 @@ func waitForStorageProvisioning(client *gcore.Client, storageID int64) {
 
 	ready := false
 	for time.Since(start) < maxWait {
-		s, err := client.Storage.ObjectStorages.Get(ctx, storageID)
+		s, err := client.Storage.ObjectStorages.Get(ctx, storageID, storage.ObjectStorageGetParams{})
 		if err != nil {
 			fmt.Printf("Error checking storage status: %v\n", err)
 			break
@@ -236,7 +236,7 @@ func deleteBuckets(client *gcore.Client, storageID int64, bucketNames []string) 
 func deleteStorage(client *gcore.Client, storageID int64) {
 	fmt.Println("\n=== DELETE STORAGE ===")
 
-	err := client.Storage.ObjectStorages.Delete(context.Background(), storageID)
+	err := client.Storage.ObjectStorages.Delete(context.Background(), storageID, storage.ObjectStorageDeleteParams{})
 	if err != nil {
 		fmt.Printf("Error deleting storage %d: %v\n", storageID, err)
 		fmt.Println("======================")

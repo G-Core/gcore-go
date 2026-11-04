@@ -4,6 +4,7 @@ package storage
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"slices"
 
@@ -39,10 +40,13 @@ func NewStatisticService(opts ...option.RequestOption) (r StatisticService) {
 // data beyond 60 minutes until servers resume and backfill missing statistics.
 //
 // Shows storage total usage data in filtered by storages, locations and interval.
-func (r *StatisticService) GetUsageAggregated(ctx context.Context, body StatisticGetUsageAggregatedParams, opts ...option.RequestOption) (res *UsageTotal, err error) {
+func (r *StatisticService) GetUsageAggregated(ctx context.Context, params StatisticGetUsageAggregatedParams, opts ...option.RequestOption) (res *UsageTotal, err error) {
+	if !param.IsOmitted(params.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", params.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "storage/stats/v1/storage/usage/total"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -53,10 +57,13 @@ func (r *StatisticService) GetUsageAggregated(ctx context.Context, body Statisti
 //
 // Shows storage usage data in series format filtered by clients, storages and
 // interval.
-func (r *StatisticService) GetUsageSeries(ctx context.Context, body StatisticGetUsageSeriesParams, opts ...option.RequestOption) (res *StatisticGetUsageSeriesResponse, err error) {
+func (r *StatisticService) GetUsageSeries(ctx context.Context, params StatisticGetUsageSeriesParams, opts ...option.RequestOption) (res *StatisticGetUsageSeriesResponse, err error) {
+	if !param.IsOmitted(params.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", params.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "storage/stats/v1/storage/usage/series"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -390,9 +397,14 @@ type StatisticGetUsageAggregatedParams struct {
 	// a From date filter
 	From param.Opt[string] `json:"from,omitzero"`
 	// a To date filter
-	To param.Opt[string] `json:"to,omitzero"`
+	To             param.Opt[string] `json:"to,omitzero"`
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
 	// a Locations list of filter
 	Locations []string `json:"locations,omitzero"`
+	// a StorageIDs list of filter, combined with storages. Each ID selects exactly
+	// that storage, deleted ones included, narrowed by locations. An ID that is not
+	// one of the client's storages fails the request with 404.
+	StorageIDs []int64 `json:"storage_ids,omitzero"`
 	// a Storages list of filter
 	Storages []string `json:"storages,omitzero"`
 	paramObj
@@ -417,9 +429,14 @@ type StatisticGetUsageSeriesParams struct {
 	To param.Opt[string] `json:"to,omitzero"`
 	// a TsString is configurator of response time format switch response from unix
 	// time format to RFC3339 (2006-01-02T15:04:05Z07:00)
-	TsString param.Opt[bool] `json:"ts_string,omitzero"`
+	TsString       param.Opt[bool]   `json:"ts_string,omitzero"`
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
 	// a Locations list of filter
 	Locations []string `json:"locations,omitzero"`
+	// a StorageIDs list of filter, combined with storages. Each ID selects exactly
+	// that storage, deleted ones included, narrowed by locations. An ID that is not
+	// one of the client's storages fails the request with 404.
+	StorageIDs []int64 `json:"storage_ids,omitzero"`
 	// a Storages list of filter
 	Storages []string `json:"storages,omitzero"`
 	paramObj

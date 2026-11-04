@@ -52,21 +52,27 @@ func NewObjectStorageService(opts ...option.RequestOption) (r ObjectStorageServi
 
 // Creates a new S3-compatible storage instance in the specified location and
 // returns the storage details including credentials.
-func (r *ObjectStorageService) New(ctx context.Context, body ObjectStorageNewParams, opts ...option.RequestOption) (res *S3StorageCreated, err error) {
+func (r *ObjectStorageService) New(ctx context.Context, params ObjectStorageNewParams, opts ...option.RequestOption) (res *S3StorageCreated, err error) {
+	if !param.IsOmitted(params.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", params.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := "storage/v4/object_storages"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
 // Returns a paginated list of S3-compatible storage instances for the
 // authenticated client.
-func (r *ObjectStorageService) List(ctx context.Context, query ObjectStorageListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[S3Storage], err error) {
+func (r *ObjectStorageService) List(ctx context.Context, params ObjectStorageListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[S3Storage], err error) {
 	var raw *http.Response
+	if !param.IsOmitted(params.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", params.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "storage/v4/object_storages"
-	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -80,8 +86,8 @@ func (r *ObjectStorageService) List(ctx context.Context, query ObjectStorageList
 
 // Returns a paginated list of S3-compatible storage instances for the
 // authenticated client.
-func (r *ObjectStorageService) ListAutoPaging(ctx context.Context, query ObjectStorageListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[S3Storage] {
-	return pagination.NewOffsetPageAutoPager(r.List(ctx, query, opts...))
+func (r *ObjectStorageService) ListAutoPaging(ctx context.Context, params ObjectStorageListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[S3Storage] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
 // Deletes an S3-compatible storage instance. This operation cannot be undone.
@@ -89,7 +95,10 @@ func (r *ObjectStorageService) ListAutoPaging(ctx context.Context, query ObjectS
 // Returns 409 when CDN still uses the storage as an origin or a logs-uploader
 // target — unbind it in CDN first — or when that could not be verified, in which
 // case the deletion is not performed and the request can be retried.
-func (r *ObjectStorageService) Delete(ctx context.Context, storageID int64, opts ...option.RequestOption) (err error) {
+func (r *ObjectStorageService) Delete(ctx context.Context, storageID int64, body ObjectStorageDeleteParams, opts ...option.RequestOption) (err error) {
+	if !param.IsOmitted(body.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", body.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("storage/v4/object_storages/%v", storageID)
@@ -98,7 +107,10 @@ func (r *ObjectStorageService) Delete(ctx context.Context, storageID int64, opts
 }
 
 // Returns details of a specific S3-compatible storage instance.
-func (r *ObjectStorageService) Get(ctx context.Context, storageID int64, opts ...option.RequestOption) (res *S3Storage, err error) {
+func (r *ObjectStorageService) Get(ctx context.Context, storageID int64, query ObjectStorageGetParams, opts ...option.RequestOption) (res *S3Storage, err error) {
+	if !param.IsOmitted(query.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", query.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("storage/v4/object_storages/%v", storageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -107,7 +119,10 @@ func (r *ObjectStorageService) Get(ctx context.Context, storageID int64, opts ..
 
 // Restores a previously deleted S3-compatible storage instance if it was deleted
 // within the last 2 weeks.
-func (r *ObjectStorageService) Restore(ctx context.Context, storageID int64, opts ...option.RequestOption) (err error) {
+func (r *ObjectStorageService) Restore(ctx context.Context, storageID int64, body ObjectStorageRestoreParams, opts ...option.RequestOption) (err error) {
+	if !param.IsOmitted(body.AcceptLanguage) {
+		opts = append(opts, option.WithHeader("Accept-Language", fmt.Sprintf("%v", body.AcceptLanguage.Value)))
+	}
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := fmt.Sprintf("storage/v4/object_storages/%v/restore", storageID)
@@ -270,7 +285,8 @@ type ObjectStorageNewParams struct {
 	// Location code where the storage should be created
 	LocationName string `json:"location_name" api:"required"`
 	// User-defined name for the storage instance
-	Name string `json:"name" api:"required"`
+	Name           string            `json:"name" api:"required"`
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
 	paramObj
 }
 
@@ -295,7 +311,8 @@ type ObjectStorageListParams struct {
 	Offset  param.Opt[int64]  `query:"offset,omitzero" json:"-"`
 	OrderBy param.Opt[string] `query:"order_by,omitzero" json:"-"`
 	// Include deleted storages
-	ShowDeleted param.Opt[bool] `query:"show_deleted,omitzero" json:"-"`
+	ShowDeleted    param.Opt[bool]   `query:"show_deleted,omitzero" json:"-"`
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
 	// Filter by provisioning status
 	//
 	// Any of "active", "creating", "updating", "deleting", "deleted".
@@ -340,3 +357,18 @@ const (
 	ObjectStorageListParamsTypeStandard ObjectStorageListParamsType = "standard"
 	ObjectStorageListParamsTypeFast     ObjectStorageListParamsType = "fast"
 )
+
+type ObjectStorageDeleteParams struct {
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
+	paramObj
+}
+
+type ObjectStorageGetParams struct {
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
+	paramObj
+}
+
+type ObjectStorageRestoreParams struct {
+	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
+	paramObj
+}

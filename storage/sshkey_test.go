@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/storage"
 )
 
-func TestSSHKeyNew(t *testing.T) {
+func TestSSHKeyNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,8 +27,9 @@ func TestSSHKeyNew(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Storage.SSHKeys.New(context.TODO(), storage.SSHKeyNewParams{
-		Name:      "my-production-key",
-		PublicKey: "ssh-rsa AAAAB3NzaC1yc2EAAA... user@example.com",
+		Name:           "my-production-key",
+		PublicKey:      "ssh-rsa AAAAB3NzaC1yc2EAAA... user@example.com",
+		AcceptLanguage: gcore.String("de-DE,de;q=0.9,en;q=0.8"),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -52,10 +53,11 @@ func TestSSHKeyListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Storage.SSHKeys.List(context.TODO(), storage.SSHKeyListParams{
-		Limit:   gcore.Int(1),
-		Name:    gcore.String("name"),
-		Offset:  gcore.Int(0),
-		OrderBy: gcore.String("order_by"),
+		Limit:          gcore.Int(1),
+		Name:           gcore.String("name"),
+		Offset:         gcore.Int(0),
+		OrderBy:        gcore.String("order_by"),
+		AcceptLanguage: gcore.String("de-DE,de;q=0.9,en;q=0.8"),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -66,7 +68,7 @@ func TestSSHKeyListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestSSHKeyDelete(t *testing.T) {
+func TestSSHKeyDeleteWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -78,7 +80,13 @@ func TestSSHKeyDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Storage.SSHKeys.Delete(context.TODO(), 0)
+	err := client.Storage.SSHKeys.Delete(
+		context.TODO(),
+		0,
+		storage.SSHKeyDeleteParams{
+			AcceptLanguage: gcore.String("de-DE,de;q=0.9,en;q=0.8"),
+		},
+	)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
@@ -88,7 +96,7 @@ func TestSSHKeyDelete(t *testing.T) {
 	}
 }
 
-func TestSSHKeyGet(t *testing.T) {
+func TestSSHKeyGetWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -100,7 +108,13 @@ func TestSSHKeyGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Storage.SSHKeys.Get(context.TODO(), 0)
+	_, err := client.Storage.SSHKeys.Get(
+		context.TODO(),
+		0,
+		storage.SSHKeyGetParams{
+			AcceptLanguage: gcore.String("de-DE,de;q=0.9,en;q=0.8"),
+		},
+	)
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
