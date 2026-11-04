@@ -34,6 +34,8 @@ type DomainService struct {
 	// policy can be turned on or off.
 	Policies        DomainPolicyService
 	PolicyOverrides DomainPolicyOverrideService
+	// WAAP domain settings control the DDoS protection thresholds and API detection of
+	// a domain.
 	Settings        DomainSettingService
 	APIPaths        DomainAPIPathService
 	APIPathGroups   DomainAPIPathGroupService

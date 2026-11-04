@@ -14,6 +14,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/param"
 )
 
+// WAAP domain settings control the DDoS protection thresholds and API detection of
+// a domain.
+//
 // DomainSettingService contains methods and other services that help with
 // interacting with the gcore API.
 //
