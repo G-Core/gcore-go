@@ -11,13 +11,19 @@ import (
 func listFlavors(client *gcore.Client) {
 	fmt.Println("\n=== LIST FLAVORS ===")
 
-	flavors, err := client.Cloud.Instances.Flavors.List(context.Background(), cloud.InstanceFlavorListParams{})
-	if err != nil {
-		fmt.Printf("Error listing flavors: %v\n", err)
+	// ListAutoPaging fetches all following pages automatically.
+	iter := client.Cloud.Instances.Flavors.ListAutoPaging(context.Background(), cloud.InstanceFlavorListParams{})
+	flavors := make([]cloud.InstanceFlavorDetailedUnion, 0)
+	for iter.Next() {
+		flavors = append(flavors, iter.Current())
+	}
+
+	if err := iter.Err(); err != nil {
+		fmt.Printf("Error iterating flavors: %v\n", err)
 		return
 	}
 
-	printFlavorDetails(flavors.Results)
+	printFlavorDetails(flavors)
 	fmt.Println("====================")
 }
 
