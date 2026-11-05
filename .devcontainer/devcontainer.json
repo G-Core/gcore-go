@@ -2,6 +2,6 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/debian
 {
   "name": "Development",
-  "image": "mcr.microsoft.com/devcontainers/go:1.23-bookworm",
+  "image": "mcr.microsoft.com/devcontainers/go:1.26-bookworm",
   "postCreateCommand": "go mod tidy"
 }
