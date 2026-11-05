@@ -15,6 +15,9 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
+// API Discovery settings control how WAAP scans a domain's API description file
+// and traffic to discover its API paths.
+//
 // DomainAPIDiscoverySettingService contains methods and other services that help
 // with interacting with the gcore API.
 //

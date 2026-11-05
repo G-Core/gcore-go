@@ -16,7 +16,9 @@ type DomainAPIDiscoveryService struct {
 	Options     []option.RequestOption
 	ScanResults DomainAPIDiscoveryScanResultService
 	OpenAPI     DomainAPIDiscoveryOpenAPIService
-	Settings    DomainAPIDiscoverySettingService
+	// API Discovery settings control how WAAP scans a domain's API description file
+	// and traffic to discover its API paths.
+	Settings DomainAPIDiscoverySettingService
 }
 
 // NewDomainAPIDiscoveryService generates a new service that applies the given
