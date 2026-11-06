@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.62.0](https://github.com/G-Core/gcore-go/compare/v0.61.0...v0.62.0) (2026-11-06)
+
+
+### Features
+
+* **cloud:** read all pages in the instance flavors example ([#62](https://github.com/G-Core/gcore-go/issues/62)) ([a0acdaa](https://github.com/G-Core/gcore-go/commit/a0acdaa891abc0457e607881624b1da8633c30c1))
+* **waap:** add detailed security events endpoint ([03cba6c](https://github.com/G-Core/gcore-go/commit/03cba6ca78cb09c0037e2397cc0768b088e9ff1d))
+* **waap:** add the gcore_waap_domain_api_discovery_settings Terraform resource ([6fdec4c](https://github.com/G-Core/gcore-go/commit/6fdec4cd68faa3751ad76266e99d444471a26878))
+* **waap:** add the gcore_waap_domain_settings Terraform resource ([dc02e20](https://github.com/G-Core/gcore-go/commit/dc02e20effeb4f84cde66c1527a90383b19b5d7b))
+
+
+### Bug Fixes
+
+* **cloud:** mark file share quota as computed in Terraform ([5d13bf4](https://github.com/G-Core/gcore-go/commit/5d13bf4b34695c1c2392d33066e8b120db676b05))
+* **iam:** make account overview name non-nullable ([7569f7a](https://github.com/G-Core/gcore-go/commit/7569f7a4484eae07bd54401243417c65db259c59))
+
+
+### Chores
+
+* reseal custom code from G-Core/terraform-provider-gcore-staging@7d63275ba85a3f96d203d47653a189779c141914 ([81321e7](https://github.com/G-Core/gcore-go/commit/81321e74a406c83303f201bae877a03282438be1))
+* **storage:** update storage OpenAPI spec ([0254b86](https://github.com/G-Core/gcore-go/commit/0254b8677e022ff5c250f6d92d7a81453a39f015))
+* **waap:** update waap OpenAPI spec ([03dff12](https://github.com/G-Core/gcore-go/commit/03dff12d01f3e23124fdd9fb205c9cdb896ce046))
+* **waap:** update waap OpenAPI spec ([def718c](https://github.com/G-Core/gcore-go/commit/def718c9d5c235fd881032828fcac3b720ac70ef))
+
 ## [0.61.0](https://github.com/G-Core/gcore-go/compare/v0.60.0...v0.61.0) (2026-11-03)
 
 
