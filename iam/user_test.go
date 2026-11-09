@@ -59,8 +59,21 @@ func TestUserListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Iam.Users.List(context.TODO(), iam.UserListParams{
-		Limit:  gcore.Int(0),
-		Offset: gcore.Int(0),
+		AuthType: iam.UserListParamsAuthTypePassword,
+		CreatedAt: map[string]any{
+			"foo": "bar",
+		},
+		Email: map[string]any{
+			"foo": "bar",
+		},
+		IDs:   []int64{0},
+		Langs: []string{"az"},
+		Limit: gcore.Int(0),
+		Name: map[string]any{
+			"foo": "bar",
+		},
+		Offset:  gcore.Int(0),
+		OrderBy: gcore.String("order_by"),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -112,6 +125,28 @@ func TestUserGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Iam.Users.Get(context.TODO(), 0)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestUserGetMe(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Iam.Users.GetMe(context.TODO())
 	if err != nil {
 		var apierr *gcore.Error
 		if errors.As(err, &apierr) {
