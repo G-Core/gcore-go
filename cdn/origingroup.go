@@ -461,7 +461,15 @@ func (r *OriginGroupsNoneAuthSourceS3Source) UnmarshalJSON(data []byte) error {
 type OriginGroupsNoneAuthSourceS3SourceConfig struct {
 	// S3 bucket name.
 	//
-	// If `s3_type` is `gcore`, the bucket must exist in the selected storage.
+	// Restrictions:
+	//
+	//   - If `s3_type` is `amazon`: from 3 to 63 lowercase Latin letters (a-z), numbers
+	//     (0-9), dots and dashes; must start and end with a letter or number, must not
+	//     contain two dots in a row, and must not be formatted as an IP address.
+	//   - If `s3_type` is `other`: Latin letters (A-Z, a-z), numbers (0-9), dots,
+	//     dashes, underscores and colons.
+	//   - If `s3_type` is `gcore`: Latin letters (A-Z, a-z), numbers (0-9), dots, dashes
+	//     and underscores. The bucket must exist in the selected storage.
 	S3BucketName string `json:"s3_bucket_name" api:"required"`
 	// Storage type compatible with S3.
 	//
@@ -506,6 +514,9 @@ type OriginGroupsNoneAuthSourceS3SourceConfig struct {
 	//
 	// The parameter is required if `s3_type` is `other`. Not allowed if `s3_type` is
 	// `gcore`: the CDN fills it and does not return it.
+	//
+	// A hostname or an IPv4 address, optionally followed by a colon and a port from 1
+	// to 65535. IPv6 addresses are not supported.
 	//
 	// Must be a public address: private and reserved IP addresses, `localhost`, and
 	// hostnames that resolve to them are rejected.
@@ -712,9 +723,17 @@ type OriginGroupsAwsSignatureV4Auth struct {
 	// Restrictions:
 	//
 	// - Latin letters (A-Z, a-z), numbers (0-9), colon, dash, and underscore.
-	// - From 3 to 512 characters.
+	// - From 4 to 255 characters.
 	S3AccessKeyID string `json:"s3_access_key_id" api:"required"`
 	// S3 bucket name.
+	//
+	// Restrictions:
+	//
+	//   - If "s3_type": amazon, from 3 to 63 lowercase Latin letters (a-z), numbers
+	//     (0-9), dots and dashes; must start and end with a letter or number, must not
+	//     contain two dots in a row, and must not be formatted as an IP address.
+	//   - If "s3_type": other, Latin letters (A-Z, a-z), numbers (0-9), dots, dashes,
+	//     underscores and colons.
 	S3BucketName string `json:"s3_bucket_name" api:"required"`
 	// Secret access key for the S3 account.
 	//
@@ -722,8 +741,7 @@ type OriginGroupsAwsSignatureV4Auth struct {
 	//
 	//   - Latin letters (A-Z, a-z), numbers (0-9), pluses, slashes, dashes, colons and
 	//     underscores.
-	//   - If "s3_type": amazon, length should be 40 characters.
-	//   - If "s3_type": other, length should be from 16 to 255 characters.
+	//   - From 16 to 255 characters.
 	S3SecretAccessKey string `json:"s3_secret_access_key" api:"required"`
 	// Storage type compatible with S3.
 	//
@@ -739,6 +757,9 @@ type OriginGroupsAwsSignatureV4Auth struct {
 	// S3 storage hostname.
 	//
 	// The parameter is required, if "s3_type": other.
+	//
+	// A hostname or an IPv4 address, optionally followed by a colon and a port from 1
+	// to 65535. IPv6 addresses are not supported.
 	//
 	// Must be a public address: private and reserved IP addresses, `localhost`, and
 	// hostnames that resolve to them are rejected.
@@ -1098,7 +1119,15 @@ func init() {
 type OriginGroupNewParamsBodyNoneAuthSourceS3SourceConfig struct {
 	// S3 bucket name.
 	//
-	// If `s3_type` is `gcore`, the bucket must exist in the selected storage.
+	// Restrictions:
+	//
+	//   - If `s3_type` is `amazon`: from 3 to 63 lowercase Latin letters (a-z), numbers
+	//     (0-9), dots and dashes; must start and end with a letter or number, must not
+	//     contain two dots in a row, and must not be formatted as an IP address.
+	//   - If `s3_type` is `other`: Latin letters (A-Z, a-z), numbers (0-9), dots,
+	//     dashes, underscores and colons.
+	//   - If `s3_type` is `gcore`: Latin letters (A-Z, a-z), numbers (0-9), dots, dashes
+	//     and underscores. The bucket must exist in the selected storage.
 	S3BucketName string `json:"s3_bucket_name" api:"required"`
 	// Storage type compatible with S3.
 	//
@@ -1120,6 +1149,9 @@ type OriginGroupNewParamsBodyNoneAuthSourceS3SourceConfig struct {
 	//
 	// The parameter is required if `s3_type` is `other`. Not allowed if `s3_type` is
 	// `gcore`: the CDN fills it and does not return it.
+	//
+	// A hostname or an IPv4 address, optionally followed by a colon and a port from 1
+	// to 65535. IPv6 addresses are not supported.
 	//
 	// Must be a public address: private and reserved IP addresses, `localhost`, and
 	// hostnames that resolve to them are rejected.
@@ -1322,9 +1354,17 @@ type OriginGroupNewParamsBodyAwsSignatureV4Auth struct {
 	// Restrictions:
 	//
 	// - Latin letters (A-Z, a-z), numbers (0-9), colon, dash, and underscore.
-	// - From 3 to 512 characters.
+	// - From 4 to 255 characters.
 	S3AccessKeyID string `json:"s3_access_key_id" api:"required"`
 	// S3 bucket name.
+	//
+	// Restrictions:
+	//
+	//   - If "s3_type": amazon, from 3 to 63 lowercase Latin letters (a-z), numbers
+	//     (0-9), dots and dashes; must start and end with a letter or number, must not
+	//     contain two dots in a row, and must not be formatted as an IP address.
+	//   - If "s3_type": other, Latin letters (A-Z, a-z), numbers (0-9), dots, dashes,
+	//     underscores and colons.
 	S3BucketName string `json:"s3_bucket_name" api:"required"`
 	// Secret access key for the S3 account.
 	//
@@ -1332,8 +1372,7 @@ type OriginGroupNewParamsBodyAwsSignatureV4Auth struct {
 	//
 	//   - Latin letters (A-Z, a-z), numbers (0-9), pluses, slashes, dashes, colons and
 	//     underscores.
-	//   - If "s3_type": amazon, length should be 40 characters.
-	//   - If "s3_type": other, length should be from 16 to 255 characters.
+	//   - From 16 to 255 characters.
 	S3SecretAccessKey string `json:"s3_secret_access_key" api:"required"`
 	// Storage type compatible with S3.
 	//
@@ -1349,6 +1388,9 @@ type OriginGroupNewParamsBodyAwsSignatureV4Auth struct {
 	// S3 storage hostname.
 	//
 	// The parameter is required, if "s3_type": other.
+	//
+	// A hostname or an IPv4 address, optionally followed by a colon and a port from 1
+	// to 65535. IPv6 addresses are not supported.
 	//
 	// Must be a public address: private and reserved IP addresses, `localhost`, and
 	// hostnames that resolve to them are rejected.
@@ -1679,7 +1721,15 @@ func init() {
 type OriginGroupUpdateParamsBodyNoneAuthSourceS3SourceConfig struct {
 	// S3 bucket name.
 	//
-	// If `s3_type` is `gcore`, the bucket must exist in the selected storage.
+	// Restrictions:
+	//
+	//   - If `s3_type` is `amazon`: from 3 to 63 lowercase Latin letters (a-z), numbers
+	//     (0-9), dots and dashes; must start and end with a letter or number, must not
+	//     contain two dots in a row, and must not be formatted as an IP address.
+	//   - If `s3_type` is `other`: Latin letters (A-Z, a-z), numbers (0-9), dots,
+	//     dashes, underscores and colons.
+	//   - If `s3_type` is `gcore`: Latin letters (A-Z, a-z), numbers (0-9), dots, dashes
+	//     and underscores. The bucket must exist in the selected storage.
 	S3BucketName string `json:"s3_bucket_name" api:"required"`
 	// Storage type compatible with S3.
 	//
@@ -1701,6 +1751,9 @@ type OriginGroupUpdateParamsBodyNoneAuthSourceS3SourceConfig struct {
 	//
 	// The parameter is required if `s3_type` is `other`. Not allowed if `s3_type` is
 	// `gcore`: the CDN fills it and does not return it.
+	//
+	// A hostname or an IPv4 address, optionally followed by a colon and a port from 1
+	// to 65535. IPv6 addresses are not supported.
 	//
 	// Must be a public address: private and reserved IP addresses, `localhost`, and
 	// hostnames that resolve to them are rejected.
@@ -1908,9 +1961,17 @@ type OriginGroupUpdateParamsBodyAwsSignatureV4Auth struct {
 	// Restrictions:
 	//
 	// - Latin letters (A-Z, a-z), numbers (0-9), colon, dash, and underscore.
-	// - From 3 to 512 characters.
+	// - From 4 to 255 characters.
 	S3AccessKeyID string `json:"s3_access_key_id" api:"required"`
 	// S3 bucket name.
+	//
+	// Restrictions:
+	//
+	//   - If "s3_type": amazon, from 3 to 63 lowercase Latin letters (a-z), numbers
+	//     (0-9), dots and dashes; must start and end with a letter or number, must not
+	//     contain two dots in a row, and must not be formatted as an IP address.
+	//   - If "s3_type": other, Latin letters (A-Z, a-z), numbers (0-9), dots, dashes,
+	//     underscores and colons.
 	S3BucketName string `json:"s3_bucket_name" api:"required"`
 	// Secret access key for the S3 account.
 	//
@@ -1918,8 +1979,7 @@ type OriginGroupUpdateParamsBodyAwsSignatureV4Auth struct {
 	//
 	//   - Latin letters (A-Z, a-z), numbers (0-9), pluses, slashes, dashes, colons and
 	//     underscores.
-	//   - If "s3_type": amazon, length should be 40 characters.
-	//   - If "s3_type": other, length should be from 16 to 255 characters.
+	//   - From 16 to 255 characters.
 	S3SecretAccessKey string `json:"s3_secret_access_key" api:"required"`
 	// Storage type compatible with S3.
 	//
@@ -1935,6 +1995,9 @@ type OriginGroupUpdateParamsBodyAwsSignatureV4Auth struct {
 	// S3 storage hostname.
 	//
 	// The parameter is required, if "s3_type": other.
+	//
+	// A hostname or an IPv4 address, optionally followed by a colon and a port from 1
+	// to 65535. IPv6 addresses are not supported.
 	//
 	// Must be a public address: private and reserved IP addresses, `localhost`, and
 	// hostnames that resolve to them are rejected.
@@ -2292,7 +2355,15 @@ func init() {
 type OriginGroupReplaceParamsBodyNoneAuthSourceS3SourceConfig struct {
 	// S3 bucket name.
 	//
-	// If `s3_type` is `gcore`, the bucket must exist in the selected storage.
+	// Restrictions:
+	//
+	//   - If `s3_type` is `amazon`: from 3 to 63 lowercase Latin letters (a-z), numbers
+	//     (0-9), dots and dashes; must start and end with a letter or number, must not
+	//     contain two dots in a row, and must not be formatted as an IP address.
+	//   - If `s3_type` is `other`: Latin letters (A-Z, a-z), numbers (0-9), dots,
+	//     dashes, underscores and colons.
+	//   - If `s3_type` is `gcore`: Latin letters (A-Z, a-z), numbers (0-9), dots, dashes
+	//     and underscores. The bucket must exist in the selected storage.
 	S3BucketName string `json:"s3_bucket_name" api:"required"`
 	// Storage type compatible with S3.
 	//
@@ -2314,6 +2385,9 @@ type OriginGroupReplaceParamsBodyNoneAuthSourceS3SourceConfig struct {
 	//
 	// The parameter is required if `s3_type` is `other`. Not allowed if `s3_type` is
 	// `gcore`: the CDN fills it and does not return it.
+	//
+	// A hostname or an IPv4 address, optionally followed by a colon and a port from 1
+	// to 65535. IPv6 addresses are not supported.
 	//
 	// Must be a public address: private and reserved IP addresses, `localhost`, and
 	// hostnames that resolve to them are rejected.
@@ -2523,9 +2597,17 @@ type OriginGroupReplaceParamsBodyAwsSignatureV4Auth struct {
 	// Restrictions:
 	//
 	// - Latin letters (A-Z, a-z), numbers (0-9), colon, dash, and underscore.
-	// - From 3 to 512 characters.
+	// - From 4 to 255 characters.
 	S3AccessKeyID string `json:"s3_access_key_id" api:"required"`
 	// S3 bucket name.
+	//
+	// Restrictions:
+	//
+	//   - If "s3_type": amazon, from 3 to 63 lowercase Latin letters (a-z), numbers
+	//     (0-9), dots and dashes; must start and end with a letter or number, must not
+	//     contain two dots in a row, and must not be formatted as an IP address.
+	//   - If "s3_type": other, Latin letters (A-Z, a-z), numbers (0-9), dots, dashes,
+	//     underscores and colons.
 	S3BucketName string `json:"s3_bucket_name" api:"required"`
 	// Secret access key for the S3 account.
 	//
@@ -2533,8 +2615,7 @@ type OriginGroupReplaceParamsBodyAwsSignatureV4Auth struct {
 	//
 	//   - Latin letters (A-Z, a-z), numbers (0-9), pluses, slashes, dashes, colons and
 	//     underscores.
-	//   - If "s3_type": amazon, length should be 40 characters.
-	//   - If "s3_type": other, length should be from 16 to 255 characters.
+	//   - From 16 to 255 characters.
 	S3SecretAccessKey string `json:"s3_secret_access_key" api:"required"`
 	// Storage type compatible with S3.
 	//
@@ -2550,6 +2631,9 @@ type OriginGroupReplaceParamsBodyAwsSignatureV4Auth struct {
 	// S3 storage hostname.
 	//
 	// The parameter is required, if "s3_type": other.
+	//
+	// A hostname or an IPv4 address, optionally followed by a colon and a port from 1
+	// to 65535. IPv6 addresses are not supported.
 	//
 	// Must be a public address: private and reserved IP addresses, `localhost`, and
 	// hostnames that resolve to them are rejected.
