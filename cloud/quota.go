@@ -77,9 +77,9 @@ func (r *QuotaService) GetGlobal(ctx context.Context, clientID int64, opts ...op
 
 type Quota struct {
 	// Global entity quotas
-	GlobalQuotas QuotaGlobalQuotas `json:"global_quotas"`
+	GlobalQuotas QuotaGlobalQuotas `json:"global_quotas" api:"required"`
 	// Regional entity quotas. Only contains initialized quotas.
-	RegionalQuotas []QuotaRegionalQuota `json:"regional_quotas"`
+	RegionalQuotas []QuotaRegionalQuota `json:"regional_quotas" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		GlobalQuotas   respjson.Field
@@ -98,37 +98,37 @@ func (r *Quota) UnmarshalJSON(data []byte) error {
 // Global entity quotas
 type QuotaGlobalQuotas struct {
 	// Inference CPU millicore count limit
-	InferenceCPUMillicoreCountLimit int64 `json:"inference_cpu_millicore_count_limit"`
+	InferenceCPUMillicoreCountLimit int64 `json:"inference_cpu_millicore_count_limit" api:"required"`
 	// Inference CPU millicore count usage
-	InferenceCPUMillicoreCountUsage int64 `json:"inference_cpu_millicore_count_usage"`
+	InferenceCPUMillicoreCountUsage int64 `json:"inference_cpu_millicore_count_usage" api:"required"`
 	// Inference GPU A100 Count limit
-	InferenceGPUA100CountLimit int64 `json:"inference_gpu_a100_count_limit"`
+	InferenceGPUA100CountLimit int64 `json:"inference_gpu_a100_count_limit" api:"required"`
 	// Inference GPU A100 Count usage
-	InferenceGPUA100CountUsage int64 `json:"inference_gpu_a100_count_usage"`
+	InferenceGPUA100CountUsage int64 `json:"inference_gpu_a100_count_usage" api:"required"`
 	// Inference GPU H100 Count limit
-	InferenceGPUH100CountLimit int64 `json:"inference_gpu_h100_count_limit"`
+	InferenceGPUH100CountLimit int64 `json:"inference_gpu_h100_count_limit" api:"required"`
 	// Inference GPU H100 Count usage
-	InferenceGPUH100CountUsage int64 `json:"inference_gpu_h100_count_usage"`
+	InferenceGPUH100CountUsage int64 `json:"inference_gpu_h100_count_usage" api:"required"`
 	// Inference GPU L40s Count limit
-	InferenceGPUL40sCountLimit int64 `json:"inference_gpu_l40s_count_limit"`
+	InferenceGPUL40sCountLimit int64 `json:"inference_gpu_l40s_count_limit" api:"required"`
 	// Inference GPU L40s Count usage
-	InferenceGPUL40sCountUsage int64 `json:"inference_gpu_l40s_count_usage"`
+	InferenceGPUL40sCountUsage int64 `json:"inference_gpu_l40s_count_usage" api:"required"`
 	// Inference instance count limit
-	InferenceInstanceCountLimit int64 `json:"inference_instance_count_limit"`
+	InferenceInstanceCountLimit int64 `json:"inference_instance_count_limit" api:"required"`
 	// Inference instance count usage
-	InferenceInstanceCountUsage int64 `json:"inference_instance_count_usage"`
+	InferenceInstanceCountUsage int64 `json:"inference_instance_count_usage" api:"required"`
 	// Public model API keys count limit
-	InferencePublicModelAPIKeyCountLimit int64 `json:"inference_public_model_api_key_count_limit"`
+	InferencePublicModelAPIKeyCountLimit int64 `json:"inference_public_model_api_key_count_limit" api:"required"`
 	// Public model API keys count usage
-	InferencePublicModelAPIKeyCountUsage int64 `json:"inference_public_model_api_key_count_usage"`
+	InferencePublicModelAPIKeyCountUsage int64 `json:"inference_public_model_api_key_count_usage" api:"required"`
 	// SSH Keys Count limit
-	KeypairCountLimit int64 `json:"keypair_count_limit"`
+	KeypairCountLimit int64 `json:"keypair_count_limit" api:"required"`
 	// SSH Keys Count usage
-	KeypairCountUsage int64 `json:"keypair_count_usage"`
+	KeypairCountUsage int64 `json:"keypair_count_usage" api:"required"`
 	// Projects Count limit
-	ProjectCountLimit int64 `json:"project_count_limit"`
+	ProjectCountLimit int64 `json:"project_count_limit" api:"required"`
 	// Projects Count usage
-	ProjectCountUsage int64 `json:"project_count_usage"`
+	ProjectCountUsage int64 `json:"project_count_usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		InferenceCPUMillicoreCountLimit      respjson.Field
@@ -160,225 +160,225 @@ func (r *QuotaGlobalQuotas) UnmarshalJSON(data []byte) error {
 
 type QuotaRegionalQuota struct {
 	// Basic bare metal servers count limit
-	BaremetalBasicCountLimit int64 `json:"baremetal_basic_count_limit"`
+	BaremetalBasicCountLimit int64 `json:"baremetal_basic_count_limit" api:"required"`
 	// Basic bare metal servers count usage
-	BaremetalBasicCountUsage int64 `json:"baremetal_basic_count_usage"`
+	BaremetalBasicCountUsage int64 `json:"baremetal_basic_count_usage" api:"required"`
 	// Bare metal A100 GPU server count limit
-	BaremetalGPUA100CountLimit int64 `json:"baremetal_gpu_a100_count_limit"`
+	BaremetalGPUA100CountLimit int64 `json:"baremetal_gpu_a100_count_limit" api:"required"`
 	// Bare metal A100 GPU server count usage
-	BaremetalGPUA100CountUsage int64 `json:"baremetal_gpu_a100_count_usage"`
+	BaremetalGPUA100CountUsage int64 `json:"baremetal_gpu_a100_count_usage" api:"required"`
 	// Total number of AI GPU bare metal servers. This field is deprecated and is now
 	// always calculated automatically as the sum of `baremetal_gpu_a100_count_limit`,
 	// `baremetal_gpu_h100_count_limit`, `baremetal_gpu_h200_count_limit`, and
 	// `baremetal_gpu_l40s_count_limit`.
 	//
 	// Deprecated: deprecated
-	BaremetalGPUCountLimit int64 `json:"baremetal_gpu_count_limit"`
-	// Baremetal Gpu Count Usage. This field is deprecated and is now always calculated
-	// automatically as the sum of `baremetal_gpu_a100_count_usage`,
-	// `baremetal_gpu_h100_count_usage`, `baremetal_gpu_h200_count_usage`, and
-	// `baremetal_gpu_l40s_count_usage`.
+	BaremetalGPUCountLimit int64 `json:"baremetal_gpu_count_limit" api:"required"`
+	// Total number of AI GPU bare metal servers in use. This field is deprecated and
+	// is now always calculated automatically as the sum of
+	// `baremetal_gpu_a100_count_usage`, `baremetal_gpu_h100_count_usage`,
+	// `baremetal_gpu_h200_count_usage`, and `baremetal_gpu_l40s_count_usage`.
 	//
 	// Deprecated: deprecated
-	BaremetalGPUCountUsage int64 `json:"baremetal_gpu_count_usage"`
+	BaremetalGPUCountUsage int64 `json:"baremetal_gpu_count_usage" api:"required"`
 	// Bare metal H100 GPU server count limit
-	BaremetalGPUH100CountLimit int64 `json:"baremetal_gpu_h100_count_limit"`
+	BaremetalGPUH100CountLimit int64 `json:"baremetal_gpu_h100_count_limit" api:"required"`
 	// Bare metal H100 GPU server count usage
-	BaremetalGPUH100CountUsage int64 `json:"baremetal_gpu_h100_count_usage"`
+	BaremetalGPUH100CountUsage int64 `json:"baremetal_gpu_h100_count_usage" api:"required"`
 	// Bare metal H200 GPU server count limit
-	BaremetalGPUH200CountLimit int64 `json:"baremetal_gpu_h200_count_limit"`
+	BaremetalGPUH200CountLimit int64 `json:"baremetal_gpu_h200_count_limit" api:"required"`
 	// Bare metal H200 GPU server count usage
-	BaremetalGPUH200CountUsage int64 `json:"baremetal_gpu_h200_count_usage"`
+	BaremetalGPUH200CountUsage int64 `json:"baremetal_gpu_h200_count_usage" api:"required"`
 	// Bare metal L40S GPU server count limit
-	BaremetalGPUL40sCountLimit int64 `json:"baremetal_gpu_l40s_count_limit"`
+	BaremetalGPUL40sCountLimit int64 `json:"baremetal_gpu_l40s_count_limit" api:"required"`
 	// Bare metal L40S GPU server count usage
-	BaremetalGPUL40sCountUsage int64 `json:"baremetal_gpu_l40s_count_usage"`
+	BaremetalGPUL40sCountUsage int64 `json:"baremetal_gpu_l40s_count_usage" api:"required"`
 	// High-frequency bare metal servers count limit
-	BaremetalHfCountLimit int64 `json:"baremetal_hf_count_limit"`
+	BaremetalHfCountLimit int64 `json:"baremetal_hf_count_limit" api:"required"`
 	// High-frequency bare metal servers count usage
-	BaremetalHfCountUsage int64 `json:"baremetal_hf_count_usage"`
+	BaremetalHfCountUsage int64 `json:"baremetal_hf_count_usage" api:"required"`
 	// Infrastructure bare metal servers count limit
-	BaremetalInfrastructureCountLimit int64 `json:"baremetal_infrastructure_count_limit"`
+	BaremetalInfrastructureCountLimit int64 `json:"baremetal_infrastructure_count_limit" api:"required"`
 	// Infrastructure bare metal servers count usage
-	BaremetalInfrastructureCountUsage int64 `json:"baremetal_infrastructure_count_usage"`
+	BaremetalInfrastructureCountUsage int64 `json:"baremetal_infrastructure_count_usage" api:"required"`
 	// Bare metal Network Count limit
-	BaremetalNetworkCountLimit int64 `json:"baremetal_network_count_limit"`
+	BaremetalNetworkCountLimit int64 `json:"baremetal_network_count_limit" api:"required"`
 	// Bare metal Network Count usage
-	BaremetalNetworkCountUsage int64 `json:"baremetal_network_count_usage"`
+	BaremetalNetworkCountUsage int64 `json:"baremetal_network_count_usage" api:"required"`
 	// Storage bare metal servers count limit
-	BaremetalStorageCountLimit int64 `json:"baremetal_storage_count_limit"`
+	BaremetalStorageCountLimit int64 `json:"baremetal_storage_count_limit" api:"required"`
 	// Storage bare metal servers count usage
-	BaremetalStorageCountUsage int64 `json:"baremetal_storage_count_usage"`
+	BaremetalStorageCountUsage int64 `json:"baremetal_storage_count_usage" api:"required"`
 	// Containers count limit
-	CaasContainerCountLimit int64 `json:"caas_container_count_limit"`
+	CaasContainerCountLimit int64 `json:"caas_container_count_limit" api:"required"`
 	// Containers count usage
-	CaasContainerCountUsage int64 `json:"caas_container_count_usage"`
+	CaasContainerCountUsage int64 `json:"caas_container_count_usage" api:"required"`
 	// mCPU count for containers limit
-	CaasCPUCountLimit int64 `json:"caas_cpu_count_limit"`
+	CaasCPUCountLimit int64 `json:"caas_cpu_count_limit" api:"required"`
 	// mCPU count for containers usage
-	CaasCPUCountUsage int64 `json:"caas_cpu_count_usage"`
+	CaasCPUCountUsage int64 `json:"caas_cpu_count_usage" api:"required"`
 	// Containers gpu count limit
-	CaasGPUCountLimit int64 `json:"caas_gpu_count_limit"`
+	CaasGPUCountLimit int64 `json:"caas_gpu_count_limit" api:"required"`
 	// Containers gpu count usage
-	CaasGPUCountUsage int64 `json:"caas_gpu_count_usage"`
+	CaasGPUCountUsage int64 `json:"caas_gpu_count_usage" api:"required"`
 	// MiB memory count for containers limit
-	CaasRamSizeLimit int64 `json:"caas_ram_size_limit"`
+	CaasRamSizeLimit int64 `json:"caas_ram_size_limit" api:"required"`
 	// MiB memory count for containers usage
-	CaasRamSizeUsage int64 `json:"caas_ram_size_usage"`
+	CaasRamSizeUsage int64 `json:"caas_ram_size_usage" api:"required"`
 	// K8s clusters count limit
-	ClusterCountLimit int64 `json:"cluster_count_limit"`
+	ClusterCountLimit int64 `json:"cluster_count_limit" api:"required"`
 	// K8s clusters count usage
-	ClusterCountUsage int64 `json:"cluster_count_usage"`
+	ClusterCountUsage int64 `json:"cluster_count_usage" api:"required"`
 	// vCPU Count limit
-	CPUCountLimit int64 `json:"cpu_count_limit"`
+	CPUCountLimit int64 `json:"cpu_count_limit" api:"required"`
 	// vCPU Count usage
-	CPUCountUsage int64 `json:"cpu_count_usage"`
+	CPUCountUsage int64 `json:"cpu_count_usage" api:"required"`
 	// DBaaS cluster count limit
-	DbaasPostgresClusterCountLimit int64 `json:"dbaas_postgres_cluster_count_limit"`
+	DbaasPostgresClusterCountLimit int64 `json:"dbaas_postgres_cluster_count_limit" api:"required"`
 	// DBaaS cluster count usage
-	DbaasPostgresClusterCountUsage int64 `json:"dbaas_postgres_cluster_count_usage"`
+	DbaasPostgresClusterCountUsage int64 `json:"dbaas_postgres_cluster_count_usage" api:"required"`
 	// External IP Count limit
-	ExternalIPCountLimit int64 `json:"external_ip_count_limit"`
+	ExternalIPCountLimit int64 `json:"external_ip_count_limit" api:"required"`
 	// External IP Count usage
-	ExternalIPCountUsage int64 `json:"external_ip_count_usage"`
+	ExternalIPCountUsage int64 `json:"external_ip_count_usage" api:"required"`
 	// mCPU count for functions limit
-	FaasCPUCountLimit int64 `json:"faas_cpu_count_limit"`
+	FaasCPUCountLimit int64 `json:"faas_cpu_count_limit" api:"required"`
 	// mCPU count for functions usage
-	FaasCPUCountUsage int64 `json:"faas_cpu_count_usage"`
+	FaasCPUCountUsage int64 `json:"faas_cpu_count_usage" api:"required"`
 	// Functions count limit
-	FaasFunctionCountLimit int64 `json:"faas_function_count_limit"`
+	FaasFunctionCountLimit int64 `json:"faas_function_count_limit" api:"required"`
 	// Functions count usage
-	FaasFunctionCountUsage int64 `json:"faas_function_count_usage"`
+	FaasFunctionCountUsage int64 `json:"faas_function_count_usage" api:"required"`
 	// Functions namespace count limit
-	FaasNamespaceCountLimit int64 `json:"faas_namespace_count_limit"`
+	FaasNamespaceCountLimit int64 `json:"faas_namespace_count_limit" api:"required"`
 	// Functions namespace count usage
-	FaasNamespaceCountUsage int64 `json:"faas_namespace_count_usage"`
+	FaasNamespaceCountUsage int64 `json:"faas_namespace_count_usage" api:"required"`
 	// MiB memory count for functions limit
-	FaasRamSizeLimit int64 `json:"faas_ram_size_limit"`
+	FaasRamSizeLimit int64 `json:"faas_ram_size_limit" api:"required"`
 	// MiB memory count for functions usage
-	FaasRamSizeUsage int64 `json:"faas_ram_size_usage"`
+	FaasRamSizeUsage int64 `json:"faas_ram_size_usage" api:"required"`
 	// Firewalls Count limit
-	FirewallCountLimit int64 `json:"firewall_count_limit"`
+	FirewallCountLimit int64 `json:"firewall_count_limit" api:"required"`
 	// Firewalls Count usage
-	FirewallCountUsage int64 `json:"firewall_count_usage"`
+	FirewallCountUsage int64 `json:"firewall_count_usage" api:"required"`
 	// Floating IP Count limit
-	FloatingCountLimit int64 `json:"floating_count_limit"`
+	FloatingCountLimit int64 `json:"floating_count_limit" api:"required"`
 	// Floating IP Count usage
-	FloatingCountUsage int64 `json:"floating_count_usage"`
+	FloatingCountUsage int64 `json:"floating_count_usage" api:"required"`
 	// GPU Count limit
-	GPUCountLimit int64 `json:"gpu_count_limit"`
+	GPUCountLimit int64 `json:"gpu_count_limit" api:"required"`
 	// GPU Count usage
-	GPUCountUsage int64 `json:"gpu_count_usage"`
+	GPUCountUsage int64 `json:"gpu_count_usage" api:"required"`
 	// Virtual A100 GPU card count limit
-	GPUVirtualA100CountLimit int64 `json:"gpu_virtual_a100_count_limit"`
+	GPUVirtualA100CountLimit int64 `json:"gpu_virtual_a100_count_limit" api:"required"`
 	// Virtual A100 GPU card count usage
-	GPUVirtualA100CountUsage int64 `json:"gpu_virtual_a100_count_usage"`
+	GPUVirtualA100CountUsage int64 `json:"gpu_virtual_a100_count_usage" api:"required"`
 	// Virtual H100 GPU card count limit
-	GPUVirtualH100CountLimit int64 `json:"gpu_virtual_h100_count_limit"`
+	GPUVirtualH100CountLimit int64 `json:"gpu_virtual_h100_count_limit" api:"required"`
 	// Virtual H100 GPU card count usage
-	GPUVirtualH100CountUsage int64 `json:"gpu_virtual_h100_count_usage"`
+	GPUVirtualH100CountUsage int64 `json:"gpu_virtual_h100_count_usage" api:"required"`
 	// Virtual H200 GPU card count limit
-	GPUVirtualH200CountLimit int64 `json:"gpu_virtual_h200_count_limit"`
+	GPUVirtualH200CountLimit int64 `json:"gpu_virtual_h200_count_limit" api:"required"`
 	// Virtual H200 GPU card count usage
-	GPUVirtualH200CountUsage int64 `json:"gpu_virtual_h200_count_usage"`
+	GPUVirtualH200CountUsage int64 `json:"gpu_virtual_h200_count_usage" api:"required"`
 	// Virtual L40S GPU card count limit
-	GPUVirtualL40sCountLimit int64 `json:"gpu_virtual_l40s_count_limit"`
+	GPUVirtualL40sCountLimit int64 `json:"gpu_virtual_l40s_count_limit" api:"required"`
 	// Virtual L40S GPU card count usage
-	GPUVirtualL40sCountUsage int64 `json:"gpu_virtual_l40s_count_usage"`
+	GPUVirtualL40sCountUsage int64 `json:"gpu_virtual_l40s_count_usage" api:"required"`
 	// Images Count limit
-	ImageCountLimit int64 `json:"image_count_limit"`
+	ImageCountLimit int64 `json:"image_count_limit" api:"required"`
 	// Images Count usage
-	ImageCountUsage int64 `json:"image_count_usage"`
+	ImageCountUsage int64 `json:"image_count_usage" api:"required"`
 	// Images Size, bytes limit
-	ImageSizeLimit int64 `json:"image_size_limit"`
+	ImageSizeLimit int64 `json:"image_size_limit" api:"required"`
 	// Images Size, bytes usage
-	ImageSizeUsage int64 `json:"image_size_usage"`
+	ImageSizeUsage int64 `json:"image_size_usage" api:"required"`
 	// IPU Count limit
-	IpuCountLimit int64 `json:"ipu_count_limit"`
+	IpuCountLimit int64 `json:"ipu_count_limit" api:"required"`
 	// IPU Count usage
-	IpuCountUsage int64 `json:"ipu_count_usage"`
+	IpuCountUsage int64 `json:"ipu_count_usage" api:"required"`
 	// LaaS Topics Count limit
-	LaasTopicCountLimit int64 `json:"laas_topic_count_limit"`
+	LaasTopicCountLimit int64 `json:"laas_topic_count_limit" api:"required"`
 	// LaaS Topics Count usage
-	LaasTopicCountUsage int64 `json:"laas_topic_count_usage"`
+	LaasTopicCountUsage int64 `json:"laas_topic_count_usage" api:"required"`
 	// Load Balancers Count limit
-	LoadbalancerCountLimit int64 `json:"loadbalancer_count_limit"`
+	LoadbalancerCountLimit int64 `json:"loadbalancer_count_limit" api:"required"`
 	// Load Balancers Count usage
-	LoadbalancerCountUsage int64 `json:"loadbalancer_count_usage"`
+	LoadbalancerCountUsage int64 `json:"loadbalancer_count_usage" api:"required"`
 	// Networks Count limit
-	NetworkCountLimit int64 `json:"network_count_limit"`
+	NetworkCountLimit int64 `json:"network_count_limit" api:"required"`
 	// Networks Count usage
-	NetworkCountUsage int64 `json:"network_count_usage"`
+	NetworkCountUsage int64 `json:"network_count_usage" api:"required"`
 	// RAM Size, MiB limit
-	RamLimit int64 `json:"ram_limit"`
+	RamLimit int64 `json:"ram_limit" api:"required"`
 	// RAM Size, MiB usage
-	RamUsage int64 `json:"ram_usage"`
+	RamUsage int64 `json:"ram_usage" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Registries count limit
-	RegistryCountLimit int64 `json:"registry_count_limit"`
+	RegistryCountLimit int64 `json:"registry_count_limit" api:"required"`
 	// Registries count usage
-	RegistryCountUsage int64 `json:"registry_count_usage"`
+	RegistryCountUsage int64 `json:"registry_count_usage" api:"required"`
 	// Registries volume usage, GiB limit
-	RegistryStorageLimit int64 `json:"registry_storage_limit"`
+	RegistryStorageLimit int64 `json:"registry_storage_limit" api:"required"`
 	// Registries volume usage, GiB usage
-	RegistryStorageUsage int64 `json:"registry_storage_usage"`
+	RegistryStorageUsage int64 `json:"registry_storage_usage" api:"required"`
 	// Routers Count limit
-	RouterCountLimit int64 `json:"router_count_limit"`
+	RouterCountLimit int64 `json:"router_count_limit" api:"required"`
 	// Routers Count usage
-	RouterCountUsage int64 `json:"router_count_usage"`
+	RouterCountUsage int64 `json:"router_count_usage" api:"required"`
 	// Secret Count limit
-	SecretCountLimit int64 `json:"secret_count_limit"`
+	SecretCountLimit int64 `json:"secret_count_limit" api:"required"`
 	// Secret Count usage
-	SecretCountUsage int64 `json:"secret_count_usage"`
+	SecretCountUsage int64 `json:"secret_count_usage" api:"required"`
 	// Placement Group Count limit
-	ServergroupCountLimit int64 `json:"servergroup_count_limit"`
+	ServergroupCountLimit int64 `json:"servergroup_count_limit" api:"required"`
 	// Placement Group Count usage
-	ServergroupCountUsage int64 `json:"servergroup_count_usage"`
+	ServergroupCountUsage int64 `json:"servergroup_count_usage" api:"required"`
 	// Shared file system Count limit
-	SfsCountLimit int64 `json:"sfs_count_limit"`
+	SfsCountLimit int64 `json:"sfs_count_limit" api:"required"`
 	// Shared file system Count usage
-	SfsCountUsage int64 `json:"sfs_count_usage"`
+	SfsCountUsage int64 `json:"sfs_count_usage" api:"required"`
 	// Shared file system Size, GiB limit
-	SfsSizeLimit int64 `json:"sfs_size_limit"`
+	SfsSizeLimit int64 `json:"sfs_size_limit" api:"required"`
 	// Shared file system Size, GiB usage
-	SfsSizeUsage int64 `json:"sfs_size_usage"`
+	SfsSizeUsage int64 `json:"sfs_size_usage" api:"required"`
 	// Basic VMs Count limit
-	SharedVmCountLimit int64 `json:"shared_vm_count_limit"`
+	SharedVmCountLimit int64 `json:"shared_vm_count_limit" api:"required"`
 	// Basic VMs Count usage
-	SharedVmCountUsage int64 `json:"shared_vm_count_usage"`
+	SharedVmCountUsage int64 `json:"shared_vm_count_usage" api:"required"`
 	// Slurm cluster count limit for this region. 0 disables Slurm in this region.
-	SlurmClusterCountLimit int64 `json:"slurm_cluster_count_limit"`
+	SlurmClusterCountLimit int64 `json:"slurm_cluster_count_limit" api:"required"`
 	// Slurm cluster count usage
-	SlurmClusterCountUsage int64 `json:"slurm_cluster_count_usage"`
+	SlurmClusterCountUsage int64 `json:"slurm_cluster_count_usage" api:"required"`
 	// Snapshot Schedules Count limit
-	SnapshotScheduleCountLimit int64 `json:"snapshot_schedule_count_limit"`
+	SnapshotScheduleCountLimit int64 `json:"snapshot_schedule_count_limit" api:"required"`
 	// Snapshot Schedules Count usage
-	SnapshotScheduleCountUsage int64 `json:"snapshot_schedule_count_usage"`
+	SnapshotScheduleCountUsage int64 `json:"snapshot_schedule_count_usage" api:"required"`
 	// Subnets Count limit
-	SubnetCountLimit int64 `json:"subnet_count_limit"`
+	SubnetCountLimit int64 `json:"subnet_count_limit" api:"required"`
 	// Subnets Count usage
-	SubnetCountUsage int64 `json:"subnet_count_usage"`
+	SubnetCountUsage int64 `json:"subnet_count_usage" api:"required"`
 	// Instances Dedicated Count limit
-	VmCountLimit int64 `json:"vm_count_limit"`
+	VmCountLimit int64 `json:"vm_count_limit" api:"required"`
 	// Instances Dedicated Count usage
-	VmCountUsage int64 `json:"vm_count_usage"`
+	VmCountUsage int64 `json:"vm_count_usage" api:"required"`
 	// Volumes Count limit
-	VolumeCountLimit int64 `json:"volume_count_limit"`
+	VolumeCountLimit int64 `json:"volume_count_limit" api:"required"`
 	// Volumes Count usage
-	VolumeCountUsage int64 `json:"volume_count_usage"`
+	VolumeCountUsage int64 `json:"volume_count_usage" api:"required"`
 	// Volumes Size, GiB limit
-	VolumeSizeLimit int64 `json:"volume_size_limit"`
+	VolumeSizeLimit int64 `json:"volume_size_limit" api:"required"`
 	// Volumes Size, GiB usage
-	VolumeSizeUsage int64 `json:"volume_size_usage"`
+	VolumeSizeUsage int64 `json:"volume_size_usage" api:"required"`
 	// Snapshots Count limit
-	VolumeSnapshotsCountLimit int64 `json:"volume_snapshots_count_limit"`
+	VolumeSnapshotsCountLimit int64 `json:"volume_snapshots_count_limit" api:"required"`
 	// Snapshots Count usage
-	VolumeSnapshotsCountUsage int64 `json:"volume_snapshots_count_usage"`
+	VolumeSnapshotsCountUsage int64 `json:"volume_snapshots_count_usage" api:"required"`
 	// Snapshots Size, GiB limit
-	VolumeSnapshotsSizeLimit int64 `json:"volume_snapshots_size_limit"`
+	VolumeSnapshotsSizeLimit int64 `json:"volume_snapshots_size_limit" api:"required"`
 	// Snapshots Size, GiB usage
-	VolumeSnapshotsSizeUsage int64 `json:"volume_snapshots_size_usage"`
+	VolumeSnapshotsSizeUsage int64 `json:"volume_snapshots_size_usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BaremetalBasicCountLimit          respjson.Field
@@ -499,225 +499,225 @@ func (r *QuotaRegionalQuota) UnmarshalJSON(data []byte) error {
 
 type QuotaGetByRegionResponse struct {
 	// Basic bare metal servers count limit
-	BaremetalBasicCountLimit int64 `json:"baremetal_basic_count_limit"`
+	BaremetalBasicCountLimit int64 `json:"baremetal_basic_count_limit" api:"required"`
 	// Basic bare metal servers count usage
-	BaremetalBasicCountUsage int64 `json:"baremetal_basic_count_usage"`
+	BaremetalBasicCountUsage int64 `json:"baremetal_basic_count_usage" api:"required"`
 	// Bare metal A100 GPU server count limit
-	BaremetalGPUA100CountLimit int64 `json:"baremetal_gpu_a100_count_limit"`
+	BaremetalGPUA100CountLimit int64 `json:"baremetal_gpu_a100_count_limit" api:"required"`
 	// Bare metal A100 GPU server count usage
-	BaremetalGPUA100CountUsage int64 `json:"baremetal_gpu_a100_count_usage"`
+	BaremetalGPUA100CountUsage int64 `json:"baremetal_gpu_a100_count_usage" api:"required"`
 	// Total number of AI GPU bare metal servers. This field is deprecated and is now
 	// always calculated automatically as the sum of `baremetal_gpu_a100_count_limit`,
 	// `baremetal_gpu_h100_count_limit`, `baremetal_gpu_h200_count_limit`, and
 	// `baremetal_gpu_l40s_count_limit`.
 	//
 	// Deprecated: deprecated
-	BaremetalGPUCountLimit int64 `json:"baremetal_gpu_count_limit"`
-	// Baremetal Gpu Count Usage. This field is deprecated and is now always calculated
-	// automatically as the sum of `baremetal_gpu_a100_count_usage`,
-	// `baremetal_gpu_h100_count_usage`, `baremetal_gpu_h200_count_usage`, and
-	// `baremetal_gpu_l40s_count_usage`.
+	BaremetalGPUCountLimit int64 `json:"baremetal_gpu_count_limit" api:"required"`
+	// Total number of AI GPU bare metal servers in use. This field is deprecated and
+	// is now always calculated automatically as the sum of
+	// `baremetal_gpu_a100_count_usage`, `baremetal_gpu_h100_count_usage`,
+	// `baremetal_gpu_h200_count_usage`, and `baremetal_gpu_l40s_count_usage`.
 	//
 	// Deprecated: deprecated
-	BaremetalGPUCountUsage int64 `json:"baremetal_gpu_count_usage"`
+	BaremetalGPUCountUsage int64 `json:"baremetal_gpu_count_usage" api:"required"`
 	// Bare metal H100 GPU server count limit
-	BaremetalGPUH100CountLimit int64 `json:"baremetal_gpu_h100_count_limit"`
+	BaremetalGPUH100CountLimit int64 `json:"baremetal_gpu_h100_count_limit" api:"required"`
 	// Bare metal H100 GPU server count usage
-	BaremetalGPUH100CountUsage int64 `json:"baremetal_gpu_h100_count_usage"`
+	BaremetalGPUH100CountUsage int64 `json:"baremetal_gpu_h100_count_usage" api:"required"`
 	// Bare metal H200 GPU server count limit
-	BaremetalGPUH200CountLimit int64 `json:"baremetal_gpu_h200_count_limit"`
+	BaremetalGPUH200CountLimit int64 `json:"baremetal_gpu_h200_count_limit" api:"required"`
 	// Bare metal H200 GPU server count usage
-	BaremetalGPUH200CountUsage int64 `json:"baremetal_gpu_h200_count_usage"`
+	BaremetalGPUH200CountUsage int64 `json:"baremetal_gpu_h200_count_usage" api:"required"`
 	// Bare metal L40S GPU server count limit
-	BaremetalGPUL40sCountLimit int64 `json:"baremetal_gpu_l40s_count_limit"`
+	BaremetalGPUL40sCountLimit int64 `json:"baremetal_gpu_l40s_count_limit" api:"required"`
 	// Bare metal L40S GPU server count usage
-	BaremetalGPUL40sCountUsage int64 `json:"baremetal_gpu_l40s_count_usage"`
+	BaremetalGPUL40sCountUsage int64 `json:"baremetal_gpu_l40s_count_usage" api:"required"`
 	// High-frequency bare metal servers count limit
-	BaremetalHfCountLimit int64 `json:"baremetal_hf_count_limit"`
+	BaremetalHfCountLimit int64 `json:"baremetal_hf_count_limit" api:"required"`
 	// High-frequency bare metal servers count usage
-	BaremetalHfCountUsage int64 `json:"baremetal_hf_count_usage"`
+	BaremetalHfCountUsage int64 `json:"baremetal_hf_count_usage" api:"required"`
 	// Infrastructure bare metal servers count limit
-	BaremetalInfrastructureCountLimit int64 `json:"baremetal_infrastructure_count_limit"`
+	BaremetalInfrastructureCountLimit int64 `json:"baremetal_infrastructure_count_limit" api:"required"`
 	// Infrastructure bare metal servers count usage
-	BaremetalInfrastructureCountUsage int64 `json:"baremetal_infrastructure_count_usage"`
+	BaremetalInfrastructureCountUsage int64 `json:"baremetal_infrastructure_count_usage" api:"required"`
 	// Bare metal Network Count limit
-	BaremetalNetworkCountLimit int64 `json:"baremetal_network_count_limit"`
+	BaremetalNetworkCountLimit int64 `json:"baremetal_network_count_limit" api:"required"`
 	// Bare metal Network Count usage
-	BaremetalNetworkCountUsage int64 `json:"baremetal_network_count_usage"`
+	BaremetalNetworkCountUsage int64 `json:"baremetal_network_count_usage" api:"required"`
 	// Storage bare metal servers count limit
-	BaremetalStorageCountLimit int64 `json:"baremetal_storage_count_limit"`
+	BaremetalStorageCountLimit int64 `json:"baremetal_storage_count_limit" api:"required"`
 	// Storage bare metal servers count usage
-	BaremetalStorageCountUsage int64 `json:"baremetal_storage_count_usage"`
+	BaremetalStorageCountUsage int64 `json:"baremetal_storage_count_usage" api:"required"`
 	// Containers count limit
-	CaasContainerCountLimit int64 `json:"caas_container_count_limit"`
+	CaasContainerCountLimit int64 `json:"caas_container_count_limit" api:"required"`
 	// Containers count usage
-	CaasContainerCountUsage int64 `json:"caas_container_count_usage"`
+	CaasContainerCountUsage int64 `json:"caas_container_count_usage" api:"required"`
 	// mCPU count for containers limit
-	CaasCPUCountLimit int64 `json:"caas_cpu_count_limit"`
+	CaasCPUCountLimit int64 `json:"caas_cpu_count_limit" api:"required"`
 	// mCPU count for containers usage
-	CaasCPUCountUsage int64 `json:"caas_cpu_count_usage"`
+	CaasCPUCountUsage int64 `json:"caas_cpu_count_usage" api:"required"`
 	// Containers gpu count limit
-	CaasGPUCountLimit int64 `json:"caas_gpu_count_limit"`
+	CaasGPUCountLimit int64 `json:"caas_gpu_count_limit" api:"required"`
 	// Containers gpu count usage
-	CaasGPUCountUsage int64 `json:"caas_gpu_count_usage"`
+	CaasGPUCountUsage int64 `json:"caas_gpu_count_usage" api:"required"`
 	// MiB memory count for containers limit
-	CaasRamSizeLimit int64 `json:"caas_ram_size_limit"`
+	CaasRamSizeLimit int64 `json:"caas_ram_size_limit" api:"required"`
 	// MiB memory count for containers usage
-	CaasRamSizeUsage int64 `json:"caas_ram_size_usage"`
+	CaasRamSizeUsage int64 `json:"caas_ram_size_usage" api:"required"`
 	// K8s clusters count limit
-	ClusterCountLimit int64 `json:"cluster_count_limit"`
+	ClusterCountLimit int64 `json:"cluster_count_limit" api:"required"`
 	// K8s clusters count usage
-	ClusterCountUsage int64 `json:"cluster_count_usage"`
+	ClusterCountUsage int64 `json:"cluster_count_usage" api:"required"`
 	// vCPU Count limit
-	CPUCountLimit int64 `json:"cpu_count_limit"`
+	CPUCountLimit int64 `json:"cpu_count_limit" api:"required"`
 	// vCPU Count usage
-	CPUCountUsage int64 `json:"cpu_count_usage"`
+	CPUCountUsage int64 `json:"cpu_count_usage" api:"required"`
 	// DBaaS cluster count limit
-	DbaasPostgresClusterCountLimit int64 `json:"dbaas_postgres_cluster_count_limit"`
+	DbaasPostgresClusterCountLimit int64 `json:"dbaas_postgres_cluster_count_limit" api:"required"`
 	// DBaaS cluster count usage
-	DbaasPostgresClusterCountUsage int64 `json:"dbaas_postgres_cluster_count_usage"`
+	DbaasPostgresClusterCountUsage int64 `json:"dbaas_postgres_cluster_count_usage" api:"required"`
 	// External IP Count limit
-	ExternalIPCountLimit int64 `json:"external_ip_count_limit"`
+	ExternalIPCountLimit int64 `json:"external_ip_count_limit" api:"required"`
 	// External IP Count usage
-	ExternalIPCountUsage int64 `json:"external_ip_count_usage"`
+	ExternalIPCountUsage int64 `json:"external_ip_count_usage" api:"required"`
 	// mCPU count for functions limit
-	FaasCPUCountLimit int64 `json:"faas_cpu_count_limit"`
+	FaasCPUCountLimit int64 `json:"faas_cpu_count_limit" api:"required"`
 	// mCPU count for functions usage
-	FaasCPUCountUsage int64 `json:"faas_cpu_count_usage"`
+	FaasCPUCountUsage int64 `json:"faas_cpu_count_usage" api:"required"`
 	// Functions count limit
-	FaasFunctionCountLimit int64 `json:"faas_function_count_limit"`
+	FaasFunctionCountLimit int64 `json:"faas_function_count_limit" api:"required"`
 	// Functions count usage
-	FaasFunctionCountUsage int64 `json:"faas_function_count_usage"`
+	FaasFunctionCountUsage int64 `json:"faas_function_count_usage" api:"required"`
 	// Functions namespace count limit
-	FaasNamespaceCountLimit int64 `json:"faas_namespace_count_limit"`
+	FaasNamespaceCountLimit int64 `json:"faas_namespace_count_limit" api:"required"`
 	// Functions namespace count usage
-	FaasNamespaceCountUsage int64 `json:"faas_namespace_count_usage"`
+	FaasNamespaceCountUsage int64 `json:"faas_namespace_count_usage" api:"required"`
 	// MiB memory count for functions limit
-	FaasRamSizeLimit int64 `json:"faas_ram_size_limit"`
+	FaasRamSizeLimit int64 `json:"faas_ram_size_limit" api:"required"`
 	// MiB memory count for functions usage
-	FaasRamSizeUsage int64 `json:"faas_ram_size_usage"`
+	FaasRamSizeUsage int64 `json:"faas_ram_size_usage" api:"required"`
 	// Firewalls Count limit
-	FirewallCountLimit int64 `json:"firewall_count_limit"`
+	FirewallCountLimit int64 `json:"firewall_count_limit" api:"required"`
 	// Firewalls Count usage
-	FirewallCountUsage int64 `json:"firewall_count_usage"`
+	FirewallCountUsage int64 `json:"firewall_count_usage" api:"required"`
 	// Floating IP Count limit
-	FloatingCountLimit int64 `json:"floating_count_limit"`
+	FloatingCountLimit int64 `json:"floating_count_limit" api:"required"`
 	// Floating IP Count usage
-	FloatingCountUsage int64 `json:"floating_count_usage"`
+	FloatingCountUsage int64 `json:"floating_count_usage" api:"required"`
 	// GPU Count limit
-	GPUCountLimit int64 `json:"gpu_count_limit"`
+	GPUCountLimit int64 `json:"gpu_count_limit" api:"required"`
 	// GPU Count usage
-	GPUCountUsage int64 `json:"gpu_count_usage"`
+	GPUCountUsage int64 `json:"gpu_count_usage" api:"required"`
 	// Virtual A100 GPU card count limit
-	GPUVirtualA100CountLimit int64 `json:"gpu_virtual_a100_count_limit"`
+	GPUVirtualA100CountLimit int64 `json:"gpu_virtual_a100_count_limit" api:"required"`
 	// Virtual A100 GPU card count usage
-	GPUVirtualA100CountUsage int64 `json:"gpu_virtual_a100_count_usage"`
+	GPUVirtualA100CountUsage int64 `json:"gpu_virtual_a100_count_usage" api:"required"`
 	// Virtual H100 GPU card count limit
-	GPUVirtualH100CountLimit int64 `json:"gpu_virtual_h100_count_limit"`
+	GPUVirtualH100CountLimit int64 `json:"gpu_virtual_h100_count_limit" api:"required"`
 	// Virtual H100 GPU card count usage
-	GPUVirtualH100CountUsage int64 `json:"gpu_virtual_h100_count_usage"`
+	GPUVirtualH100CountUsage int64 `json:"gpu_virtual_h100_count_usage" api:"required"`
 	// Virtual H200 GPU card count limit
-	GPUVirtualH200CountLimit int64 `json:"gpu_virtual_h200_count_limit"`
+	GPUVirtualH200CountLimit int64 `json:"gpu_virtual_h200_count_limit" api:"required"`
 	// Virtual H200 GPU card count usage
-	GPUVirtualH200CountUsage int64 `json:"gpu_virtual_h200_count_usage"`
+	GPUVirtualH200CountUsage int64 `json:"gpu_virtual_h200_count_usage" api:"required"`
 	// Virtual L40S GPU card count limit
-	GPUVirtualL40sCountLimit int64 `json:"gpu_virtual_l40s_count_limit"`
+	GPUVirtualL40sCountLimit int64 `json:"gpu_virtual_l40s_count_limit" api:"required"`
 	// Virtual L40S GPU card count usage
-	GPUVirtualL40sCountUsage int64 `json:"gpu_virtual_l40s_count_usage"`
+	GPUVirtualL40sCountUsage int64 `json:"gpu_virtual_l40s_count_usage" api:"required"`
 	// Images Count limit
-	ImageCountLimit int64 `json:"image_count_limit"`
+	ImageCountLimit int64 `json:"image_count_limit" api:"required"`
 	// Images Count usage
-	ImageCountUsage int64 `json:"image_count_usage"`
+	ImageCountUsage int64 `json:"image_count_usage" api:"required"`
 	// Images Size, bytes limit
-	ImageSizeLimit int64 `json:"image_size_limit"`
+	ImageSizeLimit int64 `json:"image_size_limit" api:"required"`
 	// Images Size, bytes usage
-	ImageSizeUsage int64 `json:"image_size_usage"`
+	ImageSizeUsage int64 `json:"image_size_usage" api:"required"`
 	// IPU Count limit
-	IpuCountLimit int64 `json:"ipu_count_limit"`
+	IpuCountLimit int64 `json:"ipu_count_limit" api:"required"`
 	// IPU Count usage
-	IpuCountUsage int64 `json:"ipu_count_usage"`
+	IpuCountUsage int64 `json:"ipu_count_usage" api:"required"`
 	// LaaS Topics Count limit
-	LaasTopicCountLimit int64 `json:"laas_topic_count_limit"`
+	LaasTopicCountLimit int64 `json:"laas_topic_count_limit" api:"required"`
 	// LaaS Topics Count usage
-	LaasTopicCountUsage int64 `json:"laas_topic_count_usage"`
+	LaasTopicCountUsage int64 `json:"laas_topic_count_usage" api:"required"`
 	// Load Balancers Count limit
-	LoadbalancerCountLimit int64 `json:"loadbalancer_count_limit"`
+	LoadbalancerCountLimit int64 `json:"loadbalancer_count_limit" api:"required"`
 	// Load Balancers Count usage
-	LoadbalancerCountUsage int64 `json:"loadbalancer_count_usage"`
+	LoadbalancerCountUsage int64 `json:"loadbalancer_count_usage" api:"required"`
 	// Networks Count limit
-	NetworkCountLimit int64 `json:"network_count_limit"`
+	NetworkCountLimit int64 `json:"network_count_limit" api:"required"`
 	// Networks Count usage
-	NetworkCountUsage int64 `json:"network_count_usage"`
+	NetworkCountUsage int64 `json:"network_count_usage" api:"required"`
 	// RAM Size, MiB limit
-	RamLimit int64 `json:"ram_limit"`
+	RamLimit int64 `json:"ram_limit" api:"required"`
 	// RAM Size, MiB usage
-	RamUsage int64 `json:"ram_usage"`
+	RamUsage int64 `json:"ram_usage" api:"required"`
 	// Region ID
-	RegionID int64 `json:"region_id"`
+	RegionID int64 `json:"region_id" api:"required"`
 	// Registries count limit
-	RegistryCountLimit int64 `json:"registry_count_limit"`
+	RegistryCountLimit int64 `json:"registry_count_limit" api:"required"`
 	// Registries count usage
-	RegistryCountUsage int64 `json:"registry_count_usage"`
+	RegistryCountUsage int64 `json:"registry_count_usage" api:"required"`
 	// Registries volume usage, GiB limit
-	RegistryStorageLimit int64 `json:"registry_storage_limit"`
+	RegistryStorageLimit int64 `json:"registry_storage_limit" api:"required"`
 	// Registries volume usage, GiB usage
-	RegistryStorageUsage int64 `json:"registry_storage_usage"`
+	RegistryStorageUsage int64 `json:"registry_storage_usage" api:"required"`
 	// Routers Count limit
-	RouterCountLimit int64 `json:"router_count_limit"`
+	RouterCountLimit int64 `json:"router_count_limit" api:"required"`
 	// Routers Count usage
-	RouterCountUsage int64 `json:"router_count_usage"`
+	RouterCountUsage int64 `json:"router_count_usage" api:"required"`
 	// Secret Count limit
-	SecretCountLimit int64 `json:"secret_count_limit"`
+	SecretCountLimit int64 `json:"secret_count_limit" api:"required"`
 	// Secret Count usage
-	SecretCountUsage int64 `json:"secret_count_usage"`
+	SecretCountUsage int64 `json:"secret_count_usage" api:"required"`
 	// Placement Group Count limit
-	ServergroupCountLimit int64 `json:"servergroup_count_limit"`
+	ServergroupCountLimit int64 `json:"servergroup_count_limit" api:"required"`
 	// Placement Group Count usage
-	ServergroupCountUsage int64 `json:"servergroup_count_usage"`
+	ServergroupCountUsage int64 `json:"servergroup_count_usage" api:"required"`
 	// Shared file system Count limit
-	SfsCountLimit int64 `json:"sfs_count_limit"`
+	SfsCountLimit int64 `json:"sfs_count_limit" api:"required"`
 	// Shared file system Count usage
-	SfsCountUsage int64 `json:"sfs_count_usage"`
+	SfsCountUsage int64 `json:"sfs_count_usage" api:"required"`
 	// Shared file system Size, GiB limit
-	SfsSizeLimit int64 `json:"sfs_size_limit"`
+	SfsSizeLimit int64 `json:"sfs_size_limit" api:"required"`
 	// Shared file system Size, GiB usage
-	SfsSizeUsage int64 `json:"sfs_size_usage"`
+	SfsSizeUsage int64 `json:"sfs_size_usage" api:"required"`
 	// Basic VMs Count limit
-	SharedVmCountLimit int64 `json:"shared_vm_count_limit"`
+	SharedVmCountLimit int64 `json:"shared_vm_count_limit" api:"required"`
 	// Basic VMs Count usage
-	SharedVmCountUsage int64 `json:"shared_vm_count_usage"`
+	SharedVmCountUsage int64 `json:"shared_vm_count_usage" api:"required"`
 	// Slurm cluster count limit for this region. 0 disables Slurm in this region.
-	SlurmClusterCountLimit int64 `json:"slurm_cluster_count_limit"`
+	SlurmClusterCountLimit int64 `json:"slurm_cluster_count_limit" api:"required"`
 	// Slurm cluster count usage
-	SlurmClusterCountUsage int64 `json:"slurm_cluster_count_usage"`
+	SlurmClusterCountUsage int64 `json:"slurm_cluster_count_usage" api:"required"`
 	// Snapshot Schedules Count limit
-	SnapshotScheduleCountLimit int64 `json:"snapshot_schedule_count_limit"`
+	SnapshotScheduleCountLimit int64 `json:"snapshot_schedule_count_limit" api:"required"`
 	// Snapshot Schedules Count usage
-	SnapshotScheduleCountUsage int64 `json:"snapshot_schedule_count_usage"`
+	SnapshotScheduleCountUsage int64 `json:"snapshot_schedule_count_usage" api:"required"`
 	// Subnets Count limit
-	SubnetCountLimit int64 `json:"subnet_count_limit"`
+	SubnetCountLimit int64 `json:"subnet_count_limit" api:"required"`
 	// Subnets Count usage
-	SubnetCountUsage int64 `json:"subnet_count_usage"`
+	SubnetCountUsage int64 `json:"subnet_count_usage" api:"required"`
 	// Instances Dedicated Count limit
-	VmCountLimit int64 `json:"vm_count_limit"`
+	VmCountLimit int64 `json:"vm_count_limit" api:"required"`
 	// Instances Dedicated Count usage
-	VmCountUsage int64 `json:"vm_count_usage"`
+	VmCountUsage int64 `json:"vm_count_usage" api:"required"`
 	// Volumes Count limit
-	VolumeCountLimit int64 `json:"volume_count_limit"`
+	VolumeCountLimit int64 `json:"volume_count_limit" api:"required"`
 	// Volumes Count usage
-	VolumeCountUsage int64 `json:"volume_count_usage"`
+	VolumeCountUsage int64 `json:"volume_count_usage" api:"required"`
 	// Volumes Size, GiB limit
-	VolumeSizeLimit int64 `json:"volume_size_limit"`
+	VolumeSizeLimit int64 `json:"volume_size_limit" api:"required"`
 	// Volumes Size, GiB usage
-	VolumeSizeUsage int64 `json:"volume_size_usage"`
+	VolumeSizeUsage int64 `json:"volume_size_usage" api:"required"`
 	// Snapshots Count limit
-	VolumeSnapshotsCountLimit int64 `json:"volume_snapshots_count_limit"`
+	VolumeSnapshotsCountLimit int64 `json:"volume_snapshots_count_limit" api:"required"`
 	// Snapshots Count usage
-	VolumeSnapshotsCountUsage int64 `json:"volume_snapshots_count_usage"`
+	VolumeSnapshotsCountUsage int64 `json:"volume_snapshots_count_usage" api:"required"`
 	// Snapshots Size, GiB limit
-	VolumeSnapshotsSizeLimit int64 `json:"volume_snapshots_size_limit"`
+	VolumeSnapshotsSizeLimit int64 `json:"volume_snapshots_size_limit" api:"required"`
 	// Snapshots Size, GiB usage
-	VolumeSnapshotsSizeUsage int64 `json:"volume_snapshots_size_usage"`
+	VolumeSnapshotsSizeUsage int64 `json:"volume_snapshots_size_usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BaremetalBasicCountLimit          respjson.Field
@@ -838,37 +838,37 @@ func (r *QuotaGetByRegionResponse) UnmarshalJSON(data []byte) error {
 
 type QuotaGetGlobalResponse struct {
 	// Inference CPU millicore count limit
-	InferenceCPUMillicoreCountLimit int64 `json:"inference_cpu_millicore_count_limit"`
+	InferenceCPUMillicoreCountLimit int64 `json:"inference_cpu_millicore_count_limit" api:"required"`
 	// Inference CPU millicore count usage
-	InferenceCPUMillicoreCountUsage int64 `json:"inference_cpu_millicore_count_usage"`
+	InferenceCPUMillicoreCountUsage int64 `json:"inference_cpu_millicore_count_usage" api:"required"`
 	// Inference GPU A100 Count limit
-	InferenceGPUA100CountLimit int64 `json:"inference_gpu_a100_count_limit"`
+	InferenceGPUA100CountLimit int64 `json:"inference_gpu_a100_count_limit" api:"required"`
 	// Inference GPU A100 Count usage
-	InferenceGPUA100CountUsage int64 `json:"inference_gpu_a100_count_usage"`
+	InferenceGPUA100CountUsage int64 `json:"inference_gpu_a100_count_usage" api:"required"`
 	// Inference GPU H100 Count limit
-	InferenceGPUH100CountLimit int64 `json:"inference_gpu_h100_count_limit"`
+	InferenceGPUH100CountLimit int64 `json:"inference_gpu_h100_count_limit" api:"required"`
 	// Inference GPU H100 Count usage
-	InferenceGPUH100CountUsage int64 `json:"inference_gpu_h100_count_usage"`
+	InferenceGPUH100CountUsage int64 `json:"inference_gpu_h100_count_usage" api:"required"`
 	// Inference GPU L40s Count limit
-	InferenceGPUL40sCountLimit int64 `json:"inference_gpu_l40s_count_limit"`
+	InferenceGPUL40sCountLimit int64 `json:"inference_gpu_l40s_count_limit" api:"required"`
 	// Inference GPU L40s Count usage
-	InferenceGPUL40sCountUsage int64 `json:"inference_gpu_l40s_count_usage"`
+	InferenceGPUL40sCountUsage int64 `json:"inference_gpu_l40s_count_usage" api:"required"`
 	// Inference instance count limit
-	InferenceInstanceCountLimit int64 `json:"inference_instance_count_limit"`
+	InferenceInstanceCountLimit int64 `json:"inference_instance_count_limit" api:"required"`
 	// Inference instance count usage
-	InferenceInstanceCountUsage int64 `json:"inference_instance_count_usage"`
+	InferenceInstanceCountUsage int64 `json:"inference_instance_count_usage" api:"required"`
 	// Public model API keys count limit
-	InferencePublicModelAPIKeyCountLimit int64 `json:"inference_public_model_api_key_count_limit"`
+	InferencePublicModelAPIKeyCountLimit int64 `json:"inference_public_model_api_key_count_limit" api:"required"`
 	// Public model API keys count usage
-	InferencePublicModelAPIKeyCountUsage int64 `json:"inference_public_model_api_key_count_usage"`
+	InferencePublicModelAPIKeyCountUsage int64 `json:"inference_public_model_api_key_count_usage" api:"required"`
 	// SSH Keys Count limit
-	KeypairCountLimit int64 `json:"keypair_count_limit"`
+	KeypairCountLimit int64 `json:"keypair_count_limit" api:"required"`
 	// SSH Keys Count usage
-	KeypairCountUsage int64 `json:"keypair_count_usage"`
+	KeypairCountUsage int64 `json:"keypair_count_usage" api:"required"`
 	// Projects Count limit
-	ProjectCountLimit int64 `json:"project_count_limit"`
+	ProjectCountLimit int64 `json:"project_count_limit" api:"required"`
 	// Projects Count usage
-	ProjectCountUsage int64 `json:"project_count_usage"`
+	ProjectCountUsage int64 `json:"project_count_usage" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		InferenceCPUMillicoreCountLimit      respjson.Field

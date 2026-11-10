@@ -284,16 +284,17 @@ type K8SClusterPool struct {
 	NodeCount int64 `json:"node_count" api:"required"`
 	// Security group IDs applied to the cluster pool nodes
 	SecurityGroupIDs []string `json:"security_group_ids" api:"required"`
+	// Placement group ID. An empty string when the pool has no placement group
+	ServergroupID string `json:"servergroup_id" api:"required"`
+	// Placement group name. An empty string when the pool has no placement group
+	ServergroupName string `json:"servergroup_name" api:"required"`
+	// Anti-affinity, affinity or soft-anti-affinity placement group policy. An empty
+	// string when the pool has no placement group
+	ServergroupPolicy string `json:"servergroup_policy" api:"required"`
 	// Status of the cluster pool
 	Status string `json:"status" api:"required"`
 	// Taints applied to the cluster pool
 	Taints map[string]string `json:"taints" api:"required"`
-	// Placement group ID
-	ServergroupID string `json:"servergroup_id"`
-	// Placement group name
-	ServergroupName string `json:"servergroup_name"`
-	// Anti-affinity, affinity or soft-anti-affinity placement group policy
-	ServergroupPolicy string `json:"servergroup_policy"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -311,11 +312,11 @@ type K8SClusterPool struct {
 		Name               respjson.Field
 		NodeCount          respjson.Field
 		SecurityGroupIDs   respjson.Field
-		Status             respjson.Field
-		Taints             respjson.Field
 		ServergroupID      respjson.Field
 		ServergroupName    respjson.Field
 		ServergroupPolicy  respjson.Field
+		Status             respjson.Field
+		Taints             respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`

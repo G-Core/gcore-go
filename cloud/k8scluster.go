@@ -285,10 +285,30 @@ type K8SCluster struct {
 	ID string `json:"id" api:"required"`
 	// Cluster add-ons configuration
 	AddOns K8SClusterAddOns `json:"add_ons" api:"required"`
+	// Cluster authentication settings. Null when the cluster has no authentication
+	// settings
+	Authentication K8SClusterAuthentication `json:"authentication" api:"required"`
+	// Cluster autoscaler configuration.
+	//
+	// It contains overrides to the default cluster-autoscaler parameters provided by
+	// the platform.
+	AutoscalerConfig map[string]string `json:"autoscaler_config" api:"required"`
+	// Cluster CNI settings. Null when the cluster does not report its CNI settings
+	Cni K8SClusterCni `json:"cni" api:"required"`
 	// Function creation date
 	CreatedAt string `json:"created_at" api:"required"`
+	// Task that created this entity. Null when no record of that task exists
+	CreatorTaskID string `json:"creator_task_id" api:"required"`
 	// Cluster CSI settings
 	Csi K8SClusterCsi `json:"csi" api:"required"`
+	// Advanced DDoS Protection profile. Null when the cluster has no DDoS profile
+	DDOSProfile K8SClusterDDOSProfile `json:"ddos_profile" api:"required"`
+	// Fixed network id. An empty string when not set
+	FixedNetwork string `json:"fixed_network" api:"required"`
+	// Fixed subnet id. An empty string when not set
+	FixedSubnet string `json:"fixed_subnet" api:"required"`
+	// Enable public v6 address
+	IsIpv6 bool `json:"is_ipv6" api:"required"`
 	// Cluster is public
 	IsPublic bool `json:"is_public" api:"required"`
 	// Keypair
@@ -297,72 +317,53 @@ type K8SCluster struct {
 	Logging Logging `json:"logging" api:"required"`
 	// Name
 	Name string `json:"name" api:"required"`
+	// The IP pool for the pods
+	PodsIPPool string `json:"pods_ip_pool" api:"required"`
+	// The IPv6 pool for the pods. Null when `is_ipv6` is false
+	PodsIpv6Pool string `json:"pods_ipv6_pool" api:"required"`
 	// pools
 	Pools []K8SClusterPool `json:"pools" api:"required"`
+	// The IP pool for the services
+	ServicesIPPool string `json:"services_ip_pool" api:"required"`
+	// The IPv6 pool for the services. Null when `is_ipv6` is false
+	ServicesIpv6Pool string `json:"services_ipv6_pool" api:"required"`
 	// Status
 	//
 	// Any of "Deleting", "Failed", "Pending", "Provisioned", "Provisioning",
 	// "Unknown".
 	Status K8SClusterStatus `json:"status" api:"required"`
-	// K8s version
-	Version string `json:"version" api:"required"`
-	// Cluster authentication settings
-	Authentication K8SClusterAuthentication `json:"authentication" api:"nullable"`
-	// Cluster autoscaler configuration.
-	//
-	// It contains overrides to the default cluster-autoscaler parameters provided by
-	// the platform.
-	AutoscalerConfig map[string]string `json:"autoscaler_config" api:"nullable"`
-	// Cluster CNI settings
-	Cni K8SClusterCni `json:"cni" api:"nullable"`
-	// Task that created this entity
-	CreatorTaskID string `json:"creator_task_id" api:"nullable"`
-	// Advanced DDoS Protection profile
-	DDOSProfile K8SClusterDDOSProfile `json:"ddos_profile" api:"nullable"`
-	// Fixed network id
-	FixedNetwork string `json:"fixed_network" api:"nullable"`
-	// Fixed subnet id
-	FixedSubnet string `json:"fixed_subnet" api:"nullable"`
-	// Enable public v6 address
-	IsIpv6 bool `json:"is_ipv6"`
-	// The IP pool for the pods
-	PodsIPPool string `json:"pods_ip_pool" api:"nullable"`
-	// The IPv6 pool for the pods
-	PodsIpv6Pool string `json:"pods_ipv6_pool" api:"nullable"`
-	// The IP pool for the services
-	ServicesIPPool string `json:"services_ip_pool" api:"nullable"`
-	// The IPv6 pool for the services
-	ServicesIpv6Pool string `json:"services_ipv6_pool" api:"nullable"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id" api:"nullable"`
+	TaskID string `json:"task_id" api:"required"`
+	// K8s version
+	Version string `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
 		AddOns           respjson.Field
-		CreatedAt        respjson.Field
-		Csi              respjson.Field
-		IsPublic         respjson.Field
-		Keypair          respjson.Field
-		Logging          respjson.Field
-		Name             respjson.Field
-		Pools            respjson.Field
-		Status           respjson.Field
-		Version          respjson.Field
 		Authentication   respjson.Field
 		AutoscalerConfig respjson.Field
 		Cni              respjson.Field
+		CreatedAt        respjson.Field
 		CreatorTaskID    respjson.Field
+		Csi              respjson.Field
 		DDOSProfile      respjson.Field
 		FixedNetwork     respjson.Field
 		FixedSubnet      respjson.Field
 		IsIpv6           respjson.Field
+		IsPublic         respjson.Field
+		Keypair          respjson.Field
+		Logging          respjson.Field
+		Name             respjson.Field
 		PodsIPPool       respjson.Field
 		PodsIpv6Pool     respjson.Field
+		Pools            respjson.Field
 		ServicesIPPool   respjson.Field
 		ServicesIpv6Pool respjson.Field
+		Status           respjson.Field
 		TaskID           respjson.Field
+		Version          respjson.Field
 		ExtraFields      map[string]respjson.Field
 		raw              string
 	} `json:"-"`
@@ -403,8 +404,11 @@ type K8SClusterAddOnsSlurm struct {
 	//
 	// The Slurm add-on creates separate Persistent Volume Claims for different
 	// purposes (controller spool, worker spool, jail) on that file share.
+	//
+	// Null when the add-on is disabled.
 	FileShareID string `json:"file_share_id" api:"required" format:"uuid4"`
-	// IDs of SSH keys authorized for SSH connection to Slurm login nodes.
+	// IDs of SSH keys authorized for SSH connection to Slurm login nodes. Null when
+	// the add-on is disabled.
 	SSHKeyIDs []string `json:"ssh_key_ids" api:"required" format:"uuid4"`
 	// Size of the worker pool, i.e. number of worker nodes.
 	//
@@ -412,6 +416,8 @@ type K8SClusterAddOnsSlurm struct {
 	// nodes.
 	//
 	// Note: Downscaling (reducing worker count) is not supported.
+	//
+	// Null when the add-on is disabled.
 	WorkerCount int64 `json:"worker_count" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -427,6 +433,148 @@ type K8SClusterAddOnsSlurm struct {
 // Returns the unmodified JSON received from the API
 func (r K8SClusterAddOnsSlurm) RawJSON() string { return r.JSON.raw }
 func (r *K8SClusterAddOnsSlurm) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Cluster authentication settings. Null when the cluster has no authentication
+// settings
+type K8SClusterAuthentication struct {
+	// Kubeconfig creation date. Null until the cluster creates its kubeconfig
+	KubeconfigCreatedAt time.Time `json:"kubeconfig_created_at" api:"required" format:"date-time"`
+	// Kubeconfig expiration date. Null until the cluster creates its kubeconfig
+	KubeconfigExpiresAt time.Time `json:"kubeconfig_expires_at" api:"required" format:"date-time"`
+	// OIDC authentication settings. Null when OIDC authentication is not configured
+	Oidc K8SClusterAuthenticationOidc `json:"oidc" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		KubeconfigCreatedAt respjson.Field
+		KubeconfigExpiresAt respjson.Field
+		Oidc                respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r K8SClusterAuthentication) RawJSON() string { return r.JSON.raw }
+func (r *K8SClusterAuthentication) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// OIDC authentication settings. Null when OIDC authentication is not configured
+type K8SClusterAuthenticationOidc struct {
+	// Client ID. Null when not set
+	ClientID string `json:"client_id" api:"required"`
+	// JWT claim to use as the user's group. Null when not set
+	GroupsClaim string `json:"groups_claim" api:"required"`
+	// Prefix prepended to group claims. Null when not set
+	GroupsPrefix string `json:"groups_prefix" api:"required"`
+	// Issuer URL. Null when not set
+	IssuerURL string `json:"issuer_url" api:"required"`
+	// Key-value pairs that describe required claims in the token. Null when not set
+	RequiredClaims map[string]string `json:"required_claims" api:"required"`
+	// Accepted signing algorithms. Null when not set
+	//
+	// Any of "ES256", "ES384", "ES512", "PS256", "PS384", "PS512", "RS256", "RS384",
+	// "RS512".
+	SigningAlgs []string `json:"signing_algs" api:"required"`
+	// JWT claim to use as the user name. Null when not set
+	UsernameClaim string `json:"username_claim" api:"required"`
+	// Prefix prepended to username claims to prevent clashes. Null when not set
+	UsernamePrefix string `json:"username_prefix" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ClientID       respjson.Field
+		GroupsClaim    respjson.Field
+		GroupsPrefix   respjson.Field
+		IssuerURL      respjson.Field
+		RequiredClaims respjson.Field
+		SigningAlgs    respjson.Field
+		UsernameClaim  respjson.Field
+		UsernamePrefix respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r K8SClusterAuthenticationOidc) RawJSON() string { return r.JSON.raw }
+func (r *K8SClusterAuthenticationOidc) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Cluster CNI settings. Null when the cluster does not report its CNI settings
+type K8SClusterCni struct {
+	// Cilium settings. Null when the CNI provider is not Cilium
+	Cilium K8SClusterCniCilium `json:"cilium" api:"required"`
+	// CNI provider
+	//
+	// Any of "calico", "cilium".
+	Provider string `json:"provider" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Cilium      respjson.Field
+		Provider    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r K8SClusterCni) RawJSON() string { return r.JSON.raw }
+func (r *K8SClusterCni) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Cilium settings. Null when the CNI provider is not Cilium
+type K8SClusterCniCilium struct {
+	// Whether Cilium manages networking exclusively. Set to `false` to allow other CNI
+	// components to coexist with Cilium.
+	CniExclusive bool `json:"cni_exclusive" api:"required"`
+	// Wireguard encryption
+	Encryption bool `json:"encryption" api:"required"`
+	// Hubble Relay
+	HubbleRelay bool `json:"hubble_relay" api:"required"`
+	// Hubble UI
+	HubbleUi bool `json:"hubble_ui" api:"required"`
+	// LoadBalancer acceleration
+	LbAcceleration bool `json:"lb_acceleration" api:"required"`
+	// LoadBalancer mode
+	//
+	// Any of "dsr", "hybrid", "snat".
+	LbMode string `json:"lb_mode" api:"required"`
+	// Mask size for IPv4
+	MaskSize int64 `json:"mask_size" api:"required"`
+	// Mask size for IPv6
+	MaskSizeV6 int64 `json:"mask_size_v6" api:"required"`
+	// Routing mode
+	//
+	// Any of "native", "tunnel".
+	RoutingMode string `json:"routing_mode" api:"required"`
+	// CNI provider
+	//
+	// Any of "", "geneve", "vxlan".
+	Tunnel string `json:"tunnel" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CniExclusive   respjson.Field
+		Encryption     respjson.Field
+		HubbleRelay    respjson.Field
+		HubbleUi       respjson.Field
+		LbAcceleration respjson.Field
+		LbMode         respjson.Field
+		MaskSize       respjson.Field
+		MaskSizeV6     respjson.Field
+		RoutingMode    respjson.Field
+		Tunnel         respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r K8SClusterCniCilium) RawJSON() string { return r.JSON.raw }
+func (r *K8SClusterCniCilium) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -471,169 +619,16 @@ func (r *K8SClusterCsiNfs) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Status
-type K8SClusterStatus string
-
-const (
-	K8SClusterStatusDeleting     K8SClusterStatus = "Deleting"
-	K8SClusterStatusFailed       K8SClusterStatus = "Failed"
-	K8SClusterStatusPending      K8SClusterStatus = "Pending"
-	K8SClusterStatusProvisioned  K8SClusterStatus = "Provisioned"
-	K8SClusterStatusProvisioning K8SClusterStatus = "Provisioning"
-	K8SClusterStatusUnknown      K8SClusterStatus = "Unknown"
-)
-
-// Cluster authentication settings
-type K8SClusterAuthentication struct {
-	// Kubeconfig creation date
-	KubeconfigCreatedAt time.Time `json:"kubeconfig_created_at" api:"nullable" format:"date-time"`
-	// Kubeconfig expiration date
-	KubeconfigExpiresAt time.Time `json:"kubeconfig_expires_at" api:"nullable" format:"date-time"`
-	// OIDC authentication settings
-	Oidc K8SClusterAuthenticationOidc `json:"oidc" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		KubeconfigCreatedAt respjson.Field
-		KubeconfigExpiresAt respjson.Field
-		Oidc                respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r K8SClusterAuthentication) RawJSON() string { return r.JSON.raw }
-func (r *K8SClusterAuthentication) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// OIDC authentication settings
-type K8SClusterAuthenticationOidc struct {
-	// Client ID
-	ClientID string `json:"client_id" api:"nullable"`
-	// JWT claim to use as the user's group
-	GroupsClaim string `json:"groups_claim" api:"nullable"`
-	// Prefix prepended to group claims
-	GroupsPrefix string `json:"groups_prefix" api:"nullable"`
-	// Issuer URL
-	IssuerURL string `json:"issuer_url" api:"nullable"`
-	// Key-value pairs that describe required claims in the token
-	RequiredClaims map[string]string `json:"required_claims" api:"nullable"`
-	// Accepted signing algorithms
-	//
-	// Any of "ES256", "ES384", "ES512", "PS256", "PS384", "PS512", "RS256", "RS384",
-	// "RS512".
-	SigningAlgs []string `json:"signing_algs" api:"nullable"`
-	// JWT claim to use as the user name
-	UsernameClaim string `json:"username_claim" api:"nullable"`
-	// Prefix prepended to username claims to prevent clashes
-	UsernamePrefix string `json:"username_prefix" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ClientID       respjson.Field
-		GroupsClaim    respjson.Field
-		GroupsPrefix   respjson.Field
-		IssuerURL      respjson.Field
-		RequiredClaims respjson.Field
-		SigningAlgs    respjson.Field
-		UsernameClaim  respjson.Field
-		UsernamePrefix respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r K8SClusterAuthenticationOidc) RawJSON() string { return r.JSON.raw }
-func (r *K8SClusterAuthenticationOidc) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Cluster CNI settings
-type K8SClusterCni struct {
-	// Cilium settings
-	Cilium K8SClusterCniCilium `json:"cilium" api:"nullable"`
-	// CNI provider
-	//
-	// Any of "calico", "cilium".
-	Provider string `json:"provider"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Cilium      respjson.Field
-		Provider    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r K8SClusterCni) RawJSON() string { return r.JSON.raw }
-func (r *K8SClusterCni) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Cilium settings
-type K8SClusterCniCilium struct {
-	// Whether Cilium manages networking exclusively. Set to `false` to allow other CNI
-	// components to coexist with Cilium.
-	CniExclusive bool `json:"cni_exclusive"`
-	// Wireguard encryption
-	Encryption bool `json:"encryption"`
-	// Hubble Relay
-	HubbleRelay bool `json:"hubble_relay"`
-	// Hubble UI
-	HubbleUi bool `json:"hubble_ui"`
-	// LoadBalancer acceleration
-	LbAcceleration bool `json:"lb_acceleration"`
-	// LoadBalancer mode
-	//
-	// Any of "dsr", "hybrid", "snat".
-	LbMode string `json:"lb_mode"`
-	// Mask size for IPv4
-	MaskSize int64 `json:"mask_size"`
-	// Mask size for IPv6
-	MaskSizeV6 int64 `json:"mask_size_v6"`
-	// Routing mode
-	//
-	// Any of "native", "tunnel".
-	RoutingMode string `json:"routing_mode"`
-	// CNI provider
-	//
-	// Any of "", "geneve", "vxlan".
-	Tunnel string `json:"tunnel"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CniExclusive   respjson.Field
-		Encryption     respjson.Field
-		HubbleRelay    respjson.Field
-		HubbleUi       respjson.Field
-		LbAcceleration respjson.Field
-		LbMode         respjson.Field
-		MaskSize       respjson.Field
-		MaskSizeV6     respjson.Field
-		RoutingMode    respjson.Field
-		Tunnel         respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r K8SClusterCniCilium) RawJSON() string { return r.JSON.raw }
-func (r *K8SClusterCniCilium) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Advanced DDoS Protection profile
+// Advanced DDoS Protection profile. Null when the cluster has no DDoS profile
 type K8SClusterDDOSProfile struct {
 	// Enable advanced DDoS protection
 	Enabled bool `json:"enabled" api:"required"`
-	// DDoS profile parameters
-	Fields []K8SClusterDDOSProfileField `json:"fields" api:"nullable"`
-	// DDoS profile template ID
-	ProfileTemplate int64 `json:"profile_template" api:"nullable"`
-	// DDoS profile template name
-	ProfileTemplateName string `json:"profile_template_name" api:"nullable"`
+	// DDoS profile parameters. Null when the profile has no parameters
+	Fields []K8SClusterDDOSProfileField `json:"fields" api:"required"`
+	// DDoS profile template ID. Null when not set
+	ProfileTemplate int64 `json:"profile_template" api:"required"`
+	// DDoS profile template name. Null when not set
+	ProfileTemplateName string `json:"profile_template_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Enabled             respjson.Field
@@ -653,8 +648,8 @@ func (r *K8SClusterDDOSProfile) UnmarshalJSON(data []byte) error {
 
 type K8SClusterDDOSProfileField struct {
 	BaseField int64 `json:"base_field" api:"required"`
-	// Complex value for the DDoS profile field
-	FieldValue any `json:"field_value"`
+	// Complex value for the DDoS profile field. Null when the field has a basic value
+	FieldValue any `json:"field_value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		BaseField   respjson.Field
@@ -669,6 +664,18 @@ func (r K8SClusterDDOSProfileField) RawJSON() string { return r.JSON.raw }
 func (r *K8SClusterDDOSProfileField) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Status
+type K8SClusterStatus string
+
+const (
+	K8SClusterStatusDeleting     K8SClusterStatus = "Deleting"
+	K8SClusterStatusFailed       K8SClusterStatus = "Failed"
+	K8SClusterStatusPending      K8SClusterStatus = "Pending"
+	K8SClusterStatusProvisioned  K8SClusterStatus = "Provisioned"
+	K8SClusterStatusProvisioning K8SClusterStatus = "Provisioning"
+	K8SClusterStatusUnknown      K8SClusterStatus = "Unknown"
+)
 
 type K8SClusterCertificate struct {
 	// Cluster CA certificate
