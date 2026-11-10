@@ -728,7 +728,8 @@ const (
 type DomainListParams struct {
 	// Number of items to return
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Filter domains based on the domain name. Supports '\*' as a wildcard character
+	// Filter domains based on the domain name or any of its aliases. Supports '\*' as
+	// a wildcard character
 	Name param.Opt[string] `query:"name,omitzero" json:"-"`
 	// Number of items to skip
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`

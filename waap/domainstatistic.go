@@ -922,9 +922,11 @@ func (r *WaapRequestDetailsPolicyOverride) UnmarshalJSON(data []byte) error {
 }
 
 type DomainStatisticGetDDOSAttacksParams struct {
-	// End time of the search interval. Excludes attacks that started after it
+	// End time of the search interval. Excludes attacks that started after it. If not
+	// provided or in the future, the current date and time is used
 	EndTime param.Opt[time.Time] `query:"end_time,omitzero" format:"date-time" json:"-"`
-	// Start time of the search interval. Excludes attacks that ended before it
+	// Start time of the search interval. Excludes attacks that ended before it. Must
+	// precede `end_time`. Attacks are kept for 180 days
 	StartTime param.Opt[time.Time] `query:"start_time,omitzero" format:"date-time" json:"-"`
 	// Number of items to return
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
