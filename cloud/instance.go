@@ -392,6 +392,32 @@ func (r *InstanceService) GetConsole(ctx context.Context, instanceID string, par
 	return res, err
 }
 
+// Rebuild instance with a new image while preserving its configuration.
+func (r *InstanceService) Rebuild(ctx context.Context, instanceID string, params InstanceRebuildParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+	opts = slices.Concat(r.Options, opts)
+	precfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return nil, err
+	}
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	if !params.ProjectID.Valid() {
+		err = errors.New("missing required project_id parameter")
+		return nil, err
+	}
+	if !params.RegionID.Valid() {
+		err = errors.New("missing required region_id parameter")
+		return nil, err
+	}
+	if instanceID == "" {
+		err = errors.New("missing required instance_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("cloud/v3/instances/%v/%v/%s/rebuild", params.ProjectID.Value, params.RegionID.Value, instanceID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	return res, err
+}
+
 // Remove an instance from its current placement group. The instance must be in a
 // placement group to be removed. Bare metal servers do not support placement
 // groups.
@@ -2155,6 +2181,33 @@ const (
 	InstanceGetConsoleParamsConsoleTypeSpice  InstanceGetConsoleParamsConsoleType = "spice"
 	InstanceGetConsoleParamsConsoleTypeVnc    InstanceGetConsoleParamsConsoleType = "vnc"
 )
+
+type InstanceRebuildParams struct {
+	// Project ID
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	// Region ID
+	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
+	// Specifies the name of the SSH keypair, created via the
+	// [/v1/`ssh_keys` endpoint](/docs/api-reference/cloud/ssh-keys/add-or-generate-ssh-key).
+	// Use null to remove the SSH key from the instance. If you omit it, the instance
+	// keeps the current SSH key.
+	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
+	// Image ID. If you omit it, the instance keeps the current image.
+	ImageID param.Opt[string] `json:"image_id,omitzero" format:"uuid4"`
+	// String in base64 format. Examples of the `user_data`:
+	// https://cloudinit.readthedocs.io/en/latest/topics/examples.html. If you omit it,
+	// the instance keeps the current user data.
+	UserData param.Opt[string] `json:"user_data,omitzero"`
+	paramObj
+}
+
+func (r InstanceRebuildParams) MarshalJSON() (data []byte, err error) {
+	type shadow InstanceRebuildParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InstanceRebuildParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type InstanceRemoveFromPlacementGroupParams struct {
 	// Project ID

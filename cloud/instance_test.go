@@ -416,6 +416,38 @@ func TestInstanceGetConsoleWithOptionalParams(t *testing.T) {
 	}
 }
 
+func TestInstanceRebuildWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Cloud.Instances.Rebuild(
+		context.TODO(),
+		"a314d566-2772-4124-a4c4-5688ab76b928",
+		cloud.InstanceRebuildParams{
+			ProjectID:  gcore.Int(1),
+			RegionID:   gcore.Int(1),
+			ImageID:    gcore.String("f01fd9a0-9548-48ba-82dc-a8c8b2d6f2f1"),
+			SSHKeyName: gcore.String("my-ssh-key"),
+			UserData:   gcore.String("user_data"),
+		},
+	)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestInstanceRemoveFromPlacementGroup(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
