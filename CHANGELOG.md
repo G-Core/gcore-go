@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.63.0](https://github.com/G-Core/gcore-go/compare/v0.62.0...v0.63.0) (2026-11-11)
+
+
+### Features
+
+* **cloud:** add basic VM task types and tighten k8s cluster and quota response types ([7575eea](https://github.com/G-Core/gcore-go/commit/7575eeae95fdee44e0b9649060a94111c362e472))
+* **cloud:** add DeleteAndPoll for inference secrets ([961d6c0](https://github.com/G-Core/gcore-go/commit/961d6c0222dd3ce7203bf76b081577794f67c6d0))
+* **cloud:** add instance rebuild functionality ([be1150f](https://github.com/G-Core/gcore-go/commit/be1150f7472136dd14854b33ab755eda28b71c61))
+* **cloud:** add RebuildAndPoll for instances ([#64](https://github.com/G-Core/gcore-go/issues/64)) ([0841334](https://github.com/G-Core/gcore-go/commit/08413349322c65b4336f1a1adc875459c395cc0d))
+* **waap:** add paginated prebilling breakdown v2 endpoint ([0be0062](https://github.com/G-Core/gcore-go/commit/0be0062bfd4724bb9b723db91297b4c44e09649f))
+
+
+### Chores
+
+* **cdn:** update cdn OpenAPI spec ([ad32c01](https://github.com/G-Core/gcore-go/commit/ad32c011366175496c2e3f7eb5efbad2e6088de3))
+* **cdn:** update cdn OpenAPI spec ([fdef967](https://github.com/G-Core/gcore-go/commit/fdef967e828ca82a32d5f8e86f8127843b29c201))
+* **fastedge:** update fastedge OpenAPI spec ([a1fafe5](https://github.com/G-Core/gcore-go/commit/a1fafe51051f49250d8b12f2d714eeb1768dd470))
+* **iam:** update iam OpenAPI spec ([c3dc418](https://github.com/G-Core/gcore-go/commit/c3dc4186cac2bbd8df7e8bd2e3be210fd1bfda9e))
+
 ## [0.62.0](https://github.com/G-Core/gcore-go/compare/v0.61.0...v0.62.0) (2026-11-06)
 
 
