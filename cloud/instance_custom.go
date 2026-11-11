@@ -195,6 +195,45 @@ func (r *InstanceService) RemoveFromPlacementGroupAndPoll(ctx context.Context, i
 	return r.Get(ctx, instanceID, getParams, getOpts...)
 }
 
+// RebuildAndPoll rebuild the instance and poll for completion of the first task. Use the [TaskService.Poll]
+// method if you need to poll for all tasks.
+func (r *InstanceService) RebuildAndPoll(ctx context.Context, instanceID string, params InstanceRebuildParams, opts ...option.RequestOption) (v *Instance, err error) {
+	// Exclude WithResponseBodyInto for the action (Rebuild returns TaskIDList, must deserialize properly)
+	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
+	resource, err := r.Rebuild(ctx, instanceID, params, actionOpts...)
+	if err != nil {
+		return
+	}
+
+	precfg, err := requestconfig.PreRequestOptions(slices.Concat(r.Options, opts)...)
+	if err != nil {
+		return
+	}
+	var getParams InstanceGetParams
+	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
+	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
+	getParams.ProjectID = params.ProjectID
+	getParams.RegionID = params.RegionID
+
+	if len(resource.Tasks) == 0 {
+		return nil, errors.New("expected at least one task to be created")
+	}
+	taskID := resource.Tasks[0]
+	// Exclude WithResponseBodyInto and clear request body for Poll (returns Task, must deserialize properly)
+	pollOpts := slices.Concat(
+		requestconfig.ExcludeResponseBodyInto(opts...),
+		[]option.RequestOption{requestconfig.WithoutRequestBody()},
+	)
+	_, err = newTaskService(r.Options...).Poll(ctx, taskID, pollOpts...)
+	if err != nil {
+		return
+	}
+
+	// Clear request body for Get
+	getOpts := slices.Concat(opts, []option.RequestOption{requestconfig.WithoutRequestBody()})
+	return r.Get(ctx, instanceID, getParams, getOpts...)
+}
+
 // ResizeAndPoll change flavor of the instance and poll for completion of the first task. Use the [TaskService.Poll]
 // method if you need to poll for all tasks.
 func (r *InstanceService) ResizeAndPoll(ctx context.Context, instanceID string, params InstanceResizeParams, opts ...option.RequestOption) (v *Instance, err error) {

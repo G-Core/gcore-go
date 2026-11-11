@@ -295,6 +295,10 @@ var andPollMethods = []struct {
 		_, err := client.Cloud.Instances.NewAndPoll(ctx, cloud.InstanceNewParams{})
 		return err
 	}},
+	{"Instance.RebuildAndPoll", func(ctx context.Context, client gcore.Client) error {
+		_, err := client.Cloud.Instances.RebuildAndPoll(ctx, "id", cloud.InstanceRebuildParams{})
+		return err
+	}},
 	{"Instance.RemoveFromPlacementGroupAndPoll", func(ctx context.Context, client gcore.Client) error {
 		_, err := client.Cloud.Instances.RemoveFromPlacementGroupAndPoll(ctx, "id", cloud.InstanceRemoveFromPlacementGroupParams{})
 		return err
@@ -535,7 +539,7 @@ func TestAndPollMethodsSucceed(t *testing.T) {
 // TestAndPollMethodsCount is a canary: if codegen or a spec change adds/removes
 // an *AndPoll method, this reminds us to keep the table in sync.
 func TestAndPollMethodsCount(t *testing.T) {
-	const want = 100
+	const want = 101
 	if got := len(andPollMethods); got != want {
 		t.Fatalf("andPollMethods has %d entries, want %d; update the table in this file", got, want)
 	}
