@@ -478,15 +478,15 @@ type VolumeLimiterStats struct {
 	// The burst IOPS limit.
 	IopsBurstLimit int64 `json:"iops_burst_limit" api:"required"`
 	// The sustained bandwidth limit in megabytes per second (MBps).
-	MBpsBaseLimit int64 `json:"MBps_base_limit" api:"required"`
+	MbpsBaseLimit int64 `json:"MBps_base_limit" api:"required"`
 	// The burst bandwidth limit in megabytes per second (MBps).
-	MBpsBurstLimit int64 `json:"MBps_burst_limit" api:"required"`
+	MbpsBurstLimit int64 `json:"MBps_burst_limit" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IopsBaseLimit  respjson.Field
 		IopsBurstLimit respjson.Field
-		MBpsBaseLimit  respjson.Field
-		MBpsBurstLimit respjson.Field
+		MbpsBaseLimit  respjson.Field
+		MbpsBurstLimit respjson.Field
 		ExtraFields    map[string]respjson.Field
 		raw            string
 	} `json:"-"`
