@@ -449,12 +449,12 @@ func (r *OffsetPageFastedgeTemplatesAutoPager[T]) Index() int {
 }
 
 type OffsetPageFastedgeAppLogs[T any] struct {
-	Logs       []T   `json:"logs"`
-	TotalCount int64 `json:"total_count" api:"required"`
+	Logs  []T   `json:"logs"`
+	Count int64 `json:"count" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Logs        respjson.Field
-		TotalCount  respjson.Field
+		Count       respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -485,7 +485,7 @@ func (r *OffsetPageFastedgeAppLogs[T]) GetNextPage() (res *OffsetPageFastedgeApp
 	length := int64(len(r.Logs))
 	next := offset + length
 
-	if next < r.TotalCount && next != 0 {
+	if next < r.Count && next != 0 {
 		err = cfg.Apply(option.WithQuery("offset", strconv.FormatInt(next, 10)))
 		if err != nil {
 			return nil, err
