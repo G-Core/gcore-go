@@ -36,7 +36,7 @@ func NewDirectoryService(opts ...option.RequestOption) (r DirectoryService) {
 }
 
 // Use this method to create a new directory entity.
-func (r *DirectoryService) New(ctx context.Context, body DirectoryNewParams, opts ...option.RequestOption) (res *DirectoryBase, err error) {
+func (r *DirectoryService) New(ctx context.Context, body DirectoryNewParams, opts ...option.RequestOption) (res *DirectoryResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "streaming/directories"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -72,7 +72,7 @@ func (r *DirectoryService) Delete(ctx context.Context, directoryID int64, opts .
 
 // Complete directory structure with contents. The structure contains both
 // subfolders and videos in a continuous list.
-func (r *DirectoryService) Get(ctx context.Context, directoryID int64, opts ...option.RequestOption) (res *DirectoryGetResponse, err error) {
+func (r *DirectoryService) Get(ctx context.Context, directoryID int64, opts ...option.RequestOption) (res *Directory, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("streaming/directories/%v", directoryID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -123,9 +123,27 @@ func (r *DirectoriesTreeTree) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type Directory struct {
+	Directory DirectoryDetail `json:"directory"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Directory   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Directory) RawJSON() string { return r.JSON.raw }
+func (r *Directory) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type DirectoryBase struct {
 	// ID of the directory
 	ID int64 `json:"id"`
+	// ID of the client (account) that owns the directory.
+	ClientID int64 `json:"client_id"`
 	// Time of creation. Datetime in ISO 8601 format.
 	CreatedAt string `json:"created_at"`
 	// Number of objects in this directory. Counting files and folders. The quantity is
@@ -134,12 +152,13 @@ type DirectoryBase struct {
 	// Title of the directory
 	Name string `json:"name"`
 	// ID of a parent directory. "null" if it's in the root.
-	ParentID int64 `json:"parent_id"`
+	ParentID int64 `json:"parent_id" api:"nullable"`
 	// Time of last update of the directory entity. Datetime in ISO 8601 format.
 	UpdatedAt string `json:"updated_at"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
+		ClientID    respjson.Field
 		CreatedAt   respjson.Field
 		ItemsCount  respjson.Field
 		Name        respjson.Field
@@ -153,6 +172,160 @@ type DirectoryBase struct {
 // Returns the unmodified JSON received from the API
 func (r DirectoryBase) RawJSON() string { return r.JSON.raw }
 func (r *DirectoryBase) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DirectoryDetail struct {
+	// Contents of the directory, subdirectories and videos in one list. Empty array if
+	// the directory is empty.
+	Items []DirectoryDetailItemUnion `json:"items"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Items       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	DirectoryBase
+}
+
+// Returns the unmodified JSON received from the API
+func (r DirectoryDetail) RawJSON() string { return r.JSON.raw }
+func (r *DirectoryDetail) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DirectoryDetailItemUnion contains all possible properties and values from
+// [DirectoryVideo], [DirectoryItem].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type DirectoryDetailItemUnion struct {
+	ID int64 `json:"id"`
+	// This field is from variant [DirectoryVideo].
+	AdID int64 `json:"ad_id"`
+	// This field is from variant [DirectoryVideo].
+	CDNViews int64 `json:"cdn_views"`
+	ClientID int64 `json:"client_id"`
+	// This field is from variant [DirectoryVideo].
+	ClientUserID int64 `json:"client_user_id"`
+	// This field is from variant [DirectoryVideo].
+	ConvertedVideos []DirectoryVideoConvertedVideo `json:"converted_videos"`
+	CreatedAt       string                         `json:"created_at"`
+	// This field is from variant [DirectoryVideo].
+	CustomIframeURL string `json:"custom_iframe_url"`
+	// This field is from variant [DirectoryVideo].
+	DashURL string `json:"dash_url"`
+	// This field is from variant [DirectoryVideo].
+	Description string `json:"description"`
+	// This field is from variant [DirectoryVideo].
+	DirectoryID int64 `json:"directory_id"`
+	// This field is from variant [DirectoryVideo].
+	Duration int64 `json:"duration"`
+	// This field is from variant [DirectoryVideo].
+	Error string `json:"error"`
+	// This field is from variant [DirectoryVideo].
+	HlsCmafURL string `json:"hls_cmaf_url"`
+	// This field is from variant [DirectoryVideo].
+	HlsURL   string `json:"hls_url"`
+	ItemType string `json:"item_type"`
+	Name     string `json:"name"`
+	// This field is from variant [DirectoryVideo].
+	OriginSize int64 `json:"origin_size"`
+	// This field is from variant [DirectoryVideo].
+	OriginURL string `json:"origin_url"`
+	// This field is from variant [DirectoryVideo].
+	OriginVideoDuration int64 `json:"origin_video_duration"`
+	// This field is from variant [DirectoryVideo].
+	Poster string `json:"poster"`
+	// This field is from variant [DirectoryVideo].
+	PosterThumb string `json:"poster_thumb"`
+	// This field is from variant [DirectoryVideo].
+	Priority int64 `json:"priority"`
+	// This field is from variant [DirectoryVideo].
+	Projection string `json:"projection"`
+	// This field is from variant [DirectoryVideo].
+	QualitySetID int64 `json:"quality_set_id"`
+	// This field is from variant [DirectoryVideo].
+	RecordType DirectoryVideoRecordType `json:"record_type"`
+	// This field is from variant [DirectoryVideo].
+	RecordingStartedAt string `json:"recording_started_at"`
+	// This field is from variant [DirectoryVideo].
+	Screenshot string `json:"screenshot"`
+	// This field is from variant [DirectoryVideo].
+	ScreenshotID int64 `json:"screenshot_id"`
+	// This field is from variant [DirectoryVideo].
+	Screenshots []string `json:"screenshots"`
+	// This field is from variant [DirectoryVideo].
+	ShareURL string `json:"share_url"`
+	// This field is from variant [DirectoryVideo].
+	Slug string `json:"slug"`
+	// This field is from variant [DirectoryVideo].
+	Status DirectoryVideoStatus `json:"status"`
+	// This field is from variant [DirectoryVideo].
+	StreamID  int64  `json:"stream_id"`
+	UpdatedAt string `json:"updated_at"`
+	// This field is from variant [DirectoryVideo].
+	Views int64 `json:"views"`
+	// This field is from variant [DirectoryItem].
+	ItemsCount int64 `json:"items_count"`
+	// This field is from variant [DirectoryItem].
+	ParentID int64 `json:"parent_id"`
+	JSON     struct {
+		ID                  respjson.Field
+		AdID                respjson.Field
+		CDNViews            respjson.Field
+		ClientID            respjson.Field
+		ClientUserID        respjson.Field
+		ConvertedVideos     respjson.Field
+		CreatedAt           respjson.Field
+		CustomIframeURL     respjson.Field
+		DashURL             respjson.Field
+		Description         respjson.Field
+		DirectoryID         respjson.Field
+		Duration            respjson.Field
+		Error               respjson.Field
+		HlsCmafURL          respjson.Field
+		HlsURL              respjson.Field
+		ItemType            respjson.Field
+		Name                respjson.Field
+		OriginSize          respjson.Field
+		OriginURL           respjson.Field
+		OriginVideoDuration respjson.Field
+		Poster              respjson.Field
+		PosterThumb         respjson.Field
+		Priority            respjson.Field
+		Projection          respjson.Field
+		QualitySetID        respjson.Field
+		RecordType          respjson.Field
+		RecordingStartedAt  respjson.Field
+		Screenshot          respjson.Field
+		ScreenshotID        respjson.Field
+		Screenshots         respjson.Field
+		ShareURL            respjson.Field
+		Slug                respjson.Field
+		Status              respjson.Field
+		StreamID            respjson.Field
+		UpdatedAt           respjson.Field
+		Views               respjson.Field
+		ItemsCount          respjson.Field
+		ParentID            respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+func (u DirectoryDetailItemUnion) AsDirectoryVideo() (v DirectoryVideo) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DirectoryDetailItemUnion) AsDirectoryItem() (v DirectoryItem) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DirectoryDetailItemUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DirectoryDetailItemUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -173,6 +346,24 @@ type DirectoryItem struct {
 // Returns the unmodified JSON received from the API
 func (r DirectoryItem) RawJSON() string { return r.JSON.raw }
 func (r *DirectoryItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Response of the create directory method. The directory object is wrapped in the
+// "directory" key.
+type DirectoryResponse struct {
+	Directory DirectoryBase `json:"directory"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Directory   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DirectoryResponse) RawJSON() string { return r.JSON.raw }
+func (r *DirectoryResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -710,176 +901,6 @@ const (
 	DirectoryVideoStatusReady    DirectoryVideoStatus = "ready"
 	DirectoryVideoStatusError    DirectoryVideoStatus = "error"
 )
-
-type DirectoryGetResponse struct {
-	Directory DirectoryGetResponseDirectory `json:"directory"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Directory   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DirectoryGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *DirectoryGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DirectoryGetResponseDirectory struct {
-	// Array of subdirectories, if any.
-	Items []DirectoryGetResponseDirectoryItemUnion `json:"items"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Items       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-	DirectoryBase
-}
-
-// Returns the unmodified JSON received from the API
-func (r DirectoryGetResponseDirectory) RawJSON() string { return r.JSON.raw }
-func (r *DirectoryGetResponseDirectory) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// DirectoryGetResponseDirectoryItemUnion contains all possible properties and
-// values from [DirectoryVideo], [DirectoryItem].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-type DirectoryGetResponseDirectoryItemUnion struct {
-	ID int64 `json:"id"`
-	// This field is from variant [DirectoryVideo].
-	AdID int64 `json:"ad_id"`
-	// This field is from variant [DirectoryVideo].
-	CDNViews int64 `json:"cdn_views"`
-	// This field is from variant [DirectoryVideo].
-	ClientID int64 `json:"client_id"`
-	// This field is from variant [DirectoryVideo].
-	ClientUserID int64 `json:"client_user_id"`
-	// This field is from variant [DirectoryVideo].
-	ConvertedVideos []DirectoryVideoConvertedVideo `json:"converted_videos"`
-	CreatedAt       string                         `json:"created_at"`
-	// This field is from variant [DirectoryVideo].
-	CustomIframeURL string `json:"custom_iframe_url"`
-	// This field is from variant [DirectoryVideo].
-	DashURL string `json:"dash_url"`
-	// This field is from variant [DirectoryVideo].
-	Description string `json:"description"`
-	// This field is from variant [DirectoryVideo].
-	DirectoryID int64 `json:"directory_id"`
-	// This field is from variant [DirectoryVideo].
-	Duration int64 `json:"duration"`
-	// This field is from variant [DirectoryVideo].
-	Error string `json:"error"`
-	// This field is from variant [DirectoryVideo].
-	HlsCmafURL string `json:"hls_cmaf_url"`
-	// This field is from variant [DirectoryVideo].
-	HlsURL   string `json:"hls_url"`
-	ItemType string `json:"item_type"`
-	Name     string `json:"name"`
-	// This field is from variant [DirectoryVideo].
-	OriginSize int64 `json:"origin_size"`
-	// This field is from variant [DirectoryVideo].
-	OriginURL string `json:"origin_url"`
-	// This field is from variant [DirectoryVideo].
-	OriginVideoDuration int64 `json:"origin_video_duration"`
-	// This field is from variant [DirectoryVideo].
-	Poster string `json:"poster"`
-	// This field is from variant [DirectoryVideo].
-	PosterThumb string `json:"poster_thumb"`
-	// This field is from variant [DirectoryVideo].
-	Priority int64 `json:"priority"`
-	// This field is from variant [DirectoryVideo].
-	Projection string `json:"projection"`
-	// This field is from variant [DirectoryVideo].
-	QualitySetID int64 `json:"quality_set_id"`
-	// This field is from variant [DirectoryVideo].
-	RecordType DirectoryVideoRecordType `json:"record_type"`
-	// This field is from variant [DirectoryVideo].
-	RecordingStartedAt string `json:"recording_started_at"`
-	// This field is from variant [DirectoryVideo].
-	Screenshot string `json:"screenshot"`
-	// This field is from variant [DirectoryVideo].
-	ScreenshotID int64 `json:"screenshot_id"`
-	// This field is from variant [DirectoryVideo].
-	Screenshots []string `json:"screenshots"`
-	// This field is from variant [DirectoryVideo].
-	ShareURL string `json:"share_url"`
-	// This field is from variant [DirectoryVideo].
-	Slug string `json:"slug"`
-	// This field is from variant [DirectoryVideo].
-	Status DirectoryVideoStatus `json:"status"`
-	// This field is from variant [DirectoryVideo].
-	StreamID  int64  `json:"stream_id"`
-	UpdatedAt string `json:"updated_at"`
-	// This field is from variant [DirectoryVideo].
-	Views int64 `json:"views"`
-	// This field is from variant [DirectoryItem].
-	ItemsCount int64 `json:"items_count"`
-	// This field is from variant [DirectoryItem].
-	ParentID int64 `json:"parent_id"`
-	JSON     struct {
-		ID                  respjson.Field
-		AdID                respjson.Field
-		CDNViews            respjson.Field
-		ClientID            respjson.Field
-		ClientUserID        respjson.Field
-		ConvertedVideos     respjson.Field
-		CreatedAt           respjson.Field
-		CustomIframeURL     respjson.Field
-		DashURL             respjson.Field
-		Description         respjson.Field
-		DirectoryID         respjson.Field
-		Duration            respjson.Field
-		Error               respjson.Field
-		HlsCmafURL          respjson.Field
-		HlsURL              respjson.Field
-		ItemType            respjson.Field
-		Name                respjson.Field
-		OriginSize          respjson.Field
-		OriginURL           respjson.Field
-		OriginVideoDuration respjson.Field
-		Poster              respjson.Field
-		PosterThumb         respjson.Field
-		Priority            respjson.Field
-		Projection          respjson.Field
-		QualitySetID        respjson.Field
-		RecordType          respjson.Field
-		RecordingStartedAt  respjson.Field
-		Screenshot          respjson.Field
-		ScreenshotID        respjson.Field
-		Screenshots         respjson.Field
-		ShareURL            respjson.Field
-		Slug                respjson.Field
-		Status              respjson.Field
-		StreamID            respjson.Field
-		UpdatedAt           respjson.Field
-		Views               respjson.Field
-		ItemsCount          respjson.Field
-		ParentID            respjson.Field
-		raw                 string
-	} `json:"-"`
-}
-
-func (u DirectoryGetResponseDirectoryItemUnion) AsDirectoryVideo() (v DirectoryVideo) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u DirectoryGetResponseDirectoryItemUnion) AsDirectoryItem() (v DirectoryItem) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u DirectoryGetResponseDirectoryItemUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *DirectoryGetResponseDirectoryItemUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 type DirectoryNewParams struct {
 	// Title of the directory.
