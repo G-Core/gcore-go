@@ -78,7 +78,10 @@ type AccountOverview struct {
 	//
 	// Any of "CDN", "STORAGE", "STREAMING", "DNS", "DDOS", "CLOUD".
 	Capabilities []string `json:"capabilities" api:"required"`
-	// The company name.
+	// Deprecated read-only alias of `name` (the client's company name). Ignored on
+	// input; write `name` instead.
+	//
+	// Deprecated: deprecated
 	CompanyName string `json:"companyName" api:"required"`
 	// ID of the current user.
 	CurrentUser int64 `json:"currentUser" api:"required"`
