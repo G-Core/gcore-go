@@ -40,7 +40,7 @@ func NewDomainAPIDiscoverySettingService(opts ...option.RequestOption) (r Domain
 // Update the API discovery settings for a domain
 func (r *DomainAPIDiscoverySettingService) Update(ctx context.Context, domainID int64, body DomainAPIDiscoverySettingUpdateParams, opts ...option.RequestOption) (res *WaapAPIDiscoverySettings, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("waap/v1/domains/%v/api-discovery/settings", domainID)
+	path := fmt.Sprintf("waap/v2/domains/%v/api-discovery/settings", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -48,7 +48,7 @@ func (r *DomainAPIDiscoverySettingService) Update(ctx context.Context, domainID 
 // Retrieve the API discovery settings for a domain
 func (r *DomainAPIDiscoverySettingService) Get(ctx context.Context, domainID int64, opts ...option.RequestOption) (res *WaapAPIDiscoverySettings, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("waap/v1/domains/%v/api-discovery/settings", domainID)
+	path := fmt.Sprintf("waap/v2/domains/%v/api-discovery/settings", domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

@@ -48,7 +48,7 @@ func TestDomainAdvancedRuleNewWithOptionalParams(t *testing.T) {
 					"foo": "bar",
 				},
 				Tag: waap.DomainAdvancedRuleNewParamsActionTag{
-					Tags: []string{"string"},
+					Tags: []string{"SQfNklznVLBBpr"},
 				},
 			},
 			Enabled:     true,
@@ -102,7 +102,7 @@ func TestDomainAdvancedRuleUpdateWithOptionalParams(t *testing.T) {
 					"foo": "bar",
 				},
 				Tag: waap.DomainAdvancedRuleUpdateParamsActionTag{
-					Tags: []string{"string"},
+					Tags: []string{"SQfNklznVLBBpr"},
 				},
 			},
 			Description: gcore.String("description"),

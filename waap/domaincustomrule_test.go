@@ -48,7 +48,7 @@ func TestDomainCustomRuleNewWithOptionalParams(t *testing.T) {
 					"foo": "bar",
 				},
 				Tag: waap.DomainCustomRuleNewParamsActionTag{
-					Tags: []string{"string"},
+					Tags: []string{"SQfNklznVLBBpr"},
 				},
 			},
 			Conditions: []waap.DomainCustomRuleNewParamsCondition{{
@@ -187,7 +187,7 @@ func TestDomainCustomRuleUpdateWithOptionalParams(t *testing.T) {
 					"foo": "bar",
 				},
 				Tag: waap.DomainCustomRuleUpdateParamsActionTag{
-					Tags: []string{"string"},
+					Tags: []string{"SQfNklznVLBBpr"},
 				},
 			},
 			Conditions: []waap.DomainCustomRuleUpdateParamsCondition{{
