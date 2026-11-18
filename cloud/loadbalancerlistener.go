@@ -241,9 +241,13 @@ const (
 
 // The properties EncryptedPassword, Username are required.
 type LoadBalancerListenerNewParamsUserList struct {
-	// Encrypted password to auth via Basic Authentication
+	// Password hash for HTTP basic authentication in crypt(3) format, for example
+	// SHA-256 ($5$) or bcrypt ($2b$). Do not send the password as plain text. Do not
+	// use the $apr1$ format.
 	EncryptedPassword string `json:"encrypted_password" api:"required"`
-	// Username to auth via Basic Authentication
+	// Username for HTTP basic authentication. Use 3 to 32 letters, digits, periods,
+	// underscores or hyphens. Start with a letter or a digit. Do not end with a
+	// hyphen. Do not use spaces.
 	Username string `json:"username" api:"required"`
 	paramObj
 }
@@ -301,9 +305,13 @@ func (r *LoadBalancerListenerUpdateParams) UnmarshalJSON(data []byte) error {
 
 // The properties EncryptedPassword, Username are required.
 type LoadBalancerListenerUpdateParamsUserList struct {
-	// Encrypted password to auth via Basic Authentication
+	// Password hash for HTTP basic authentication in crypt(3) format, for example
+	// SHA-256 ($5$) or bcrypt ($2b$). Do not send the password as plain text. Do not
+	// use the $apr1$ format.
 	EncryptedPassword string `json:"encrypted_password" api:"required"`
-	// Username to auth via Basic Authentication
+	// Username for HTTP basic authentication. Use 3 to 32 letters, digits, periods,
+	// underscores or hyphens. Start with a letter or a digit. Do not end with a
+	// hyphen. Do not use spaces.
 	Username string `json:"username" api:"required"`
 	paramObj
 }

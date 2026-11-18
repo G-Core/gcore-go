@@ -586,7 +586,7 @@ type FloatingIPUpdateParams struct {
 	FixedIPAddress param.Opt[string] `json:"fixed_ip_address,omitzero" format:"ipv4"`
 	// Port ID
 	PortID param.Opt[string] `json:"port_id,omitzero" format:"uuid4"`
-	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
+	// Update key-value tags using JSON Merge Patch semantics (RFC 7396). Provide
 	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
 	// Unspecified tags remain unchanged. Read-only tags are always preserved and
 	// cannot be modified.

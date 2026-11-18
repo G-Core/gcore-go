@@ -296,7 +296,7 @@ type VolumeSnapshotUpdateParams struct {
 	// Display name for the snapshot (3-63 chars). Used in customer portal and API.
 	// Does not affect snapshot data.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
+	// Update key-value tags using JSON Merge Patch semantics (RFC 7396). Provide
 	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
 	// Unspecified tags remain unchanged. Read-only tags are always preserved and
 	// cannot be modified.

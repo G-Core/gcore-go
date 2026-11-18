@@ -37,6 +37,11 @@ func NewInstanceInterfaceService(opts ...option.RequestOption) (r InstanceInterf
 	return
 }
 
+// Use
+// [GET /v1/projects/{`project_id`}/instances/{`instance_id`}](#operation/GlobalInstanceDetailView.get)
+// instead. Read `interfaces`. This route continues to work. Later, we will
+// deprecate it and then remove it. We will tell you in advance.
+//
 // List all network interfaces attached to the specified instance.
 func (r *InstanceInterfaceService) List(ctx context.Context, instanceID string, params InstanceInterfaceListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[NetworkInterfaceUnion], err error) {
 	var raw *http.Response
@@ -73,11 +78,21 @@ func (r *InstanceInterfaceService) List(ctx context.Context, instanceID string, 
 	return res, nil
 }
 
+// Use
+// [GET /v1/projects/{`project_id`}/instances/{`instance_id`}](#operation/GlobalInstanceDetailView.get)
+// instead. Read `interfaces`. This route continues to work. Later, we will
+// deprecate it and then remove it. We will tell you in advance.
+//
 // List all network interfaces attached to the specified instance.
 func (r *InstanceInterfaceService) ListAutoPaging(ctx context.Context, instanceID string, params InstanceInterfaceListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[NetworkInterfaceUnion] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, instanceID, params, opts...))
 }
 
+// Use
+// [PATCH /v1/projects/{`project_id`}/instances/{`instance_id`}](#operation/GlobalInstanceDetailView.patch)
+// instead. Send `interfaces`. This route continues to work. Later, we will
+// deprecate it and then remove it. We will tell you in advance.
+//
 // Attach interface to instance
 func (r *InstanceInterfaceService) Attach(ctx context.Context, instanceID string, params InstanceInterfaceAttachParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -104,6 +119,11 @@ func (r *InstanceInterfaceService) Attach(ctx context.Context, instanceID string
 	return res, err
 }
 
+// Use
+// [PATCH /v1/projects/{`project_id`}/instances/{`instance_id`}](#operation/GlobalInstanceDetailView.patch)
+// instead. Send `interfaces`. This route continues to work. Later, we will
+// deprecate it and then remove it. We will tell you in advance.
+//
 // Detach interface from instance
 func (r *InstanceInterfaceService) Detach(ctx context.Context, instanceID string, params InstanceInterfaceDetachParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)

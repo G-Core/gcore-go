@@ -36,6 +36,14 @@ func NewBaremetalFlavorService(opts ...option.RequestOption) (r BaremetalFlavorS
 	return
 }
 
+// Use
+// [GET /v1/projects/{`project_id`}/baremetal/flavors](#operation/GlobalBaremetalFlavorListView.get)
+// instead. The new route always returns `capacity`. The new route does not return
+// prices. For prices, use
+// [List bare metal flavor prices](#operation/BaremetalFlavorPriceListView.get).
+// This route continues to work. Later, we will deprecate it and then remove it. We
+// will tell you in advance.
+//
 // List all available bare metal flavors in the specified project and region. When
 // `include_prices` is specified, the list includes pricing information. A client
 // in trial mode gets all price values as 0. If you get Pricing Error contact the
@@ -71,6 +79,14 @@ func (r *BaremetalFlavorService) List(ctx context.Context, params BaremetalFlavo
 	return res, nil
 }
 
+// Use
+// [GET /v1/projects/{`project_id`}/baremetal/flavors](#operation/GlobalBaremetalFlavorListView.get)
+// instead. The new route always returns `capacity`. The new route does not return
+// prices. For prices, use
+// [List bare metal flavor prices](#operation/BaremetalFlavorPriceListView.get).
+// This route continues to work. Later, we will deprecate it and then remove it. We
+// will tell you in advance.
+//
 // List all available bare metal flavors in the specified project and region. When
 // `include_prices` is specified, the list includes pricing information. A client
 // in trial mode gets all price values as 0. If you get Pricing Error contact the

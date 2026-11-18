@@ -42,6 +42,18 @@ func NewInstanceFlavorService(opts ...option.RequestOption) (r InstanceFlavorSer
 	return
 }
 
+// Use
+// [GET /v1/projects/{`project_id`}/instances/flavors](#operation/GlobalInstanceFlavorListView.get)
+// instead. This route also returns the basic VM and the bare metal flavors. For
+// them, use [List basic VM flavors](#operation/GlobalBasicVmFlavorListView.get)
+// and [List bare metal flavors](#operation/GlobalBaremetalFlavorListView.get). The
+// new routes do not return prices. For prices, use
+// [List instance flavor prices](#operation/InstanceFlavorPriceListView.get),
+// [List basic VM flavor prices](#operation/BasicVmFlavorPriceListView.get) and
+// [List bare metal flavor prices](#operation/BaremetalFlavorPriceListView.get).
+// This route continues to work. Later, we will deprecate it and then remove it. We
+// will tell you in advance.
+//
 // Retrieve a list of available instance flavors in the project and region. When
 // `include_prices` is specified, the list includes pricing information. Trial mode
 // clients see all prices as 0. Contact support for pricing errors.
@@ -76,6 +88,18 @@ func (r *InstanceFlavorService) List(ctx context.Context, params InstanceFlavorL
 	return res, nil
 }
 
+// Use
+// [GET /v1/projects/{`project_id`}/instances/flavors](#operation/GlobalInstanceFlavorListView.get)
+// instead. This route also returns the basic VM and the bare metal flavors. For
+// them, use [List basic VM flavors](#operation/GlobalBasicVmFlavorListView.get)
+// and [List bare metal flavors](#operation/GlobalBaremetalFlavorListView.get). The
+// new routes do not return prices. For prices, use
+// [List instance flavor prices](#operation/InstanceFlavorPriceListView.get),
+// [List basic VM flavor prices](#operation/BasicVmFlavorPriceListView.get) and
+// [List bare metal flavor prices](#operation/BaremetalFlavorPriceListView.get).
+// This route continues to work. Later, we will deprecate it and then remove it. We
+// will tell you in advance.
+//
 // Retrieve a list of available instance flavors in the project and region. When
 // `include_prices` is specified, the list includes pricing information. Trial mode
 // clients see all prices as 0. Contact support for pricing errors.

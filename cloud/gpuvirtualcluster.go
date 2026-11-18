@@ -1475,7 +1475,7 @@ type GPUVirtualClusterUpdateParams struct {
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Configuration settings for the servers in the cluster
 	ServersSettings GPUVirtualClusterUpdateParamsServersSettings `json:"servers_settings,omitzero"`
-	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
+	// Update key-value tags using JSON Merge Patch semantics (RFC 7396). Provide
 	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
 	// Unspecified tags remain unchanged. Read-only tags are always preserved and
 	// cannot be modified.

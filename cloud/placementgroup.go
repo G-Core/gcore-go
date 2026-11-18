@@ -41,7 +41,14 @@ func NewPlacementGroupService(opts ...option.RequestOption) (r PlacementGroupSer
 	return
 }
 
-// Create an affinity or anti-affinity or soft-anti-affinity placement group
+// Use
+// [POST /v1/projects/{`project_id`}/`placement_groups`](#operation/GlobalPlacementGroupListView.post)
+// instead. This route is deprecated. Later, we will remove it. We will tell you in
+// advance.
+//
+// # Create an affinity or anti-affinity or soft-anti-affinity placement group
+//
+// Deprecated: deprecated
 func (r *PlacementGroupService) New(ctx context.Context, params PlacementGroupNewParams, opts ...option.RequestOption) (res *PlacementGroup, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -63,7 +70,14 @@ func (r *PlacementGroupService) New(ctx context.Context, params PlacementGroupNe
 	return res, err
 }
 
+// Use
+// [GET /v1/projects/{`project_id`}/`placement_groups`](#operation/GlobalPlacementGroupListView.get)
+// instead. This route is deprecated. Later, we will remove it. We will tell you in
+// advance.
+//
 // List all placement groups in the specified project and region.
+//
+// Deprecated: deprecated
 func (r *PlacementGroupService) List(ctx context.Context, params PlacementGroupListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[PlacementGroup], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -95,12 +109,26 @@ func (r *PlacementGroupService) List(ctx context.Context, params PlacementGroupL
 	return res, nil
 }
 
+// Use
+// [GET /v1/projects/{`project_id`}/`placement_groups`](#operation/GlobalPlacementGroupListView.get)
+// instead. This route is deprecated. Later, we will remove it. We will tell you in
+// advance.
+//
 // List all placement groups in the specified project and region.
+//
+// Deprecated: deprecated
 func (r *PlacementGroupService) ListAutoPaging(ctx context.Context, params PlacementGroupListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[PlacementGroup] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
+// Use
+// [DELETE /v1/projects/{`project_id`}/`placement_groups`/{`placement_group_id`}](#operation/GlobalPlacementGroupDetailView.delete)
+// instead. This route is deprecated. Later, we will remove it. We will tell you in
+// advance.
+//
 // Delete a placement group by its ID.
+//
+// Deprecated: deprecated
 func (r *PlacementGroupService) Delete(ctx context.Context, groupID string, body PlacementGroupDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -126,7 +154,14 @@ func (r *PlacementGroupService) Delete(ctx context.Context, groupID string, body
 	return res, err
 }
 
+// Use
+// [GET /v1/projects/{`project_id`}/`placement_groups`/{`placement_group_id`}](#operation/GlobalPlacementGroupDetailView.get)
+// instead. This route is deprecated. Later, we will remove it. We will tell you in
+// advance.
+//
 // Retrieve a single placement group by its ID.
+//
+// Deprecated: deprecated
 func (r *PlacementGroupService) Get(ctx context.Context, groupID string, query PlacementGroupGetParams, opts ...option.RequestOption) (res *PlacementGroup, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)

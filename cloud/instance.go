@@ -55,6 +55,11 @@ func NewInstanceService(opts ...option.RequestOption) (r InstanceService) {
 	return
 }
 
+// Use
+// [POST /v1/projects/{`project_id`}/instances](#operation/GlobalInstanceListView.post)
+// instead. This route continues to work. Later, we will deprecate it and then
+// remove it. We will tell you in advance.
+//
 // Create an instance with specified configuration.
 //
 // How to get access:
@@ -98,6 +103,11 @@ func (r *InstanceService) New(ctx context.Context, params InstanceNewParams, opt
 	return res, err
 }
 
+// Use
+// [PATCH /v1/projects/{`project_id`}/instances/{`instance_id`}](#operation/GlobalInstanceDetailView.patch)
+// instead. This route continues to work. Later, we will deprecate it and then
+// remove it. We will tell you in advance.
+//
 // Rename instance or update tags
 func (r *InstanceService) Update(ctx context.Context, instanceID string, params InstanceUpdateParams, opts ...option.RequestOption) (res *Instance, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -124,6 +134,11 @@ func (r *InstanceService) Update(ctx context.Context, instanceID string, params 
 	return res, err
 }
 
+// Use
+// [GET /v1/projects/{`project_id`}/instances](#operation/GlobalInstanceListView.get)
+// instead. This route continues to work. Later, we will deprecate it and then
+// remove it. We will tell you in advance.
+//
 // List all instances in the specified project and region. Results can be filtered
 // by various parameters like name, status, and IP address.
 func (r *InstanceService) List(ctx context.Context, params InstanceListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Instance], err error) {
@@ -157,13 +172,30 @@ func (r *InstanceService) List(ctx context.Context, params InstanceListParams, o
 	return res, nil
 }
 
+// Use
+// [GET /v1/projects/{`project_id`}/instances](#operation/GlobalInstanceListView.get)
+// instead. This route continues to work. Later, we will deprecate it and then
+// remove it. We will tell you in advance.
+//
 // List all instances in the specified project and region. Results can be filtered
 // by various parameters like name, status, and IP address.
 func (r *InstanceService) ListAutoPaging(ctx context.Context, params InstanceListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Instance] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
-// Delete instance
+// Use
+// [DELETE /v1/projects/{`project_id`}/instances/{`instance_id`}](#operation/GlobalInstanceDetailView.delete)
+// instead. This route continues to work. Later, we will deprecate it and then
+// remove it. We will tell you in advance.
+//
+// Delete the instance and its ports. A reserved fixed IP stays, unless
+// `reserved_fixed_ips` names it. A port that you
+// [create as a port](#operation/GlobalPortListView.post) is not a reserved fixed
+// IP, so this delete removes it.
+//
+// To keep the ports, use
+// [`DELETE /v1/projects/{project_id}/instances/{instance_id}`](#operation/GlobalInstanceDetailView.delete).
+// That delete keeps every port by default.
 func (r *InstanceService) Delete(ctx context.Context, instanceID string, params InstanceDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -189,6 +221,11 @@ func (r *InstanceService) Delete(ctx context.Context, instanceID string, params 
 	return res, err
 }
 
+// Use
+// [POST /v1/projects/{`project_id`}/instances/{`instance_id`}/action](#operation/GlobalInstanceActionView.post)
+// instead. This route continues to work. Later, we will deprecate it and then
+// remove it. We will tell you in advance.
+//
 // The action can be one of: start, stop, reboot, `reboot_hard`, suspend or resume.
 // Suspend and resume are not available for bare metal instances.
 func (r *InstanceService) Action(ctx context.Context, instanceID string, params InstanceActionParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
@@ -216,6 +253,11 @@ func (r *InstanceService) Action(ctx context.Context, instanceID string, params 
 	return res, err
 }
 
+// Use
+// [PATCH /v1/projects/{`project_id`}/instances/{`instance_id`}](#operation/GlobalInstanceDetailView.patch)
+// instead. Send `placement_group_id`. This route continues to work. Later, we will
+// deprecate it and then remove it. We will tell you in advance.
+//
 // Add an instance to a placement group. The instance must not already be in a
 // placement group. Bare metal servers do not support placement groups.
 func (r *InstanceService) AddToPlacementGroup(ctx context.Context, instanceID string, params InstanceAddToPlacementGroupParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
@@ -243,6 +285,11 @@ func (r *InstanceService) AddToPlacementGroup(ctx context.Context, instanceID st
 	return res, err
 }
 
+// Use
+// [PATCH /v1/projects/{`project_id`}/ports/{`port_id`}](#operation/GlobalPortDetailView.patch)
+// instead. Send `security_group_ids`. This route continues to work. Later, we will
+// deprecate it and then remove it. We will tell you in advance.
+//
 // Assign the security group to the server. To assign multiple security groups to
 // all ports, use the NULL value for the `port_id` field
 func (r *InstanceService) AssignSecurityGroup(ctx context.Context, instanceID string, params InstanceAssignSecurityGroupParams, opts ...option.RequestOption) (err error) {
@@ -329,6 +376,11 @@ func (r *InstanceService) EnablePortSecurity(ctx context.Context, portID string,
 	return res, err
 }
 
+// Use
+// [GET /v1/projects/{`project_id`}/instances/{`instance_id`}](#operation/GlobalInstanceDetailView.get)
+// instead. This route continues to work. Later, we will deprecate it and then
+// remove it. We will tell you in advance.
+//
 // Retrieve detailed information about a specific instance. The response content
 // language for `ddos_profile` can be controlled via the 'language' cookie
 // parameter.
@@ -364,6 +416,15 @@ func (r *InstanceService) Get(ctx context.Context, instanceID string, query Inst
 	return res, err
 }
 
+// Use
+// [GET /v1/projects/{`project_id`}/instances/{`instance_id`}/console](#operation/GlobalInstanceConsoleView.get)
+// instead. For a bare metal server, use
+// [Get bare metal server console URL](#operation/GlobalBaremetalConsoleView.get).
+// For a basic VM, use
+// [Get basic VM console URL](#operation/GlobalBasicVmConsoleView.get). This route
+// continues to work. Later, we will deprecate it and then remove it. We will tell
+// you in advance.
+//
 // Returns a URL to access the remote console for an instance. Supported console
 // types depend on instance type: novnc and spice for virtual instances, vnc and
 // serial for bare metal instances.
@@ -418,6 +479,11 @@ func (r *InstanceService) Rebuild(ctx context.Context, instanceID string, params
 	return res, err
 }
 
+// Use
+// [PATCH /v1/projects/{`project_id`}/instances/{`instance_id`}](#operation/GlobalInstanceDetailView.patch)
+// instead. Send `placement_group_id`. This route continues to work. Later, we will
+// deprecate it and then remove it. We will tell you in advance.
+//
 // Remove an instance from its current placement group. The instance must be in a
 // placement group to be removed. Bare metal servers do not support placement
 // groups.
@@ -446,6 +512,11 @@ func (r *InstanceService) RemoveFromPlacementGroup(ctx context.Context, instance
 	return res, err
 }
 
+// Use
+// [PATCH /v1/projects/{`project_id`}/instances/{`instance_id`}](#operation/GlobalInstanceDetailView.patch)
+// instead. Send `flavor_name`. This route continues to work. Later, we will
+// deprecate it and then remove it. We will tell you in advance.
+//
 // Change flavor of the instance.
 func (r *InstanceService) Resize(ctx context.Context, instanceID string, params InstanceResizeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -472,6 +543,11 @@ func (r *InstanceService) Resize(ctx context.Context, instanceID string, params 
 	return res, err
 }
 
+// Use
+// [PATCH /v1/projects/{`project_id`}/ports/{`port_id`}](#operation/GlobalPortDetailView.patch)
+// instead. Send `security_group_ids`. This route continues to work. Later, we will
+// deprecate it and then remove it. We will tell you in advance.
+//
 // Un-assign the security group to the server. To un-assign multiple security
 // groups to all ports, use the NULL value for the `port_id` field
 func (r *InstanceService) UnassignSecurityGroup(ctx context.Context, instanceID string, params InstanceUnassignSecurityGroupParams, opts ...option.RequestOption) (err error) {
@@ -1804,7 +1880,7 @@ type InstanceUpdateParams struct {
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Name
 	Name param.Opt[string] `json:"name,omitzero"`
-	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
+	// Update key-value tags using JSON Merge Patch semantics (RFC 7396). Provide
 	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
 	// Unspecified tags remain unchanged. Read-only tags are always preserved and
 	// cannot be modified.

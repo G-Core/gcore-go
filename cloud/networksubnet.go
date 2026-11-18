@@ -269,7 +269,7 @@ type NetworkSubnetUpdateParams struct {
 	DNSNameservers []string `json:"dns_nameservers,omitzero" format:"ipvanyaddress"`
 	// List of custom static routes to advertise via DHCP.
 	HostRoutes []NetworkSubnetUpdateParamsHostRoute `json:"host_routes,omitzero"`
-	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
+	// Update key-value tags using JSON Merge Patch semantics (RFC 7396). Provide
 	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
 	// Unspecified tags remain unchanged. Read-only tags are always preserved and
 	// cannot be modified.

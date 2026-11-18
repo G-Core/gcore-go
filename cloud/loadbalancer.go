@@ -943,9 +943,9 @@ func (r *LoadBalancerListenerDetail) UnmarshalJSON(data []byte) error {
 }
 
 type LoadBalancerListenerDetailUserList struct {
-	// Encrypted password to auth via Basic Authentication
+	// Password hash for HTTP basic authentication
 	EncryptedPassword string `json:"encrypted_password" api:"required"`
-	// Username to auth via Basic Authentication
+	// Username for HTTP basic authentication
 	Username string `json:"username" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2032,9 +2032,13 @@ func (r *LoadBalancerNewParamsListenerPoolSessionPersistence) UnmarshalJSON(data
 
 // The properties EncryptedPassword, Username are required.
 type LoadBalancerNewParamsListenerUserList struct {
-	// Encrypted password to auth via Basic Authentication
+	// Password hash for HTTP basic authentication in crypt(3) format, for example
+	// SHA-256 ($5$) or bcrypt ($2b$). Do not send the password as plain text. Do not
+	// use the $apr1$ format.
 	EncryptedPassword string `json:"encrypted_password" api:"required"`
-	// Username to auth via Basic Authentication
+	// Username for HTTP basic authentication. Use 3 to 32 letters, digits, periods,
+	// underscores or hyphens. Start with a letter or a digit. Do not end with a
+	// hyphen. Do not use spaces.
 	Username string `json:"username" api:"required"`
 	paramObj
 }
@@ -2082,7 +2086,7 @@ type LoadBalancerUpdateParams struct {
 	//
 	// Any of "L2", "L3".
 	PreferredConnectivity LoadBalancerMemberConnectivity `json:"preferred_connectivity,omitzero"`
-	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
+	// Update key-value tags using JSON Merge Patch semantics (RFC 7396). Provide
 	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
 	// Unspecified tags remain unchanged. Read-only tags are always preserved and
 	// cannot be modified.

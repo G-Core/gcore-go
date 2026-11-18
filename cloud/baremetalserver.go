@@ -45,6 +45,11 @@ func NewBaremetalServerService(opts ...option.RequestOption) (r BaremetalServerS
 	return
 }
 
+// Use
+// [POST /v1/projects/{`project_id`}/baremetal/servers](#operation/GlobalBaremetalListView.post)
+// instead. This route continues to work. Later, we will deprecate it and then
+// remove it. We will tell you in advance.
+//
 // Create a new bare metal server with the specified configuration.
 //
 // How to get access:
@@ -88,6 +93,11 @@ func (r *BaremetalServerService) New(ctx context.Context, params BaremetalServer
 	return res, err
 }
 
+// Use
+// [PATCH /v1/projects/{`project_id`}/baremetal/servers/{`server_id`}](#operation/GlobalBaremetalDetailView.patch)
+// instead. This route continues to work. Later, we will deprecate it and then
+// remove it. We will tell you in advance.
+//
 // Rename bare metal server or update tags
 func (r *BaremetalServerService) Update(ctx context.Context, serverID string, params BaremetalServerUpdateParams, opts ...option.RequestOption) (res *BaremetalServer, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -114,6 +124,11 @@ func (r *BaremetalServerService) Update(ctx context.Context, serverID string, pa
 	return res, err
 }
 
+// Use
+// [GET /v1/projects/{`project_id`}/baremetal/servers](#operation/GlobalBaremetalListView.get)
+// instead. This route continues to work. Later, we will deprecate it and then
+// remove it. We will tell you in advance.
+//
 // List all bare metal servers in the specified project and region. Results can be
 // filtered by various parameters like name, status, and IP address.
 func (r *BaremetalServerService) List(ctx context.Context, params BaremetalServerListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[BaremetalServer], err error) {
@@ -147,13 +162,30 @@ func (r *BaremetalServerService) List(ctx context.Context, params BaremetalServe
 	return res, nil
 }
 
+// Use
+// [GET /v1/projects/{`project_id`}/baremetal/servers](#operation/GlobalBaremetalListView.get)
+// instead. This route continues to work. Later, we will deprecate it and then
+// remove it. We will tell you in advance.
+//
 // List all bare metal servers in the specified project and region. Results can be
 // filtered by various parameters like name, status, and IP address.
 func (r *BaremetalServerService) ListAutoPaging(ctx context.Context, params BaremetalServerListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[BaremetalServer] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
-// Delete a bare metal server and it's associated resources
+// Use
+// [DELETE /v1/projects/{`project_id`}/baremetal/servers/{`server_id`}](#operation/GlobalBaremetalDetailView.delete)
+// instead. This route continues to work. Later, we will deprecate it and then
+// remove it. We will tell you in advance.
+//
+// Delete the bare metal server and its ports. A reserved fixed IP stays, unless
+// `reserved_fixed_ip_ids` names it or `all_reserved_fixed_ips` is `true`. A port
+// that you [create as a port](#operation/GlobalPortListView.post) is not a
+// reserved fixed IP, so this delete removes it.
+//
+// To keep the ports, use
+// [`DELETE /v1/projects/{project_id}/baremetal/servers/{server_id}`](#operation/GlobalBaremetalDetailView.delete).
+// That delete keeps every port by default.
 func (r *BaremetalServerService) Delete(ctx context.Context, serverID string, params BaremetalServerDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -179,6 +211,11 @@ func (r *BaremetalServerService) Delete(ctx context.Context, serverID string, pa
 	return res, err
 }
 
+// Use
+// [POST /v1/projects/{`project_id`}/baremetal/servers/{`server_id`}/action](#operation/GlobalBaremetalActionView.post)
+// instead. This route continues to work. Later, we will deprecate it and then
+// remove it. We will tell you in advance.
+//
 // The action can be one of: start, stop, reboot or `reboot_hard`.
 func (r *BaremetalServerService) Action(ctx context.Context, serverID string, params BaremetalServerActionParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -205,6 +242,11 @@ func (r *BaremetalServerService) Action(ctx context.Context, serverID string, pa
 	return res, err
 }
 
+// Use
+// [GET /v1/projects/{`project_id`}/baremetal/servers/{`server_id`}](#operation/GlobalBaremetalDetailView.get)
+// instead. This route continues to work. Later, we will deprecate it and then
+// remove it. We will tell you in advance.
+//
 // Retrieve detailed information about a specific baremetal instance. This endpoint
 // always returns `ddos_profile` (if present) and therefore always requires
 // `DDOS_READ`.
@@ -1300,7 +1342,7 @@ type BaremetalServerUpdateParams struct {
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Name
 	Name param.Opt[string] `json:"name,omitzero"`
-	// Update key-value tags using JSON Merge Patch semantics (RFC 7386). Provide
+	// Update key-value tags using JSON Merge Patch semantics (RFC 7396). Provide
 	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
 	// Unspecified tags remain unchanged. Read-only tags are always preserved and
 	// cannot be modified.
