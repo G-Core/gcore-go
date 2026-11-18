@@ -401,11 +401,16 @@ type StatisticGetUsageAggregatedParams struct {
 	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
 	// a Locations list of filter
 	Locations []string `json:"locations,omitzero"`
-	// a StorageIDs list of filter, combined with storages. Each ID selects exactly
-	// that storage, deleted ones included, narrowed by locations. An ID that is not
-	// one of the client's storages fails the request with 404.
+	// a StorageIDs list of filter, by ID. Each ID selects exactly that storage,
+	// deleted ones included, narrowed by locations. An ID that is not one of the
+	// client's storages fails the request with 404. Omit it, or send null, when not
+	// selecting by ID; an empty list fails the request with 400. Mutually exclusive
+	// with storages.
 	StorageIDs []int64 `json:"storage_ids,omitzero"`
-	// a Storages list of filter
+	// a Storages list of filter, by name. A name selects the client's live storages
+	// with that name; a deleted storage is reachable by `storage_ids` only. Omit both
+	// storages and `storage_ids`, or send storages as [], to select the whole account.
+	// Mutually exclusive with `storage_ids`.
 	Storages []string `json:"storages,omitzero"`
 	paramObj
 }
@@ -433,11 +438,16 @@ type StatisticGetUsageSeriesParams struct {
 	AcceptLanguage param.Opt[string] `header:"Accept-Language,omitzero" json:"-"`
 	// a Locations list of filter
 	Locations []string `json:"locations,omitzero"`
-	// a StorageIDs list of filter, combined with storages. Each ID selects exactly
-	// that storage, deleted ones included, narrowed by locations. An ID that is not
-	// one of the client's storages fails the request with 404.
+	// a StorageIDs list of filter, by ID. Each ID selects exactly that storage,
+	// deleted ones included, narrowed by locations. An ID that is not one of the
+	// client's storages fails the request with 404. Omit it, or send null, when not
+	// selecting by ID; an empty list fails the request with 400. Mutually exclusive
+	// with storages.
 	StorageIDs []int64 `json:"storage_ids,omitzero"`
-	// a Storages list of filter
+	// a Storages list of filter, by name. A name selects the client's live storages
+	// with that name; a deleted storage is reachable by `storage_ids` only. Omit both
+	// storages and `storage_ids`, or send storages as [], to select the whole account.
+	// Mutually exclusive with `storage_ids`.
 	Storages []string `json:"storages,omitzero"`
 	paramObj
 }
