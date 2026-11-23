@@ -257,11 +257,15 @@ type RuleTemplateOptions struct {
 	// `value` and `default` fields cannot be used simultaneously.
 	EdgeCacheSettings RuleTemplateOptionsEdgeCacheSettings `json:"edge_cache_settings" api:"nullable"`
 	// Allows to configure FastEdge app to be called on different request/response
-	// phases.
+	// stages.
 	//
-	// Note: At least one of `on_request_headers`, `on_request_headers_after_cache`,
-	// `on_request_body`, `on_response_headers`, or `on_response_body` must be
-	// specified.
+	// Note: When enabled is true, at least one of `on_request_headers`,
+	// `on_request_headers_after_cache`, `on_request_body`, `on_response_headers`, or
+	// `on_response_body` must be specified.
+	//
+	// Only one FastEdge application can be attached to each stage. To run more logic
+	// on one stage, combine it into one application. The same application can be
+	// attached to more than one stage.
 	Fastedge RuleTemplateOptionsFastedge `json:"fastedge" api:"nullable"`
 	// Makes the CDN request compressed content from the origin.
 	//
@@ -801,27 +805,37 @@ type RuleTemplateOptionsEdgeCacheSettings struct {
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
 	Enabled bool `json:"enabled" api:"required"`
-	// A MAP object representing the caching time in seconds for a response with a
-	// specific response code.
+	// A MAP object representing the caching time for a response with a specific
+	// response code.
 	//
-	// These settings have a higher priority than the `value` field.
+	// These settings have a higher priority than the `value` and `default` fields.
+	// With `default`, they apply only if an origin server does not set a caching time
+	// with `Cache-Control` or `X-Accel-Expires` headers.
 	//
-	// - Use `any` key to specify caching time for all response codes.
-	// - Use `0s` value to disable caching for a specific response code.
+	//   - Use `any` key to specify caching time for response codes not covered by
+	//     `value`, `default`, or other `custom_values` keys.
+	//   - Use `0s` value to disable caching for a specific response code.
 	CustomValues map[string]string `json:"custom_values" format:"nginx time"`
 	// Enables content caching according to the origin cache settings.
 	//
 	// The value is applied to the following response codes 200, 201, 204, 206, 301,
-	// 302, 303, 304, 307, 308, if an origin server does not have caching HTTP headers.
+	// 302, 303, 304, 307, 308, if an origin server does not set a caching time with
+	// `Cache-Control` or `X-Accel-Expires` headers.
 	//
-	// Responses with other codes will not be cached.
+	// Responses with other codes are cached only if the origin sets a caching time for
+	// them with these headers, or their codes (or `any`) are specified in
+	// `custom_values`.
+	//
+	// Use `0s` to cache only the codes specified in `custom_values` when the origin
+	// does not set a caching time.
 	//
 	// The maximum duration is any equivalent to `1y`.
 	Default string `json:"default" format:"nginx time"`
 	// Caching time.
 	//
 	// The value is applied to the following response codes: 200, 206, 301, 302.
-	// Responses with codes 4xx, 5xx will not be cached.
+	// Responses with other codes will not be cached unless their codes (or `any`) are
+	// specified in `custom_values`.
 	//
 	// Use `0s` to disable caching.
 	//
@@ -845,11 +859,15 @@ func (r *RuleTemplateOptionsEdgeCacheSettings) UnmarshalJSON(data []byte) error 
 }
 
 // Allows to configure FastEdge app to be called on different request/response
-// phases.
+// stages.
 //
-// Note: At least one of `on_request_headers`, `on_request_headers_after_cache`,
-// `on_request_body`, `on_response_headers`, or `on_response_body` must be
-// specified.
+// Note: When enabled is true, at least one of `on_request_headers`,
+// `on_request_headers_after_cache`, `on_request_body`, `on_response_headers`, or
+// `on_response_body` must be specified.
+//
+// Only one FastEdge application can be attached to each stage. To run more logic
+// on one stage, combine it into one application. The same application can be
+// attached to more than one stage.
 type RuleTemplateOptionsFastedge struct {
 	// Controls the option state.
 	//
@@ -897,12 +915,13 @@ func (r *RuleTemplateOptionsFastedge) UnmarshalJSON(data []byte) error {
 type RuleTemplateOptionsFastedgeOnRequestBody struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled bool `json:"enabled"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge bool `json:"execute_on_edge"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield bool `json:"execute_on_shield"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError bool `json:"interrupt_on_error"`
@@ -929,12 +948,13 @@ func (r *RuleTemplateOptionsFastedgeOnRequestBody) UnmarshalJSON(data []byte) er
 type RuleTemplateOptionsFastedgeOnRequestHeaders struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled bool `json:"enabled"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge bool `json:"execute_on_edge"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield bool `json:"execute_on_shield"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError bool `json:"interrupt_on_error"`
@@ -961,12 +981,13 @@ func (r *RuleTemplateOptionsFastedgeOnRequestHeaders) UnmarshalJSON(data []byte)
 type RuleTemplateOptionsFastedgeOnRequestHeadersAfterCache struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled bool `json:"enabled"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge bool `json:"execute_on_edge"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield bool `json:"execute_on_shield"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError bool `json:"interrupt_on_error"`
@@ -993,12 +1014,13 @@ func (r *RuleTemplateOptionsFastedgeOnRequestHeadersAfterCache) UnmarshalJSON(da
 type RuleTemplateOptionsFastedgeOnResponseBody struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled bool `json:"enabled"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge bool `json:"execute_on_edge"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield bool `json:"execute_on_shield"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError bool `json:"interrupt_on_error"`
@@ -1025,12 +1047,13 @@ func (r *RuleTemplateOptionsFastedgeOnResponseBody) UnmarshalJSON(data []byte) e
 type RuleTemplateOptionsFastedgeOnResponseHeaders struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled bool `json:"enabled"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge bool `json:"execute_on_edge"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield bool `json:"execute_on_shield"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError bool `json:"interrupt_on_error"`
@@ -2522,11 +2545,15 @@ type RuleTemplateNewParamsOptions struct {
 	// `value` and `default` fields cannot be used simultaneously.
 	EdgeCacheSettings RuleTemplateNewParamsOptionsEdgeCacheSettings `json:"edge_cache_settings,omitzero"`
 	// Allows to configure FastEdge app to be called on different request/response
-	// phases.
+	// stages.
 	//
-	// Note: At least one of `on_request_headers`, `on_request_headers_after_cache`,
-	// `on_request_body`, `on_response_headers`, or `on_response_body` must be
-	// specified.
+	// Note: When enabled is true, at least one of `on_request_headers`,
+	// `on_request_headers_after_cache`, `on_request_body`, `on_response_headers`, or
+	// `on_response_body` must be specified.
+	//
+	// Only one FastEdge application can be attached to each stage. To run more logic
+	// on one stage, combine it into one application. The same application can be
+	// attached to more than one stage.
 	Fastedge RuleTemplateNewParamsOptionsFastedge `json:"fastedge,omitzero"`
 	// Makes the CDN request compressed content from the origin.
 	//
@@ -3014,28 +3041,38 @@ type RuleTemplateNewParamsOptionsEdgeCacheSettings struct {
 	// Enables content caching according to the origin cache settings.
 	//
 	// The value is applied to the following response codes 200, 201, 204, 206, 301,
-	// 302, 303, 304, 307, 308, if an origin server does not have caching HTTP headers.
+	// 302, 303, 304, 307, 308, if an origin server does not set a caching time with
+	// `Cache-Control` or `X-Accel-Expires` headers.
 	//
-	// Responses with other codes will not be cached.
+	// Responses with other codes are cached only if the origin sets a caching time for
+	// them with these headers, or their codes (or `any`) are specified in
+	// `custom_values`.
+	//
+	// Use `0s` to cache only the codes specified in `custom_values` when the origin
+	// does not set a caching time.
 	//
 	// The maximum duration is any equivalent to `1y`.
 	Default param.Opt[string] `json:"default,omitzero" format:"nginx time"`
 	// Caching time.
 	//
 	// The value is applied to the following response codes: 200, 206, 301, 302.
-	// Responses with codes 4xx, 5xx will not be cached.
+	// Responses with other codes will not be cached unless their codes (or `any`) are
+	// specified in `custom_values`.
 	//
 	// Use `0s` to disable caching.
 	//
 	// The maximum duration is any equivalent to `1y`.
 	Value param.Opt[string] `json:"value,omitzero" format:"nginx time"`
-	// A MAP object representing the caching time in seconds for a response with a
-	// specific response code.
+	// A MAP object representing the caching time for a response with a specific
+	// response code.
 	//
-	// These settings have a higher priority than the `value` field.
+	// These settings have a higher priority than the `value` and `default` fields.
+	// With `default`, they apply only if an origin server does not set a caching time
+	// with `Cache-Control` or `X-Accel-Expires` headers.
 	//
-	// - Use `any` key to specify caching time for all response codes.
-	// - Use `0s` value to disable caching for a specific response code.
+	//   - Use `any` key to specify caching time for response codes not covered by
+	//     `value`, `default`, or other `custom_values` keys.
+	//   - Use `0s` value to disable caching for a specific response code.
 	CustomValues map[string]string `json:"custom_values,omitzero" format:"nginx time"`
 	paramObj
 }
@@ -3049,11 +3086,15 @@ func (r *RuleTemplateNewParamsOptionsEdgeCacheSettings) UnmarshalJSON(data []byt
 }
 
 // Allows to configure FastEdge app to be called on different request/response
-// phases.
+// stages.
 //
-// Note: At least one of `on_request_headers`, `on_request_headers_after_cache`,
-// `on_request_body`, `on_response_headers`, or `on_response_body` must be
-// specified.
+// Note: When enabled is true, at least one of `on_request_headers`,
+// `on_request_headers_after_cache`, `on_request_body`, `on_response_headers`, or
+// `on_response_body` must be specified.
+//
+// Only one FastEdge application can be attached to each stage. To run more logic
+// on one stage, combine it into one application. The same application can be
+// attached to more than one stage.
 //
 // The property Enabled is required.
 type RuleTemplateNewParamsOptionsFastedge struct {
@@ -3097,12 +3138,13 @@ func (r *RuleTemplateNewParamsOptionsFastedge) UnmarshalJSON(data []byte) error 
 type RuleTemplateNewParamsOptionsFastedgeOnRequestBody struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -3124,12 +3166,13 @@ func (r *RuleTemplateNewParamsOptionsFastedgeOnRequestBody) UnmarshalJSON(data [
 type RuleTemplateNewParamsOptionsFastedgeOnRequestHeaders struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -3151,12 +3194,13 @@ func (r *RuleTemplateNewParamsOptionsFastedgeOnRequestHeaders) UnmarshalJSON(dat
 type RuleTemplateNewParamsOptionsFastedgeOnRequestHeadersAfterCache struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -3178,12 +3222,13 @@ func (r *RuleTemplateNewParamsOptionsFastedgeOnRequestHeadersAfterCache) Unmarsh
 type RuleTemplateNewParamsOptionsFastedgeOnResponseBody struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -3205,12 +3250,13 @@ func (r *RuleTemplateNewParamsOptionsFastedgeOnResponseBody) UnmarshalJSON(data 
 type RuleTemplateNewParamsOptionsFastedgeOnResponseHeaders struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -4628,11 +4674,15 @@ type RuleTemplateUpdateParamsOptions struct {
 	// `value` and `default` fields cannot be used simultaneously.
 	EdgeCacheSettings RuleTemplateUpdateParamsOptionsEdgeCacheSettings `json:"edge_cache_settings,omitzero"`
 	// Allows to configure FastEdge app to be called on different request/response
-	// phases.
+	// stages.
 	//
-	// Note: At least one of `on_request_headers`, `on_request_headers_after_cache`,
-	// `on_request_body`, `on_response_headers`, or `on_response_body` must be
-	// specified.
+	// Note: When enabled is true, at least one of `on_request_headers`,
+	// `on_request_headers_after_cache`, `on_request_body`, `on_response_headers`, or
+	// `on_response_body` must be specified.
+	//
+	// Only one FastEdge application can be attached to each stage. To run more logic
+	// on one stage, combine it into one application. The same application can be
+	// attached to more than one stage.
 	Fastedge RuleTemplateUpdateParamsOptionsFastedge `json:"fastedge,omitzero"`
 	// Makes the CDN request compressed content from the origin.
 	//
@@ -5120,28 +5170,38 @@ type RuleTemplateUpdateParamsOptionsEdgeCacheSettings struct {
 	// Enables content caching according to the origin cache settings.
 	//
 	// The value is applied to the following response codes 200, 201, 204, 206, 301,
-	// 302, 303, 304, 307, 308, if an origin server does not have caching HTTP headers.
+	// 302, 303, 304, 307, 308, if an origin server does not set a caching time with
+	// `Cache-Control` or `X-Accel-Expires` headers.
 	//
-	// Responses with other codes will not be cached.
+	// Responses with other codes are cached only if the origin sets a caching time for
+	// them with these headers, or their codes (or `any`) are specified in
+	// `custom_values`.
+	//
+	// Use `0s` to cache only the codes specified in `custom_values` when the origin
+	// does not set a caching time.
 	//
 	// The maximum duration is any equivalent to `1y`.
 	Default param.Opt[string] `json:"default,omitzero" format:"nginx time"`
 	// Caching time.
 	//
 	// The value is applied to the following response codes: 200, 206, 301, 302.
-	// Responses with codes 4xx, 5xx will not be cached.
+	// Responses with other codes will not be cached unless their codes (or `any`) are
+	// specified in `custom_values`.
 	//
 	// Use `0s` to disable caching.
 	//
 	// The maximum duration is any equivalent to `1y`.
 	Value param.Opt[string] `json:"value,omitzero" format:"nginx time"`
-	// A MAP object representing the caching time in seconds for a response with a
-	// specific response code.
+	// A MAP object representing the caching time for a response with a specific
+	// response code.
 	//
-	// These settings have a higher priority than the `value` field.
+	// These settings have a higher priority than the `value` and `default` fields.
+	// With `default`, they apply only if an origin server does not set a caching time
+	// with `Cache-Control` or `X-Accel-Expires` headers.
 	//
-	// - Use `any` key to specify caching time for all response codes.
-	// - Use `0s` value to disable caching for a specific response code.
+	//   - Use `any` key to specify caching time for response codes not covered by
+	//     `value`, `default`, or other `custom_values` keys.
+	//   - Use `0s` value to disable caching for a specific response code.
 	CustomValues map[string]string `json:"custom_values,omitzero" format:"nginx time"`
 	paramObj
 }
@@ -5155,11 +5215,15 @@ func (r *RuleTemplateUpdateParamsOptionsEdgeCacheSettings) UnmarshalJSON(data []
 }
 
 // Allows to configure FastEdge app to be called on different request/response
-// phases.
+// stages.
 //
-// Note: At least one of `on_request_headers`, `on_request_headers_after_cache`,
-// `on_request_body`, `on_response_headers`, or `on_response_body` must be
-// specified.
+// Note: When enabled is true, at least one of `on_request_headers`,
+// `on_request_headers_after_cache`, `on_request_body`, `on_response_headers`, or
+// `on_response_body` must be specified.
+//
+// Only one FastEdge application can be attached to each stage. To run more logic
+// on one stage, combine it into one application. The same application can be
+// attached to more than one stage.
 //
 // The property Enabled is required.
 type RuleTemplateUpdateParamsOptionsFastedge struct {
@@ -5203,12 +5267,13 @@ func (r *RuleTemplateUpdateParamsOptionsFastedge) UnmarshalJSON(data []byte) err
 type RuleTemplateUpdateParamsOptionsFastedgeOnRequestBody struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -5230,12 +5295,13 @@ func (r *RuleTemplateUpdateParamsOptionsFastedgeOnRequestBody) UnmarshalJSON(dat
 type RuleTemplateUpdateParamsOptionsFastedgeOnRequestHeaders struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -5257,12 +5323,13 @@ func (r *RuleTemplateUpdateParamsOptionsFastedgeOnRequestHeaders) UnmarshalJSON(
 type RuleTemplateUpdateParamsOptionsFastedgeOnRequestHeadersAfterCache struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -5284,12 +5351,13 @@ func (r *RuleTemplateUpdateParamsOptionsFastedgeOnRequestHeadersAfterCache) Unma
 type RuleTemplateUpdateParamsOptionsFastedgeOnResponseBody struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -5311,12 +5379,13 @@ func (r *RuleTemplateUpdateParamsOptionsFastedgeOnResponseBody) UnmarshalJSON(da
 type RuleTemplateUpdateParamsOptionsFastedgeOnResponseHeaders struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -6750,11 +6819,15 @@ type RuleTemplateReplaceParamsOptions struct {
 	// `value` and `default` fields cannot be used simultaneously.
 	EdgeCacheSettings RuleTemplateReplaceParamsOptionsEdgeCacheSettings `json:"edge_cache_settings,omitzero"`
 	// Allows to configure FastEdge app to be called on different request/response
-	// phases.
+	// stages.
 	//
-	// Note: At least one of `on_request_headers`, `on_request_headers_after_cache`,
-	// `on_request_body`, `on_response_headers`, or `on_response_body` must be
-	// specified.
+	// Note: When enabled is true, at least one of `on_request_headers`,
+	// `on_request_headers_after_cache`, `on_request_body`, `on_response_headers`, or
+	// `on_response_body` must be specified.
+	//
+	// Only one FastEdge application can be attached to each stage. To run more logic
+	// on one stage, combine it into one application. The same application can be
+	// attached to more than one stage.
 	Fastedge RuleTemplateReplaceParamsOptionsFastedge `json:"fastedge,omitzero"`
 	// Makes the CDN request compressed content from the origin.
 	//
@@ -7242,28 +7315,38 @@ type RuleTemplateReplaceParamsOptionsEdgeCacheSettings struct {
 	// Enables content caching according to the origin cache settings.
 	//
 	// The value is applied to the following response codes 200, 201, 204, 206, 301,
-	// 302, 303, 304, 307, 308, if an origin server does not have caching HTTP headers.
+	// 302, 303, 304, 307, 308, if an origin server does not set a caching time with
+	// `Cache-Control` or `X-Accel-Expires` headers.
 	//
-	// Responses with other codes will not be cached.
+	// Responses with other codes are cached only if the origin sets a caching time for
+	// them with these headers, or their codes (or `any`) are specified in
+	// `custom_values`.
+	//
+	// Use `0s` to cache only the codes specified in `custom_values` when the origin
+	// does not set a caching time.
 	//
 	// The maximum duration is any equivalent to `1y`.
 	Default param.Opt[string] `json:"default,omitzero" format:"nginx time"`
 	// Caching time.
 	//
 	// The value is applied to the following response codes: 200, 206, 301, 302.
-	// Responses with codes 4xx, 5xx will not be cached.
+	// Responses with other codes will not be cached unless their codes (or `any`) are
+	// specified in `custom_values`.
 	//
 	// Use `0s` to disable caching.
 	//
 	// The maximum duration is any equivalent to `1y`.
 	Value param.Opt[string] `json:"value,omitzero" format:"nginx time"`
-	// A MAP object representing the caching time in seconds for a response with a
-	// specific response code.
+	// A MAP object representing the caching time for a response with a specific
+	// response code.
 	//
-	// These settings have a higher priority than the `value` field.
+	// These settings have a higher priority than the `value` and `default` fields.
+	// With `default`, they apply only if an origin server does not set a caching time
+	// with `Cache-Control` or `X-Accel-Expires` headers.
 	//
-	// - Use `any` key to specify caching time for all response codes.
-	// - Use `0s` value to disable caching for a specific response code.
+	//   - Use `any` key to specify caching time for response codes not covered by
+	//     `value`, `default`, or other `custom_values` keys.
+	//   - Use `0s` value to disable caching for a specific response code.
 	CustomValues map[string]string `json:"custom_values,omitzero" format:"nginx time"`
 	paramObj
 }
@@ -7277,11 +7360,15 @@ func (r *RuleTemplateReplaceParamsOptionsEdgeCacheSettings) UnmarshalJSON(data [
 }
 
 // Allows to configure FastEdge app to be called on different request/response
-// phases.
+// stages.
 //
-// Note: At least one of `on_request_headers`, `on_request_headers_after_cache`,
-// `on_request_body`, `on_response_headers`, or `on_response_body` must be
-// specified.
+// Note: When enabled is true, at least one of `on_request_headers`,
+// `on_request_headers_after_cache`, `on_request_body`, `on_response_headers`, or
+// `on_response_body` must be specified.
+//
+// Only one FastEdge application can be attached to each stage. To run more logic
+// on one stage, combine it into one application. The same application can be
+// attached to more than one stage.
 //
 // The property Enabled is required.
 type RuleTemplateReplaceParamsOptionsFastedge struct {
@@ -7325,12 +7412,13 @@ func (r *RuleTemplateReplaceParamsOptionsFastedge) UnmarshalJSON(data []byte) er
 type RuleTemplateReplaceParamsOptionsFastedgeOnRequestBody struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -7352,12 +7440,13 @@ func (r *RuleTemplateReplaceParamsOptionsFastedgeOnRequestBody) UnmarshalJSON(da
 type RuleTemplateReplaceParamsOptionsFastedgeOnRequestHeaders struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -7379,12 +7468,13 @@ func (r *RuleTemplateReplaceParamsOptionsFastedgeOnRequestHeaders) UnmarshalJSON
 type RuleTemplateReplaceParamsOptionsFastedgeOnRequestHeadersAfterCache struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -7406,12 +7496,13 @@ func (r *RuleTemplateReplaceParamsOptionsFastedgeOnRequestHeadersAfterCache) Unm
 type RuleTemplateReplaceParamsOptionsFastedgeOnResponseBody struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -7433,12 +7524,13 @@ func (r *RuleTemplateReplaceParamsOptionsFastedgeOnResponseBody) UnmarshalJSON(d
 type RuleTemplateReplaceParamsOptionsFastedgeOnResponseHeaders struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`

@@ -290,11 +290,15 @@ type CDNResourceRuleOptions struct {
 	// `value` and `default` fields cannot be used simultaneously.
 	EdgeCacheSettings CDNResourceRuleOptionsEdgeCacheSettings `json:"edge_cache_settings" api:"nullable"`
 	// Allows to configure FastEdge app to be called on different request/response
-	// phases.
+	// stages.
 	//
-	// Note: At least one of `on_request_headers`, `on_request_headers_after_cache`,
-	// `on_request_body`, `on_response_headers`, or `on_response_body` must be
-	// specified.
+	// Note: When enabled is true, at least one of `on_request_headers`,
+	// `on_request_headers_after_cache`, `on_request_body`, `on_response_headers`, or
+	// `on_response_body` must be specified.
+	//
+	// Only one FastEdge application can be attached to each stage. To run more logic
+	// on one stage, combine it into one application. The same application can be
+	// attached to more than one stage.
 	Fastedge CDNResourceRuleOptionsFastedge `json:"fastedge" api:"nullable"`
 	// Makes the CDN request compressed content from the origin.
 	//
@@ -834,27 +838,37 @@ type CDNResourceRuleOptionsEdgeCacheSettings struct {
 	// - **true** - Option is enabled.
 	// - **false** - Option is disabled.
 	Enabled bool `json:"enabled" api:"required"`
-	// A MAP object representing the caching time in seconds for a response with a
-	// specific response code.
+	// A MAP object representing the caching time for a response with a specific
+	// response code.
 	//
-	// These settings have a higher priority than the `value` field.
+	// These settings have a higher priority than the `value` and `default` fields.
+	// With `default`, they apply only if an origin server does not set a caching time
+	// with `Cache-Control` or `X-Accel-Expires` headers.
 	//
-	// - Use `any` key to specify caching time for all response codes.
-	// - Use `0s` value to disable caching for a specific response code.
+	//   - Use `any` key to specify caching time for response codes not covered by
+	//     `value`, `default`, or other `custom_values` keys.
+	//   - Use `0s` value to disable caching for a specific response code.
 	CustomValues map[string]string `json:"custom_values" format:"nginx time"`
 	// Enables content caching according to the origin cache settings.
 	//
 	// The value is applied to the following response codes 200, 201, 204, 206, 301,
-	// 302, 303, 304, 307, 308, if an origin server does not have caching HTTP headers.
+	// 302, 303, 304, 307, 308, if an origin server does not set a caching time with
+	// `Cache-Control` or `X-Accel-Expires` headers.
 	//
-	// Responses with other codes will not be cached.
+	// Responses with other codes are cached only if the origin sets a caching time for
+	// them with these headers, or their codes (or `any`) are specified in
+	// `custom_values`.
+	//
+	// Use `0s` to cache only the codes specified in `custom_values` when the origin
+	// does not set a caching time.
 	//
 	// The maximum duration is any equivalent to `1y`.
 	Default string `json:"default" format:"nginx time"`
 	// Caching time.
 	//
 	// The value is applied to the following response codes: 200, 206, 301, 302.
-	// Responses with codes 4xx, 5xx will not be cached.
+	// Responses with other codes will not be cached unless their codes (or `any`) are
+	// specified in `custom_values`.
 	//
 	// Use `0s` to disable caching.
 	//
@@ -878,11 +892,15 @@ func (r *CDNResourceRuleOptionsEdgeCacheSettings) UnmarshalJSON(data []byte) err
 }
 
 // Allows to configure FastEdge app to be called on different request/response
-// phases.
+// stages.
 //
-// Note: At least one of `on_request_headers`, `on_request_headers_after_cache`,
-// `on_request_body`, `on_response_headers`, or `on_response_body` must be
-// specified.
+// Note: When enabled is true, at least one of `on_request_headers`,
+// `on_request_headers_after_cache`, `on_request_body`, `on_response_headers`, or
+// `on_response_body` must be specified.
+//
+// Only one FastEdge application can be attached to each stage. To run more logic
+// on one stage, combine it into one application. The same application can be
+// attached to more than one stage.
 type CDNResourceRuleOptionsFastedge struct {
 	// Controls the option state.
 	//
@@ -930,12 +948,13 @@ func (r *CDNResourceRuleOptionsFastedge) UnmarshalJSON(data []byte) error {
 type CDNResourceRuleOptionsFastedgeOnRequestBody struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled bool `json:"enabled"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge bool `json:"execute_on_edge"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield bool `json:"execute_on_shield"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError bool `json:"interrupt_on_error"`
@@ -962,12 +981,13 @@ func (r *CDNResourceRuleOptionsFastedgeOnRequestBody) UnmarshalJSON(data []byte)
 type CDNResourceRuleOptionsFastedgeOnRequestHeaders struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled bool `json:"enabled"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge bool `json:"execute_on_edge"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield bool `json:"execute_on_shield"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError bool `json:"interrupt_on_error"`
@@ -994,12 +1014,13 @@ func (r *CDNResourceRuleOptionsFastedgeOnRequestHeaders) UnmarshalJSON(data []by
 type CDNResourceRuleOptionsFastedgeOnRequestHeadersAfterCache struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled bool `json:"enabled"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge bool `json:"execute_on_edge"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield bool `json:"execute_on_shield"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError bool `json:"interrupt_on_error"`
@@ -1026,12 +1047,13 @@ func (r *CDNResourceRuleOptionsFastedgeOnRequestHeadersAfterCache) UnmarshalJSON
 type CDNResourceRuleOptionsFastedgeOnResponseBody struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled bool `json:"enabled"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge bool `json:"execute_on_edge"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield bool `json:"execute_on_shield"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError bool `json:"interrupt_on_error"`
@@ -1058,12 +1080,13 @@ func (r *CDNResourceRuleOptionsFastedgeOnResponseBody) UnmarshalJSON(data []byte
 type CDNResourceRuleOptionsFastedgeOnResponseHeaders struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled bool `json:"enabled"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge bool `json:"execute_on_edge"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield bool `json:"execute_on_shield"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError bool `json:"interrupt_on_error"`
@@ -2584,11 +2607,15 @@ type CDNResourceRuleNewParamsOptions struct {
 	// `value` and `default` fields cannot be used simultaneously.
 	EdgeCacheSettings CDNResourceRuleNewParamsOptionsEdgeCacheSettings `json:"edge_cache_settings,omitzero"`
 	// Allows to configure FastEdge app to be called on different request/response
-	// phases.
+	// stages.
 	//
-	// Note: At least one of `on_request_headers`, `on_request_headers_after_cache`,
-	// `on_request_body`, `on_response_headers`, or `on_response_body` must be
-	// specified.
+	// Note: When enabled is true, at least one of `on_request_headers`,
+	// `on_request_headers_after_cache`, `on_request_body`, `on_response_headers`, or
+	// `on_response_body` must be specified.
+	//
+	// Only one FastEdge application can be attached to each stage. To run more logic
+	// on one stage, combine it into one application. The same application can be
+	// attached to more than one stage.
 	Fastedge CDNResourceRuleNewParamsOptionsFastedge `json:"fastedge,omitzero"`
 	// Makes the CDN request compressed content from the origin.
 	//
@@ -3076,28 +3103,38 @@ type CDNResourceRuleNewParamsOptionsEdgeCacheSettings struct {
 	// Enables content caching according to the origin cache settings.
 	//
 	// The value is applied to the following response codes 200, 201, 204, 206, 301,
-	// 302, 303, 304, 307, 308, if an origin server does not have caching HTTP headers.
+	// 302, 303, 304, 307, 308, if an origin server does not set a caching time with
+	// `Cache-Control` or `X-Accel-Expires` headers.
 	//
-	// Responses with other codes will not be cached.
+	// Responses with other codes are cached only if the origin sets a caching time for
+	// them with these headers, or their codes (or `any`) are specified in
+	// `custom_values`.
+	//
+	// Use `0s` to cache only the codes specified in `custom_values` when the origin
+	// does not set a caching time.
 	//
 	// The maximum duration is any equivalent to `1y`.
 	Default param.Opt[string] `json:"default,omitzero" format:"nginx time"`
 	// Caching time.
 	//
 	// The value is applied to the following response codes: 200, 206, 301, 302.
-	// Responses with codes 4xx, 5xx will not be cached.
+	// Responses with other codes will not be cached unless their codes (or `any`) are
+	// specified in `custom_values`.
 	//
 	// Use `0s` to disable caching.
 	//
 	// The maximum duration is any equivalent to `1y`.
 	Value param.Opt[string] `json:"value,omitzero" format:"nginx time"`
-	// A MAP object representing the caching time in seconds for a response with a
-	// specific response code.
+	// A MAP object representing the caching time for a response with a specific
+	// response code.
 	//
-	// These settings have a higher priority than the `value` field.
+	// These settings have a higher priority than the `value` and `default` fields.
+	// With `default`, they apply only if an origin server does not set a caching time
+	// with `Cache-Control` or `X-Accel-Expires` headers.
 	//
-	// - Use `any` key to specify caching time for all response codes.
-	// - Use `0s` value to disable caching for a specific response code.
+	//   - Use `any` key to specify caching time for response codes not covered by
+	//     `value`, `default`, or other `custom_values` keys.
+	//   - Use `0s` value to disable caching for a specific response code.
 	CustomValues map[string]string `json:"custom_values,omitzero" format:"nginx time"`
 	paramObj
 }
@@ -3111,11 +3148,15 @@ func (r *CDNResourceRuleNewParamsOptionsEdgeCacheSettings) UnmarshalJSON(data []
 }
 
 // Allows to configure FastEdge app to be called on different request/response
-// phases.
+// stages.
 //
-// Note: At least one of `on_request_headers`, `on_request_headers_after_cache`,
-// `on_request_body`, `on_response_headers`, or `on_response_body` must be
-// specified.
+// Note: When enabled is true, at least one of `on_request_headers`,
+// `on_request_headers_after_cache`, `on_request_body`, `on_response_headers`, or
+// `on_response_body` must be specified.
+//
+// Only one FastEdge application can be attached to each stage. To run more logic
+// on one stage, combine it into one application. The same application can be
+// attached to more than one stage.
 //
 // The property Enabled is required.
 type CDNResourceRuleNewParamsOptionsFastedge struct {
@@ -3159,12 +3200,13 @@ func (r *CDNResourceRuleNewParamsOptionsFastedge) UnmarshalJSON(data []byte) err
 type CDNResourceRuleNewParamsOptionsFastedgeOnRequestBody struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -3186,12 +3228,13 @@ func (r *CDNResourceRuleNewParamsOptionsFastedgeOnRequestBody) UnmarshalJSON(dat
 type CDNResourceRuleNewParamsOptionsFastedgeOnRequestHeaders struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -3213,12 +3256,13 @@ func (r *CDNResourceRuleNewParamsOptionsFastedgeOnRequestHeaders) UnmarshalJSON(
 type CDNResourceRuleNewParamsOptionsFastedgeOnRequestHeadersAfterCache struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -3240,12 +3284,13 @@ func (r *CDNResourceRuleNewParamsOptionsFastedgeOnRequestHeadersAfterCache) Unma
 type CDNResourceRuleNewParamsOptionsFastedgeOnResponseBody struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -3267,12 +3312,13 @@ func (r *CDNResourceRuleNewParamsOptionsFastedgeOnResponseBody) UnmarshalJSON(da
 type CDNResourceRuleNewParamsOptionsFastedgeOnResponseHeaders struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -4703,11 +4749,15 @@ type CDNResourceRuleUpdateParamsOptions struct {
 	// `value` and `default` fields cannot be used simultaneously.
 	EdgeCacheSettings CDNResourceRuleUpdateParamsOptionsEdgeCacheSettings `json:"edge_cache_settings,omitzero"`
 	// Allows to configure FastEdge app to be called on different request/response
-	// phases.
+	// stages.
 	//
-	// Note: At least one of `on_request_headers`, `on_request_headers_after_cache`,
-	// `on_request_body`, `on_response_headers`, or `on_response_body` must be
-	// specified.
+	// Note: When enabled is true, at least one of `on_request_headers`,
+	// `on_request_headers_after_cache`, `on_request_body`, `on_response_headers`, or
+	// `on_response_body` must be specified.
+	//
+	// Only one FastEdge application can be attached to each stage. To run more logic
+	// on one stage, combine it into one application. The same application can be
+	// attached to more than one stage.
 	Fastedge CDNResourceRuleUpdateParamsOptionsFastedge `json:"fastedge,omitzero"`
 	// Makes the CDN request compressed content from the origin.
 	//
@@ -5195,28 +5245,38 @@ type CDNResourceRuleUpdateParamsOptionsEdgeCacheSettings struct {
 	// Enables content caching according to the origin cache settings.
 	//
 	// The value is applied to the following response codes 200, 201, 204, 206, 301,
-	// 302, 303, 304, 307, 308, if an origin server does not have caching HTTP headers.
+	// 302, 303, 304, 307, 308, if an origin server does not set a caching time with
+	// `Cache-Control` or `X-Accel-Expires` headers.
 	//
-	// Responses with other codes will not be cached.
+	// Responses with other codes are cached only if the origin sets a caching time for
+	// them with these headers, or their codes (or `any`) are specified in
+	// `custom_values`.
+	//
+	// Use `0s` to cache only the codes specified in `custom_values` when the origin
+	// does not set a caching time.
 	//
 	// The maximum duration is any equivalent to `1y`.
 	Default param.Opt[string] `json:"default,omitzero" format:"nginx time"`
 	// Caching time.
 	//
 	// The value is applied to the following response codes: 200, 206, 301, 302.
-	// Responses with codes 4xx, 5xx will not be cached.
+	// Responses with other codes will not be cached unless their codes (or `any`) are
+	// specified in `custom_values`.
 	//
 	// Use `0s` to disable caching.
 	//
 	// The maximum duration is any equivalent to `1y`.
 	Value param.Opt[string] `json:"value,omitzero" format:"nginx time"`
-	// A MAP object representing the caching time in seconds for a response with a
-	// specific response code.
+	// A MAP object representing the caching time for a response with a specific
+	// response code.
 	//
-	// These settings have a higher priority than the `value` field.
+	// These settings have a higher priority than the `value` and `default` fields.
+	// With `default`, they apply only if an origin server does not set a caching time
+	// with `Cache-Control` or `X-Accel-Expires` headers.
 	//
-	// - Use `any` key to specify caching time for all response codes.
-	// - Use `0s` value to disable caching for a specific response code.
+	//   - Use `any` key to specify caching time for response codes not covered by
+	//     `value`, `default`, or other `custom_values` keys.
+	//   - Use `0s` value to disable caching for a specific response code.
 	CustomValues map[string]string `json:"custom_values,omitzero" format:"nginx time"`
 	paramObj
 }
@@ -5230,11 +5290,15 @@ func (r *CDNResourceRuleUpdateParamsOptionsEdgeCacheSettings) UnmarshalJSON(data
 }
 
 // Allows to configure FastEdge app to be called on different request/response
-// phases.
+// stages.
 //
-// Note: At least one of `on_request_headers`, `on_request_headers_after_cache`,
-// `on_request_body`, `on_response_headers`, or `on_response_body` must be
-// specified.
+// Note: When enabled is true, at least one of `on_request_headers`,
+// `on_request_headers_after_cache`, `on_request_body`, `on_response_headers`, or
+// `on_response_body` must be specified.
+//
+// Only one FastEdge application can be attached to each stage. To run more logic
+// on one stage, combine it into one application. The same application can be
+// attached to more than one stage.
 //
 // The property Enabled is required.
 type CDNResourceRuleUpdateParamsOptionsFastedge struct {
@@ -5278,12 +5342,13 @@ func (r *CDNResourceRuleUpdateParamsOptionsFastedge) UnmarshalJSON(data []byte) 
 type CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestBody struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -5305,12 +5370,13 @@ func (r *CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestBody) UnmarshalJSON(
 type CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestHeaders struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -5332,12 +5398,13 @@ func (r *CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestHeaders) UnmarshalJS
 type CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestHeadersAfterCache struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -5359,12 +5426,13 @@ func (r *CDNResourceRuleUpdateParamsOptionsFastedgeOnRequestHeadersAfterCache) U
 type CDNResourceRuleUpdateParamsOptionsFastedgeOnResponseBody struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -5386,12 +5454,13 @@ func (r *CDNResourceRuleUpdateParamsOptionsFastedgeOnResponseBody) UnmarshalJSON
 type CDNResourceRuleUpdateParamsOptionsFastedgeOnResponseHeaders struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -6849,11 +6918,15 @@ type CDNResourceRuleReplaceParamsOptions struct {
 	// `value` and `default` fields cannot be used simultaneously.
 	EdgeCacheSettings CDNResourceRuleReplaceParamsOptionsEdgeCacheSettings `json:"edge_cache_settings,omitzero"`
 	// Allows to configure FastEdge app to be called on different request/response
-	// phases.
+	// stages.
 	//
-	// Note: At least one of `on_request_headers`, `on_request_headers_after_cache`,
-	// `on_request_body`, `on_response_headers`, or `on_response_body` must be
-	// specified.
+	// Note: When enabled is true, at least one of `on_request_headers`,
+	// `on_request_headers_after_cache`, `on_request_body`, `on_response_headers`, or
+	// `on_response_body` must be specified.
+	//
+	// Only one FastEdge application can be attached to each stage. To run more logic
+	// on one stage, combine it into one application. The same application can be
+	// attached to more than one stage.
 	Fastedge CDNResourceRuleReplaceParamsOptionsFastedge `json:"fastedge,omitzero"`
 	// Makes the CDN request compressed content from the origin.
 	//
@@ -7341,28 +7414,38 @@ type CDNResourceRuleReplaceParamsOptionsEdgeCacheSettings struct {
 	// Enables content caching according to the origin cache settings.
 	//
 	// The value is applied to the following response codes 200, 201, 204, 206, 301,
-	// 302, 303, 304, 307, 308, if an origin server does not have caching HTTP headers.
+	// 302, 303, 304, 307, 308, if an origin server does not set a caching time with
+	// `Cache-Control` or `X-Accel-Expires` headers.
 	//
-	// Responses with other codes will not be cached.
+	// Responses with other codes are cached only if the origin sets a caching time for
+	// them with these headers, or their codes (or `any`) are specified in
+	// `custom_values`.
+	//
+	// Use `0s` to cache only the codes specified in `custom_values` when the origin
+	// does not set a caching time.
 	//
 	// The maximum duration is any equivalent to `1y`.
 	Default param.Opt[string] `json:"default,omitzero" format:"nginx time"`
 	// Caching time.
 	//
 	// The value is applied to the following response codes: 200, 206, 301, 302.
-	// Responses with codes 4xx, 5xx will not be cached.
+	// Responses with other codes will not be cached unless their codes (or `any`) are
+	// specified in `custom_values`.
 	//
 	// Use `0s` to disable caching.
 	//
 	// The maximum duration is any equivalent to `1y`.
 	Value param.Opt[string] `json:"value,omitzero" format:"nginx time"`
-	// A MAP object representing the caching time in seconds for a response with a
-	// specific response code.
+	// A MAP object representing the caching time for a response with a specific
+	// response code.
 	//
-	// These settings have a higher priority than the `value` field.
+	// These settings have a higher priority than the `value` and `default` fields.
+	// With `default`, they apply only if an origin server does not set a caching time
+	// with `Cache-Control` or `X-Accel-Expires` headers.
 	//
-	// - Use `any` key to specify caching time for all response codes.
-	// - Use `0s` value to disable caching for a specific response code.
+	//   - Use `any` key to specify caching time for response codes not covered by
+	//     `value`, `default`, or other `custom_values` keys.
+	//   - Use `0s` value to disable caching for a specific response code.
 	CustomValues map[string]string `json:"custom_values,omitzero" format:"nginx time"`
 	paramObj
 }
@@ -7376,11 +7459,15 @@ func (r *CDNResourceRuleReplaceParamsOptionsEdgeCacheSettings) UnmarshalJSON(dat
 }
 
 // Allows to configure FastEdge app to be called on different request/response
-// phases.
+// stages.
 //
-// Note: At least one of `on_request_headers`, `on_request_headers_after_cache`,
-// `on_request_body`, `on_response_headers`, or `on_response_body` must be
-// specified.
+// Note: When enabled is true, at least one of `on_request_headers`,
+// `on_request_headers_after_cache`, `on_request_body`, `on_response_headers`, or
+// `on_response_body` must be specified.
+//
+// Only one FastEdge application can be attached to each stage. To run more logic
+// on one stage, combine it into one application. The same application can be
+// attached to more than one stage.
 //
 // The property Enabled is required.
 type CDNResourceRuleReplaceParamsOptionsFastedge struct {
@@ -7424,12 +7511,13 @@ func (r *CDNResourceRuleReplaceParamsOptionsFastedge) UnmarshalJSON(data []byte)
 type CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestBody struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -7451,12 +7539,13 @@ func (r *CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestBody) UnmarshalJSON
 type CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestHeaders struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -7478,12 +7567,13 @@ func (r *CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestHeaders) UnmarshalJ
 type CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestHeadersAfterCache struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -7505,12 +7595,13 @@ func (r *CDNResourceRuleReplaceParamsOptionsFastedgeOnRequestHeadersAfterCache) 
 type CDNResourceRuleReplaceParamsOptionsFastedgeOnResponseBody struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
@@ -7532,12 +7623,13 @@ func (r *CDNResourceRuleReplaceParamsOptionsFastedgeOnResponseBody) UnmarshalJSO
 type CDNResourceRuleReplaceParamsOptionsFastedgeOnResponseHeaders struct {
 	// The ID of the application in FastEdge.
 	AppID string `json:"app_id" api:"required"`
-	// Determines if the FastEdge application should be called whenever HTTP request
-	// headers are received.
+	// Enables the FastEdge application on this stage.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Determines if the request should be executed at the edge nodes.
 	ExecuteOnEdge param.Opt[bool] `json:"execute_on_edge,omitzero"`
 	// Determines if the request should be executed at the shield nodes.
+	//
+	// At least one of `execute_on_edge` and `execute_on_shield` must be true.
 	ExecuteOnShield param.Opt[bool] `json:"execute_on_shield,omitzero"`
 	// Determines if the request execution should be interrupted when an error occurs.
 	InterruptOnError param.Opt[bool] `json:"interrupt_on_error,omitzero"`
