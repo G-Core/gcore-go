@@ -329,12 +329,19 @@ func (r *VolumeService) RevertToLastSnapshot(ctx context.Context, volumeID strin
 type Volume struct {
 	// The unique identifier of the volume.
 	ID string `json:"id" api:"required"`
+	// List of attachments associated with the volume.
+	Attachments []VolumeAttachment `json:"attachments" api:"required"`
 	// Indicates whether the volume is bootable.
 	Bootable bool `json:"bootable" api:"required"`
 	// The date and time when the volume was created.
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// The ID of the task that created this volume. The value is null if the volume was
+	// not created by a task.
+	CreatorTaskID string `json:"creator_task_id" api:"required"`
 	// Indicates whether this is a root volume.
 	IsRootVolume bool `json:"is_root_volume" api:"required"`
+	// Schema representing the Quality of Service (QoS) parameters for a volume.
+	LimiterStats VolumeLimiterStats `json:"limiter_stats" api:"required"`
 	// The name of the volume.
 	Name string `json:"name" api:"required"`
 	// Project ID.
@@ -345,6 +352,9 @@ type Volume struct {
 	RegionID int64 `json:"region_id" api:"required"`
 	// The size of the volume in gibibytes (GiB).
 	Size int64 `json:"size" api:"required"`
+	// List of snapshot IDs associated with this volume. The value is null if the list
+	// did not load the snapshots.
+	SnapshotIDs []string `json:"snapshot_ids" api:"required"`
 	// The current status of the volume.
 	//
 	// Any of "attaching", "available", "awaiting-transfer", "backing-up", "creating",
@@ -359,45 +369,39 @@ type Volume struct {
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
 	Tags []Tag `json:"tags" api:"required"`
-	// The type of volume storage.
-	VolumeType string `json:"volume_type" api:"required"`
-	// List of attachments associated with the volume.
-	Attachments []VolumeAttachment `json:"attachments" api:"nullable"`
-	// The ID of the task that created this volume.
-	CreatorTaskID string `json:"creator_task_id" api:"nullable"`
-	// Schema representing the Quality of Service (QoS) parameters for a volume.
-	LimiterStats VolumeLimiterStats `json:"limiter_stats" api:"nullable"`
-	// List of snapshot IDs associated with this volume.
-	SnapshotIDs []string `json:"snapshot_ids" api:"nullable"`
 	// The UUID of the active task that currently holds a lock on the resource. This
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
-	TaskID string `json:"task_id" api:"nullable"`
-	// The date and time when the volume was last updated.
-	UpdatedAt time.Time `json:"updated_at" api:"nullable" format:"date-time"`
-	// Image metadata for volumes created from an image.
-	VolumeImageMetadata map[string]string `json:"volume_image_metadata" api:"nullable"`
+	TaskID string `json:"task_id" api:"required"`
+	// The date and time when the volume was last updated. The value is null if the
+	// volume never changed.
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
+	// Image metadata for volumes created from an image. The value is null if the
+	// volume did not come from an image.
+	VolumeImageMetadata map[string]string `json:"volume_image_metadata" api:"required"`
+	// The type of volume storage.
+	VolumeType string `json:"volume_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                  respjson.Field
+		Attachments         respjson.Field
 		Bootable            respjson.Field
 		CreatedAt           respjson.Field
+		CreatorTaskID       respjson.Field
 		IsRootVolume        respjson.Field
+		LimiterStats        respjson.Field
 		Name                respjson.Field
 		ProjectID           respjson.Field
 		Region              respjson.Field
 		RegionID            respjson.Field
 		Size                respjson.Field
+		SnapshotIDs         respjson.Field
 		Status              respjson.Field
 		Tags                respjson.Field
-		VolumeType          respjson.Field
-		Attachments         respjson.Field
-		CreatorTaskID       respjson.Field
-		LimiterStats        respjson.Field
-		SnapshotIDs         respjson.Field
 		TaskID              respjson.Field
 		UpdatedAt           respjson.Field
 		VolumeImageMetadata respjson.Field
+		VolumeType          respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
@@ -409,57 +413,34 @@ func (r *Volume) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The current status of the volume.
-type VolumeStatus string
-
-const (
-	VolumeStatusAttaching        VolumeStatus = "attaching"
-	VolumeStatusAvailable        VolumeStatus = "available"
-	VolumeStatusAwaitingTransfer VolumeStatus = "awaiting-transfer"
-	VolumeStatusBackingUp        VolumeStatus = "backing-up"
-	VolumeStatusCreating         VolumeStatus = "creating"
-	VolumeStatusDeleting         VolumeStatus = "deleting"
-	VolumeStatusDetaching        VolumeStatus = "detaching"
-	VolumeStatusDownloading      VolumeStatus = "downloading"
-	VolumeStatusError            VolumeStatus = "error"
-	VolumeStatusErrorBackingUp   VolumeStatus = "error_backing-up"
-	VolumeStatusErrorDeleting    VolumeStatus = "error_deleting"
-	VolumeStatusErrorExtending   VolumeStatus = "error_extending"
-	VolumeStatusErrorRestoring   VolumeStatus = "error_restoring"
-	VolumeStatusExtending        VolumeStatus = "extending"
-	VolumeStatusInUse            VolumeStatus = "in-use"
-	VolumeStatusMaintenance      VolumeStatus = "maintenance"
-	VolumeStatusReserved         VolumeStatus = "reserved"
-	VolumeStatusRestoringBackup  VolumeStatus = "restoring-backup"
-	VolumeStatusRetyping         VolumeStatus = "retyping"
-	VolumeStatusReverting        VolumeStatus = "reverting"
-	VolumeStatusUploading        VolumeStatus = "uploading"
-)
-
 type VolumeAttachment struct {
+	// The date and time when the attachment was created. The value is null if the
+	// volume service does not report it.
+	AttachedAt time.Time `json:"attached_at" api:"required" format:"date-time"`
 	// The unique identifier of the attachment object.
 	AttachmentID string `json:"attachment_id" api:"required"`
+	// The block device name inside the guest instance. The value is null if the volume
+	// service does not report it.
+	Device string `json:"device" api:"required"`
+	// The flavor ID of the instance. The value is null if the attachment has no
+	// instance.
+	FlavorID string `json:"flavor_id" api:"required"`
+	// The name of the instance. The value is null if the server name is not known.
+	InstanceName string `json:"instance_name" api:"required"`
+	// The unique identifier of the instance. The value is null if the attachment has
+	// no instance.
+	ServerID string `json:"server_id" api:"required"`
 	// The unique identifier of the attached volume.
 	VolumeID string `json:"volume_id" api:"required"`
-	// The date and time when the attachment was created.
-	AttachedAt time.Time `json:"attached_at" api:"nullable" format:"date-time"`
-	// The block device name inside the guest instance.
-	Device string `json:"device" api:"nullable"`
-	// The flavor ID of the instance.
-	FlavorID string `json:"flavor_id" api:"nullable"`
-	// The name of the instance if attached and the server name is known.
-	InstanceName string `json:"instance_name" api:"nullable"`
-	// The unique identifier of the instance.
-	ServerID string `json:"server_id" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AttachmentID respjson.Field
-		VolumeID     respjson.Field
 		AttachedAt   respjson.Field
+		AttachmentID respjson.Field
 		Device       respjson.Field
 		FlavorID     respjson.Field
 		InstanceName respjson.Field
 		ServerID     respjson.Field
+		VolumeID     respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -497,6 +478,33 @@ func (r VolumeLimiterStats) RawJSON() string { return r.JSON.raw }
 func (r *VolumeLimiterStats) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// The current status of the volume.
+type VolumeStatus string
+
+const (
+	VolumeStatusAttaching        VolumeStatus = "attaching"
+	VolumeStatusAvailable        VolumeStatus = "available"
+	VolumeStatusAwaitingTransfer VolumeStatus = "awaiting-transfer"
+	VolumeStatusBackingUp        VolumeStatus = "backing-up"
+	VolumeStatusCreating         VolumeStatus = "creating"
+	VolumeStatusDeleting         VolumeStatus = "deleting"
+	VolumeStatusDetaching        VolumeStatus = "detaching"
+	VolumeStatusDownloading      VolumeStatus = "downloading"
+	VolumeStatusError            VolumeStatus = "error"
+	VolumeStatusErrorBackingUp   VolumeStatus = "error_backing-up"
+	VolumeStatusErrorDeleting    VolumeStatus = "error_deleting"
+	VolumeStatusErrorExtending   VolumeStatus = "error_extending"
+	VolumeStatusErrorRestoring   VolumeStatus = "error_restoring"
+	VolumeStatusExtending        VolumeStatus = "extending"
+	VolumeStatusInUse            VolumeStatus = "in-use"
+	VolumeStatusMaintenance      VolumeStatus = "maintenance"
+	VolumeStatusReserved         VolumeStatus = "reserved"
+	VolumeStatusRestoringBackup  VolumeStatus = "restoring-backup"
+	VolumeStatusRetyping         VolumeStatus = "retyping"
+	VolumeStatusReverting        VolumeStatus = "reverting"
+	VolumeStatusUploading        VolumeStatus = "uploading"
+)
 
 type VolumeNewParams struct {
 	// Project ID

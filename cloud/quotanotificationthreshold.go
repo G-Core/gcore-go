@@ -556,6 +556,10 @@ type NotificationThresholdLastMessageRegionalQuota struct {
 	BaremetalGPUA100CountLimit NotificationThresholdLastMessageRegionalQuotaBaremetalGPUA100CountLimit `json:"baremetal_gpu_a100_count_limit"`
 	// Bare metal A100 GPU server count usage
 	BaremetalGPUA100CountUsage NotificationThresholdLastMessageRegionalQuotaBaremetalGPUA100CountUsage `json:"baremetal_gpu_a100_count_usage"`
+	// Bare metal B200 GPU server count limit
+	BaremetalGPUB200CountLimit NotificationThresholdLastMessageRegionalQuotaBaremetalGPUB200CountLimit `json:"baremetal_gpu_b200_count_limit"`
+	// Bare metal B200 GPU server count usage
+	BaremetalGPUB200CountUsage NotificationThresholdLastMessageRegionalQuotaBaremetalGPUB200CountUsage `json:"baremetal_gpu_b200_count_usage"`
 	// Bare metal H100 GPU server count limit
 	BaremetalGPUH100CountLimit NotificationThresholdLastMessageRegionalQuotaBaremetalGPUH100CountLimit `json:"baremetal_gpu_h100_count_limit"`
 	// Bare metal H100 GPU server count usage
@@ -760,6 +764,8 @@ type NotificationThresholdLastMessageRegionalQuota struct {
 		BaremetalBasicCountUsage          respjson.Field
 		BaremetalGPUA100CountLimit        respjson.Field
 		BaremetalGPUA100CountUsage        respjson.Field
+		BaremetalGPUB200CountLimit        respjson.Field
+		BaremetalGPUB200CountUsage        respjson.Field
 		BaremetalGPUH100CountLimit        respjson.Field
 		BaremetalGPUH100CountUsage        respjson.Field
 		BaremetalGPUH200CountLimit        respjson.Field
@@ -958,6 +964,52 @@ func (r NotificationThresholdLastMessageRegionalQuotaBaremetalGPUA100CountUsage)
 	return r.JSON.raw
 }
 func (r *NotificationThresholdLastMessageRegionalQuotaBaremetalGPUA100CountUsage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Bare metal B200 GPU server count limit
+type NotificationThresholdLastMessageRegionalQuotaBaremetalGPUB200CountLimit struct {
+	// Current quota limit
+	Limit int64 `json:"limit" api:"required"`
+	// Current amount of resource used
+	Usage int64 `json:"usage" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Limit       respjson.Field
+		Usage       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NotificationThresholdLastMessageRegionalQuotaBaremetalGPUB200CountLimit) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *NotificationThresholdLastMessageRegionalQuotaBaremetalGPUB200CountLimit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Bare metal B200 GPU server count usage
+type NotificationThresholdLastMessageRegionalQuotaBaremetalGPUB200CountUsage struct {
+	// Current quota limit
+	Limit int64 `json:"limit" api:"required"`
+	// Current amount of resource used
+	Usage int64 `json:"usage" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Limit       respjson.Field
+		Usage       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NotificationThresholdLastMessageRegionalQuotaBaremetalGPUB200CountUsage) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *NotificationThresholdLastMessageRegionalQuotaBaremetalGPUB200CountUsage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3611,6 +3663,10 @@ type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuota struct {
 	BaremetalGPUA100CountLimit QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalGPUA100CountLimit `json:"baremetal_gpu_a100_count_limit,omitzero"`
 	// Bare metal A100 GPU server count usage
 	BaremetalGPUA100CountUsage QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalGPUA100CountUsage `json:"baremetal_gpu_a100_count_usage,omitzero"`
+	// Bare metal B200 GPU server count limit
+	BaremetalGPUB200CountLimit QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalGPUB200CountLimit `json:"baremetal_gpu_b200_count_limit,omitzero"`
+	// Bare metal B200 GPU server count usage
+	BaremetalGPUB200CountUsage QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalGPUB200CountUsage `json:"baremetal_gpu_b200_count_usage,omitzero"`
 	// Bare metal H100 GPU server count limit
 	BaremetalGPUH100CountLimit QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalGPUH100CountLimit `json:"baremetal_gpu_h100_count_limit,omitzero"`
 	// Bare metal H100 GPU server count usage
@@ -3891,6 +3947,44 @@ func (r QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalG
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalGPUA100CountUsage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Bare metal B200 GPU server count limit
+//
+// The properties Limit, Usage are required.
+type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalGPUB200CountLimit struct {
+	// Current quota limit
+	Limit int64 `json:"limit" api:"required"`
+	// Current amount of resource used
+	Usage int64 `json:"usage" api:"required"`
+	paramObj
+}
+
+func (r QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalGPUB200CountLimit) MarshalJSON() (data []byte, err error) {
+	type shadow QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalGPUB200CountLimit
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalGPUB200CountLimit) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Bare metal B200 GPU server count usage
+//
+// The properties Limit, Usage are required.
+type QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalGPUB200CountUsage struct {
+	// Current quota limit
+	Limit int64 `json:"limit" api:"required"`
+	// Current amount of resource used
+	Usage int64 `json:"usage" api:"required"`
+	paramObj
+}
+
+func (r QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalGPUB200CountUsage) MarshalJSON() (data []byte, err error) {
+	type shadow QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalGPUB200CountUsage
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalGPUB200CountUsage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

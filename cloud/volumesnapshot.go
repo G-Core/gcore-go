@@ -185,7 +185,7 @@ type Snapshot struct {
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id" api:"required" format:"uuid4"`
-	// Snapshot description
+	// Snapshot description. The value is null if the snapshot has no description.
 	Description string `json:"description" api:"required"`
 	// Snapshot name
 	Name string `json:"name" api:"required"`
@@ -212,7 +212,8 @@ type Snapshot struct {
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
 	TaskID string `json:"task_id" api:"required" format:"uuid4"`
-	// Datetime when the snapshot was last updated
+	// Datetime when the snapshot was last updated. The value is null if the snapshot
+	// was never updated.
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// ID of the volume this snapshot was made from
 	VolumeID string `json:"volume_id" api:"required" format:"uuid4"`

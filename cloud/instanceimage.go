@@ -217,26 +217,30 @@ type Image struct {
 	Architecture ImageArchitecture `json:"architecture" api:"required"`
 	// Datetime when the image was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
-	// Task that created this entity
+	// Task that created this entity. The value is null if no task created the image.
 	CreatorTaskID string `json:"creator_task_id" api:"required"`
-	// Currency code. Shown if the `include_prices` query parameter if set to true
+	// Currency code. The value is null if the price is not available.
 	CurrencyCode string `json:"currency_code" api:"required"`
-	// Image description
+	// Image description. The value is null if the image has no description.
 	Description string `json:"description" api:"required"`
 	// Disk format
-	DiskFormat   string `json:"disk_format" api:"required"`
-	DisplayOrder int64  `json:"display_order" api:"required"`
-	// Name of the GPU driver vendor
+	DiskFormat string `json:"disk_format" api:"required"`
+	// The display order of the image. The value is null if the image has no display
+	// order.
+	DisplayOrder int64 `json:"display_order" api:"required"`
+	// Name of the GPU driver vendor. The value is null if the image has no GPU driver.
 	GPUDriver string `json:"gpu_driver" api:"required"`
-	// Type of the GPU driver
+	// Type of the GPU driver. The value is null if the image has no GPU driver.
 	GPUDriverType string `json:"gpu_driver_type" api:"required"`
-	// Version of the installed GPU driver
+	// Version of the installed GPU driver. The value is null if the image has no GPU
+	// driver.
 	GPUDriverVersion string `json:"gpu_driver_version" api:"required"`
-	// Specifies the type of firmware with which to boot the guest.
+	// Specifies the type of firmware with which to boot the guest. The value is null
+	// if the image sets no firmware type.
 	//
 	// Any of "bios", "uefi".
 	HwFirmwareType ImageHwFirmwareType `json:"hw_firmware_type" api:"required"`
-	// A virtual chipset type.
+	// A virtual chipset type. The value is null if the image sets no machine type.
 	//
 	// Any of "i440", "q35".
 	HwMachineType ImageHwMachineType `json:"hw_machine_type" api:"required"`
@@ -256,11 +260,11 @@ type Image struct {
 	OsType ImageOsType `json:"os_type" api:"required"`
 	// OS version, i.e. 19.04 (for Ubuntu) or 9.4 for Debian
 	OsVersion string `json:"os_version" api:"required"`
-	// Price per hour. Shown if the `include_prices` query parameter if set to true
+	// Price per hour. The value is null if the price is not available.
 	PricePerHour float64 `json:"price_per_hour" api:"required"`
-	// Price per month. Shown if the `include_prices` query parameter if set to true
+	// Price per month. The value is null if the price is not available.
 	PricePerMonth float64 `json:"price_per_month" api:"required"`
-	// Price status for the UI
+	// Price status for the UI. The value is null if the price is not available.
 	//
 	// Any of "error", "hide", "show".
 	PriceStatus ImagePriceStatus `json:"price_status" api:"required"`
@@ -270,9 +274,10 @@ type Image struct {
 	Region string `json:"region" api:"required"`
 	// Region ID
 	RegionID int64 `json:"region_id" api:"required"`
-	// Image size in bytes
+	// Image size in bytes. The value is null if the size is not known.
 	Size int64 `json:"size" api:"required"`
-	// Whether the image supports SSH key or not
+	// Whether the image supports SSH key or not. The value is null if the image has no
+	// SSH key setting.
 	//
 	// Any of "allow", "deny", "required".
 	SSHKey ImageSSHKey `json:"ssh_key" api:"required"`
@@ -346,7 +351,8 @@ const (
 	ImageArchitectureX86_64  ImageArchitecture = "x86_64"
 )
 
-// Specifies the type of firmware with which to boot the guest.
+// Specifies the type of firmware with which to boot the guest. The value is null
+// if the image sets no firmware type.
 type ImageHwFirmwareType string
 
 const (
@@ -354,7 +360,7 @@ const (
 	ImageHwFirmwareTypeUefi ImageHwFirmwareType = "uefi"
 )
 
-// A virtual chipset type.
+// A virtual chipset type. The value is null if the image sets no machine type.
 type ImageHwMachineType string
 
 const (
@@ -370,7 +376,7 @@ const (
 	ImageOsTypeWindows ImageOsType = "windows"
 )
 
-// Price status for the UI
+// Price status for the UI. The value is null if the price is not available.
 type ImagePriceStatus string
 
 const (
@@ -379,7 +385,8 @@ const (
 	ImagePriceStatusShow  ImagePriceStatus = "show"
 )
 
-// Whether the image supports SSH key or not
+// Whether the image supports SSH key or not. The value is null if the image has no
+// SSH key setting.
 type ImageSSHKey string
 
 const (

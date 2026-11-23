@@ -257,7 +257,7 @@ type GPUVirtualCluster struct {
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
 	Tags []Tag `json:"tags" api:"required"`
-	// Cluster update date time
+	// Cluster update date time. The value is null if the cluster was never updated.
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -302,9 +302,9 @@ type GPUVirtualClusterServersSettings struct {
 	//
 	// Deprecated: deprecated
 	SecurityGroups []GPUVirtualClusterServersSettingsSecurityGroup `json:"security_groups" api:"required"`
-	// SSH key name
+	// SSH key name. The value is null if no key pair is set.
 	SSHKeyName string `json:"ssh_key_name" api:"required"`
-	// Optional custom user data
+	// Optional custom user data. The value is null if no user data was set.
 	UserData string `json:"user_data" api:"required"`
 	// Shows the username that `credentials.username` set at creation. The value is
 	// `null` when the cluster uses only `credentials.ssh_key_name`, or has no
@@ -1031,7 +1031,8 @@ type GPUVirtualClusterNewParamsServersSettingsInterfaceExternal struct {
 	// is created with port security off and no security group attached;
 	// `security_groups` must not be set in that case. Not allowed for interfaces on a
 	// public network, nor for bare metal servers without a DPU (their ports cannot
-	// enforce port security).
+	// enforce port security). `false` is also not allowed on a network of another
+	// project that other clients share.
 	PortSecurityEnabled param.Opt[bool] `json:"port_security_enabled,omitzero"`
 	// Which subnets should be selected: IPv4, IPv6, or use dual stack.
 	//
@@ -1088,7 +1089,8 @@ type GPUVirtualClusterNewParamsServersSettingsInterfaceSubnet struct {
 	// is created with port security off and no security group attached;
 	// `security_groups` must not be set in that case. Not allowed for interfaces on a
 	// public network, nor for bare metal servers without a DPU (their ports cannot
-	// enforce port security).
+	// enforce port security). `false` is also not allowed on a network of another
+	// project that other clients share.
 	PortSecurityEnabled param.Opt[bool] `json:"port_security_enabled,omitzero"`
 	// Floating IP config for this subnet attachment
 	FloatingIP GPUVirtualClusterNewParamsServersSettingsInterfaceSubnetFloatingIP `json:"floating_ip,omitzero"`
@@ -1158,7 +1160,8 @@ type GPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnet struct {
 	// is created with port security off and no security group attached;
 	// `security_groups` must not be set in that case. Not allowed for interfaces on a
 	// public network, nor for bare metal servers without a DPU (their ports cannot
-	// enforce port security).
+	// enforce port security). `false` is also not allowed on a network of another
+	// project that other clients share.
 	PortSecurityEnabled param.Opt[bool] `json:"port_security_enabled,omitzero"`
 	// Floating IP config for this subnet attachment
 	FloatingIP GPUVirtualClusterNewParamsServersSettingsInterfaceAnySubnetFloatingIP `json:"floating_ip,omitzero"`

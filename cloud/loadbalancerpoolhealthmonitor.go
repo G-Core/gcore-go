@@ -170,19 +170,24 @@ type LoadBalancerPoolHealthMonitorNewParams struct {
 	// Any of "HTTP", "HTTPS", "K8S", "PING", "TCP", "TLS-HELLO", "UDP-CONNECT".
 	Type LbHealthMonitorType `json:"type,omitzero" api:"required"`
 	// Domain name for HTTP host header. Can only be used together with `HTTP` or
-	// `HTTPS` health monitor type.
+	// `HTTPS` health monitor type. A name has 1 to 253 characters. A name has labels
+	// that a dot separates, and can end with a dot. A label has 1 to 63 characters. A
+	// label starts with a letter, a digit or an underscore. The other characters of a
+	// label are letters, digits or hyphens. A label does not end with a hyphen.
 	DomainName param.Opt[string] `json:"domain_name,omitzero"`
 	// Expected HTTP response codes. Can be a single code, a comma-separated list of
 	// codes, or a single range of codes. Can only be used together with `HTTP` or
-	// `HTTPS` health monitor type. For example, 200, 200,202,401,403,404, or 200-204.
-	// If not specified, the default is 200.
+	// `HTTPS` health monitor type. A code has three digits from 100 to 599. The first
+	// code of a range is not greater than the last code. For example, 200,
+	// 200,202,401,403,404, or 200-204. A value has 1 to 64 characters. If not
+	// specified, the default is 200.
 	ExpectedCodes param.Opt[string] `json:"expected_codes,omitzero"`
 	// The HTTP path the health monitor requests on each member. Defaults to `/` if not
 	// set. Can only be used with `HTTP` or `HTTPS` health monitor type.
 	//
-	// Must start with `/` and contain only plain path segments. Query strings (`?`),
-	// fragments (`#`), percent-encoding (`%`), and consecutive slashes (`//`) are not
-	// allowed.
+	// Must start with `/` and has 1 to 255 characters. The path cannot start with
+	// `//`. Query strings (`?`), fragments (`#`), spaces and control characters are
+	// not allowed.
 	//
 	// Examples of valid paths:
 	//
@@ -232,20 +237,25 @@ type LoadBalancerPoolHealthMonitorUpdateParams struct {
 	// Region ID
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Domain name for HTTP host header. Can only be used together with `HTTP` or
-	// `HTTPS` health monitor type. Omit to leave unchanged. Set to `null` to clear the
-	// current value.
+	// `HTTPS` health monitor type. A name has 1 to 253 characters. A name has labels
+	// that a dot separates, and can end with a dot. A label has 1 to 63 characters. A
+	// label starts with a letter, a digit or an underscore. The other characters of a
+	// label are letters, digits or hyphens. A label does not end with a hyphen. Omit
+	// to leave unchanged. Set to `null` to clear the current value.
 	DomainName param.Opt[string] `json:"domain_name,omitzero"`
 	// Expected HTTP response codes. Can be a single code, a comma-separated list of
 	// codes, or a single range of codes. Can only be used together with `HTTP` or
-	// `HTTPS` health monitor type. For example, 200, 200,202,401,403,404, or 200-204.
-	// Omit to leave unchanged. Set to `null` to clear the current value.
+	// `HTTPS` health monitor type. A code has three digits from 100 to 599. The first
+	// code of a range is not greater than the last code. For example, 200,
+	// 200,202,401,403,404, or 200-204. A value has 1 to 64 characters. Omit to leave
+	// unchanged. Set to `null` to clear the current value.
 	ExpectedCodes param.Opt[string] `json:"expected_codes,omitzero"`
 	// The HTTP path the health monitor requests on each member. Can only be used with
 	// `HTTP` or `HTTPS` health monitor type.
 	//
-	// Must start with `/` and contain only plain path segments. Query strings (`?`),
-	// fragments (`#`), percent-encoding (`%`), and consecutive slashes (`//`) are not
-	// allowed.
+	// Must start with `/` and has 1 to 255 characters. The path cannot start with
+	// `//`. Query strings (`?`), fragments (`#`), spaces and control characters are
+	// not allowed.
 	//
 	// Examples of valid paths:
 	//

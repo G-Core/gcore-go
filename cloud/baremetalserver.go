@@ -363,7 +363,8 @@ type BaremetalServer struct {
 	BlackholePorts []BlackholePort `json:"blackhole_ports" api:"required"`
 	// Datetime when bare metal server was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
-	// Task that created this entity
+	// Task that created this entity. The value is null if the server has no creator
+	// task ID.
 	CreatorTaskID string `json:"creator_task_id" api:"required"`
 	// Bare metal advanced DDoS protection profile. It is always `null` if query
 	// parameter `with_ddos=true` is not set.
@@ -372,7 +373,7 @@ type BaremetalServer struct {
 	FixedIPAssignments []BaremetalServerFixedIPAssignment `json:"fixed_ip_assignments" api:"required"`
 	// Flavor details
 	Flavor BaremetalServerFlavor `json:"flavor" api:"required"`
-	// Instance isolation information
+	// Instance isolation information. The value is null if the server is not isolated.
 	InstanceIsolation InstanceIsolation `json:"instance_isolation" api:"required"`
 	// Bare metal server name
 	Name string `json:"name" api:"required"`
@@ -382,7 +383,7 @@ type BaremetalServer struct {
 	Region string `json:"region" api:"required"`
 	// Region ID
 	RegionID int64 `json:"region_id" api:"required"`
-	// SSH key assigned to bare metal server
+	// SSH key assigned to bare metal server. The value is null if no key pair is set.
 	SSHKeyName string `json:"ssh_key_name" api:"required"`
 	// Bare metal server status
 	//
@@ -401,7 +402,7 @@ type BaremetalServer struct {
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
 	TaskID string `json:"task_id" api:"required"`
-	// Task state
+	// Task state. The value is null if no operation is in progress.
 	TaskState string `json:"task_state" api:"required"`
 	// Bare metal server state
 	//

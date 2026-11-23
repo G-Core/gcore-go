@@ -10,11 +10,13 @@ import (
 	"net/url"
 	"slices"
 
+	"github.com/G-Core/gcore-go/internal/apijson"
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
 	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
+	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
 // K8SFlavorService contains methods and other services that help with interacting
@@ -39,7 +41,7 @@ func NewK8SFlavorService(opts ...option.RequestOption) (r K8SFlavorService) {
 // Retrieve a list of flavors for k8s pool. When the `include_prices` query
 // parameter is specified, the list shows prices. A client in trial mode gets all
 // price values as 0. If you get Pricing Error contact the support
-func (r *K8SFlavorService) List(ctx context.Context, params K8SFlavorListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[BaremetalFlavor], err error) {
+func (r *K8SFlavorService) List(ctx context.Context, params K8SFlavorListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[K8SFlavor], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -73,9 +75,84 @@ func (r *K8SFlavorService) List(ctx context.Context, params K8SFlavorListParams,
 // Retrieve a list of flavors for k8s pool. When the `include_prices` query
 // parameter is specified, the list shows prices. A client in trial mode gets all
 // price values as 0. If you get Pricing Error contact the support
-func (r *K8SFlavorService) ListAutoPaging(ctx context.Context, params K8SFlavorListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[BaremetalFlavor] {
+func (r *K8SFlavorService) ListAutoPaging(ctx context.Context, params K8SFlavorListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[K8SFlavor] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
+
+// Kubernetes flavor schema. The flavors on this route are general flavors, so they
+// may have no resource class.
+type K8SFlavor struct {
+	// Flavor architecture type
+	Architecture string `json:"architecture" api:"required"`
+	// Number of available instances of given configuration. The value is null if it is
+	// not loaded.
+	Capacity int64 `json:"capacity" api:"required"`
+	// Currency code. The value is null if the price is not available.
+	CurrencyCode string `json:"currency_code" api:"required"`
+	// Disabled flavor flag
+	Disabled bool `json:"disabled" api:"required"`
+	// Flavor ID is the same as name
+	FlavorID string `json:"flavor_id" api:"required"`
+	// Flavor name
+	FlavorName string `json:"flavor_name" api:"required"`
+	// Additional hardware description
+	HardwareDescription map[string]string `json:"hardware_description" api:"required"`
+	// Flavor operating system
+	OsType string `json:"os_type" api:"required"`
+	// Price per hour. The value is null if the price is not available.
+	PricePerHour float64 `json:"price_per_hour" api:"required"`
+	// Price per month. The value is null if the price is not available.
+	PricePerMonth float64 `json:"price_per_month" api:"required"`
+	// Price status for the UI. The value is null if the price is not available.
+	//
+	// Any of "error", "hide", "show".
+	PriceStatus K8SFlavorPriceStatus `json:"price_status" api:"required"`
+	// RAM size in MiB
+	Ram int64 `json:"ram" api:"required"`
+	// Number of available instances of given flavor from reservations. The value is
+	// null if it is not loaded.
+	ReservedCapacity int64 `json:"reserved_capacity" api:"required"`
+	// Flavor resource class for mapping to hardware capacity. The value is null if the
+	// flavor is not a bare metal flavor.
+	ResourceClass string `json:"resource_class" api:"required"`
+	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
+	Vcpus int64 `json:"vcpus" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Architecture        respjson.Field
+		Capacity            respjson.Field
+		CurrencyCode        respjson.Field
+		Disabled            respjson.Field
+		FlavorID            respjson.Field
+		FlavorName          respjson.Field
+		HardwareDescription respjson.Field
+		OsType              respjson.Field
+		PricePerHour        respjson.Field
+		PricePerMonth       respjson.Field
+		PriceStatus         respjson.Field
+		Ram                 respjson.Field
+		ReservedCapacity    respjson.Field
+		ResourceClass       respjson.Field
+		Vcpus               respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r K8SFlavor) RawJSON() string { return r.JSON.raw }
+func (r *K8SFlavor) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Price status for the UI. The value is null if the price is not available.
+type K8SFlavorPriceStatus string
+
+const (
+	K8SFlavorPriceStatusError K8SFlavorPriceStatus = "error"
+	K8SFlavorPriceStatusHide  K8SFlavorPriceStatus = "hide"
+	K8SFlavorPriceStatusShow  K8SFlavorPriceStatus = "show"
+)
 
 type K8SFlavorListParams struct {
 	// Project ID

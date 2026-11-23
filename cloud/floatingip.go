@@ -368,7 +368,7 @@ type FloatingIPDetailedInstance struct {
 	CreatorTaskID string `json:"creator_task_id" api:"required"`
 	// Flavor
 	Flavor FloatingIPDetailedInstanceFlavor `json:"flavor" api:"required"`
-	// Instance description
+	// Instance description. The value is null if the instance has no description.
 	InstanceDescription string `json:"instance_description" api:"required"`
 	// Instance name
 	Name string `json:"name" api:"required"`
@@ -380,7 +380,7 @@ type FloatingIPDetailedInstance struct {
 	RegionID int64 `json:"region_id" api:"required"`
 	// Security groups
 	SecurityGroups []FloatingIPDetailedInstanceSecurityGroup `json:"security_groups" api:"required"`
-	// SSH key name assigned to instance
+	// SSH key name assigned to instance. The value is null if no key pair is set.
 	SSHKeyName string `json:"ssh_key_name" api:"required"`
 	// Instance status
 	//
@@ -399,7 +399,7 @@ type FloatingIPDetailedInstance struct {
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
 	TaskID string `json:"task_id" api:"required"`
-	// Task state
+	// Task state. The value is null if no operation is in progress.
 	TaskState string `json:"task_state" api:"required"`
 	// Virtual machine state (active)
 	//

@@ -43,6 +43,7 @@ func TestQuotaRequestNewWithOptionalParams(t *testing.T) {
 			RegionalLimits: []cloud.QuotaRequestNewParamsRequestedLimitsRegionalLimit{{
 				BaremetalBasicCountLimit:          gcore.Int(0),
 				BaremetalGPUA100CountLimit:        gcore.Int(0),
+				BaremetalGPUB200CountLimit:        gcore.Int(0),
 				BaremetalGPUCountLimit:            gcore.Int(0),
 				BaremetalGPUH100CountLimit:        gcore.Int(0),
 				BaremetalGPUH200CountLimit:        gcore.Int(0),

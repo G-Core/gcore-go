@@ -119,6 +119,14 @@ func TestQuotaNotificationThresholdUpdateWithOptionalParams(t *testing.T) {
 						Limit: 10,
 						Usage: 8,
 					},
+					BaremetalGPUB200CountLimit: cloud.QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalGPUB200CountLimit{
+						Limit: 10,
+						Usage: 8,
+					},
+					BaremetalGPUB200CountUsage: cloud.QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalGPUB200CountUsage{
+						Limit: 10,
+						Usage: 8,
+					},
 					BaremetalGPUH100CountLimit: cloud.QuotaNotificationThresholdUpdateParamsLastMessageRegionalQuotaBaremetalGPUH100CountLimit{
 						Limit: 10,
 						Usage: 8,

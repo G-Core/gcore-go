@@ -150,53 +150,56 @@ func (r *AllowedAddressPairs) UnmarshalJSON(data []byte) error {
 type BaremetalFlavor struct {
 	// Flavor architecture type
 	Architecture string `json:"architecture" api:"required"`
+	// Number of available instances of given configuration. The value is null if it is
+	// not loaded.
+	Capacity int64 `json:"capacity" api:"required"`
+	// Currency code. The value is null if the price is not available.
+	CurrencyCode string `json:"currency_code" api:"required"`
 	// Disabled flavor flag
 	Disabled bool `json:"disabled" api:"required"`
 	// Flavor ID is the same as name
 	FlavorID string `json:"flavor_id" api:"required"`
 	// Flavor name
 	FlavorName string `json:"flavor_name" api:"required"`
+	// Additional hardware description
+	HardwareDescription map[string]string `json:"hardware_description" api:"required"`
 	// Flavor operating system
 	OsType string `json:"os_type" api:"required"`
+	// Price per hour. The value is null if the price is not available.
+	PricePerHour float64 `json:"price_per_hour" api:"required"`
+	// Price per month. The value is null if the price is not available.
+	PricePerMonth float64 `json:"price_per_month" api:"required"`
+	// Price status for the UI. The value is null if the price is not available.
+	//
+	// Any of "error", "hide", "show".
+	PriceStatus BaremetalFlavorPriceStatus `json:"price_status" api:"required"`
 	// RAM size in MiB
 	Ram int64 `json:"ram" api:"required"`
-	// Flavor resource class for mapping to hardware capacity
+	// Number of available instances of given flavor from reservations. The value is
+	// null if it is not loaded.
+	ReservedCapacity int64 `json:"reserved_capacity" api:"required"`
+	// Flavor resource class for mapping to hardware capacity. The value is null if the
+	// flavor has no resource class.
 	ResourceClass string `json:"resource_class" api:"required"`
 	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
 	Vcpus int64 `json:"vcpus" api:"required"`
-	// Number of available instances of given configuration
-	Capacity int64 `json:"capacity" api:"nullable"`
-	// Currency code. Shown if the `include_prices` query parameter if set to true
-	CurrencyCode string `json:"currency_code" api:"nullable"`
-	// Additional hardware description
-	HardwareDescription map[string]string `json:"hardware_description"`
-	// Price per hour. Shown if the `include_prices` query parameter if set to true
-	PricePerHour float64 `json:"price_per_hour" api:"nullable"`
-	// Price per month. Shown if the `include_prices` query parameter if set to true
-	PricePerMonth float64 `json:"price_per_month" api:"nullable"`
-	// Price status for the UI
-	//
-	// Any of "error", "hide", "show".
-	PriceStatus BaremetalFlavorPriceStatus `json:"price_status" api:"nullable"`
-	// Number of available instances of given flavor from reservations
-	ReservedCapacity int64 `json:"reserved_capacity" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Architecture        respjson.Field
+		Capacity            respjson.Field
+		CurrencyCode        respjson.Field
 		Disabled            respjson.Field
 		FlavorID            respjson.Field
 		FlavorName          respjson.Field
-		OsType              respjson.Field
-		Ram                 respjson.Field
-		ResourceClass       respjson.Field
-		Vcpus               respjson.Field
-		Capacity            respjson.Field
-		CurrencyCode        respjson.Field
 		HardwareDescription respjson.Field
+		OsType              respjson.Field
 		PricePerHour        respjson.Field
 		PricePerMonth       respjson.Field
 		PriceStatus         respjson.Field
+		Ram                 respjson.Field
 		ReservedCapacity    respjson.Field
+		ResourceClass       respjson.Field
+		Vcpus               respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
 	} `json:"-"`
@@ -208,7 +211,7 @@ func (r *BaremetalFlavor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Price status for the UI
+// Price status for the UI. The value is null if the price is not available.
 type BaremetalFlavorPriceStatus string
 
 const (
@@ -666,19 +669,50 @@ const (
 type GPUImage struct {
 	// Image ID
 	ID string `json:"id" api:"required" format:"uuid4"`
+	// Image architecture type. The value is null if the image does not set this
+	// property.
+	Architecture string `json:"architecture" api:"required"`
 	// Datetime when the image was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
-	// Version of the installed CUDA toolkit
+	// Version of the installed CUDA toolkit. The value is null if the image does not
+	// set this property.
 	CudaToolkitVersion string `json:"cuda_toolkit_version" api:"required"`
 	// Disk format of the stored image (e.g. `raw`, `qcow2`). `cow_format=true` ->
 	// `raw`, `cow_format=false` -> `qcow2`.
 	DiskFormat string `json:"disk_format" api:"required"`
+	// Name of the GPU driver vendor. The value is null if the image does not set this
+	// property.
+	GPUDriver string `json:"gpu_driver" api:"required"`
+	// Type of the GPU driver. The value is null if the image does not set this
+	// property.
+	GPUDriverType string `json:"gpu_driver_type" api:"required"`
+	// Version of the installed GPU driver. The value is null if the image does not set
+	// this property.
+	GPUDriverVersion string `json:"gpu_driver_version" api:"required"`
+	// Specifies the type of firmware with which to boot the guest. The value is null
+	// if the image does not set this property.
+	//
+	// Any of "bios", "uefi".
+	HwFirmwareType GPUImageHwFirmwareType `json:"hw_firmware_type" api:"required"`
 	// Minimal boot volume required
 	MinDisk int64 `json:"min_disk" api:"required"`
 	// Minimal VM RAM required
 	MinRam int64 `json:"min_ram" api:"required"`
 	// Image name
 	Name string `json:"name" api:"required"`
+	// OS Distribution. The value is null if the image does not set this property.
+	OsDistro string `json:"os_distro" api:"required"`
+	// The operating system installed on the image. The value is null if the image does
+	// not set this property.
+	OsType string `json:"os_type" api:"required"`
+	// OS version, i.e. 19.04 (for Ubuntu) or 9.4 for Debian. The value is null if the
+	// image does not set this property.
+	OsVersion string `json:"os_version" api:"required"`
+	// Image size in bytes.
+	Size int64 `json:"size" api:"required"`
+	// Whether the image supports SSH key or not. The value is null if the image does
+	// not set this property.
+	SSHKey string `json:"ssh_key" api:"required"`
 	// Image status
 	Status string `json:"status" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
@@ -687,60 +721,38 @@ type GPUImage struct {
 	// cannot be modified by the user. Tags are also integrated with cost reports,
 	// allowing cost data to be filtered based on tag keys or values.
 	Tags []Tag `json:"tags" api:"required"`
+	// The UUID of the active task that currently holds a lock on the resource. This
+	// lock prevents concurrent modifications to ensure consistency. If `null`, the
+	// resource is not locked.
+	TaskID string `json:"task_id" api:"required"`
 	// Datetime when the image was updated
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// Image visibility. Globally visible images are public
 	Visibility string `json:"visibility" api:"required"`
-	// Image architecture type
-	Architecture string `json:"architecture" api:"nullable"`
-	// Name of the GPU driver vendor
-	GPUDriver string `json:"gpu_driver" api:"nullable"`
-	// Type of the GPU driver
-	GPUDriverType string `json:"gpu_driver_type" api:"nullable"`
-	// Version of the installed GPU driver
-	GPUDriverVersion string `json:"gpu_driver_version" api:"nullable"`
-	// Specifies the type of firmware with which to boot the guest.
-	//
-	// Any of "bios", "uefi".
-	HwFirmwareType GPUImageHwFirmwareType `json:"hw_firmware_type" api:"nullable"`
-	// OS Distribution
-	OsDistro string `json:"os_distro" api:"nullable"`
-	// The operating system installed on the image
-	OsType string `json:"os_type" api:"nullable"`
-	// OS version, i.e. 19.04 (for Ubuntu) or 9.4 for Debian
-	OsVersion string `json:"os_version" api:"nullable"`
-	// Image size in bytes.
-	Size int64 `json:"size"`
-	// Whether the image supports SSH key or not
-	SSHKey string `json:"ssh_key" api:"nullable"`
-	// The UUID of the active task that currently holds a lock on the resource. This
-	// lock prevents concurrent modifications to ensure consistency. If `null`, the
-	// resource is not locked.
-	TaskID string `json:"task_id" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
+		Architecture       respjson.Field
 		CreatedAt          respjson.Field
 		CudaToolkitVersion respjson.Field
 		DiskFormat         respjson.Field
-		MinDisk            respjson.Field
-		MinRam             respjson.Field
-		Name               respjson.Field
-		Status             respjson.Field
-		Tags               respjson.Field
-		UpdatedAt          respjson.Field
-		Visibility         respjson.Field
-		Architecture       respjson.Field
 		GPUDriver          respjson.Field
 		GPUDriverType      respjson.Field
 		GPUDriverVersion   respjson.Field
 		HwFirmwareType     respjson.Field
+		MinDisk            respjson.Field
+		MinRam             respjson.Field
+		Name               respjson.Field
 		OsDistro           respjson.Field
 		OsType             respjson.Field
 		OsVersion          respjson.Field
 		Size               respjson.Field
 		SSHKey             respjson.Field
+		Status             respjson.Field
+		Tags               respjson.Field
 		TaskID             respjson.Field
+		UpdatedAt          respjson.Field
+		Visibility         respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -752,7 +764,8 @@ func (r *GPUImage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Specifies the type of firmware with which to boot the guest.
+// Specifies the type of firmware with which to boot the guest. The value is null
+// if the image does not set this property.
 type GPUImageHwFirmwareType string
 
 const (
@@ -803,18 +816,20 @@ type Instance struct {
 	BlackholePorts []BlackholePort `json:"blackhole_ports" api:"required"`
 	// Datetime when instance was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
-	// Task that created this entity
+	// Task that created this entity. The value is null if no task created the entity.
 	CreatorTaskID string `json:"creator_task_id" api:"required"`
 	// Advanced DDoS protection profile. It is always `null` if query parameter
 	// `with_ddos=true` is not set.
 	DDOSProfile DDOSProfile `json:"ddos_profile" api:"required"`
-	// Fixed IP assigned to instance
+	// Fixed IP assigned to instance. The value is null if the instance has no fixed IP
+	// assignments.
 	FixedIPAssignments []InstanceFixedIPAssignment `json:"fixed_ip_assignments" api:"required"`
 	// Flavor
 	Flavor InstanceFlavorUnion `json:"flavor" api:"required"`
-	// Instance description
+	// Instance description. The value is null if the instance has no description.
 	InstanceDescription string `json:"instance_description" api:"required"`
-	// Instance isolation information
+	// Instance isolation information. The value is null if the instance has no
+	// isolation settings.
 	InstanceIsolation InstanceIsolation `json:"instance_isolation" api:"required"`
 	// Instance name
 	Name string `json:"name" api:"required"`
@@ -826,7 +841,7 @@ type Instance struct {
 	RegionID int64 `json:"region_id" api:"required"`
 	// Security groups
 	SecurityGroups []InstanceSecurityGroup `json:"security_groups" api:"required"`
-	// SSH key assigned to instance
+	// SSH key assigned to instance. The value is null if no SSH key is assigned.
 	SSHKeyName string `json:"ssh_key_name" api:"required"`
 	// Instance status
 	//
@@ -845,7 +860,7 @@ type Instance struct {
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
 	TaskID string `json:"task_id" api:"required"`
-	// Task state
+	// Task state. The value is null if no operation is in progress on the instance.
 	TaskState string `json:"task_state" api:"required"`
 	// Virtual machine state (active)
 	//
@@ -1320,8 +1335,9 @@ func (r *InstanceVolume) UnmarshalJSON(data []byte) error {
 }
 
 type InstanceIsolation struct {
-	// The reason of instance isolation if it is isolated from external internet.
-	Reason string `json:"reason" api:"nullable"`
+	// The reason of instance isolation if it is isolated from external internet. The
+	// value is null if no reason is recorded.
+	Reason string `json:"reason" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Reason      respjson.Field

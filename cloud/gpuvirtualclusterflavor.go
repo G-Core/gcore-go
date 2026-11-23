@@ -235,9 +235,10 @@ func (r *GPUVirtualFlavorVirtualGPUFlavorsChemaWithoutPrice) UnmarshalJSON(data 
 
 // Additional virtual hardware description
 type GPUVirtualFlavorVirtualGPUFlavorsChemaWithoutPriceHardwareDescription struct {
-	// Human-readable GPU description
+	// Human-readable GPU description. The value is null if the flavor has no GPU.
 	GPU string `json:"gpu" api:"required"`
-	// Local storage capacity in GiB
+	// Local storage capacity in GiB. The value is null if the flavor has no ephemeral
+	// storage.
 	LocalStorage int64 `json:"local_storage" api:"required"`
 	// RAM size in MiB
 	Ram int64 `json:"ram" api:"required"`
@@ -353,9 +354,10 @@ func (r *GPUVirtualFlavorVirtualGPUFlavorsChemaWithPrice) UnmarshalJSON(data []b
 
 // Additional virtual hardware description
 type GPUVirtualFlavorVirtualGPUFlavorsChemaWithPriceHardwareDescription struct {
-	// Human-readable GPU description
+	// Human-readable GPU description. The value is null if the flavor has no GPU.
 	GPU string `json:"gpu" api:"required"`
-	// Local storage capacity in GiB
+	// Local storage capacity in GiB. The value is null if the flavor has no ephemeral
+	// storage.
 	LocalStorage int64 `json:"local_storage" api:"required"`
 	// RAM size in MiB
 	Ram int64 `json:"ram" api:"required"`

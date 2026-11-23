@@ -65,27 +65,30 @@ func (r *InstanceMetricService) List(ctx context.Context, instanceID string, par
 
 // Instance metrics item
 type Metrics struct {
+	// CPU utilization, % (max 100% for multi-core). The value is null if there is no
+	// data for this time.
+	CPUUtil float64 `json:"cpu_util" api:"required"`
+	// Disks metrics for each of the disks attached. The value is null if there is no
+	// disk data for this time.
+	Disks []MetricsDisk `json:"disks" api:"required"`
+	// RAM utilization, %. The value is null if there is no data for this time.
+	MemoryUtil float64 `json:"memory_util" api:"required"`
+	// Network out, bits per second (the 'Bps' in the field name is historical; the
+	// value is bits, not bytes). The value is null if there is no data for this time.
+	NetworkBpsEgress float64 `json:"network_Bps_egress" api:"required"`
+	// Network in, bits per second (the 'Bps' in the field name is historical; the
+	// value is bits, not bytes). The value is null if there is no data for this time.
+	NetworkBpsIngress float64 `json:"network_Bps_ingress" api:"required"`
+	// Network out, packets per second. The value is null if there is no data for this
+	// time.
+	NetworkPpsEgress float64 `json:"network_pps_egress" api:"required"`
+	// Network in, packets per second. The value is null if there is no data for this
+	// time.
+	NetworkPpsIngress float64 `json:"network_pps_ingress" api:"required"`
 	// Timestamp
 	Time string `json:"time" api:"required"`
-	// CPU utilization, % (max 100% for multi-core)
-	CPUUtil float64 `json:"cpu_util" api:"nullable"`
-	// Disks metrics for each of the disks attached
-	Disks []MetricsDisk `json:"disks" api:"nullable"`
-	// RAM utilization, %
-	MemoryUtil float64 `json:"memory_util" api:"nullable"`
-	// Network out, bits per second (the 'Bps' in the field name is historical; the
-	// value is bits, not bytes)
-	NetworkBpsEgress float64 `json:"network_Bps_egress" api:"nullable"`
-	// Network in, bits per second (the 'Bps' in the field name is historical; the
-	// value is bits, not bytes)
-	NetworkBpsIngress float64 `json:"network_Bps_ingress" api:"nullable"`
-	// Network out, packets per second
-	NetworkPpsEgress float64 `json:"network_pps_egress" api:"nullable"`
-	// Network in, packets per second
-	NetworkPpsIngress float64 `json:"network_pps_ingress" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Time              respjson.Field
 		CPUUtil           respjson.Field
 		Disks             respjson.Field
 		MemoryUtil        respjson.Field
@@ -93,6 +96,7 @@ type Metrics struct {
 		NetworkBpsIngress respjson.Field
 		NetworkPpsEgress  respjson.Field
 		NetworkPpsIngress respjson.Field
+		Time              respjson.Field
 		ExtraFields       map[string]respjson.Field
 		raw               string
 	} `json:"-"`
@@ -106,16 +110,18 @@ func (r *Metrics) UnmarshalJSON(data []byte) error {
 
 // Disk metrics item
 type MetricsDisk struct {
-	// Disk read, Bytes per second
-	DiskBpsRead float64 `json:"disk_Bps_read" api:"nullable"`
-	// Disk write, Bytes per second
-	DiskBpsWrite float64 `json:"disk_Bps_write" api:"nullable"`
-	// Disk read, iops
-	DiskIopsRead float64 `json:"disk_iops_read" api:"nullable"`
-	// Disk write, iops
-	DiskIopsWrite float64 `json:"disk_iops_write" api:"nullable"`
-	// Disk attached slot name
-	DiskName string `json:"disk_name" api:"nullable"`
+	// Disk read, Bytes per second. The value is null if there is no data for this
+	// disk.
+	DiskBpsRead float64 `json:"disk_Bps_read" api:"required"`
+	// Disk write, Bytes per second. The value is null if there is no data for this
+	// disk.
+	DiskBpsWrite float64 `json:"disk_Bps_write" api:"required"`
+	// Disk read, iops. The value is null if there is no data for this disk.
+	DiskIopsRead float64 `json:"disk_iops_read" api:"required"`
+	// Disk write, iops. The value is null if there is no data for this disk.
+	DiskIopsWrite float64 `json:"disk_iops_write" api:"required"`
+	// Disk attached slot name. The value is null if the name is unknown.
+	DiskName string `json:"disk_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DiskBpsRead   respjson.Field

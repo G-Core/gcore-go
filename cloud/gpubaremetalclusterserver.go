@@ -440,18 +440,20 @@ type GPUBaremetalClusterServerV1 struct {
 	BlackholePorts []BlackholePort `json:"blackhole_ports" api:"required"`
 	// Datetime when GPU server was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
-	// Task that created this entity
+	// Task that created this entity. The value is null if no task created the entity.
 	CreatorTaskID string `json:"creator_task_id" api:"required"`
 	// Advanced DDoS protection profile. It is always `null` if query parameter
 	// `with_ddos=true` is not set.
 	DDOSProfile DDOSProfile `json:"ddos_profile" api:"required"`
-	// Fixed IP assigned to instance
+	// Fixed IP assigned to instance. The value is null if the instance has no fixed IP
+	// assignments.
 	FixedIPAssignments []GPUBaremetalClusterServerV1FixedIPAssignment `json:"fixed_ip_assignments" api:"required"`
 	// Flavor
 	Flavor GPUBaremetalClusterServerV1Flavor `json:"flavor" api:"required"`
-	// Instance description
+	// Instance description. The value is null if the instance has no description.
 	InstanceDescription string `json:"instance_description" api:"required"`
-	// Instance isolation information
+	// Instance isolation information. The value is null if the instance has no
+	// isolation settings.
 	InstanceIsolation InstanceIsolation `json:"instance_isolation" api:"required"`
 	// GPU server name
 	Name string `json:"name" api:"required"`
@@ -463,7 +465,7 @@ type GPUBaremetalClusterServerV1 struct {
 	RegionID int64 `json:"region_id" api:"required"`
 	// Security groups
 	SecurityGroups []GPUBaremetalClusterServerV1SecurityGroup `json:"security_groups" api:"required"`
-	// SSH key name assigned to instance
+	// SSH key name assigned to instance. The value is null if no SSH key is assigned.
 	SSHKeyName string `json:"ssh_key_name" api:"required"`
 	// Instance status
 	//
@@ -482,7 +484,7 @@ type GPUBaremetalClusterServerV1 struct {
 	// lock prevents concurrent modifications to ensure consistency. If `null`, the
 	// resource is not locked.
 	TaskID string `json:"task_id" api:"required"`
-	// Task state
+	// Task state. The value is null if no operation is in progress on the instance.
 	TaskState string `json:"task_state" api:"required"`
 	// Virtual machine state (active)
 	//

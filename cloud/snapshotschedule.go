@@ -315,29 +315,29 @@ func (r *LifecyclePolicy) UnmarshalJSON(data []byte) error {
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type LifecyclePolicyScheduleUnion struct {
-	ID          string `json:"id"`
-	MaxQuantity int64  `json:"max_quantity"`
-	Owner       string `json:"owner"`
-	OwnerID     int64  `json:"owner_id"`
-	// This field is a union of [LifecyclePolicyScheduleCronRetentionTime],
-	// [LifecyclePolicyScheduleIntervalRetentionTime]
-	RetentionTime LifecyclePolicyScheduleUnionRetentionTime `json:"retention_time"`
-	// Any of "cron", "interval".
-	Type   string `json:"type"`
-	UserID int64  `json:"user_id"`
+	ID string `json:"id"`
 	// This field is from variant [LifecyclePolicyScheduleCron].
 	Day string `json:"day"`
 	// This field is from variant [LifecyclePolicyScheduleCron].
 	DayOfWeek string `json:"day_of_week"`
 	// This field is from variant [LifecyclePolicyScheduleCron].
-	Hour string `json:"hour"`
+	Hour        string `json:"hour"`
+	MaxQuantity int64  `json:"max_quantity"`
 	// This field is from variant [LifecyclePolicyScheduleCron].
 	Minute string `json:"minute"`
 	// This field is from variant [LifecyclePolicyScheduleCron].
 	Month                string `json:"month"`
+	Owner                string `json:"owner"`
+	OwnerID              int64  `json:"owner_id"`
 	ResourceNameTemplate string `json:"resource_name_template"`
+	// This field is a union of [LifecyclePolicyScheduleCronRetentionTime],
+	// [LifecyclePolicyScheduleIntervalRetentionTime]
+	RetentionTime LifecyclePolicyScheduleUnionRetentionTime `json:"retention_time"`
 	// This field is from variant [LifecyclePolicyScheduleCron].
 	Timezone string `json:"timezone"`
+	// Any of "cron", "interval".
+	Type   string `json:"type"`
+	UserID int64  `json:"user_id"`
 	// This field is from variant [LifecyclePolicyScheduleCron].
 	Week string `json:"week"`
 	// This field is from variant [LifecyclePolicyScheduleInterval].
@@ -350,19 +350,19 @@ type LifecyclePolicyScheduleUnion struct {
 	Weeks int64 `json:"weeks"`
 	JSON  struct {
 		ID                   respjson.Field
-		MaxQuantity          respjson.Field
-		Owner                respjson.Field
-		OwnerID              respjson.Field
-		RetentionTime        respjson.Field
-		Type                 respjson.Field
-		UserID               respjson.Field
 		Day                  respjson.Field
 		DayOfWeek            respjson.Field
 		Hour                 respjson.Field
+		MaxQuantity          respjson.Field
 		Minute               respjson.Field
 		Month                respjson.Field
+		Owner                respjson.Field
+		OwnerID              respjson.Field
 		ResourceNameTemplate respjson.Field
+		RetentionTime        respjson.Field
 		Timezone             respjson.Field
+		Type                 respjson.Field
+		UserID               respjson.Field
 		Week                 respjson.Field
 		Days                 respjson.Field
 		Hours                respjson.Field
@@ -444,50 +444,58 @@ func (r *LifecyclePolicyScheduleUnionRetentionTime) UnmarshalJSON(data []byte) e
 type LifecyclePolicyScheduleCron struct {
 	// Schedule ID
 	ID string `json:"id" api:"required"`
+	// Day of the month (1-31, '\*') or a comma-separated list of days. The value is
+	// null if the schedule does not set a day.
+	Day string `json:"day" api:"required"`
+	// Weekday or a comma-separated list of weekdays (mon,tue,wed,thu,fri,sat,sun,\*).
+	// The value is null if the schedule does not set a weekday.
+	DayOfWeek string `json:"day_of_week" api:"required"`
+	// Hour (0-23, '\*') or a comma-separated list of hours. The value is null if the
+	// schedule does not set an hour.
+	Hour string `json:"hour" api:"required"`
 	// Number of stored resources.
 	MaxQuantity int64 `json:"max_quantity" api:"required"`
+	// Minute (0-59, '\*') or a comma-separated list of minutes. The value is null if
+	// the schedule does not set a minute.
+	Minute string `json:"minute" api:"required"`
+	// Month (1-12, '\*') or a comma-separated list of months. The value is null if the
+	// schedule does not set a month.
+	Month string `json:"month" api:"required"`
 	// Schedule owner
 	Owner string `json:"owner" api:"required"`
 	// Owner ID
 	OwnerID int64 `json:"owner_id" api:"required"`
-	// Time after which the resource will be deleted
+	// Template for resource names. The value is null if the schedule has no template.
+	ResourceNameTemplate string `json:"resource_name_template" api:"required"`
+	// Time after which the resource will be deleted. The value is null if no retention
+	// is set.
 	RetentionTime LifecyclePolicyScheduleCronRetentionTime `json:"retention_time" api:"required"`
+	// A timezone name, for example Europe/Berlin. The value is null if the schedule
+	// does not set a timezone, and it then uses UTC.
+	Timezone string `json:"timezone" api:"required"`
 	// Schedule type
 	Type constant.Cron `json:"type" default:"cron"`
 	// User ID
 	UserID int64 `json:"user_id" api:"required"`
-	// Day of the month (1-31, '\*') or a comma-separated list of days
-	Day string `json:"day" api:"nullable"`
-	// Weekday or a comma-separated list of weekdays (mon,tue,wed,thu,fri,sat,sun,\*)
-	DayOfWeek string `json:"day_of_week" api:"nullable"`
-	// Hour (0-23, '\*') or a comma-separated list of hours
-	Hour string `json:"hour" api:"nullable"`
-	// Minute (0-59, '\*') or a comma-separated list of minutes
-	Minute string `json:"minute" api:"nullable"`
-	// Month (1-12, '\*') or a comma-separated list of months
-	Month string `json:"month" api:"nullable"`
-	// Template for resource names
-	ResourceNameTemplate string `json:"resource_name_template" api:"nullable"`
-	// A pytz timezone. Defaults to UTC.
-	Timezone string `json:"timezone" api:"nullable"`
-	// ISO week (1-53, '\*') or a comma-separated list of weeks
-	Week string `json:"week" api:"nullable"`
+	// ISO week (1-53, '\*') or a comma-separated list of weeks. The value is null if
+	// the schedule does not set a week.
+	Week string `json:"week" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                   respjson.Field
-		MaxQuantity          respjson.Field
-		Owner                respjson.Field
-		OwnerID              respjson.Field
-		RetentionTime        respjson.Field
-		Type                 respjson.Field
-		UserID               respjson.Field
 		Day                  respjson.Field
 		DayOfWeek            respjson.Field
 		Hour                 respjson.Field
+		MaxQuantity          respjson.Field
 		Minute               respjson.Field
 		Month                respjson.Field
+		Owner                respjson.Field
+		OwnerID              respjson.Field
 		ResourceNameTemplate respjson.Field
+		RetentionTime        respjson.Field
 		Timezone             respjson.Field
+		Type                 respjson.Field
+		UserID               respjson.Field
 		Week                 respjson.Field
 		ExtraFields          map[string]respjson.Field
 		raw                  string
@@ -500,16 +508,21 @@ func (r *LifecyclePolicyScheduleCron) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Time after which the resource will be deleted
+// Time after which the resource will be deleted. The value is null if no retention
+// is set.
 type LifecyclePolicyScheduleCronRetentionTime struct {
-	// Number of days to wait
-	Days int64 `json:"days" api:"nullable"`
-	// Number of hours to wait
-	Hours int64 `json:"hours" api:"nullable"`
-	// Number of minutes to wait
-	Minutes int64 `json:"minutes" api:"nullable"`
-	// Number of weeks to wait
-	Weeks int64 `json:"weeks" api:"nullable"`
+	// Number of days to wait. The value is null if the retention time does not set
+	// days.
+	Days int64 `json:"days" api:"required"`
+	// Number of hours to wait. The value is null if the retention time does not set
+	// hours.
+	Hours int64 `json:"hours" api:"required"`
+	// Number of minutes to wait. The value is null if the retention time does not set
+	// minutes.
+	Minutes int64 `json:"minutes" api:"required"`
+	// Number of weeks to wait. The value is null if the retention time does not set
+	// weeks.
+	Weeks int64 `json:"weeks" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Days        respjson.Field
@@ -530,41 +543,43 @@ func (r *LifecyclePolicyScheduleCronRetentionTime) UnmarshalJSON(data []byte) er
 type LifecyclePolicyScheduleInterval struct {
 	// Schedule ID
 	ID string `json:"id" api:"required"`
+	// Number of days to wait. The value is null if the schedule does not set days.
+	Days int64 `json:"days" api:"required"`
+	// Number of hours to wait. The value is null if the schedule does not set hours.
+	Hours int64 `json:"hours" api:"required"`
 	// Number of stored resources.
 	MaxQuantity int64 `json:"max_quantity" api:"required"`
+	// Number of minutes to wait. The value is null if the schedule does not set
+	// minutes.
+	Minutes int64 `json:"minutes" api:"required"`
 	// Schedule owner
 	Owner string `json:"owner" api:"required"`
 	// Owner ID
 	OwnerID int64 `json:"owner_id" api:"required"`
-	// Time after which the resource will be deleted
+	// Template for resource names. The value is null if the schedule has no template.
+	ResourceNameTemplate string `json:"resource_name_template" api:"required"`
+	// Time after which the resource will be deleted. The value is null if no retention
+	// is set.
 	RetentionTime LifecyclePolicyScheduleIntervalRetentionTime `json:"retention_time" api:"required"`
 	// Schedule type
 	Type constant.Interval `json:"type" default:"interval"`
 	// User ID
 	UserID int64 `json:"user_id" api:"required"`
-	// Number of days to wait
-	Days int64 `json:"days" api:"nullable"`
-	// Number of hours to wait
-	Hours int64 `json:"hours" api:"nullable"`
-	// Number of minutes to wait
-	Minutes int64 `json:"minutes" api:"nullable"`
-	// Template for resource names
-	ResourceNameTemplate string `json:"resource_name_template" api:"nullable"`
-	// Number of weeks to wait
-	Weeks int64 `json:"weeks" api:"nullable"`
+	// Number of weeks to wait. The value is null if the schedule does not set weeks.
+	Weeks int64 `json:"weeks" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                   respjson.Field
+		Days                 respjson.Field
+		Hours                respjson.Field
 		MaxQuantity          respjson.Field
+		Minutes              respjson.Field
 		Owner                respjson.Field
 		OwnerID              respjson.Field
+		ResourceNameTemplate respjson.Field
 		RetentionTime        respjson.Field
 		Type                 respjson.Field
 		UserID               respjson.Field
-		Days                 respjson.Field
-		Hours                respjson.Field
-		Minutes              respjson.Field
-		ResourceNameTemplate respjson.Field
 		Weeks                respjson.Field
 		ExtraFields          map[string]respjson.Field
 		raw                  string
@@ -577,16 +592,21 @@ func (r *LifecyclePolicyScheduleInterval) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Time after which the resource will be deleted
+// Time after which the resource will be deleted. The value is null if no retention
+// is set.
 type LifecyclePolicyScheduleIntervalRetentionTime struct {
-	// Number of days to wait
-	Days int64 `json:"days" api:"nullable"`
-	// Number of hours to wait
-	Hours int64 `json:"hours" api:"nullable"`
-	// Number of minutes to wait
-	Minutes int64 `json:"minutes" api:"nullable"`
-	// Number of weeks to wait
-	Weeks int64 `json:"weeks" api:"nullable"`
+	// Number of days to wait. The value is null if the retention time does not set
+	// days.
+	Days int64 `json:"days" api:"required"`
+	// Number of hours to wait. The value is null if the retention time does not set
+	// hours.
+	Hours int64 `json:"hours" api:"required"`
+	// Number of minutes to wait. The value is null if the retention time does not set
+	// minutes.
+	Minutes int64 `json:"minutes" api:"required"`
+	// Number of weeks to wait. The value is null if the retention time does not set
+	// weeks.
+	Weeks int64 `json:"weeks" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Days        respjson.Field

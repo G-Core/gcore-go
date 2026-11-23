@@ -339,6 +339,12 @@ type K8SClusterPoolQuota struct {
 	BaremetalGPUA100CountRequested int64 `json:"baremetal_gpu_a100_count_requested"`
 	// Bare metal A100 GPU server count usage
 	BaremetalGPUA100CountUsage int64 `json:"baremetal_gpu_a100_count_usage"`
+	// Bare metal B200 GPU server count limit
+	BaremetalGPUB200CountLimit int64 `json:"baremetal_gpu_b200_count_limit"`
+	// Bare metal B200 GPU server count requested
+	BaremetalGPUB200CountRequested int64 `json:"baremetal_gpu_b200_count_requested"`
+	// Bare metal B200 GPU server count usage
+	BaremetalGPUB200CountUsage int64 `json:"baremetal_gpu_b200_count_usage"`
 	// Bare metal H100 GPU server count limit
 	BaremetalGPUH100CountLimit int64 `json:"baremetal_gpu_h100_count_limit"`
 	// Bare metal H100 GPU server count requested
@@ -470,6 +476,9 @@ type K8SClusterPoolQuota struct {
 		BaremetalGPUA100CountLimit     respjson.Field
 		BaremetalGPUA100CountRequested respjson.Field
 		BaremetalGPUA100CountUsage     respjson.Field
+		BaremetalGPUB200CountLimit     respjson.Field
+		BaremetalGPUB200CountRequested respjson.Field
+		BaremetalGPUB200CountUsage     respjson.Field
 		BaremetalGPUH100CountLimit     respjson.Field
 		BaremetalGPUH100CountRequested respjson.Field
 		BaremetalGPUH100CountUsage     respjson.Field

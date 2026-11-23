@@ -167,17 +167,22 @@ type QuotaRegionalQuota struct {
 	BaremetalGPUA100CountLimit int64 `json:"baremetal_gpu_a100_count_limit" api:"required"`
 	// Bare metal A100 GPU server count usage
 	BaremetalGPUA100CountUsage int64 `json:"baremetal_gpu_a100_count_usage" api:"required"`
+	// Bare metal B200 GPU server count limit
+	BaremetalGPUB200CountLimit int64 `json:"baremetal_gpu_b200_count_limit" api:"required"`
+	// Bare metal B200 GPU server count usage
+	BaremetalGPUB200CountUsage int64 `json:"baremetal_gpu_b200_count_usage" api:"required"`
 	// Total number of AI GPU bare metal servers. This field is deprecated and is now
 	// always calculated automatically as the sum of `baremetal_gpu_a100_count_limit`,
-	// `baremetal_gpu_h100_count_limit`, `baremetal_gpu_h200_count_limit`, and
-	// `baremetal_gpu_l40s_count_limit`.
+	// `baremetal_gpu_b200_count_limit`, `baremetal_gpu_h100_count_limit`,
+	// `baremetal_gpu_h200_count_limit`, and `baremetal_gpu_l40s_count_limit`.
 	//
 	// Deprecated: deprecated
 	BaremetalGPUCountLimit int64 `json:"baremetal_gpu_count_limit" api:"required"`
 	// Total number of AI GPU bare metal servers in use. This field is deprecated and
 	// is now always calculated automatically as the sum of
-	// `baremetal_gpu_a100_count_usage`, `baremetal_gpu_h100_count_usage`,
-	// `baremetal_gpu_h200_count_usage`, and `baremetal_gpu_l40s_count_usage`.
+	// `baremetal_gpu_a100_count_usage`, `baremetal_gpu_b200_count_usage`,
+	// `baremetal_gpu_h100_count_usage`, `baremetal_gpu_h200_count_usage`, and
+	// `baremetal_gpu_l40s_count_usage`.
 	//
 	// Deprecated: deprecated
 	BaremetalGPUCountUsage int64 `json:"baremetal_gpu_count_usage" api:"required"`
@@ -385,6 +390,8 @@ type QuotaRegionalQuota struct {
 		BaremetalBasicCountUsage          respjson.Field
 		BaremetalGPUA100CountLimit        respjson.Field
 		BaremetalGPUA100CountUsage        respjson.Field
+		BaremetalGPUB200CountLimit        respjson.Field
+		BaremetalGPUB200CountUsage        respjson.Field
 		BaremetalGPUCountLimit            respjson.Field
 		BaremetalGPUCountUsage            respjson.Field
 		BaremetalGPUH100CountLimit        respjson.Field
@@ -506,17 +513,22 @@ type QuotaGetByRegionResponse struct {
 	BaremetalGPUA100CountLimit int64 `json:"baremetal_gpu_a100_count_limit" api:"required"`
 	// Bare metal A100 GPU server count usage
 	BaremetalGPUA100CountUsage int64 `json:"baremetal_gpu_a100_count_usage" api:"required"`
+	// Bare metal B200 GPU server count limit
+	BaremetalGPUB200CountLimit int64 `json:"baremetal_gpu_b200_count_limit" api:"required"`
+	// Bare metal B200 GPU server count usage
+	BaremetalGPUB200CountUsage int64 `json:"baremetal_gpu_b200_count_usage" api:"required"`
 	// Total number of AI GPU bare metal servers. This field is deprecated and is now
 	// always calculated automatically as the sum of `baremetal_gpu_a100_count_limit`,
-	// `baremetal_gpu_h100_count_limit`, `baremetal_gpu_h200_count_limit`, and
-	// `baremetal_gpu_l40s_count_limit`.
+	// `baremetal_gpu_b200_count_limit`, `baremetal_gpu_h100_count_limit`,
+	// `baremetal_gpu_h200_count_limit`, and `baremetal_gpu_l40s_count_limit`.
 	//
 	// Deprecated: deprecated
 	BaremetalGPUCountLimit int64 `json:"baremetal_gpu_count_limit" api:"required"`
 	// Total number of AI GPU bare metal servers in use. This field is deprecated and
 	// is now always calculated automatically as the sum of
-	// `baremetal_gpu_a100_count_usage`, `baremetal_gpu_h100_count_usage`,
-	// `baremetal_gpu_h200_count_usage`, and `baremetal_gpu_l40s_count_usage`.
+	// `baremetal_gpu_a100_count_usage`, `baremetal_gpu_b200_count_usage`,
+	// `baremetal_gpu_h100_count_usage`, `baremetal_gpu_h200_count_usage`, and
+	// `baremetal_gpu_l40s_count_usage`.
 	//
 	// Deprecated: deprecated
 	BaremetalGPUCountUsage int64 `json:"baremetal_gpu_count_usage" api:"required"`
@@ -724,6 +736,8 @@ type QuotaGetByRegionResponse struct {
 		BaremetalBasicCountUsage          respjson.Field
 		BaremetalGPUA100CountLimit        respjson.Field
 		BaremetalGPUA100CountUsage        respjson.Field
+		BaremetalGPUB200CountLimit        respjson.Field
+		BaremetalGPUB200CountUsage        respjson.Field
 		BaremetalGPUCountLimit            respjson.Field
 		BaremetalGPUCountUsage            respjson.Field
 		BaremetalGPUH100CountLimit        respjson.Field

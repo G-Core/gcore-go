@@ -458,13 +458,15 @@ func (r *FileShareShareSettingsStandard) UnmarshalJSON(data []byte) error {
 }
 
 type FileShareShareSettingsDdn struct {
-	// Group ID being owner of the share
+	// Group ID being owner of the share. The value is null if the share has no group
+	// owner.
 	Gid int64 `json:"gid" api:"required"`
-	// Exascaler project ID
+	// Exascaler project ID. The value is null if the share has no project ID.
 	Projid int64 `json:"projid" api:"required"`
 	// DDN file share type
 	TypeName constant.Ddn `json:"type_name" default:"ddn"`
-	// User ID being owner of the share
+	// User ID being owner of the share. The value is null if the share has no user
+	// owner.
 	Uid int64 `json:"uid" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -484,8 +486,14 @@ func (r *FileShareShareSettingsDdn) UnmarshalJSON(data []byte) error {
 }
 
 type FileShareShareSettingsVast struct {
+	// Allowed characters of the file share. The value is null if the share does not
+	// set them.
+	//
 	// Any of "LCD", "NPL".
 	AllowedCharacters string `json:"allowed_characters" api:"required"`
+	// Path length rule of the file share. The value is null if the share does not set
+	// a path length rule.
+	//
 	// Any of "LCD", "NPL".
 	PathLength string `json:"path_length" api:"required"`
 	// User and group quotas of the file share. The value is `null` if quotas are

@@ -158,13 +158,13 @@ func (r *SSHKeyService) Get(ctx context.Context, sshKeyID string, query SSHKeyGe
 type SSHKey struct {
 	// SSH key ID
 	ID string `json:"id" api:"required" format:"uuid4"`
-	// SSH key creation time
+	// SSH key creation time. The value is null if the creation time is not known.
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Fingerprint
 	Fingerprint string `json:"fingerprint" api:"required"`
 	// SSH key name
 	Name string `json:"name" api:"required"`
-	// Project ID
+	// Project ID. The value is null if the SSH key has no project.
 	ProjectID int64 `json:"project_id" api:"required"`
 	// The public part of an SSH key is the shareable portion of an SSH key pair. It
 	// can be safely sent to servers or services to grant access. It does not contain
@@ -224,6 +224,7 @@ type SSHKeyCreated struct {
 	//
 	// Best practice: Save the private key to a secure location on your machine (e.g.,
 	// `~/.ssh/id_ed25519`) and set the file permissions to be readable only by you.
+	// The value is null if you supply your own public key.
 	PrivateKey string `json:"private_key" api:"required"`
 	// Project ID
 	ProjectID int64 `json:"project_id" api:"required"`

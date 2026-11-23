@@ -113,39 +113,31 @@ func (r *InstanceFlavorService) ListAutoPaging(ctx context.Context, params Insta
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type InstanceFlavorDetailedUnion struct {
-	Architecture        string `json:"architecture"`
-	Disabled            bool   `json:"disabled"`
-	FlavorID            string `json:"flavor_id"`
-	FlavorName          string `json:"flavor_name"`
-	HardwareDescription string `json:"hardware_description"`
-	OsType              string `json:"os_type"`
-	Ram                 int64  `json:"ram"`
-	Vcpus               int64  `json:"vcpus"`
-	// This field is from variant
-	// [InstanceFlavorDetailedInstancesFlavorSchemaWithPrice].
-	CurrencyCode string `json:"currency_code"`
-	// This field is from variant
-	// [InstanceFlavorDetailedInstancesFlavorSchemaWithPrice].
-	PricePerHour float64 `json:"price_per_hour"`
-	// This field is from variant
-	// [InstanceFlavorDetailedInstancesFlavorSchemaWithPrice].
-	PricePerMonth float64 `json:"price_per_month"`
-	// This field is from variant
-	// [InstanceFlavorDetailedInstancesFlavorSchemaWithPrice].
-	PriceStatus string `json:"price_status"`
-	JSON        struct {
+	Architecture        string  `json:"architecture"`
+	CurrencyCode        string  `json:"currency_code"`
+	Disabled            bool    `json:"disabled"`
+	FlavorID            string  `json:"flavor_id"`
+	FlavorName          string  `json:"flavor_name"`
+	HardwareDescription string  `json:"hardware_description"`
+	OsType              string  `json:"os_type"`
+	PricePerHour        float64 `json:"price_per_hour"`
+	PricePerMonth       float64 `json:"price_per_month"`
+	PriceStatus         string  `json:"price_status"`
+	Ram                 int64   `json:"ram"`
+	Vcpus               int64   `json:"vcpus"`
+	JSON                struct {
 		Architecture        respjson.Field
+		CurrencyCode        respjson.Field
 		Disabled            respjson.Field
 		FlavorID            respjson.Field
 		FlavorName          respjson.Field
 		HardwareDescription respjson.Field
 		OsType              respjson.Field
-		Ram                 respjson.Field
-		Vcpus               respjson.Field
-		CurrencyCode        respjson.Field
 		PricePerHour        respjson.Field
 		PricePerMonth       respjson.Field
 		PriceStatus         respjson.Field
+		Ram                 respjson.Field
+		Vcpus               respjson.Field
 		raw                 string
 	} `json:"-"`
 }
@@ -171,6 +163,8 @@ func (r *InstanceFlavorDetailedUnion) UnmarshalJSON(data []byte) error {
 type InstanceFlavorDetailedInstancesFlavorSchemaWithoutPrice struct {
 	// Flavor architecture type
 	Architecture string `json:"architecture" api:"required"`
+	// Currency code. The value is null if the price is not available.
+	CurrencyCode string `json:"currency_code" api:"required"`
 	// Disabled flavor flag
 	Disabled bool `json:"disabled" api:"required"`
 	// Flavor ID is the same as name
@@ -181,6 +175,14 @@ type InstanceFlavorDetailedInstancesFlavorSchemaWithoutPrice struct {
 	HardwareDescription map[string]string `json:"hardware_description" api:"required"`
 	// Flavor operating system
 	OsType string `json:"os_type" api:"required"`
+	// Price per hour. The value is null if the price is not available.
+	PricePerHour float64 `json:"price_per_hour" api:"required"`
+	// Price per month. The value is null if the price is not available.
+	PricePerMonth float64 `json:"price_per_month" api:"required"`
+	// Price status for the UI. The value is null if the price is not available.
+	//
+	// Any of "error", "hide", "show".
+	PriceStatus string `json:"price_status" api:"required"`
 	// RAM size in MiB
 	Ram int64 `json:"ram" api:"required"`
 	// Virtual CPU count
@@ -188,11 +190,15 @@ type InstanceFlavorDetailedInstancesFlavorSchemaWithoutPrice struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Architecture        respjson.Field
+		CurrencyCode        respjson.Field
 		Disabled            respjson.Field
 		FlavorID            respjson.Field
 		FlavorName          respjson.Field
 		HardwareDescription respjson.Field
 		OsType              respjson.Field
+		PricePerHour        respjson.Field
+		PricePerMonth       respjson.Field
+		PriceStatus         respjson.Field
 		Ram                 respjson.Field
 		Vcpus               respjson.Field
 		ExtraFields         map[string]respjson.Field
@@ -210,7 +216,7 @@ func (r *InstanceFlavorDetailedInstancesFlavorSchemaWithoutPrice) UnmarshalJSON(
 type InstanceFlavorDetailedInstancesFlavorSchemaWithPrice struct {
 	// Flavor architecture type
 	Architecture string `json:"architecture" api:"required"`
-	// Currency code
+	// Currency code. The value is null if the price is not available.
 	CurrencyCode string `json:"currency_code" api:"required"`
 	// Disabled flavor flag
 	Disabled bool `json:"disabled" api:"required"`
@@ -222,11 +228,11 @@ type InstanceFlavorDetailedInstancesFlavorSchemaWithPrice struct {
 	HardwareDescription map[string]string `json:"hardware_description" api:"required"`
 	// Flavor operating system
 	OsType string `json:"os_type" api:"required"`
-	// Price per hour
+	// Price per hour. The value is null if the price is not available.
 	PricePerHour float64 `json:"price_per_hour" api:"required"`
-	// Price per month
+	// Price per month. The value is null if the price is not available.
 	PricePerMonth float64 `json:"price_per_month" api:"required"`
-	// Price status for the UI
+	// Price status for the UI. The value is null if the price is not available.
 	//
 	// Any of "error", "hide", "show".
 	PriceStatus string `json:"price_status" api:"required"`

@@ -981,9 +981,13 @@ Methods:
 
 ### Flavors
 
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#K8SFlavor">K8SFlavor</a>
+
 Methods:
 
-- <code title="get /cloud/v1/k8s/{project_id}/{region_id}/flavors">client.Cloud.K8S.Flavors.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#K8SFlavorService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#K8SFlavorListParams">K8SFlavorListParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination#OffsetPage">OffsetPage</a>[<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#BaremetalFlavor">BaremetalFlavor</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /cloud/v1/k8s/{project_id}/{region_id}/flavors">client.Cloud.K8S.Flavors.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#K8SFlavorService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#K8SFlavorListParams">K8SFlavorListParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination#OffsetPage">OffsetPage</a>[<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#K8SFlavor">K8SFlavor</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ### Clusters
 
