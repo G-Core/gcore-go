@@ -53,6 +53,7 @@ type ClientProfileTemplate struct {
 	Version      string                       `json:"version" api:"required" format:"uuid"`
 	AllowMerge   bool                         `json:"allow_merge"`
 	BaseTemplate int64                        `json:"base_template" api:"nullable"`
+	Deprecated   bool                         `json:"deprecated"`
 	Description  string                       `json:"description"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -63,6 +64,7 @@ type ClientProfileTemplate struct {
 		Version      respjson.Field
 		AllowMerge   respjson.Field
 		BaseTemplate respjson.Field
+		Deprecated   respjson.Field
 		Description  respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
