@@ -125,21 +125,26 @@ type APIToken struct {
 	LastUsage string `json:"last_usage" api:"required"`
 	// API token name.
 	Name string `json:"name" api:"required"`
+	// Whether the new API token gets the default access policy of its role. Set to
+	// `false` if you will bind policies or permission sets to the token yourself: the
+	// token then has no permissions until you do.
+	AssignDefaultPolicy bool `json:"assign_default_policy"`
 	// API token description.
 	Description string `json:"description"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		ClientUser  respjson.Field
-		Created     respjson.Field
-		Deleted     respjson.Field
-		ExpDate     respjson.Field
-		Expired     respjson.Field
-		LastUsage   respjson.Field
-		Name        respjson.Field
-		Description respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID                  respjson.Field
+		ClientUser          respjson.Field
+		Created             respjson.Field
+		Deleted             respjson.Field
+		ExpDate             respjson.Field
+		Expired             respjson.Field
+		LastUsage           respjson.Field
+		Name                respjson.Field
+		AssignDefaultPolicy respjson.Field
+		Description         respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -236,6 +241,10 @@ type APITokenNewParams struct {
 	ClientUser APITokenNewParamsClientUser `json:"client_user,omitzero" api:"required"`
 	// API token name.
 	Name string `json:"name" api:"required"`
+	// Whether the new API token gets the default access policy of its role. Set to
+	// `false` if you will bind policies or permission sets to the token yourself: the
+	// token then has no permissions until you do.
+	AssignDefaultPolicy param.Opt[bool] `json:"assign_default_policy,omitzero"`
 	// API token description.
 	Description param.Opt[string] `json:"description,omitzero"`
 	paramObj
