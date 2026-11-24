@@ -62,8 +62,8 @@ type CloudService struct {
 	SecurityGroups SecurityGroupService
 	Users          UserService
 	Inference      InferenceService
-	// Placement groups enforce affinity or anti-affinity policies that control whether
-	// virtual machines are hosted on the same or different physical servers.
+	// Placement groups set an affinity or anti-affinity policy for virtual machines,
+	// in any region of the project.
 	PlacementGroups PlacementGroupService
 	Baremetal       BaremetalService
 	// Region-pathed bare metal servers and flavors. This client is temporary, and a

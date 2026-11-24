@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/option"
 )
 
-func TestPlacementGroupNew(t *testing.T) {
+func TestPlacementGroupNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -28,9 +28,10 @@ func TestPlacementGroupNew(t *testing.T) {
 	)
 	_, err := client.Cloud.PlacementGroups.New(context.TODO(), cloud.PlacementGroupNewParams{
 		ProjectID: gcore.Int(1),
-		RegionID:  gcore.Int(1),
-		Name:      "my-placement-group",
+		Name:      "web-affinity",
 		Policy:    cloud.PlacementGroupNewParamsPolicyAntiAffinity,
+		RegionID:  5,
+		DryRun:    gcore.Bool(true),
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -42,6 +43,7 @@ func TestPlacementGroupNew(t *testing.T) {
 }
 
 func TestPlacementGroupListWithOptionalParams(t *testing.T) {
+	t.Skip("GCLOUD2-27612: the mock rejects arrays inside object query filters")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -55,9 +57,21 @@ func TestPlacementGroupListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Cloud.PlacementGroups.List(context.TODO(), cloud.PlacementGroupListParams{
 		ProjectID: gcore.Int(1),
-		RegionID:  gcore.Int(1),
-		Limit:     gcore.Int(1000),
+		IDs:       []string{"47003067-550a-4f17-93b6-81ee16ba061e"},
+		Limit:     gcore.Int(100),
+		Managed:   gcore.Bool(false),
+		ManagedBy: cloud.PlacementGroupListParamsManagedBySystem,
+		MemberIDs: []string{"6c6aa80f-7836-4dc2-a2ae-125e248be476"},
+		Name: cloud.PlacementGroupListParamsName{
+			Contains: []string{"string"},
+			Exact:    []string{"string"},
+			Prefix:   []string{"string"},
+			Suffix:   []string{"string"},
+		},
 		Offset:    gcore.Int(0),
+		OrderBy:   cloud.PlacementGroupListParamsOrderByCreatedAtDesc,
+		Policies:  []string{"anti-affinity"},
+		RegionIDs: []int64{1, 5},
 	})
 	if err != nil {
 		var apierr *gcore.Error
@@ -68,7 +82,7 @@ func TestPlacementGroupListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestPlacementGroupDelete(t *testing.T) {
+func TestPlacementGroupDeleteWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -82,10 +96,10 @@ func TestPlacementGroupDelete(t *testing.T) {
 	)
 	_, err := client.Cloud.PlacementGroups.Delete(
 		context.TODO(),
-		"47003067-550a-6f17-93b6-81ee16ba061e",
+		"47003067-550a-4f17-93b6-81ee16ba061e",
 		cloud.PlacementGroupDeleteParams{
 			ProjectID: gcore.Int(1),
-			RegionID:  gcore.Int(1),
+			DryRun:    gcore.Bool(true),
 		},
 	)
 	if err != nil {
@@ -111,10 +125,9 @@ func TestPlacementGroupGet(t *testing.T) {
 	)
 	_, err := client.Cloud.PlacementGroups.Get(
 		context.TODO(),
-		"47003067-550a-6f17-93b6-81ee16ba061e",
+		"47003067-550a-4f17-93b6-81ee16ba061e",
 		cloud.PlacementGroupGetParams{
 			ProjectID: gcore.Int(1),
-			RegionID:  gcore.Int(1),
 		},
 	)
 	if err != nil {

@@ -329,6 +329,7 @@ func runAction(client *gcore.Client, serverID string, action cloud.BaremetalServ
 		return fmt.Errorf("run action %s: %w", action, err)
 	}
 
+	// the status can show the old state for a few seconds after the tasks
 	fmt.Printf("Ran action %s: ID=%s, Status=%s\n", action, server.ID, server.Status)
 	fmt.Println("===============================")
 	return nil

@@ -12,6 +12,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"io"
 	"maps"
 	"net/http"
 	"net/http/httptest"
@@ -564,6 +565,10 @@ var andPollMethods = []struct {
 	{"PlacementGroup.DeleteAndPoll", func(ctx context.Context, client gcore.Client) error {
 		return client.Cloud.PlacementGroups.DeleteAndPoll(ctx, "id", cloud.PlacementGroupDeleteParams{})
 	}},
+	{"PlacementGroup.NewAndPoll", func(ctx context.Context, client gcore.Client) error {
+		_, err := client.Cloud.PlacementGroups.NewAndPoll(ctx, cloud.PlacementGroupNewParams{})
+		return err
+	}},
 	{"Port.ConvertAndPoll", func(ctx context.Context, client gcore.Client) error {
 		_, err := client.Cloud.Ports.ConvertAndPoll(ctx, "id", cloud.PortConvertParams{})
 		return err
@@ -658,7 +663,7 @@ func TestAndPollMethodsSucceed(t *testing.T) {
 // TestAndPollMethodsCount is a canary: if codegen or a spec change adds/removes
 // an *AndPoll method, this reminds us to keep the table in sync.
 func TestAndPollMethodsCount(t *testing.T) {
-	const want = 113
+	const want = 114
 	if got := len(andPollMethods); got != want {
 		t.Fatalf("andPollMethods has %d entries, want %d; update the table in this file", got, want)
 	}
@@ -674,6 +679,355 @@ func TestNewAndPollRequiresTask(t *testing.T) {
 
 	if _, err := client.Cloud.FloatingIPs.NewAndPoll(context.Background(), cloud.FloatingIPNewParams{}); err == nil {
 		t.Fatal("NewAndPoll with no created task should return an error")
+	}
+}
+
+func TestPlacementGroupAndPoll(t *testing.T) {
+	const collection = "/cloud/v1/projects/7/placement_groups"
+	const group = collection + "/" + andPollCreatedID
+	const firstPoll = "GET /cloud/v1/tasks/task-1"
+	const secondPoll = "GET /cloud/v1/tasks/task-2"
+	twoTasks := []string{"task-1", "task-2"}
+	emptyTasks := []string{}
+	servergroups := map[string]any{"servergroups": []string{andPollCreatedID}}
+	failed := taskOverride{state: cloud.TaskStateError, err: "cannot place group"}
+	for _, tc := range []struct {
+		name      string
+		delete    bool
+		tasks     *[]string
+		overrides map[string]taskOverride
+		want      []string
+		wantErr   string
+	}{
+		{
+			name: "create and capture final response", tasks: &twoTasks,
+			overrides: map[string]taskOverride{"task-1": {created: servergroups}, "task-2": {created: servergroups}},
+			want:      []string{"POST " + collection, firstPoll, secondPoll, "GET " + group},
+		},
+		{
+			name: "create task fails", tasks: &twoTasks,
+			overrides: map[string]taskOverride{"task-2": failed},
+			want:      []string{"POST " + collection, firstPoll, secondPoll}, wantErr: "cannot place group",
+		},
+		{
+			name:      "missing group ID",
+			overrides: map[string]taskOverride{"task-1": {created: map[string]any{"instances": []string{andPollCreatedID}}}},
+			want:      []string{"POST " + collection, firstPoll}, wantErr: "got none",
+		},
+		{
+			name: "ambiguous group ID", tasks: &twoTasks,
+			overrides: map[string]taskOverride{
+				"task-1": {created: servergroups},
+				"task-2": {created: map[string]any{"servergroups": []string{"another-group"}}},
+			},
+			want: []string{"POST " + collection, firstPoll, secondPoll}, wantErr: "got multiple IDs",
+		},
+		{
+			name: "create returns no tasks", tasks: &emptyTasks,
+			want: []string{"POST " + collection}, wantErr: "expected at least one",
+		},
+		{
+			name: "delete waits for both tasks", delete: true, tasks: &twoTasks,
+			want: []string{"DELETE " + group, firstPoll, secondPoll},
+		},
+		{
+			name: "delete task fails", delete: true, tasks: &twoTasks,
+			overrides: map[string]taskOverride{"task-2": failed},
+			want:      []string{"DELETE " + group, firstPoll, secondPoll}, wantErr: "cannot place group",
+		},
+		{
+			name: "delete returns no tasks", delete: true, tasks: &emptyTasks,
+			want: []string{"DELETE " + group}, wantErr: "expected at least one",
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			requests := &requestLog{}
+			server := newTaskFlowServer(taskFlowConfig{
+				actionTasks: tc.tasks, taskOverrides: tc.overrides, requests: requests,
+				resource: map[string]any{"id": andPollCreatedID, "name": "web"},
+			})
+			defer server.Close()
+			var captured []byte
+			client := newTaskFlowClient(server, option.WithResponseBodyInto(&captured))
+			var result *cloud.PlacementGroup
+			var err error
+			if tc.delete {
+				err = client.Cloud.PlacementGroups.DeleteAndPoll(context.Background(), andPollCreatedID, cloud.PlacementGroupDeleteParams{
+					ProjectID: gcore.Int(7),
+				})
+			} else {
+				result, err = client.Cloud.PlacementGroups.NewAndPoll(context.Background(), cloud.PlacementGroupNewParams{
+					ProjectID: gcore.Int(7), RegionID: 2, Name: "web", Policy: cloud.PlacementGroupNewParamsPolicyAffinity,
+				})
+			}
+			if tc.wantErr == "" && err != nil || tc.wantErr != "" && (err == nil || !strings.Contains(err.Error(), tc.wantErr)) {
+				t.Fatalf("error = %v, want %q", err, tc.wantErr)
+			}
+			if got := requests.all(); !slices.Equal(got, tc.want) {
+				t.Errorf("requests = %v, want %v", got, tc.want)
+			}
+			if !tc.delete && tc.wantErr == "" {
+				if result == nil || result.ID != andPollCreatedID || result.Name != "web" {
+					t.Fatalf("group = %#v, want web with ID %s", result, andPollCreatedID)
+				}
+				if string(captured) != result.RawJSON() || len(captured) == 0 {
+					t.Errorf("capture = %q, want final group JSON %q", captured, result.RawJSON())
+				}
+			} else if len(captured) != 0 {
+				t.Errorf("capture contains a task response: %q", captured)
+			}
+		})
+	}
+}
+
+func TestPlacementGroupNewAndPollReturnsGetErrors(t *testing.T) {
+	const collection = "/cloud/v1/projects/1/placement_groups"
+	const get = "GET " + collection + "/" + andPollCreatedID
+	for _, tc := range []struct {
+		name      string
+		notFound  int
+		forbidden bool
+		cancel    bool
+		timeout   int64
+		wantGets  int
+		status    int
+	}{
+		{name: "not found is returned", notFound: 1, wantGets: 1, status: http.StatusNotFound},
+		{name: "stays absent", notFound: -1, timeout: 1, wantGets: 1, status: http.StatusNotFound},
+		{name: "forbidden is not retried", forbidden: true, wantGets: 1, status: http.StatusForbidden},
+		{name: "caller cancels", cancel: true, wantGets: 1},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+			requests := &requestLog{}
+			cfg := taskFlowConfig{
+				requests: requests, resourceNotFound: tc.notFound,
+				resource: map[string]any{"id": andPollCreatedID},
+			}
+			if tc.forbidden || tc.cancel {
+				cfg.resourceGet = func(w http.ResponseWriter, _ *http.Request) {
+					if tc.cancel {
+						cancel()
+						w.WriteHeader(http.StatusNotFound)
+						return
+					}
+					w.WriteHeader(http.StatusForbidden)
+				}
+			}
+			server := newTaskFlowServer(cfg)
+			defer server.Close()
+			client := newTaskFlowClient(server)
+			result, err := client.Cloud.PlacementGroups.NewAndPoll(ctx, cloud.PlacementGroupNewParams{}, option.WithPollingTimeoutSeconds(tc.timeout))
+			switch {
+			case tc.cancel:
+				if !errors.Is(err, context.Canceled) {
+					t.Errorf("error = %v, want context cancellation", err)
+				}
+			case tc.status != 0:
+				var apiErr *cloud.Error
+				if !errors.As(err, &apiErr) || apiErr.StatusCode != tc.status {
+					t.Errorf("error = %v, want status %d", err, tc.status)
+				}
+			default:
+				if err != nil || result == nil || result.ID != andPollCreatedID {
+					t.Errorf("group = %#v, error = %v, want group %s", result, err, andPollCreatedID)
+				}
+			}
+			want := []string{"POST " + collection, "GET /cloud/v1/tasks/task-1"}
+			for i := 0; i < tc.wantGets; i++ {
+				want = append(want, get)
+			}
+			if got := requests.all(); !slices.Equal(got, want) {
+				t.Errorf("requests = %v, want %v", got, want)
+			}
+		})
+	}
+}
+
+func TestPlacementGroupAndPollRejectsDryRun(t *testing.T) {
+	requests := &requestLog{}
+	server := newTaskFlowServer(taskFlowConfig{requests: requests})
+	defer server.Close()
+	client := newTaskFlowClient(server)
+	ctx := context.Background()
+	for _, useQuery := range []bool{false, true} {
+		var opts []option.RequestOption
+		var dryRun param.Opt[bool]
+		if useQuery {
+			opts = append(opts, option.WithQuery("dry_run", "true"))
+		} else {
+			dryRun = gcore.Bool(true)
+		}
+		_, err := client.Cloud.PlacementGroups.NewAndPoll(ctx, cloud.PlacementGroupNewParams{DryRun: dryRun}, opts...)
+		if err == nil || !strings.Contains(err.Error(), "dry_run") {
+			t.Errorf("NewAndPoll (query option = %t): expected a dry-run error, got %v", useQuery, err)
+		}
+		err = client.Cloud.PlacementGroups.DeleteAndPoll(ctx, andPollCreatedID, cloud.PlacementGroupDeleteParams{DryRun: dryRun}, opts...)
+		if err == nil || !strings.Contains(err.Error(), "dry_run") {
+			t.Errorf("DeleteAndPoll (query option = %t): expected a dry-run error, got %v", useQuery, err)
+		}
+	}
+	if got := requests.all(); len(got) != 0 {
+		t.Errorf("dry-run helpers sent requests: %v", got)
+	}
+}
+
+func TestPlacementGroupNewAndPollHTTPRetries(t *testing.T) {
+	const (
+		collection = "/cloud/v1/projects/1/placement_groups"
+		group      = collection + "/" + andPollCreatedID
+		task       = "/cloud/v1/tasks/task-1"
+	)
+	transient := []int{http.StatusTooManyRequests, http.StatusServiceUnavailable}
+	for _, tc := range []struct {
+		name         string
+		clientOpts   []option.RequestOption
+		callOpts     []option.RequestOption
+		postErrors   []int
+		getErrors    []int
+		wantRequests []string
+		wantStatus   int
+	}{
+		{
+			name: "default retries recover create and GET", postErrors: transient, getErrors: transient,
+			wantRequests: []string{"POST " + collection, "POST " + collection, "POST " + collection, "GET " + task, "GET " + group, "GET " + group, "GET " + group},
+		},
+		{
+			name: "client disables create retries", clientOpts: []option.RequestOption{option.WithMaxRetries(0)},
+			postErrors: transient, wantStatus: http.StatusTooManyRequests, wantRequests: []string{"POST " + collection},
+		},
+		{
+			name: "call disables GET retries", callOpts: []option.RequestOption{option.WithMaxRetries(0)},
+			getErrors: transient, wantStatus: http.StatusTooManyRequests,
+			wantRequests: []string{"POST " + collection, "GET " + task, "GET " + group},
+		},
+		{
+			name:       "call retry limit overrides client limit",
+			clientOpts: []option.RequestOption{option.WithMaxRetries(0)}, callOpts: []option.RequestOption{option.WithMaxRetries(1)},
+			postErrors: transient[:1], getErrors: transient, wantStatus: http.StatusServiceUnavailable,
+			wantRequests: []string{"POST " + collection, "POST " + collection, "GET " + task, "GET " + group, "GET " + group},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			var requests requestLog
+			var posts, gets atomic.Int64
+			write := func(w http.ResponseWriter, attempt int64, statuses []int, success string) {
+				if attempt <= int64(len(statuses)) {
+					w.Header().Set("Retry-After-Ms", "1")
+					w.WriteHeader(statuses[attempt-1])
+					_, _ = io.WriteString(w, `{"message":"try again"}`)
+					return
+				}
+				_, _ = io.WriteString(w, success)
+			}
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				requests.add(r)
+				w.Header().Set("Content-Type", "application/json")
+				body, err := io.ReadAll(r.Body)
+				if err != nil || (r.Method == http.MethodGet && len(body) != 0) {
+					t.Errorf("%s %s: body = %q, read error = %v", r.Method, r.URL.Path, body, err)
+				}
+				switch r.URL.Path {
+				case collection:
+					write(w, posts.Add(1), tc.postErrors, `{"tasks":["task-1"]}`)
+				case task:
+					_, _ = io.WriteString(w, `{"state":"FINISHED","created_resources":{"servergroups":["`+andPollCreatedID+`"]}}`)
+				case group:
+					write(w, gets.Add(1), tc.getErrors, `{"id":"`+andPollCreatedID+`"}`)
+				default:
+					t.Errorf("unexpected path %s", r.URL.Path)
+					w.WriteHeader(http.StatusBadRequest)
+				}
+			}))
+			defer server.Close()
+			var raw []byte
+			client := newTaskFlowClient(server, tc.clientOpts...)
+			opts := slices.Concat(tc.callOpts, []option.RequestOption{
+				option.WithRequestBody("application/json", []byte(`{"name":"web"}`)), option.WithResponseBodyInto(&raw),
+			})
+			result, err := client.Cloud.PlacementGroups.NewAndPoll(context.Background(), cloud.PlacementGroupNewParams{}, opts...)
+			if tc.wantStatus != 0 {
+				var apiErr *cloud.Error
+				if !errors.As(err, &apiErr) || apiErr.StatusCode != tc.wantStatus || raw != nil {
+					t.Errorf("error = %v, capture = %q; want status %d and no body capture", err, raw, tc.wantStatus)
+				}
+			} else if err != nil || result == nil || result.ID != andPollCreatedID || string(raw) != result.RawJSON() {
+				t.Errorf("group = %#v, error = %v, capture = %q; want final group and its JSON", result, err, raw)
+			}
+			if got := requests.all(); !slices.Equal(got, tc.wantRequests) {
+				t.Errorf("requests = %v, want %v", got, tc.wantRequests)
+			}
+		})
+	}
+}
+
+func TestPlacementGroupNewAndPollGETRespectsCallerDeadline(t *testing.T) {
+	const group = "/cloud/v1/projects/1/placement_groups/" + andPollCreatedID
+	var requests requestLog
+	server := newTaskFlowServer(taskFlowConfig{requests: &requests, resourceGet: func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Retry-After", "10")
+		w.WriteHeader(http.StatusServiceUnavailable)
+		_, _ = io.WriteString(w, `{"message":"try again"}`)
+	}})
+	defer server.Close()
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	client := newTaskFlowClient(server)
+	_, err := client.Cloud.PlacementGroups.NewAndPoll(ctx, cloud.PlacementGroupNewParams{},
+		option.WithMaxRetries(1), option.WithPollingTimeoutSeconds(5))
+	if !errors.Is(err, context.DeadlineExceeded) || !errors.Is(ctx.Err(), context.DeadlineExceeded) {
+		t.Errorf("error = %v, caller context = %v; want the caller deadline", err, ctx.Err())
+	}
+	want := []string{"POST /cloud/v1/projects/1/placement_groups", "GET /cloud/v1/tasks/task-1", "GET " + group}
+	if got := requests.all(); !slices.Equal(got, want) {
+		t.Errorf("requests = %v, want %v", got, want)
+	}
+}
+
+func TestAndPollTaskReadsPreserveResponseCapture(t *testing.T) {
+	for _, tc := range []struct {
+		collection string
+		invoke     func(gcore.Client, ...option.RequestOption) error
+	}{
+		{"placement_groups", func(client gcore.Client, opts ...option.RequestOption) error {
+			return client.Cloud.PlacementGroups.DeleteAndPoll(context.Background(), andPollCreatedID, cloud.PlacementGroupDeleteParams{}, opts...)
+		}},
+		{"baremetal/servers", func(client gcore.Client, opts ...option.RequestOption) error {
+			return client.Cloud.Baremetal.Servers.DeleteAndPoll(context.Background(), andPollCreatedID, cloud.BaremetalServerDeleteParams{}, opts...)
+		}},
+	} {
+		for _, scope := range []string{"service", "call"} {
+			t.Run(tc.collection+"/"+scope, func(t *testing.T) {
+				tasks := []string{"task-1", "task-2"}
+				var requests requestLog
+				server := newTaskFlowServer(taskFlowConfig{actionTasks: &tasks, requests: &requests})
+				defer server.Close()
+				var serviceResponse, callResponse *http.Response
+				var raw []byte
+				client := newTaskFlowClient(server, option.WithResponseInto(&serviceResponse), option.WithResponseBodyInto(&raw))
+				var opts []option.RequestOption
+				capture := &serviceResponse
+				if scope == "call" {
+					opts = append(opts, option.WithResponseInto(&callResponse))
+					capture = &callResponse
+				}
+				if err := tc.invoke(client, opts...); err != nil {
+					t.Fatalf("DeleteAndPoll: %v", err)
+				}
+				resource := "/cloud/v1/projects/1/" + tc.collection + "/" + andPollCreatedID
+				want := []string{"DELETE " + resource, "GET /cloud/v1/tasks/task-1", "GET /cloud/v1/tasks/task-2"}
+				if got := requests.all(); !slices.Equal(got, want) {
+					t.Errorf("requests = %v, want %v", got, want)
+				}
+				if res := *capture; res == nil || res.Request.Method != http.MethodDelete || res.Request.URL.Path != resource {
+					t.Errorf("capture = %#v, want the delete response", res)
+				}
+				if raw != nil || (scope == "call" && serviceResponse != nil) {
+					t.Errorf("body capture = %q, service response = %#v; unexpected capture", raw, serviceResponse)
+				}
+			})
+		}
 	}
 }
 
@@ -1291,7 +1645,7 @@ func TestBaremetalServerAndPoll(t *testing.T) {
 		},
 		{
 			name:         "ActionAndPoll/two tasks",
-			cfg:          taskFlowConfig{actionTasks: &twoTasks, resource: map[string]any{"id": andPollCreatedID, "status": "active"}},
+			cfg:          taskFlowConfig{actionTasks: &twoTasks},
 			invoke:       actionServer,
 			wantResource: true,
 			wantRequests: []string{actionReq, poll1Req, poll2Req, getReq},
@@ -1529,7 +1883,8 @@ func TestBaremetalRegionalServerAndPoll(t *testing.T) {
 			wantRequests: []string{createReq, pollReq, listReq},
 		},
 		{
-			name: "NewAndPoll/only the baremetal_server key",
+			// the legacy helper does not read the key of the global create
+			name: "NewAndPoll/only the global baremetal_server key",
 			cfg: taskFlowConfig{resourceGet: uuids.regionalList, taskOverrides: map[string]taskOverride{
 				"task-1": {created: map[string]any{"baremetal_server": []string{andPollCreatedID}}},
 			}},
@@ -1602,7 +1957,7 @@ func TestBaremetalRegionalServerNewAndPollCapture(t *testing.T) {
 // TestBaremetalServerAndPollClientCapture checks a WithResponseBodyInto of the client. The helpers must still
 // decode the task lists, and the capture must get only the final server JSON
 func TestBaremetalServerAndPollClientCapture(t *testing.T) {
-	server := map[string]any{"id": andPollCreatedID, "name": "bm-1", "flavor_name": "bm2-hf-small", "status": "stopped"}
+	server := map[string]any{"id": andPollCreatedID, "name": "bm-1", "flavor_name": "bm2-hf-small"}
 	for name, invoke := range map[string]func(context.Context, gcore.Client) (string, error){
 		"NewAndPoll": func(ctx context.Context, client gcore.Client) (string, error) {
 			res, err := client.Cloud.Baremetal.Servers.NewAndPoll(ctx, cloud.BaremetalServerNewParams{})

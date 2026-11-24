@@ -68,6 +68,7 @@ type New string                             // Always "new"
 type NewVolume string                       // Always "new-volume"
 type Nfs string                             // Always "NFS"
 type Parent string                          // Always "parent"
+type PlacementGroups string                 // Always "placement_groups"
 type Port string                            // Always "port"
 type Public string                          // Always "public"
 type RedirectPrefix string                  // Always "REDIRECT_PREFIX"
@@ -149,6 +150,7 @@ func (c New) Default() New                                     { return "new" }
 func (c NewVolume) Default() NewVolume                         { return "new-volume" }
 func (c Nfs) Default() Nfs                                     { return "NFS" }
 func (c Parent) Default() Parent                               { return "parent" }
+func (c PlacementGroups) Default() PlacementGroups             { return "placement_groups" }
 func (c Port) Default() Port                                   { return "port" }
 func (c Public) Default() Public                               { return "public" }
 func (c RedirectPrefix) Default() RedirectPrefix               { return "REDIRECT_PREFIX" }
@@ -226,6 +228,7 @@ func (c New) MarshalJSON() ([]byte, error)                             { return 
 func (c NewVolume) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
 func (c Nfs) MarshalJSON() ([]byte, error)                             { return marshalString(c) }
 func (c Parent) MarshalJSON() ([]byte, error)                          { return marshalString(c) }
+func (c PlacementGroups) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c Port) MarshalJSON() ([]byte, error)                            { return marshalString(c) }
 func (c Public) MarshalJSON() ([]byte, error)                          { return marshalString(c) }
 func (c RedirectPrefix) MarshalJSON() ([]byte, error)                  { return marshalString(c) }

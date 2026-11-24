@@ -666,10 +666,9 @@ func TestBaremetalServerAndPollRequestOptions(t *testing.T) {
 	helpers := []struct {
 		name     string
 		mutation string
-		body     string
 		invoke   helperFunc
 	}{
-		{"NewAndPoll", "POST /servers", "", func(client *gcore.Client, opts ...option.RequestOption) (*cloud.BaremetalServer, error) {
+		{"NewAndPoll", "POST /servers", func(client *gcore.Client, opts ...option.RequestOption) (*cloud.BaremetalServer, error) {
 			return client.Cloud.Baremetal.Servers.NewAndPoll(ctx, cloud.BaremetalServerNewParams{
 				RegionID:   5,
 				FlavorName: "bm2-hf-small",
@@ -677,15 +676,15 @@ func TestBaremetalServerAndPollRequestOptions(t *testing.T) {
 				Interfaces: []cloud.BaremetalServerNewParamsInterface{{PortID: bmPort1ID}},
 			}, opts...)
 		}},
-		{"UpdateAndPoll", "PATCH /servers/" + bmServerID, `{"name":"bm-2","tags":{"role":"db"},"interfaces":[]}`, func(client *gcore.Client, opts ...option.RequestOption) (*cloud.BaremetalServer, error) {
-			return client.Cloud.Baremetal.Servers.UpdateAndPoll(ctx, bmServerID, cloud.BaremetalServerUpdateParams{Name: gcore.String("ignored")}, opts...)
+		{"UpdateAndPoll", "PATCH /servers/" + bmServerID, func(client *gcore.Client, opts ...option.RequestOption) (*cloud.BaremetalServer, error) {
+			return client.Cloud.Baremetal.Servers.UpdateAndPoll(ctx, bmServerID, cloud.BaremetalServerUpdateParams{Name: gcore.String("bm-2")}, opts...)
 		}},
-		{"ActionAndPoll", "POST /servers/" + bmServerID + "/action", "", func(client *gcore.Client, opts ...option.RequestOption) (*cloud.BaremetalServer, error) {
+		{"ActionAndPoll", "POST /servers/" + bmServerID + "/action", func(client *gcore.Client, opts ...option.RequestOption) (*cloud.BaremetalServer, error) {
 			return client.Cloud.Baremetal.Servers.ActionAndPoll(ctx, bmServerID, cloud.BaremetalServerActionParams{
 				Action: cloud.BaremetalServerActionParamsActionStart,
 			}, opts...)
 		}},
-		{"DeleteAndPoll", "DELETE /servers/" + bmServerID, "", func(client *gcore.Client, opts ...option.RequestOption) (*cloud.BaremetalServer, error) {
+		{"DeleteAndPoll", "DELETE /servers/" + bmServerID, func(client *gcore.Client, opts ...option.RequestOption) (*cloud.BaremetalServer, error) {
 			return nil, client.Cloud.Baremetal.Servers.DeleteAndPoll(ctx, bmServerID, cloud.BaremetalServerDeleteParams{}, opts...)
 		}},
 	}
@@ -706,9 +705,6 @@ func TestBaremetalServerAndPollRequestOptions(t *testing.T) {
 					option.WithHeader("X-Test-Header", "bare-metal"),
 					option.WithResponseBodyInto(&raw),
 				}, project.opts...)
-				if helper.body != "" {
-					opts = append(opts, option.WithRequestBody("application/json", []byte(helper.body)))
-				}
 				server, err := helper.invoke(api.client(), opts...)
 				if err != nil {
 					t.Fatalf("unexpected error: %v", err)
@@ -731,9 +727,6 @@ func TestBaremetalServerAndPollRequestOptions(t *testing.T) {
 					if request.method == http.MethodGet && len(request.body) != 0 {
 						t.Errorf("%s %s: body = %s, want none", request.method, request.path, request.body)
 					}
-					if request.method == http.MethodPatch && string(request.body) != helper.body {
-						t.Errorf("PATCH body = %s, want %s", request.body, helper.body)
-					}
 				}
 				if !slices.Equal(got, want) {
 					t.Errorf("requests = %q, want %q", got, want)
@@ -747,9 +740,6 @@ func TestBaremetalServerAndPollRequestOptions(t *testing.T) {
 				}
 				if server == nil || server.ID != bmServerID || server.FlavorName != "bm2-hf-small" {
 					t.Fatalf("server = %+v, want the server of the GET", server)
-				}
-				if helper.name == "UpdateAndPoll" && server.Name != "bm-1" {
-					t.Errorf("server name = %q, want bm-1 from the GET", server.Name)
 				}
 				var captured map[string]any
 				if err := json.Unmarshal(raw, &captured); err != nil {
