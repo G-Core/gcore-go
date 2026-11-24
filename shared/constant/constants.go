@@ -67,6 +67,7 @@ type Mls string                             // Always "MLS"
 type New string                             // Always "new"
 type NewVolume string                       // Always "new-volume"
 type Nfs string                             // Always "NFS"
+type Parent string                          // Always "parent"
 type Port string                            // Always "port"
 type Public string                          // Always "public"
 type RedirectPrefix string                  // Always "REDIRECT_PREFIX"
@@ -89,6 +90,7 @@ type SoftReboot string                      // Always "soft_reboot"
 type Standard string                        // Always "standard"
 type Start string                           // Always "start"
 type Stop string                            // Always "stop"
+type SubPort string                         // Always "sub_port"
 type Subnet string                          // Always "subnet"
 type Vast string                            // Always "vast"
 type Volume string                          // Always "volume"
@@ -146,6 +148,7 @@ func (c Mls) Default() Mls                                     { return "MLS" }
 func (c New) Default() New                                     { return "new" }
 func (c NewVolume) Default() NewVolume                         { return "new-volume" }
 func (c Nfs) Default() Nfs                                     { return "NFS" }
+func (c Parent) Default() Parent                               { return "parent" }
 func (c Port) Default() Port                                   { return "port" }
 func (c Public) Default() Public                               { return "public" }
 func (c RedirectPrefix) Default() RedirectPrefix               { return "REDIRECT_PREFIX" }
@@ -168,6 +171,7 @@ func (c SoftReboot) Default() SoftReboot                       { return "soft_re
 func (c Standard) Default() Standard                           { return "standard" }
 func (c Start) Default() Start                                 { return "start" }
 func (c Stop) Default() Stop                                   { return "stop" }
+func (c SubPort) Default() SubPort                             { return "sub_port" }
 func (c Subnet) Default() Subnet                               { return "subnet" }
 func (c Vast) Default() Vast                                   { return "vast" }
 func (c Volume) Default() Volume                               { return "volume" }
@@ -221,6 +225,7 @@ func (c Mls) MarshalJSON() ([]byte, error)                             { return 
 func (c New) MarshalJSON() ([]byte, error)                             { return marshalString(c) }
 func (c NewVolume) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
 func (c Nfs) MarshalJSON() ([]byte, error)                             { return marshalString(c) }
+func (c Parent) MarshalJSON() ([]byte, error)                          { return marshalString(c) }
 func (c Port) MarshalJSON() ([]byte, error)                            { return marshalString(c) }
 func (c Public) MarshalJSON() ([]byte, error)                          { return marshalString(c) }
 func (c RedirectPrefix) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
@@ -243,6 +248,7 @@ func (c SoftReboot) MarshalJSON() ([]byte, error)                      { return 
 func (c Standard) MarshalJSON() ([]byte, error)                        { return marshalString(c) }
 func (c Start) MarshalJSON() ([]byte, error)                           { return marshalString(c) }
 func (c Stop) MarshalJSON() ([]byte, error)                            { return marshalString(c) }
+func (c SubPort) MarshalJSON() ([]byte, error)                         { return marshalString(c) }
 func (c Subnet) MarshalJSON() ([]byte, error)                          { return marshalString(c) }
 func (c Vast) MarshalJSON() ([]byte, error)                            { return marshalString(c) }
 func (c Volume) MarshalJSON() ([]byte, error)                          { return marshalString(c) }

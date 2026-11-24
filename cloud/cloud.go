@@ -44,6 +44,9 @@ type CloudService struct {
 	// Reserved fixed IPs are static IP addresses that persist independently of
 	// instances and can be used as virtual IPs (VIPs) for high availability.
 	ReservedFixedIPs ReservedFixedIPService
+	// Ports reserve IP addresses on a network and act as network interfaces of compute
+	// resources, with their own security groups and allowed address pairs.
+	Ports PortService
 	// Networks provide software-defined networking infrastructure for connecting
 	// instances and other cloud resources within a region.
 	Networks NetworkService
@@ -101,6 +104,7 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r.IPRanges = NewIPRangeService(opts...)
 	r.LoadBalancers = NewLoadBalancerService(opts...)
 	r.ReservedFixedIPs = NewReservedFixedIPService(opts...)
+	r.Ports = NewPortService(opts...)
 	r.Networks = NewNetworkService(opts...)
 	r.Volumes = NewVolumeService(opts...)
 	r.FloatingIPs = NewFloatingIPService(opts...)

@@ -31,6 +31,7 @@ TEST_PATHS=(
 	cloud/reservedfixedipvip_test.go
 	cloud/reservedfixedipvipcandidateport_test.go
 	cloud/reservedfixedipvipconnectedport_test.go
+	cloud/port_test.go
 	cloud/network_test.go
 	cloud/networksubnet_test.go
 	cloud/networkrouter_test.go

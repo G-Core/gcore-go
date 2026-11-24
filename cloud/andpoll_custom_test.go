@@ -14,7 +14,9 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
+	"slices"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -48,6 +50,31 @@ type taskFlowConfig struct {
 	taskState cloud.TaskState
 	// taskError reported when taskState == ERROR.
 	taskError string
+	// resource is the body of the final resource GET. nil means the superset
+	// described in newTaskFlowServer.
+	resource map[string]any
+	// resourceNotFound is the number of first resource GETs that return 404.
+	resourceNotFound int
+	// requests, if set, records every request the server receives.
+	requests *requestLog
+}
+
+// requestLog records requests as "METHOD /path". It is safe for concurrent use.
+type requestLog struct {
+	mu   sync.Mutex
+	list []string
+}
+
+func (l *requestLog) add(r *http.Request) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.list = append(l.list, r.Method+" "+r.URL.Path)
+}
+
+func (l *requestLog) all() []string {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	return slices.Clone(l.list)
 }
 
 // newTaskFlowServer returns an httptest.Server emulating the Cloud async flow:
@@ -101,11 +128,21 @@ func newTaskFlowServer(cfg taskFlowConfig) *httptest.Server {
 		"created_resources":   created,
 	}
 
+	resourceGets := 0
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if cfg.requests != nil {
+			cfg.requests.add(r)
+		}
 		w.Header().Set("Content-Type", "application/json")
 		switch {
 		case r.Method == http.MethodGet && strings.Contains(r.URL.Path, "/tasks/"):
 			_ = json.NewEncoder(w).Encode(task)
+		case r.Method == http.MethodGet && resourceGets < cfg.resourceNotFound:
+			resourceGets++
+			w.WriteHeader(http.StatusNotFound)
+			_ = json.NewEncoder(w).Encode(map[string]any{"message": "not found"})
+		case r.Method == http.MethodGet && cfg.resource != nil:
+			_ = json.NewEncoder(w).Encode(cfg.resource)
 		case r.Method == http.MethodGet:
 			// The final resource fetch (or List). Most *AndPoll methods return this
 			// value unmodified, so an empty object suffices; but a few re-fetch the
@@ -460,6 +497,21 @@ var andPollMethods = []struct {
 	{"PlacementGroup.DeleteAndPoll", func(ctx context.Context, client gcore.Client) error {
 		return client.Cloud.PlacementGroups.DeleteAndPoll(ctx, "id", cloud.PlacementGroupDeleteParams{})
 	}},
+	{"Port.ConvertAndPoll", func(ctx context.Context, client gcore.Client) error {
+		_, err := client.Cloud.Ports.ConvertAndPoll(ctx, "id", cloud.PortConvertParams{})
+		return err
+	}},
+	{"Port.DeleteAndPoll", func(ctx context.Context, client gcore.Client) error {
+		return client.Cloud.Ports.DeleteAndPoll(ctx, "id", cloud.PortDeleteParams{})
+	}},
+	{"Port.NewAndPoll", func(ctx context.Context, client gcore.Client) error {
+		_, err := client.Cloud.Ports.NewAndPoll(ctx, cloud.PortNewParams{})
+		return err
+	}},
+	{"Port.UpdateAndPoll", func(ctx context.Context, client gcore.Client) error {
+		_, err := client.Cloud.Ports.UpdateAndPoll(ctx, "id", cloud.PortUpdateParams{})
+		return err
+	}},
 	{"Project.DeleteAndPoll", func(ctx context.Context, client gcore.Client) error {
 		return client.Cloud.Projects.DeleteAndPoll(ctx, cloud.ProjectDeleteParams{})
 	}},
@@ -539,7 +591,7 @@ func TestAndPollMethodsSucceed(t *testing.T) {
 // TestAndPollMethodsCount is a canary: if codegen or a spec change adds/removes
 // an *AndPoll method, this reminds us to keep the table in sync.
 func TestAndPollMethodsCount(t *testing.T) {
-	const want = 101
+	const want = 105
 	if got := len(andPollMethods); got != want {
 		t.Fatalf("andPollMethods has %d entries, want %d; update the table in this file", got, want)
 	}
@@ -555,6 +607,209 @@ func TestNewAndPollRequiresTask(t *testing.T) {
 
 	if _, err := client.Cloud.FloatingIPs.NewAndPoll(context.Background(), cloud.FloatingIPNewParams{}); err == nil {
 		t.Fatal("NewAndPoll with no created task should return an error")
+	}
+}
+
+// TestPortAndPoll checks the requests that the port helpers send, the port they
+// return, and the errors for a failed task or an empty task list. Port routes
+// have no region in the path.
+func TestPortAndPoll(t *testing.T) {
+	const (
+		portPath  = "/cloud/v1/projects/1/ports/" + andPollCreatedID
+		createReq = "POST /cloud/v1/projects/1/ports"
+		updateReq = "PATCH " + portPath
+		deleteReq = "DELETE " + portPath
+		getReq    = "GET " + portPath
+		pollReq   = "GET /cloud/v1/tasks/task-1"
+	)
+	newPort := func(ctx context.Context, client gcore.Client) (*cloud.Port, error) {
+		return client.Cloud.Ports.NewAndPoll(ctx, cloud.PortNewParams{})
+	}
+	updatePort := func(ctx context.Context, client gcore.Client) (*cloud.Port, error) {
+		return client.Cloud.Ports.UpdateAndPoll(ctx, andPollCreatedID, cloud.PortUpdateParams{Tags: cloud.TagUpdateMap{"new": gcore.StringPtr("value")}})
+	}
+	deletePort := func(ctx context.Context, client gcore.Client) (*cloud.Port, error) {
+		return nil, client.Cloud.Ports.DeleteAndPoll(ctx, andPollCreatedID, cloud.PortDeleteParams{})
+	}
+	failed := taskFlowConfig{taskState: cloud.TaskStateError, taskError: "boom"}
+	empty := []string{}
+	noTask := taskFlowConfig{actionTasks: &empty}
+
+	cases := []struct {
+		name         string
+		cfg          taskFlowConfig
+		invoke       func(ctx context.Context, client gcore.Client) (*cloud.Port, error)
+		wantPort     bool
+		wantErr      string
+		wantRequests []string
+	}{
+		{
+			name:         "NewAndPoll",
+			invoke:       newPort,
+			wantPort:     true,
+			wantRequests: []string{createReq, pollReq, getReq},
+		},
+		{
+			name:         "NewAndPoll/GET not found",
+			cfg:          taskFlowConfig{resourceNotFound: 1},
+			invoke:       newPort,
+			wantErr:      "404",
+			wantRequests: []string{createReq, pollReq, getReq},
+		},
+		{
+			name:         "NewAndPoll/task failed",
+			cfg:          failed,
+			invoke:       newPort,
+			wantErr:      "boom",
+			wantRequests: []string{createReq, pollReq},
+		},
+		{
+			name:         "NewAndPoll/no task",
+			cfg:          noTask,
+			invoke:       newPort,
+			wantErr:      "expected at least one task",
+			wantRequests: []string{createReq},
+		},
+		{
+			// a dry run creates no task, so the helper must refuse it before any request
+			name: "NewAndPoll/dry run",
+			invoke: func(ctx context.Context, client gcore.Client) (*cloud.Port, error) {
+				return client.Cloud.Ports.NewAndPoll(ctx, cloud.PortNewParams{DryRun: gcore.Bool(true)})
+			},
+			wantErr: "DryRun",
+		},
+		{
+			name:         "UpdateAndPoll",
+			invoke:       updatePort,
+			wantPort:     true,
+			wantRequests: []string{updateReq, pollReq, getReq},
+		},
+		{
+			name:         "UpdateAndPoll/task failed",
+			cfg:          failed,
+			invoke:       updatePort,
+			wantErr:      "boom",
+			wantRequests: []string{updateReq, pollReq},
+		},
+		{
+			// an update that changes nothing creates no task
+			name:         "UpdateAndPoll/no task",
+			cfg:          noTask,
+			invoke:       updatePort,
+			wantPort:     true,
+			wantRequests: []string{updateReq, getReq},
+		},
+		{
+			name:         "DeleteAndPoll",
+			invoke:       deletePort,
+			wantRequests: []string{deleteReq, pollReq},
+		},
+		{
+			name:         "DeleteAndPoll/task failed",
+			cfg:          failed,
+			invoke:       deletePort,
+			wantErr:      "boom",
+			wantRequests: []string{deleteReq, pollReq},
+		},
+		{
+			name:         "DeleteAndPoll/no task",
+			cfg:          noTask,
+			invoke:       deletePort,
+			wantErr:      "expected at least one task",
+			wantRequests: []string{deleteReq},
+		},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			var requests requestLog
+			cfg := tc.cfg
+			cfg.resource = map[string]any{"id": andPollCreatedID}
+			cfg.requests = &requests
+			server := newTaskFlowServer(cfg)
+			defer server.Close()
+
+			port, err := tc.invoke(context.Background(), newTaskFlowClient(server))
+			switch {
+			case tc.wantErr == "" && err != nil:
+				t.Fatalf("unexpected error: %v", err)
+			case tc.wantErr != "" && (err == nil || !strings.Contains(err.Error(), tc.wantErr)):
+				t.Fatalf("err = %v, want an error that contains %q", err, tc.wantErr)
+			}
+			if tc.wantPort {
+				if port == nil {
+					t.Fatal("returned port is nil")
+				}
+				if port.ID != andPollCreatedID {
+					t.Errorf("port.ID = %q, want %q", port.ID, andPollCreatedID)
+				}
+			}
+			if got := requests.all(); !slices.Equal(got, tc.wantRequests) {
+				t.Errorf("requests = %q, want %q", got, tc.wantRequests)
+			}
+		})
+	}
+}
+
+// TestPortConvertAndPoll checks the requests that ConvertAndPoll sends, the
+// floating IP it returns, and the errors for a failed task or an empty task
+// list. The floating IP GET must use the region of the task (76), not the
+// region of the client (1).
+func TestPortConvertAndPoll(t *testing.T) {
+	const (
+		convertReq = "POST /cloud/v1/projects/1/ports/" + andPollCreatedID + "/convert"
+		pollReq    = "GET /cloud/v1/tasks/task-1"
+		getReq     = "GET /cloud/v1/floatingips/1/76/" + andPollCreatedID
+	)
+	empty := []string{}
+
+	cases := []struct {
+		name         string
+		cfg          taskFlowConfig
+		wantErr      string
+		wantRequests []string
+	}{
+		{
+			name:         "success",
+			wantRequests: []string{convertReq, pollReq, getReq},
+		},
+		{
+			name:         "task failed",
+			cfg:          taskFlowConfig{taskState: cloud.TaskStateError, taskError: "boom"},
+			wantErr:      "boom",
+			wantRequests: []string{convertReq, pollReq},
+		},
+		{
+			name:         "no task",
+			cfg:          taskFlowConfig{actionTasks: &empty},
+			wantErr:      "expected at least one task",
+			wantRequests: []string{convertReq},
+		},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			var requests requestLog
+			cfg := tc.cfg
+			cfg.resource = map[string]any{"id": andPollCreatedID}
+			cfg.requests = &requests
+			server := newTaskFlowServer(cfg)
+			defer server.Close()
+
+			client := newTaskFlowClient(server)
+			fip, err := client.Cloud.Ports.ConvertAndPoll(context.Background(), andPollCreatedID, cloud.PortConvertParams{
+				TargetType: cloud.PortConvertParamsTargetTypeFloatingIP,
+			})
+			switch {
+			case tc.wantErr == "" && err != nil:
+				t.Fatalf("unexpected error: %v", err)
+			case tc.wantErr != "" && (err == nil || !strings.Contains(err.Error(), tc.wantErr)):
+				t.Fatalf("err = %v, want an error that contains %q", err, tc.wantErr)
+			case tc.wantErr == "" && (fip == nil || fip.ID != andPollCreatedID):
+				t.Fatalf("floating IP = %+v, want ID %q", fip, andPollCreatedID)
+			}
+			if got := requests.all(); !slices.Equal(got, tc.wantRequests) {
+				t.Errorf("requests = %q, want %q", got, tc.wantRequests)
+			}
+		})
 	}
 }
 
