@@ -18,21 +18,21 @@ import (
 	"github.com/G-Core/gcore-go/packages/param"
 )
 
-// InstanceInterfaceService contains methods and other services that help with
-// interacting with the gcore API.
+// InstancesRegionalInterfaceService contains methods and other services that help
+// with interacting with the gcore API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewInstanceInterfaceService] method instead.
-type InstanceInterfaceService struct {
+// the [NewInstancesRegionalInterfaceService] method instead.
+type InstancesRegionalInterfaceService struct {
 	Options []option.RequestOption
 }
 
-// NewInstanceInterfaceService generates a new service that applies the given
-// options to each request. These options are applied after the parent client's
-// options (if there is one), and before any request-specific options.
-func NewInstanceInterfaceService(opts ...option.RequestOption) (r InstanceInterfaceService) {
-	r = InstanceInterfaceService{}
+// NewInstancesRegionalInterfaceService generates a new service that applies the
+// given options to each request. These options are applied after the parent
+// client's options (if there is one), and before any request-specific options.
+func NewInstancesRegionalInterfaceService(opts ...option.RequestOption) (r InstancesRegionalInterfaceService) {
+	r = InstancesRegionalInterfaceService{}
 	r.Options = opts
 	return
 }
@@ -43,7 +43,7 @@ func NewInstanceInterfaceService(opts ...option.RequestOption) (r InstanceInterf
 // deprecate it and then remove it. We will tell you in advance.
 //
 // List all network interfaces attached to the specified instance.
-func (r *InstanceInterfaceService) List(ctx context.Context, instanceID string, params InstanceInterfaceListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[NetworkInterfaceUnion], err error) {
+func (r *InstancesRegionalInterfaceService) List(ctx context.Context, instanceID string, params InstancesRegionalInterfaceListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[NetworkInterfaceUnion], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -84,7 +84,7 @@ func (r *InstanceInterfaceService) List(ctx context.Context, instanceID string, 
 // deprecate it and then remove it. We will tell you in advance.
 //
 // List all network interfaces attached to the specified instance.
-func (r *InstanceInterfaceService) ListAutoPaging(ctx context.Context, instanceID string, params InstanceInterfaceListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[NetworkInterfaceUnion] {
+func (r *InstancesRegionalInterfaceService) ListAutoPaging(ctx context.Context, instanceID string, params InstancesRegionalInterfaceListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[NetworkInterfaceUnion] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, instanceID, params, opts...))
 }
 
@@ -94,7 +94,7 @@ func (r *InstanceInterfaceService) ListAutoPaging(ctx context.Context, instanceI
 // deprecate it and then remove it. We will tell you in advance.
 //
 // Attach interface to instance
-func (r *InstanceInterfaceService) Attach(ctx context.Context, instanceID string, params InstanceInterfaceAttachParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+func (r *InstancesRegionalInterfaceService) Attach(ctx context.Context, instanceID string, params InstancesRegionalInterfaceAttachParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -125,7 +125,7 @@ func (r *InstanceInterfaceService) Attach(ctx context.Context, instanceID string
 // deprecate it and then remove it. We will tell you in advance.
 //
 // Detach interface from instance
-func (r *InstanceInterfaceService) Detach(ctx context.Context, instanceID string, params InstanceInterfaceDetachParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+func (r *InstancesRegionalInterfaceService) Detach(ctx context.Context, instanceID string, params InstancesRegionalInterfaceDetachParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
@@ -150,7 +150,7 @@ func (r *InstanceInterfaceService) Detach(ctx context.Context, instanceID string
 	return res, err
 }
 
-type InstanceInterfaceListParams struct {
+type InstancesRegionalInterfaceListParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
@@ -162,16 +162,16 @@ type InstanceInterfaceListParams struct {
 	paramObj
 }
 
-// URLQuery serializes [InstanceInterfaceListParams]'s query parameters as
+// URLQuery serializes [InstancesRegionalInterfaceListParams]'s query parameters as
 // `url.Values`.
-func (r InstanceInterfaceListParams) URLQuery() (v url.Values, err error) {
+func (r InstancesRegionalInterfaceListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
 
-type InstanceInterfaceAttachParams struct {
+type InstancesRegionalInterfaceAttachParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
@@ -182,33 +182,33 @@ type InstanceInterfaceAttachParams struct {
 	//
 
 	// This field is a request body variant, only one variant field can be set.
-	OfExternal *InstanceInterfaceAttachParamsBodyExternal `json:",inline"`
+	OfExternal *InstancesRegionalInterfaceAttachParamsBodyExternal `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	OfSubnet *InstanceInterfaceAttachParamsBodySubnet `json:",inline"`
+	OfSubnet *InstancesRegionalInterfaceAttachParamsBodySubnet `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	OfAnySubnet *InstanceInterfaceAttachParamsBodyAnySubnet `json:",inline"`
+	OfAnySubnet *InstancesRegionalInterfaceAttachParamsBodyAnySubnet `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	OfReservedFixedIP *InstanceInterfaceAttachParamsBodyReservedFixedIP `json:",inline"`
+	OfReservedFixedIP *InstancesRegionalInterfaceAttachParamsBodyReservedFixedIP `json:",inline"`
 
 	paramObj
 }
 
-func (u InstanceInterfaceAttachParams) MarshalJSON() ([]byte, error) {
+func (u InstancesRegionalInterfaceAttachParams) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfExternal, u.OfSubnet, u.OfAnySubnet, u.OfReservedFixedIP)
 }
-func (r *InstanceInterfaceAttachParams) UnmarshalJSON(data []byte) error {
+func (r *InstancesRegionalInterfaceAttachParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type InstanceInterfaceAttachParamsBodyExternal struct {
+type InstancesRegionalInterfaceAttachParamsBodyExternal struct {
 	// Interface name.
 	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
 	// Each group will be added to a separate trunk.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
 	// Advanced DDoS protection.
-	DDOSProfile InstanceInterfaceAttachParamsBodyExternalDDOSProfile `json:"ddos_profile,omitzero"`
+	DDOSProfile InstancesRegionalInterfaceAttachParamsBodyExternalDDOSProfile `json:"ddos_profile,omitzero"`
 	// List of security group IDs.
-	SecurityGroups []InstanceInterfaceAttachParamsBodyExternalSecurityGroup `json:"security_groups,omitzero"`
+	SecurityGroups []InstancesRegionalInterfaceAttachParamsBodyExternalSecurityGroup `json:"security_groups,omitzero"`
 	// Specify `ipv4`, `ipv6`, or `dual` to enable both. If omitted, the API selects
 	// `ipv4` when the network has an IPv4 subnet, `ipv6` otherwise.
 	//
@@ -223,16 +223,16 @@ type InstanceInterfaceAttachParamsBodyExternal struct {
 	paramObj
 }
 
-func (r InstanceInterfaceAttachParamsBodyExternal) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceInterfaceAttachParamsBodyExternal
+func (r InstancesRegionalInterfaceAttachParamsBodyExternal) MarshalJSON() (data []byte, err error) {
+	type shadow InstancesRegionalInterfaceAttachParamsBodyExternal
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *InstanceInterfaceAttachParamsBodyExternal) UnmarshalJSON(data []byte) error {
+func (r *InstancesRegionalInterfaceAttachParamsBodyExternal) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[InstanceInterfaceAttachParamsBodyExternal](
+	apijson.RegisterFieldValidator[InstancesRegionalInterfaceAttachParamsBodyExternal](
 		"type", "external",
 	)
 }
@@ -240,26 +240,26 @@ func init() {
 // Advanced DDoS protection.
 //
 // The property ProfileTemplate is required.
-type InstanceInterfaceAttachParamsBodyExternalDDOSProfile struct {
+type InstancesRegionalInterfaceAttachParamsBodyExternalDDOSProfile struct {
 	// DDoS profile template ID.
 	ProfileTemplate int64 `json:"profile_template" api:"required"`
 	// DDoS profile template name.
 	ProfileTemplateName param.Opt[string] `json:"profile_template_name,omitzero"`
 	// Protection parameters.
-	Fields []InstanceInterfaceAttachParamsBodyExternalDDOSProfileField `json:"fields,omitzero"`
+	Fields []InstancesRegionalInterfaceAttachParamsBodyExternalDDOSProfileField `json:"fields,omitzero"`
 	paramObj
 }
 
-func (r InstanceInterfaceAttachParamsBodyExternalDDOSProfile) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceInterfaceAttachParamsBodyExternalDDOSProfile
+func (r InstancesRegionalInterfaceAttachParamsBodyExternalDDOSProfile) MarshalJSON() (data []byte, err error) {
+	type shadow InstancesRegionalInterfaceAttachParamsBodyExternalDDOSProfile
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *InstanceInterfaceAttachParamsBodyExternalDDOSProfile) UnmarshalJSON(data []byte) error {
+func (r *InstancesRegionalInterfaceAttachParamsBodyExternalDDOSProfile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property BaseField is required.
-type InstanceInterfaceAttachParamsBodyExternalDDOSProfileField struct {
+type InstancesRegionalInterfaceAttachParamsBodyExternalDDOSProfileField struct {
 	// ID of DDoS profile field.
 	BaseField int64 `json:"base_field" api:"required"`
 	// Basic type value.
@@ -269,31 +269,31 @@ type InstanceInterfaceAttachParamsBodyExternalDDOSProfileField struct {
 	paramObj
 }
 
-func (r InstanceInterfaceAttachParamsBodyExternalDDOSProfileField) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceInterfaceAttachParamsBodyExternalDDOSProfileField
+func (r InstancesRegionalInterfaceAttachParamsBodyExternalDDOSProfileField) MarshalJSON() (data []byte, err error) {
+	type shadow InstancesRegionalInterfaceAttachParamsBodyExternalDDOSProfileField
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *InstanceInterfaceAttachParamsBodyExternalDDOSProfileField) UnmarshalJSON(data []byte) error {
+func (r *InstancesRegionalInterfaceAttachParamsBodyExternalDDOSProfileField) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property ID is required.
-type InstanceInterfaceAttachParamsBodyExternalSecurityGroup struct {
+type InstancesRegionalInterfaceAttachParamsBodyExternalSecurityGroup struct {
 	// Resource ID
 	ID string `json:"id" api:"required" format:"uuid4"`
 	paramObj
 }
 
-func (r InstanceInterfaceAttachParamsBodyExternalSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceInterfaceAttachParamsBodyExternalSecurityGroup
+func (r InstancesRegionalInterfaceAttachParamsBodyExternalSecurityGroup) MarshalJSON() (data []byte, err error) {
+	type shadow InstancesRegionalInterfaceAttachParamsBodyExternalSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *InstanceInterfaceAttachParamsBodyExternalSecurityGroup) UnmarshalJSON(data []byte) error {
+func (r *InstancesRegionalInterfaceAttachParamsBodyExternalSecurityGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property SubnetID is required.
-type InstanceInterfaceAttachParamsBodySubnet struct {
+type InstancesRegionalInterfaceAttachParamsBodySubnet struct {
 	// Port will get an IP address from this subnet.
 	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
 	// Interface name.
@@ -301,24 +301,24 @@ type InstanceInterfaceAttachParamsBodySubnet struct {
 	// Each group will be added to a separate trunk.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
 	// Advanced DDoS protection.
-	DDOSProfile InstanceInterfaceAttachParamsBodySubnetDDOSProfile `json:"ddos_profile,omitzero"`
+	DDOSProfile InstancesRegionalInterfaceAttachParamsBodySubnetDDOSProfile `json:"ddos_profile,omitzero"`
 	// List of security group IDs.
-	SecurityGroups []InstanceInterfaceAttachParamsBodySubnetSecurityGroup `json:"security_groups,omitzero"`
+	SecurityGroups []InstancesRegionalInterfaceAttachParamsBodySubnetSecurityGroup `json:"security_groups,omitzero"`
 	// Any of "subnet".
 	Type string `json:"type,omitzero"`
 	paramObj
 }
 
-func (r InstanceInterfaceAttachParamsBodySubnet) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceInterfaceAttachParamsBodySubnet
+func (r InstancesRegionalInterfaceAttachParamsBodySubnet) MarshalJSON() (data []byte, err error) {
+	type shadow InstancesRegionalInterfaceAttachParamsBodySubnet
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *InstanceInterfaceAttachParamsBodySubnet) UnmarshalJSON(data []byte) error {
+func (r *InstancesRegionalInterfaceAttachParamsBodySubnet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[InstanceInterfaceAttachParamsBodySubnet](
+	apijson.RegisterFieldValidator[InstancesRegionalInterfaceAttachParamsBodySubnet](
 		"type", "subnet",
 	)
 }
@@ -326,26 +326,26 @@ func init() {
 // Advanced DDoS protection.
 //
 // The property ProfileTemplate is required.
-type InstanceInterfaceAttachParamsBodySubnetDDOSProfile struct {
+type InstancesRegionalInterfaceAttachParamsBodySubnetDDOSProfile struct {
 	// DDoS profile template ID.
 	ProfileTemplate int64 `json:"profile_template" api:"required"`
 	// DDoS profile template name.
 	ProfileTemplateName param.Opt[string] `json:"profile_template_name,omitzero"`
 	// Protection parameters.
-	Fields []InstanceInterfaceAttachParamsBodySubnetDDOSProfileField `json:"fields,omitzero"`
+	Fields []InstancesRegionalInterfaceAttachParamsBodySubnetDDOSProfileField `json:"fields,omitzero"`
 	paramObj
 }
 
-func (r InstanceInterfaceAttachParamsBodySubnetDDOSProfile) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceInterfaceAttachParamsBodySubnetDDOSProfile
+func (r InstancesRegionalInterfaceAttachParamsBodySubnetDDOSProfile) MarshalJSON() (data []byte, err error) {
+	type shadow InstancesRegionalInterfaceAttachParamsBodySubnetDDOSProfile
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *InstanceInterfaceAttachParamsBodySubnetDDOSProfile) UnmarshalJSON(data []byte) error {
+func (r *InstancesRegionalInterfaceAttachParamsBodySubnetDDOSProfile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property BaseField is required.
-type InstanceInterfaceAttachParamsBodySubnetDDOSProfileField struct {
+type InstancesRegionalInterfaceAttachParamsBodySubnetDDOSProfileField struct {
 	// ID of DDoS profile field.
 	BaseField int64 `json:"base_field" api:"required"`
 	// Basic type value.
@@ -355,31 +355,31 @@ type InstanceInterfaceAttachParamsBodySubnetDDOSProfileField struct {
 	paramObj
 }
 
-func (r InstanceInterfaceAttachParamsBodySubnetDDOSProfileField) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceInterfaceAttachParamsBodySubnetDDOSProfileField
+func (r InstancesRegionalInterfaceAttachParamsBodySubnetDDOSProfileField) MarshalJSON() (data []byte, err error) {
+	type shadow InstancesRegionalInterfaceAttachParamsBodySubnetDDOSProfileField
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *InstanceInterfaceAttachParamsBodySubnetDDOSProfileField) UnmarshalJSON(data []byte) error {
+func (r *InstancesRegionalInterfaceAttachParamsBodySubnetDDOSProfileField) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property ID is required.
-type InstanceInterfaceAttachParamsBodySubnetSecurityGroup struct {
+type InstancesRegionalInterfaceAttachParamsBodySubnetSecurityGroup struct {
 	// Resource ID
 	ID string `json:"id" api:"required" format:"uuid4"`
 	paramObj
 }
 
-func (r InstanceInterfaceAttachParamsBodySubnetSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceInterfaceAttachParamsBodySubnetSecurityGroup
+func (r InstancesRegionalInterfaceAttachParamsBodySubnetSecurityGroup) MarshalJSON() (data []byte, err error) {
+	type shadow InstancesRegionalInterfaceAttachParamsBodySubnetSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *InstanceInterfaceAttachParamsBodySubnetSecurityGroup) UnmarshalJSON(data []byte) error {
+func (r *InstancesRegionalInterfaceAttachParamsBodySubnetSecurityGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property NetworkID is required.
-type InstanceInterfaceAttachParamsBodyAnySubnet struct {
+type InstancesRegionalInterfaceAttachParamsBodyAnySubnet struct {
 	// Port will get an IP address in this network subnet.
 	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
 	// Interface name.
@@ -387,9 +387,9 @@ type InstanceInterfaceAttachParamsBodyAnySubnet struct {
 	// Each group will be added to a separate trunk.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
 	// Advanced DDoS protection.
-	DDOSProfile InstanceInterfaceAttachParamsBodyAnySubnetDDOSProfile `json:"ddos_profile,omitzero"`
+	DDOSProfile InstancesRegionalInterfaceAttachParamsBodyAnySubnetDDOSProfile `json:"ddos_profile,omitzero"`
 	// List of security group IDs.
-	SecurityGroups []InstanceInterfaceAttachParamsBodyAnySubnetSecurityGroup `json:"security_groups,omitzero"`
+	SecurityGroups []InstancesRegionalInterfaceAttachParamsBodyAnySubnetSecurityGroup `json:"security_groups,omitzero"`
 	// Specify `ipv4`, `ipv6`, or `dual` to enable both. If omitted, the API selects
 	// `ipv4` when the network has an IPv4 subnet, `ipv6` otherwise.
 	//
@@ -404,16 +404,16 @@ type InstanceInterfaceAttachParamsBodyAnySubnet struct {
 	paramObj
 }
 
-func (r InstanceInterfaceAttachParamsBodyAnySubnet) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceInterfaceAttachParamsBodyAnySubnet
+func (r InstancesRegionalInterfaceAttachParamsBodyAnySubnet) MarshalJSON() (data []byte, err error) {
+	type shadow InstancesRegionalInterfaceAttachParamsBodyAnySubnet
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *InstanceInterfaceAttachParamsBodyAnySubnet) UnmarshalJSON(data []byte) error {
+func (r *InstancesRegionalInterfaceAttachParamsBodyAnySubnet) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[InstanceInterfaceAttachParamsBodyAnySubnet](
+	apijson.RegisterFieldValidator[InstancesRegionalInterfaceAttachParamsBodyAnySubnet](
 		"type", "any_subnet",
 	)
 }
@@ -421,26 +421,26 @@ func init() {
 // Advanced DDoS protection.
 //
 // The property ProfileTemplate is required.
-type InstanceInterfaceAttachParamsBodyAnySubnetDDOSProfile struct {
+type InstancesRegionalInterfaceAttachParamsBodyAnySubnetDDOSProfile struct {
 	// DDoS profile template ID.
 	ProfileTemplate int64 `json:"profile_template" api:"required"`
 	// DDoS profile template name.
 	ProfileTemplateName param.Opt[string] `json:"profile_template_name,omitzero"`
 	// Protection parameters.
-	Fields []InstanceInterfaceAttachParamsBodyAnySubnetDDOSProfileField `json:"fields,omitzero"`
+	Fields []InstancesRegionalInterfaceAttachParamsBodyAnySubnetDDOSProfileField `json:"fields,omitzero"`
 	paramObj
 }
 
-func (r InstanceInterfaceAttachParamsBodyAnySubnetDDOSProfile) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceInterfaceAttachParamsBodyAnySubnetDDOSProfile
+func (r InstancesRegionalInterfaceAttachParamsBodyAnySubnetDDOSProfile) MarshalJSON() (data []byte, err error) {
+	type shadow InstancesRegionalInterfaceAttachParamsBodyAnySubnetDDOSProfile
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *InstanceInterfaceAttachParamsBodyAnySubnetDDOSProfile) UnmarshalJSON(data []byte) error {
+func (r *InstancesRegionalInterfaceAttachParamsBodyAnySubnetDDOSProfile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property BaseField is required.
-type InstanceInterfaceAttachParamsBodyAnySubnetDDOSProfileField struct {
+type InstancesRegionalInterfaceAttachParamsBodyAnySubnetDDOSProfileField struct {
 	// ID of DDoS profile field.
 	BaseField int64 `json:"base_field" api:"required"`
 	// Basic type value.
@@ -450,31 +450,31 @@ type InstanceInterfaceAttachParamsBodyAnySubnetDDOSProfileField struct {
 	paramObj
 }
 
-func (r InstanceInterfaceAttachParamsBodyAnySubnetDDOSProfileField) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceInterfaceAttachParamsBodyAnySubnetDDOSProfileField
+func (r InstancesRegionalInterfaceAttachParamsBodyAnySubnetDDOSProfileField) MarshalJSON() (data []byte, err error) {
+	type shadow InstancesRegionalInterfaceAttachParamsBodyAnySubnetDDOSProfileField
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *InstanceInterfaceAttachParamsBodyAnySubnetDDOSProfileField) UnmarshalJSON(data []byte) error {
+func (r *InstancesRegionalInterfaceAttachParamsBodyAnySubnetDDOSProfileField) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property ID is required.
-type InstanceInterfaceAttachParamsBodyAnySubnetSecurityGroup struct {
+type InstancesRegionalInterfaceAttachParamsBodyAnySubnetSecurityGroup struct {
 	// Resource ID
 	ID string `json:"id" api:"required" format:"uuid4"`
 	paramObj
 }
 
-func (r InstanceInterfaceAttachParamsBodyAnySubnetSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceInterfaceAttachParamsBodyAnySubnetSecurityGroup
+func (r InstancesRegionalInterfaceAttachParamsBodyAnySubnetSecurityGroup) MarshalJSON() (data []byte, err error) {
+	type shadow InstancesRegionalInterfaceAttachParamsBodyAnySubnetSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *InstanceInterfaceAttachParamsBodyAnySubnetSecurityGroup) UnmarshalJSON(data []byte) error {
+func (r *InstancesRegionalInterfaceAttachParamsBodyAnySubnetSecurityGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property PortID is required.
-type InstanceInterfaceAttachParamsBodyReservedFixedIP struct {
+type InstancesRegionalInterfaceAttachParamsBodyReservedFixedIP struct {
 	// Port ID.
 	PortID string `json:"port_id" api:"required" format:"uuid4"`
 	// Interface name.
@@ -482,24 +482,24 @@ type InstanceInterfaceAttachParamsBodyReservedFixedIP struct {
 	// Each group will be added to a separate trunk.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
 	// Advanced DDoS protection.
-	DDOSProfile InstanceInterfaceAttachParamsBodyReservedFixedIPDDOSProfile `json:"ddos_profile,omitzero"`
+	DDOSProfile InstancesRegionalInterfaceAttachParamsBodyReservedFixedIPDDOSProfile `json:"ddos_profile,omitzero"`
 	// List of security group IDs.
-	SecurityGroups []InstanceInterfaceAttachParamsBodyReservedFixedIPSecurityGroup `json:"security_groups,omitzero"`
+	SecurityGroups []InstancesRegionalInterfaceAttachParamsBodyReservedFixedIPSecurityGroup `json:"security_groups,omitzero"`
 	// Any of "reserved_fixed_ip".
 	Type string `json:"type,omitzero"`
 	paramObj
 }
 
-func (r InstanceInterfaceAttachParamsBodyReservedFixedIP) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceInterfaceAttachParamsBodyReservedFixedIP
+func (r InstancesRegionalInterfaceAttachParamsBodyReservedFixedIP) MarshalJSON() (data []byte, err error) {
+	type shadow InstancesRegionalInterfaceAttachParamsBodyReservedFixedIP
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *InstanceInterfaceAttachParamsBodyReservedFixedIP) UnmarshalJSON(data []byte) error {
+func (r *InstancesRegionalInterfaceAttachParamsBodyReservedFixedIP) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[InstanceInterfaceAttachParamsBodyReservedFixedIP](
+	apijson.RegisterFieldValidator[InstancesRegionalInterfaceAttachParamsBodyReservedFixedIP](
 		"type", "reserved_fixed_ip",
 	)
 }
@@ -507,26 +507,26 @@ func init() {
 // Advanced DDoS protection.
 //
 // The property ProfileTemplate is required.
-type InstanceInterfaceAttachParamsBodyReservedFixedIPDDOSProfile struct {
+type InstancesRegionalInterfaceAttachParamsBodyReservedFixedIPDDOSProfile struct {
 	// DDoS profile template ID.
 	ProfileTemplate int64 `json:"profile_template" api:"required"`
 	// DDoS profile template name.
 	ProfileTemplateName param.Opt[string] `json:"profile_template_name,omitzero"`
 	// Protection parameters.
-	Fields []InstanceInterfaceAttachParamsBodyReservedFixedIPDDOSProfileField `json:"fields,omitzero"`
+	Fields []InstancesRegionalInterfaceAttachParamsBodyReservedFixedIPDDOSProfileField `json:"fields,omitzero"`
 	paramObj
 }
 
-func (r InstanceInterfaceAttachParamsBodyReservedFixedIPDDOSProfile) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceInterfaceAttachParamsBodyReservedFixedIPDDOSProfile
+func (r InstancesRegionalInterfaceAttachParamsBodyReservedFixedIPDDOSProfile) MarshalJSON() (data []byte, err error) {
+	type shadow InstancesRegionalInterfaceAttachParamsBodyReservedFixedIPDDOSProfile
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *InstanceInterfaceAttachParamsBodyReservedFixedIPDDOSProfile) UnmarshalJSON(data []byte) error {
+func (r *InstancesRegionalInterfaceAttachParamsBodyReservedFixedIPDDOSProfile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property BaseField is required.
-type InstanceInterfaceAttachParamsBodyReservedFixedIPDDOSProfileField struct {
+type InstancesRegionalInterfaceAttachParamsBodyReservedFixedIPDDOSProfileField struct {
 	// ID of DDoS profile field.
 	BaseField int64 `json:"base_field" api:"required"`
 	// Basic type value.
@@ -536,30 +536,30 @@ type InstanceInterfaceAttachParamsBodyReservedFixedIPDDOSProfileField struct {
 	paramObj
 }
 
-func (r InstanceInterfaceAttachParamsBodyReservedFixedIPDDOSProfileField) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceInterfaceAttachParamsBodyReservedFixedIPDDOSProfileField
+func (r InstancesRegionalInterfaceAttachParamsBodyReservedFixedIPDDOSProfileField) MarshalJSON() (data []byte, err error) {
+	type shadow InstancesRegionalInterfaceAttachParamsBodyReservedFixedIPDDOSProfileField
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *InstanceInterfaceAttachParamsBodyReservedFixedIPDDOSProfileField) UnmarshalJSON(data []byte) error {
+func (r *InstancesRegionalInterfaceAttachParamsBodyReservedFixedIPDDOSProfileField) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property ID is required.
-type InstanceInterfaceAttachParamsBodyReservedFixedIPSecurityGroup struct {
+type InstancesRegionalInterfaceAttachParamsBodyReservedFixedIPSecurityGroup struct {
 	// Resource ID
 	ID string `json:"id" api:"required" format:"uuid4"`
 	paramObj
 }
 
-func (r InstanceInterfaceAttachParamsBodyReservedFixedIPSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceInterfaceAttachParamsBodyReservedFixedIPSecurityGroup
+func (r InstancesRegionalInterfaceAttachParamsBodyReservedFixedIPSecurityGroup) MarshalJSON() (data []byte, err error) {
+	type shadow InstancesRegionalInterfaceAttachParamsBodyReservedFixedIPSecurityGroup
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *InstanceInterfaceAttachParamsBodyReservedFixedIPSecurityGroup) UnmarshalJSON(data []byte) error {
+func (r *InstancesRegionalInterfaceAttachParamsBodyReservedFixedIPSecurityGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type InstanceInterfaceDetachParams struct {
+type InstancesRegionalInterfaceDetachParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
 	// Region ID
@@ -571,10 +571,10 @@ type InstanceInterfaceDetachParams struct {
 	paramObj
 }
 
-func (r InstanceInterfaceDetachParams) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceInterfaceDetachParams
+func (r InstancesRegionalInterfaceDetachParams) MarshalJSON() (data []byte, err error) {
+	type shadow InstancesRegionalInterfaceDetachParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *InstanceInterfaceDetachParams) UnmarshalJSON(data []byte) error {
+func (r *InstancesRegionalInterfaceDetachParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

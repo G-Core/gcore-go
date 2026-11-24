@@ -14,7 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/option"
 )
 
-func TestInstanceInterfaceListWithOptionalParams(t *testing.T) {
+func TestInstancesRegionalInterfaceListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,10 +26,10 @@ func TestInstanceInterfaceListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.Instances.Interfaces.List(
+	_, err := client.Cloud.InstancesRegional.Interfaces.List(
 		context.TODO(),
 		"bf325375-9af6-4c8b-a2fc-7f6f4ca02e2e",
-		cloud.InstanceInterfaceListParams{
+		cloud.InstancesRegionalInterfaceListParams{
 			ProjectID: gcore.Int(1),
 			RegionID:  gcore.Int(1),
 			Limit:     gcore.Int(1000),
@@ -45,7 +45,7 @@ func TestInstanceInterfaceListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestInstanceInterfaceAttachWithOptionalParams(t *testing.T) {
+func TestInstancesRegionalInterfaceAttachWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -57,16 +57,16 @@ func TestInstanceInterfaceAttachWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.Instances.Interfaces.Attach(
+	_, err := client.Cloud.InstancesRegional.Interfaces.Attach(
 		context.TODO(),
 		"bf325375-9af6-4c8b-a2fc-7f6f4ca02e2e",
-		cloud.InstanceInterfaceAttachParams{
+		cloud.InstancesRegionalInterfaceAttachParams{
 			ProjectID: gcore.Int(1),
 			RegionID:  gcore.Int(1),
-			OfExternal: &cloud.InstanceInterfaceAttachParamsBodyExternal{
-				DDOSProfile: cloud.InstanceInterfaceAttachParamsBodyExternalDDOSProfile{
+			OfExternal: &cloud.InstancesRegionalInterfaceAttachParamsBodyExternal{
+				DDOSProfile: cloud.InstancesRegionalInterfaceAttachParamsBodyExternalDDOSProfile{
 					ProfileTemplate: 0,
-					Fields: []cloud.InstanceInterfaceAttachParamsBodyExternalDDOSProfileField{{
+					Fields: []cloud.InstancesRegionalInterfaceAttachParamsBodyExternalDDOSProfileField{{
 						BaseField:  0,
 						FieldValue: map[string]any{},
 						Value:      gcore.String("value"),
@@ -76,7 +76,7 @@ func TestInstanceInterfaceAttachWithOptionalParams(t *testing.T) {
 				InterfaceName: gcore.String("interface_name"),
 				IPFamily:      cloud.InterfaceIPFamilyDual,
 				PortGroup:     gcore.Int(0),
-				SecurityGroups: []cloud.InstanceInterfaceAttachParamsBodyExternalSecurityGroup{{
+				SecurityGroups: []cloud.InstancesRegionalInterfaceAttachParamsBodyExternalSecurityGroup{{
 					ID: "ae74714c-c380-48b4-87f8-758d656cdad6",
 				}},
 				Type: "external",
@@ -92,7 +92,7 @@ func TestInstanceInterfaceAttachWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestInstanceInterfaceDetach(t *testing.T) {
+func TestInstancesRegionalInterfaceDetach(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -104,10 +104,10 @@ func TestInstanceInterfaceDetach(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Cloud.Instances.Interfaces.Detach(
+	_, err := client.Cloud.InstancesRegional.Interfaces.Detach(
 		context.TODO(),
 		"bf325375-9af6-4c8b-a2fc-7f6f4ca02e2e",
-		cloud.InstanceInterfaceDetachParams{
+		cloud.InstancesRegionalInterfaceDetachParams{
 			ProjectID: gcore.Int(1),
 			RegionID:  gcore.Int(1),
 			IPAddress: "ip_address",

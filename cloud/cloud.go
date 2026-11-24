@@ -73,14 +73,17 @@ type CloudService struct {
 	BillingReservations BillingReservationService
 	GPUBaremetal        GPUBaremetalService
 	GPUVirtual          GPUVirtualService
+	// Instances are cloud virtual machines that boot from a volume and connect to
+	// networks through ports, in any region of the project.
+	Instances InstanceService
 	// Instances are cloud virtual machines with configurable CPU, memory, storage, and
 	// networking, supporting various operating systems and workloads.
-	Instances    InstanceService
-	K8S          K8SService
-	AuditLogs    AuditLogService
-	CostReports  CostReportService
-	UsageReports UsageReportService
-	Databases    DatabaseService
+	InstancesRegional InstancesRegionalService
+	K8S               K8SService
+	AuditLogs         AuditLogService
+	CostReports       CostReportService
+	UsageReports      UsageReportService
+	Databases         DatabaseService
 	// Snapshot schedule policies describe when volume snapshots are taken and which
 	// volumes they cover. Volume membership is owned by the policy: attach and detach
 	// are policy-side operations, so a volume can join or leave a policy without being
@@ -119,6 +122,7 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r.GPUBaremetal = NewGPUBaremetalService(opts...)
 	r.GPUVirtual = NewGPUVirtualService(opts...)
 	r.Instances = NewInstanceService(opts...)
+	r.InstancesRegional = NewInstancesRegionalService(opts...)
 	r.K8S = NewK8SService(opts...)
 	r.AuditLogs = NewAuditLogService(opts...)
 	r.CostReports = NewCostReportService(opts...)
@@ -811,11 +815,36 @@ const (
 	HTTPMethodTrace   HTTPMethod = "TRACE"
 )
 
-type Instance struct {
+type InstanceIsolation struct {
+	// The reason of instance isolation if it is isolated from external internet. The
+	// value is null if no reason is recorded.
+	Reason string `json:"reason" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Reason      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InstanceIsolation) RawJSON() string { return r.JSON.raw }
+func (r *InstanceIsolation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type InstanceMetricsTimeUnit string
+
+const (
+	InstanceMetricsTimeUnitDay  InstanceMetricsTimeUnit = "day"
+	InstanceMetricsTimeUnitHour InstanceMetricsTimeUnit = "hour"
+)
+
+type InstanceRegional struct {
 	// Instance ID
 	ID string `json:"id" api:"required" format:"uuid4"`
 	// Map of `network_name` to list of addresses in that network
-	Addresses map[string][]InstanceAddressUnion `json:"addresses" api:"required"`
+	Addresses map[string][]InstanceRegionalAddressUnion `json:"addresses" api:"required"`
 	// IP addresses of the instances that are blackholed by DDoS mitigation system
 	BlackholePorts []BlackholePort `json:"blackhole_ports" api:"required"`
 	// Datetime when instance was created
@@ -827,9 +856,9 @@ type Instance struct {
 	DDOSProfile DDOSProfile `json:"ddos_profile" api:"required"`
 	// Fixed IP assigned to instance. The value is null if the instance has no fixed IP
 	// assignments.
-	FixedIPAssignments []InstanceFixedIPAssignment `json:"fixed_ip_assignments" api:"required"`
+	FixedIPAssignments []InstanceRegionalFixedIPAssignment `json:"fixed_ip_assignments" api:"required"`
 	// Flavor
-	Flavor InstanceFlavorUnion `json:"flavor" api:"required"`
+	Flavor InstanceRegionalFlavorUnion `json:"flavor" api:"required"`
 	// Instance description. The value is null if the instance has no description.
 	InstanceDescription string `json:"instance_description" api:"required"`
 	// Instance isolation information. The value is null if the instance has no
@@ -844,7 +873,7 @@ type Instance struct {
 	// Region ID
 	RegionID int64 `json:"region_id" api:"required"`
 	// Security groups
-	SecurityGroups []InstanceSecurityGroup `json:"security_groups" api:"required"`
+	SecurityGroups []InstanceRegionalSecurityGroup `json:"security_groups" api:"required"`
 	// SSH key assigned to instance. The value is null if no SSH key is assigned.
 	SSHKeyName string `json:"ssh_key_name" api:"required"`
 	// Instance status
@@ -853,7 +882,7 @@ type Instance struct {
 	// "PASSWORD", "PAUSED", "REBOOT", "REBUILD", "RESCUE", "RESIZE", "REVERT_RESIZE",
 	// "SHELVED", "SHELVED_OFFLOADED", "SHUTOFF", "SOFT_DELETED", "SUSPENDED",
 	// "UNKNOWN", "VERIFY_RESIZE".
-	Status InstanceStatus `json:"status" api:"required"`
+	Status InstanceRegionalStatus `json:"status" api:"required"`
 	// List of key-value tags associated with the resource. A tag is a key-value pair
 	// that can be associated with a resource, enabling efficient filtering and
 	// grouping for better organization and management. Some tags are read-only and
@@ -870,9 +899,9 @@ type Instance struct {
 	//
 	// Any of "active", "building", "deleted", "error", "paused", "rescued", "resized",
 	// "shelved", "shelved_offloaded", "soft-deleted", "stopped", "suspended".
-	VmState InstanceVmState `json:"vm_state" api:"required"`
+	VmState InstanceRegionalVmState `json:"vm_state" api:"required"`
 	// List of volumes
-	Volumes []InstanceVolume `json:"volumes" api:"required"`
+	Volumes []InstanceRegionalVolume `json:"volumes" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                  respjson.Field
@@ -903,16 +932,16 @@ type Instance struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r Instance) RawJSON() string { return r.JSON.raw }
-func (r *Instance) UnmarshalJSON(data []byte) error {
+func (r InstanceRegional) RawJSON() string { return r.JSON.raw }
+func (r *InstanceRegional) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// InstanceAddressUnion contains all possible properties and values from
+// InstanceRegionalAddressUnion contains all possible properties and values from
 // [FloatingAddress], [FixedAddressShort], [FixedAddress].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
-type InstanceAddressUnion struct {
+type InstanceRegionalAddressUnion struct {
 	Addr          string `json:"addr"`
 	Type          string `json:"type"`
 	InterfaceName string `json:"interface_name"`
@@ -930,29 +959,29 @@ type InstanceAddressUnion struct {
 	} `json:"-"`
 }
 
-func (u InstanceAddressUnion) AsFloatingIPAddress() (v FloatingAddress) {
+func (u InstanceRegionalAddressUnion) AsFloatingIPAddress() (v FloatingAddress) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u InstanceAddressUnion) AsFixedIPAddressShort() (v FixedAddressShort) {
+func (u InstanceRegionalAddressUnion) AsFixedIPAddressShort() (v FixedAddressShort) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u InstanceAddressUnion) AsFixedIPAddress() (v FixedAddress) {
+func (u InstanceRegionalAddressUnion) AsFixedIPAddress() (v FixedAddress) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u InstanceAddressUnion) RawJSON() string { return u.JSON.raw }
+func (u InstanceRegionalAddressUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *InstanceAddressUnion) UnmarshalJSON(data []byte) error {
+func (r *InstanceRegionalAddressUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type InstanceFixedIPAssignment struct {
+type InstanceRegionalFixedIPAssignment struct {
 	// Is network external
 	External bool `json:"external" api:"required"`
 	// Ip address
@@ -970,28 +999,29 @@ type InstanceFixedIPAssignment struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InstanceFixedIPAssignment) RawJSON() string { return r.JSON.raw }
-func (r *InstanceFixedIPAssignment) UnmarshalJSON(data []byte) error {
+func (r InstanceRegionalFixedIPAssignment) RawJSON() string { return r.JSON.raw }
+func (r *InstanceRegionalFixedIPAssignment) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// InstanceFlavorUnion contains all possible properties and values from
-// [InstanceFlavorInstanceFlavor], [InstanceFlavorBareMetalFlavor],
-// [InstanceFlavorGPUClusterFlavor].
+// InstanceRegionalFlavorUnion contains all possible properties and values from
+// [InstanceRegionalFlavorInstanceFlavor], [InstanceRegionalFlavorBareMetalFlavor],
+// [InstanceRegionalFlavorGPUClusterFlavor].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
-type InstanceFlavorUnion struct {
+type InstanceRegionalFlavorUnion struct {
 	Architecture string `json:"architecture"`
 	FlavorID     string `json:"flavor_id"`
 	FlavorName   string `json:"flavor_name"`
-	// This field is a union of [InstanceFlavorInstanceFlavorHardwareDescription],
-	// [InstanceFlavorBareMetalFlavorHardwareDescription],
-	// [InstanceFlavorGPUClusterFlavorHardwareDescription]
-	HardwareDescription InstanceFlavorUnionHardwareDescription `json:"hardware_description"`
-	OsType              string                                 `json:"os_type"`
-	Ram                 int64                                  `json:"ram"`
-	Vcpus               int64                                  `json:"vcpus"`
-	ResourceClass       string                                 `json:"resource_class"`
+	// This field is a union of
+	// [InstanceRegionalFlavorInstanceFlavorHardwareDescription],
+	// [InstanceRegionalFlavorBareMetalFlavorHardwareDescription],
+	// [InstanceRegionalFlavorGPUClusterFlavorHardwareDescription]
+	HardwareDescription InstanceRegionalFlavorUnionHardwareDescription `json:"hardware_description"`
+	OsType              string                                         `json:"os_type"`
+	Ram                 int64                                          `json:"ram"`
+	Vcpus               int64                                          `json:"vcpus"`
+	ResourceClass       string                                         `json:"resource_class"`
 	JSON                struct {
 		Architecture        respjson.Field
 		FlavorID            respjson.Field
@@ -1005,43 +1035,45 @@ type InstanceFlavorUnion struct {
 	} `json:"-"`
 }
 
-func (u InstanceFlavorUnion) AsInstanceFlavor() (v InstanceFlavorInstanceFlavor) {
+func (u InstanceRegionalFlavorUnion) AsInstanceFlavor() (v InstanceRegionalFlavorInstanceFlavor) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u InstanceFlavorUnion) AsBareMetalFlavor() (v InstanceFlavorBareMetalFlavor) {
+func (u InstanceRegionalFlavorUnion) AsBareMetalFlavor() (v InstanceRegionalFlavorBareMetalFlavor) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u InstanceFlavorUnion) AsGPUClusterFlavor() (v InstanceFlavorGPUClusterFlavor) {
+func (u InstanceRegionalFlavorUnion) AsGPUClusterFlavor() (v InstanceRegionalFlavorGPUClusterFlavor) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u InstanceFlavorUnion) RawJSON() string { return u.JSON.raw }
+func (u InstanceRegionalFlavorUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *InstanceFlavorUnion) UnmarshalJSON(data []byte) error {
+func (r *InstanceRegionalFlavorUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// InstanceFlavorUnionHardwareDescription is an implicit subunion of
-// [InstanceFlavorUnion]. InstanceFlavorUnionHardwareDescription provides
-// convenient access to the sub-properties of the union.
+// InstanceRegionalFlavorUnionHardwareDescription is an implicit subunion of
+// [InstanceRegionalFlavorUnion]. InstanceRegionalFlavorUnionHardwareDescription
+// provides convenient access to the sub-properties of the union.
 //
 // For type safety it is recommended to directly use a variant of the
-// [InstanceFlavorUnion].
-type InstanceFlavorUnionHardwareDescription struct {
+// [InstanceRegionalFlavorUnion].
+type InstanceRegionalFlavorUnionHardwareDescription struct {
 	Ram string `json:"ram"`
-	// This field is from variant [InstanceFlavorInstanceFlavorHardwareDescription].
+	// This field is from variant
+	// [InstanceRegionalFlavorInstanceFlavorHardwareDescription].
 	Vcpus   string `json:"vcpus"`
 	CPU     string `json:"cpu"`
 	Disk    string `json:"disk"`
 	License string `json:"license"`
 	Network string `json:"network"`
-	// This field is from variant [InstanceFlavorGPUClusterFlavorHardwareDescription].
+	// This field is from variant
+	// [InstanceRegionalFlavorGPUClusterFlavorHardwareDescription].
 	GPU  string `json:"gpu"`
 	JSON struct {
 		Ram     respjson.Field
@@ -1055,12 +1087,12 @@ type InstanceFlavorUnionHardwareDescription struct {
 	} `json:"-"`
 }
 
-func (r *InstanceFlavorUnionHardwareDescription) UnmarshalJSON(data []byte) error {
+func (r *InstanceRegionalFlavorUnionHardwareDescription) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Instances flavor schema embedded into instance schema
-type InstanceFlavorInstanceFlavor struct {
+type InstanceRegionalFlavorInstanceFlavor struct {
 	// CPU architecture
 	Architecture string `json:"architecture" api:"required"`
 	// Flavor ID is the same as name
@@ -1068,7 +1100,7 @@ type InstanceFlavorInstanceFlavor struct {
 	// Flavor name
 	FlavorName string `json:"flavor_name" api:"required"`
 	// Additional hardware description
-	HardwareDescription InstanceFlavorInstanceFlavorHardwareDescription `json:"hardware_description" api:"required"`
+	HardwareDescription InstanceRegionalFlavorInstanceFlavorHardwareDescription `json:"hardware_description" api:"required"`
 	// Flavor operating system
 	OsType string `json:"os_type" api:"required"`
 	// RAM size in MiB
@@ -1090,13 +1122,13 @@ type InstanceFlavorInstanceFlavor struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InstanceFlavorInstanceFlavor) RawJSON() string { return r.JSON.raw }
-func (r *InstanceFlavorInstanceFlavor) UnmarshalJSON(data []byte) error {
+func (r InstanceRegionalFlavorInstanceFlavor) RawJSON() string { return r.JSON.raw }
+func (r *InstanceRegionalFlavorInstanceFlavor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Additional hardware description
-type InstanceFlavorInstanceFlavorHardwareDescription struct {
+type InstanceRegionalFlavorInstanceFlavorHardwareDescription struct {
 	// RAM description
 	Ram string `json:"ram" api:"required"`
 	// CPU description
@@ -1111,13 +1143,13 @@ type InstanceFlavorInstanceFlavorHardwareDescription struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InstanceFlavorInstanceFlavorHardwareDescription) RawJSON() string { return r.JSON.raw }
-func (r *InstanceFlavorInstanceFlavorHardwareDescription) UnmarshalJSON(data []byte) error {
+func (r InstanceRegionalFlavorInstanceFlavorHardwareDescription) RawJSON() string { return r.JSON.raw }
+func (r *InstanceRegionalFlavorInstanceFlavorHardwareDescription) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Bare metal flavor schema embedded into instance schema
-type InstanceFlavorBareMetalFlavor struct {
+type InstanceRegionalFlavorBareMetalFlavor struct {
 	// CPU architecture
 	Architecture string `json:"architecture" api:"required"`
 	// Flavor ID is the same as name
@@ -1125,7 +1157,7 @@ type InstanceFlavorBareMetalFlavor struct {
 	// Flavor name
 	FlavorName string `json:"flavor_name" api:"required"`
 	// Additional hardware description
-	HardwareDescription InstanceFlavorBareMetalFlavorHardwareDescription `json:"hardware_description" api:"required"`
+	HardwareDescription InstanceRegionalFlavorBareMetalFlavorHardwareDescription `json:"hardware_description" api:"required"`
 	// Operating system
 	OsType string `json:"os_type" api:"required"`
 	// RAM size in MiB
@@ -1150,13 +1182,13 @@ type InstanceFlavorBareMetalFlavor struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InstanceFlavorBareMetalFlavor) RawJSON() string { return r.JSON.raw }
-func (r *InstanceFlavorBareMetalFlavor) UnmarshalJSON(data []byte) error {
+func (r InstanceRegionalFlavorBareMetalFlavor) RawJSON() string { return r.JSON.raw }
+func (r *InstanceRegionalFlavorBareMetalFlavor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Additional hardware description
-type InstanceFlavorBareMetalFlavorHardwareDescription struct {
+type InstanceRegionalFlavorBareMetalFlavorHardwareDescription struct {
 	// Human-readable CPU description
 	CPU string `json:"cpu" api:"required"`
 	// Human-readable disk description
@@ -1180,13 +1212,13 @@ type InstanceFlavorBareMetalFlavorHardwareDescription struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InstanceFlavorBareMetalFlavorHardwareDescription) RawJSON() string { return r.JSON.raw }
-func (r *InstanceFlavorBareMetalFlavorHardwareDescription) UnmarshalJSON(data []byte) error {
+func (r InstanceRegionalFlavorBareMetalFlavorHardwareDescription) RawJSON() string { return r.JSON.raw }
+func (r *InstanceRegionalFlavorBareMetalFlavorHardwareDescription) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // GPU cluster flavor schema embedded into instance schema
-type InstanceFlavorGPUClusterFlavor struct {
+type InstanceRegionalFlavorGPUClusterFlavor struct {
 	// CPU architecture
 	Architecture string `json:"architecture" api:"required"`
 	// Flavor ID is the same as name
@@ -1194,7 +1226,7 @@ type InstanceFlavorGPUClusterFlavor struct {
 	// Flavor name
 	FlavorName string `json:"flavor_name" api:"required"`
 	// Additional hardware description
-	HardwareDescription InstanceFlavorGPUClusterFlavorHardwareDescription `json:"hardware_description" api:"required"`
+	HardwareDescription InstanceRegionalFlavorGPUClusterFlavorHardwareDescription `json:"hardware_description" api:"required"`
 	// Operating system
 	OsType string `json:"os_type" api:"required"`
 	// RAM size in MiB
@@ -1219,13 +1251,13 @@ type InstanceFlavorGPUClusterFlavor struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InstanceFlavorGPUClusterFlavor) RawJSON() string { return r.JSON.raw }
-func (r *InstanceFlavorGPUClusterFlavor) UnmarshalJSON(data []byte) error {
+func (r InstanceRegionalFlavorGPUClusterFlavor) RawJSON() string { return r.JSON.raw }
+func (r *InstanceRegionalFlavorGPUClusterFlavor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Additional hardware description
-type InstanceFlavorGPUClusterFlavorHardwareDescription struct {
+type InstanceRegionalFlavorGPUClusterFlavorHardwareDescription struct {
 	// Human-readable CPU description
 	CPU string `json:"cpu" api:"required"`
 	// Human-readable disk description
@@ -1252,12 +1284,14 @@ type InstanceFlavorGPUClusterFlavorHardwareDescription struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InstanceFlavorGPUClusterFlavorHardwareDescription) RawJSON() string { return r.JSON.raw }
-func (r *InstanceFlavorGPUClusterFlavorHardwareDescription) UnmarshalJSON(data []byte) error {
+func (r InstanceRegionalFlavorGPUClusterFlavorHardwareDescription) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *InstanceRegionalFlavorGPUClusterFlavorHardwareDescription) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type InstanceSecurityGroup struct {
+type InstanceRegionalSecurityGroup struct {
 	// Name.
 	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1269,56 +1303,56 @@ type InstanceSecurityGroup struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InstanceSecurityGroup) RawJSON() string { return r.JSON.raw }
-func (r *InstanceSecurityGroup) UnmarshalJSON(data []byte) error {
+func (r InstanceRegionalSecurityGroup) RawJSON() string { return r.JSON.raw }
+func (r *InstanceRegionalSecurityGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Instance status
-type InstanceStatus string
+type InstanceRegionalStatus string
 
 const (
-	InstanceStatusActive           InstanceStatus = "ACTIVE"
-	InstanceStatusBuild            InstanceStatus = "BUILD"
-	InstanceStatusDeleted          InstanceStatus = "DELETED"
-	InstanceStatusError            InstanceStatus = "ERROR"
-	InstanceStatusHardReboot       InstanceStatus = "HARD_REBOOT"
-	InstanceStatusMigrating        InstanceStatus = "MIGRATING"
-	InstanceStatusPassword         InstanceStatus = "PASSWORD"
-	InstanceStatusPaused           InstanceStatus = "PAUSED"
-	InstanceStatusReboot           InstanceStatus = "REBOOT"
-	InstanceStatusRebuild          InstanceStatus = "REBUILD"
-	InstanceStatusRescue           InstanceStatus = "RESCUE"
-	InstanceStatusResize           InstanceStatus = "RESIZE"
-	InstanceStatusRevertResize     InstanceStatus = "REVERT_RESIZE"
-	InstanceStatusShelved          InstanceStatus = "SHELVED"
-	InstanceStatusShelvedOffloaded InstanceStatus = "SHELVED_OFFLOADED"
-	InstanceStatusShutoff          InstanceStatus = "SHUTOFF"
-	InstanceStatusSoftDeleted      InstanceStatus = "SOFT_DELETED"
-	InstanceStatusSuspended        InstanceStatus = "SUSPENDED"
-	InstanceStatusUnknown          InstanceStatus = "UNKNOWN"
-	InstanceStatusVerifyResize     InstanceStatus = "VERIFY_RESIZE"
+	InstanceRegionalStatusActive           InstanceRegionalStatus = "ACTIVE"
+	InstanceRegionalStatusBuild            InstanceRegionalStatus = "BUILD"
+	InstanceRegionalStatusDeleted          InstanceRegionalStatus = "DELETED"
+	InstanceRegionalStatusError            InstanceRegionalStatus = "ERROR"
+	InstanceRegionalStatusHardReboot       InstanceRegionalStatus = "HARD_REBOOT"
+	InstanceRegionalStatusMigrating        InstanceRegionalStatus = "MIGRATING"
+	InstanceRegionalStatusPassword         InstanceRegionalStatus = "PASSWORD"
+	InstanceRegionalStatusPaused           InstanceRegionalStatus = "PAUSED"
+	InstanceRegionalStatusReboot           InstanceRegionalStatus = "REBOOT"
+	InstanceRegionalStatusRebuild          InstanceRegionalStatus = "REBUILD"
+	InstanceRegionalStatusRescue           InstanceRegionalStatus = "RESCUE"
+	InstanceRegionalStatusResize           InstanceRegionalStatus = "RESIZE"
+	InstanceRegionalStatusRevertResize     InstanceRegionalStatus = "REVERT_RESIZE"
+	InstanceRegionalStatusShelved          InstanceRegionalStatus = "SHELVED"
+	InstanceRegionalStatusShelvedOffloaded InstanceRegionalStatus = "SHELVED_OFFLOADED"
+	InstanceRegionalStatusShutoff          InstanceRegionalStatus = "SHUTOFF"
+	InstanceRegionalStatusSoftDeleted      InstanceRegionalStatus = "SOFT_DELETED"
+	InstanceRegionalStatusSuspended        InstanceRegionalStatus = "SUSPENDED"
+	InstanceRegionalStatusUnknown          InstanceRegionalStatus = "UNKNOWN"
+	InstanceRegionalStatusVerifyResize     InstanceRegionalStatus = "VERIFY_RESIZE"
 )
 
 // Virtual machine state (active)
-type InstanceVmState string
+type InstanceRegionalVmState string
 
 const (
-	InstanceVmStateActive           InstanceVmState = "active"
-	InstanceVmStateBuilding         InstanceVmState = "building"
-	InstanceVmStateDeleted          InstanceVmState = "deleted"
-	InstanceVmStateError            InstanceVmState = "error"
-	InstanceVmStatePaused           InstanceVmState = "paused"
-	InstanceVmStateRescued          InstanceVmState = "rescued"
-	InstanceVmStateResized          InstanceVmState = "resized"
-	InstanceVmStateShelved          InstanceVmState = "shelved"
-	InstanceVmStateShelvedOffloaded InstanceVmState = "shelved_offloaded"
-	InstanceVmStateSoftDeleted      InstanceVmState = "soft-deleted"
-	InstanceVmStateStopped          InstanceVmState = "stopped"
-	InstanceVmStateSuspended        InstanceVmState = "suspended"
+	InstanceRegionalVmStateActive           InstanceRegionalVmState = "active"
+	InstanceRegionalVmStateBuilding         InstanceRegionalVmState = "building"
+	InstanceRegionalVmStateDeleted          InstanceRegionalVmState = "deleted"
+	InstanceRegionalVmStateError            InstanceRegionalVmState = "error"
+	InstanceRegionalVmStatePaused           InstanceRegionalVmState = "paused"
+	InstanceRegionalVmStateRescued          InstanceRegionalVmState = "rescued"
+	InstanceRegionalVmStateResized          InstanceRegionalVmState = "resized"
+	InstanceRegionalVmStateShelved          InstanceRegionalVmState = "shelved"
+	InstanceRegionalVmStateShelvedOffloaded InstanceRegionalVmState = "shelved_offloaded"
+	InstanceRegionalVmStateSoftDeleted      InstanceRegionalVmState = "soft-deleted"
+	InstanceRegionalVmStateStopped          InstanceRegionalVmState = "stopped"
+	InstanceRegionalVmStateSuspended        InstanceRegionalVmState = "suspended"
 )
 
-type InstanceVolume struct {
+type InstanceRegionalVolume struct {
 	// Volume ID
 	ID string `json:"id" api:"required"`
 	// Whether the volume is deleted together with the VM
@@ -1333,34 +1367,16 @@ type InstanceVolume struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InstanceVolume) RawJSON() string { return r.JSON.raw }
-func (r *InstanceVolume) UnmarshalJSON(data []byte) error {
+func (r InstanceRegionalVolume) RawJSON() string { return r.JSON.raw }
+func (r *InstanceRegionalVolume) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type InstanceIsolation struct {
-	// The reason of instance isolation if it is isolated from external internet. The
-	// value is null if no reason is recorded.
-	Reason string `json:"reason" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Reason      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InstanceIsolation) RawJSON() string { return r.JSON.raw }
-func (r *InstanceIsolation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type InstanceList struct {
+type InstanceRegionalList struct {
 	// Number of objects
 	Count int64 `json:"count" api:"required"`
 	// Objects
-	Results []Instance `json:"results" api:"required"`
+	Results []InstanceRegional `json:"results" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Count       respjson.Field
@@ -1371,17 +1387,10 @@ type InstanceList struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r InstanceList) RawJSON() string { return r.JSON.raw }
-func (r *InstanceList) UnmarshalJSON(data []byte) error {
+func (r InstanceRegionalList) RawJSON() string { return r.JSON.raw }
+func (r *InstanceRegionalList) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type InstanceMetricsTimeUnit string
-
-const (
-	InstanceMetricsTimeUnitDay  InstanceMetricsTimeUnit = "day"
-	InstanceMetricsTimeUnitHour InstanceMetricsTimeUnit = "hour"
-)
 
 type InterfaceIPFamily string
 
@@ -1894,7 +1903,7 @@ func (r *NetworkDetails) UnmarshalJSON(data []byte) error {
 }
 
 // NetworkInterfaceUnion contains all possible properties and values from
-// [NetworkInterfaceInstanceInterfaceTrunkSerializer], [InstanceInterface].
+// [NetworkInterfaceInstanceInterfaceTrunkSerializer], [InstanceRegionalInterface].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type NetworkInterfaceUnion struct {
@@ -1930,7 +1939,7 @@ func (u NetworkInterfaceUnion) AsInstanceInterfaceTrunkSerializer() (v NetworkIn
 	return
 }
 
-func (u NetworkInterfaceUnion) AsInstanceInterfaceSerializer() (v InstanceInterface) {
+func (u NetworkInterfaceUnion) AsInstanceInterfaceSerializer() (v InstanceRegionalInterface) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }

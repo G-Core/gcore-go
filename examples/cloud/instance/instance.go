@@ -11,8 +11,6 @@ import (
 	"github.com/G-Core/gcore-go"
 	"github.com/G-Core/gcore-go/cloud"
 	"github.com/G-Core/gcore-go/option"
-	"github.com/G-Core/gcore-go/packages/param"
-	"github.com/G-Core/gcore-go/shared/constant"
 )
 
 func main() {
@@ -33,9 +31,29 @@ func main() {
 		log.Fatalf("GCORE_CLOUD_REGION_ID environment variable is required and must be a valid integer")
 	}
 
-	// TODO set placement group ID before running
-	placementGroupID := os.Getenv("GCORE_CLOUD_PLACEMENT_GROUP_ID")
+	// TODO set cloud network ID before running
+	networkID := os.Getenv("GCORE_CLOUD_NETWORK_ID")
+	if networkID == "" {
+		log.Fatalf("GCORE_CLOUD_NETWORK_ID environment variable is required")
+	}
 
+	// TODO set cloud subnet ID of the network before running
+	subnetID := os.Getenv("GCORE_CLOUD_SUBNET_ID")
+	if subnetID == "" {
+		log.Fatalf("GCORE_CLOUD_SUBNET_ID environment variable is required")
+	}
+
+	// TODO set image ID before running, or leave it empty to upload an Ubuntu image
+	imageID := os.Getenv("GCORE_CLOUD_IMAGE_ID")
+
+	// TODO set flavor name before running, or leave it empty to use the smallest flavor that can boot the volume
+	flavorName := os.Getenv("GCORE_CLOUD_FLAVOR_NAME")
+
+	// TODO set SSH key ID before running, or leave it empty to create the instance without a key
+	sshKeyID := os.Getenv("GCORE_CLOUD_SSH_KEY_ID")
+
+	// instances and ports take the region from their parameters. Volumes, images and metrics still take
+	// it from the client
 	client := gcore.NewClient(
 		//option.WithAPIKey(apiKey),
 		//option.WithBaseURL(baseURL),
@@ -43,78 +61,101 @@ func main() {
 		option.WithCloudRegionID(cloudRegionID),
 	)
 
-	uploadedImageID := uploadImage(&client)
-
-	instanceID := createInstance(&client, uploadedImageID)
-	instance := getInstance(&client, instanceID)
-	getConsole(&client, instanceID)
-	listInstances(&client)
-	listInstancesWithAutopager(&client)
-	updateInstance(&client, instanceID)
-	rebootInstance(&client, instanceID)
-	resizeInstance(&client, instanceID)
-
-	// Flavors
-	listFlavors(&client)
-
-	// Images
-	listImages(&client)
-	getImage(&client, uploadedImageID)
-	updateImage(&client, uploadedImageID)
-	deleteImage(&client, uploadedImageID)
-	//volumeImageID := createImageFromVolume(&client, instance.Volumes[0].ID)
-	//deleteImage(&client, volumeImageID)
-
-	// Interfaces
-	interfaces := listInterfaces(&client, instanceID)
-	detachInterface(&client, instanceID, interfaces[0].IPAssignments[0].IPAddress, interfaces[0].PortID)
-	interfaces = attachInterface(&client, instanceID, interfaces[0].NetworkID)
-	//disablePortSecurity(&client, interfaces[0].PortID)
-	//enablePortSecurity(&client, interfaces[0].PortID)
-
-	// Metrics
-	listMetrics(&client, instanceID)
-
-	// Placement groups
-	if placementGroupID != "" {
-		addToPlacementGroup(&client, instanceID, placementGroupID)
-		removeFromPlacementGroup(&client, instanceID)
+	uploadedImage := imageID == ""
+	if uploadedImage {
+		imageID = uploadImage(&client)
 	}
 
-	// Security groups
-	unassignSecurityGroup(&client, instanceID)
-	assignSecurityGroup(&client, instanceID)
+	// an instance boots from a volume and connects to networks through ports, so create them first
+	bootVolume := createBootVolume(&client, imageID)
+	port := createPort(&client, cloudRegionID, networkID, subnetID)
+	if flavorName == "" {
+		flavorName = pickFlavor(&client, cloudRegionID, bootVolume.ID)
+	}
 
-	deleteInstance(&client, instanceID, instance.Volumes)
+	instance := createInstance(&client, cloudRegionID, flavorName, bootVolume.ID, port.ID, sshKeyID)
+	getInstance(&client, instance.ID)
+	listInstances(&client, cloudRegionID)
+
+	if resizeFlavorName := pickResizeFlavor(&client, instance.ID); resizeFlavorName != "" {
+		resizeInstance(&client, instance.ID, resizeFlavorName)
+	}
+
+	getConsole(&client, instance.ID)
+	listMetrics(&client, instance.ID)
+	runAction(&client, instance.ID, cloud.InstanceActionParamsActionStop)
+	runAction(&client, instance.ID, cloud.InstanceActionParamsActionStart)
+
+	deleteInstance(&client, instance.ID, bootVolume.ID, port.ID)
+	if uploadedImage {
+		deleteImage(&client, imageID)
+	}
 }
 
-func createInstance(client *gcore.Client, imageID string) string {
+func createBootVolume(client *gcore.Client, imageID string) *cloud.Volume {
+	fmt.Println("\n=== CREATE BOOT VOLUME ===")
+
+	params := cloud.VolumeNewParams{
+		OfImage: &cloud.VolumeNewParamsBodyImage{
+			ImageID:  imageID,
+			Name:     "gcore-go-example-boot-volume",
+			Size:     10,
+			TypeName: "standard",
+			Tags:     map[string]string{"name": "gcore-go-example"},
+		},
+	}
+
+	volume, err := client.Cloud.Volumes.NewAndPoll(context.Background(), params)
+	if err != nil {
+		log.Fatalf("Error creating boot volume: %v", err)
+	}
+
+	fmt.Printf("Created Volume: ID=%s, Name=%s, Size=%d GiB, Bootable=%t\n", volume.ID, volume.Name, volume.Size, volume.Bootable)
+	fmt.Println("==========================")
+
+	return volume
+}
+
+func createPort(client *gcore.Client, regionID int64, networkID, subnetID string) *cloud.Port {
+	fmt.Println("\n=== CREATE PORT ===")
+
+	// security groups belong to the port. Set SecurityGroupIDs here, or later with Ports.UpdateAndPoll
+	params := cloud.PortNewParams{
+		RegionID:  regionID,
+		NetworkID: gcore.String(networkID),
+		IPAssignments: []cloud.PortNewParamsIPAssignment{
+			{SubnetID: subnetID},
+		},
+		Tags: map[string]string{"name": "gcore-go-example"},
+	}
+
+	port, err := client.Cloud.Ports.NewAndPoll(context.Background(), params)
+	if err != nil {
+		log.Fatalf("Error creating port: %v", err)
+	}
+
+	fmt.Printf("Created Port: ID=%s, IPAddress=%s\n", port.ID, port.IPAssignments[0].IPAddress)
+	fmt.Println("===================")
+
+	return port
+}
+
+func createInstance(client *gcore.Client, regionID int64, flavorName, bootVolumeID, portID, sshKeyID string) *cloud.Instance {
 	fmt.Println("\n=== CREATE INSTANCE ===")
 
-	interfaces := []cloud.InstanceNewParamsInterfaceUnion{
-		{OfExternal: &cloud.InstanceNewParamsInterfaceExternal{
-			Type: constant.ValueOf[constant.External](),
-		}},
-	}
-
-	volumes := []cloud.InstanceNewParamsVolumeUnion{
-		{OfImage: &cloud.InstanceNewParamsVolumeImage{
-			Name:      gcore.String("gcore-go-example-volume"),
-			Size:      gcore.Int(10),
-			TypeName:  "standard",
-			Source:    constant.ValueOf[constant.Image](),
-			ImageID:   imageID,
-			BootIndex: gcore.Int(0),
-		}},
-	}
-
 	params := cloud.InstanceNewParams{
-		Name:       gcore.String("gcore-go-example-instance"),
-		Flavor:     "g1-standard-1-2",
-		Interfaces: interfaces,
-		Volumes:    volumes,
-		Password:   gcore.String("Gcore123!"),
-		Tags:       map[string]string{"name": "gcore-go-example"},
+		RegionID:     regionID,
+		Name:         gcore.String("gcore-go-example-instance"),
+		FlavorName:   flavorName,
+		BootVolumeID: bootVolumeID,
+		// the order of the ports is the order of the network interfaces
+		Interfaces: []cloud.InstanceNewParamsInterface{
+			{PortID: portID},
+		},
+		Tags: map[string]string{"name": "gcore-go-example"},
+	}
+	if sshKeyID != "" {
+		params.SSHKeyID = gcore.String(sshKeyID)
 	}
 
 	instance, err := client.Cloud.Instances.NewAndPoll(context.Background(), params)
@@ -122,210 +163,124 @@ func createInstance(client *gcore.Client, imageID string) string {
 		log.Fatalf("Error creating instance: %v", err)
 	}
 
-	fmt.Printf("Created Instance: ID=%s, Name=%s, Status=%s\n", instance.ID, instance.Name, instance.Status)
-	fmt.Println("========================")
+	fmt.Println("Created Instance:")
+	printInstanceDetails(*instance)
+	fmt.Println("=======================")
 
-	return instance.ID
-}
-
-func getInstance(client *gcore.Client, instanceID string) *cloud.Instance {
-	fmt.Println("\n=== GET INSTANCE ===")
-
-	instance, err := client.Cloud.Instances.Get(context.Background(), instanceID, cloud.InstanceGetParams{})
-	if err != nil {
-		fmt.Printf("Error getting instance: %v\n", err)
-		return nil
-	}
-
-	fmt.Printf("Instance: ID=%s, Name=%s, Status=%s\n", instance.ID, instance.Name, instance.Status)
-	fmt.Println("====================")
 	return instance
 }
 
-func listInstances(client *gcore.Client) {
-	fmt.Println("\n=== LIST INSTANCES ===")
+func getInstance(client *gcore.Client, instanceID string) {
+	fmt.Println("\n=== GET INSTANCE ===")
 
-	params := cloud.InstanceListParams{}
-	instances, err := client.Cloud.Instances.List(context.Background(), params)
+	// the API finds the region of the instance from its ID
+	instance, err := client.Cloud.Instances.Get(context.Background(), instanceID, cloud.InstanceGetParams{})
 	if err != nil {
-		fmt.Printf("Error listing instances: %v\n", err)
-		return
+		log.Fatalf("Error getting instance: %v", err)
 	}
 
-	for i, instance := range instances.Results {
-		fmt.Printf("  %d. Instance: ID=%s, Name=%s, Status=%s\n", i+1, instance.ID, instance.Name, instance.Status)
-	}
-
-	fmt.Println("======================")
+	printInstanceDetails(*instance)
+	fmt.Println("====================")
 }
 
-func listInstancesWithAutopager(client *gcore.Client) {
-	fmt.Println("\n=== LIST INSTANCES USING AUTOPAGER ===")
+func listInstances(client *gcore.Client, regionID int64) {
+	fmt.Println("\n=== LIST INSTANCES ===")
 
 	count := 0
 
+	// without RegionIDs the list holds the instances of all regions
 	iter := client.Cloud.Instances.ListAutoPaging(context.Background(), cloud.InstanceListParams{
-		Limit: gcore.Int(10), // Process 10 items per page
+		RegionIDs: []int64{regionID},
+		OrderBy:   cloud.InstanceListParamsOrderByCreatedAtDesc,
+		Limit:     gcore.Int(10), // Process 10 items per page
 	})
 
 	for iter.Next() {
 		instance := iter.Current()
 		count++
-		fmt.Printf("  %d. Instance: ID=%s, Name=%s, Status=%s\n",
-			count, instance.ID, instance.Name, instance.Status)
+		fmt.Printf("  %d. Instance: ID=%s, Name=%s, Status=%s, RegionID=%d\n",
+			count, instance.ID, instance.Name, instance.Status, instance.RegionID)
 	}
 
 	if err := iter.Err(); err != nil {
-		fmt.Printf("Error iterating instances: %v\n", err)
-		return
+		log.Fatalf("Error iterating instances: %v", err)
 	}
 
-	fmt.Println("=======================================")
+	fmt.Println("======================")
 }
 
-func updateInstance(client *gcore.Client, instanceID string) {
-	fmt.Println("\n=== UPDATE INSTANCE ===")
-
-	params := cloud.InstanceUpdateParams{
-		Name: param.NewOpt("gcore-go-example-updated"),
-	}
-	instance, err := client.Cloud.Instances.Update(context.Background(), instanceID, params)
-	if err != nil {
-		fmt.Printf("Error updating instance: %v\n", err)
-		return
-	}
-
-	fmt.Printf("Instance updated: ID=%s, Name changed to %s\n", instance.ID, instance.Name)
-	fmt.Println("=======================")
-}
-
-func resizeInstance(client *gcore.Client, instanceID string) {
+func resizeInstance(client *gcore.Client, instanceID, flavorName string) {
 	fmt.Println("\n=== RESIZE INSTANCE ===")
 
-	params := cloud.InstanceResizeParams{
-		FlavorID: "g1-standard-2-4",
+	// a resize restarts the instance. The same call can also rename the instance, change its ports and
+	// data volumes, or move it to a placement group with PlacementGroupID
+	params := cloud.InstanceUpdateParams{
+		FlavorName: gcore.String(flavorName),
 	}
 
-	_, err := client.Cloud.Instances.ResizeAndPoll(context.Background(), instanceID, params)
+	instance, err := client.Cloud.Instances.UpdateAndPoll(context.Background(), instanceID, params)
 	if err != nil {
-		fmt.Printf("Error resizing instance: %v\n", err)
-		return
+		log.Fatalf("Error resizing instance: %v", err)
 	}
 
-	fmt.Printf("Instance resized: ID=%s, New flavor=%s\n", instanceID, params.FlavorID)
-	fmt.Println("=======================")
-}
-
-func rebootInstance(client *gcore.Client, instanceID string) {
-	fmt.Println("\n=== REBOOT INSTANCE ===")
-
-	// Reboot instance (works from active state)
-	rebootParams := cloud.InstanceActionParams{
-		OfBasicActionInstanceSerializer: &cloud.InstanceActionParamsBodyBasicActionInstanceSerializer{
-			Action: "reboot",
-		},
-	}
-	if _, err := client.Cloud.Instances.ActionAndPoll(context.Background(), instanceID, rebootParams); err != nil {
-		fmt.Printf("Error rebooting instance: %v\n", err)
-		return
-	}
-	fmt.Printf("Rebooted instance: %s\n", instanceID)
-
-	fmt.Println("=======================")
-}
-
-func assignSecurityGroup(client *gcore.Client, instanceID string) {
-	fmt.Println("\n=== ASSIGN SECURITY GROUP ===")
-
-	securityGroupParams := cloud.InstanceAssignSecurityGroupParams{Name: gcore.String("default")}
-	if err := client.Cloud.Instances.AssignSecurityGroup(context.Background(), instanceID, securityGroupParams); err != nil {
-		fmt.Printf("Error assigning security group: %v\n", err)
-		return
-	}
-
-	fmt.Printf("Assigned security group: %s\n", securityGroupParams.Name)
-	fmt.Println("==============================")
-}
-
-func unassignSecurityGroup(client *gcore.Client, instanceID string) {
-	fmt.Println("\n=== UNASSIGN SECURITY GROUP ===")
-
-	securityGroupParams := cloud.InstanceUnassignSecurityGroupParams{Name: gcore.String("default")}
-	if err := client.Cloud.Instances.UnassignSecurityGroup(context.Background(), instanceID, securityGroupParams); err != nil {
-		fmt.Printf("Error unassigning security group: %v\n", err)
-		return
-	}
-
-	fmt.Printf("Unassigned security group: %s\n", securityGroupParams.Name)
-	fmt.Println("================================")
-}
-
-func deleteInstance(client *gcore.Client, instanceID string, volumes []cloud.InstanceVolume) {
-	fmt.Println("\n=== DELETE INSTANCE ===")
-
-	// Create comma-separated string from volume IDs
-	volumesStr := ""
-	if len(volumes) > 0 {
-		volumesStr = volumes[0].ID
-		for i := 1; i < len(volumes); i++ {
-			volumesStr += "," + volumes[i].ID
-		}
-	}
-
-	params := cloud.InstanceDeleteParams{
-		DeleteFloatings: gcore.Bool(true),
-		Volumes:         gcore.String(volumesStr),
-	}
-	if err := client.Cloud.Instances.DeleteAndPoll(context.Background(), instanceID, params); err != nil {
-		log.Fatalf("Error deleting instance: %v", err)
-	}
-
-	fmt.Printf("Deleted Instance and related resources: ID=%s, Volumes=%s\n", instanceID, volumesStr)
+	fmt.Println("Resized Instance:")
+	printInstanceDetails(*instance)
 	fmt.Println("=======================")
 }
 
 func getConsole(client *gcore.Client, instanceID string) {
 	fmt.Println("\n=== GET CONSOLE ===")
 
-	params := cloud.InstanceGetConsoleParams{}
-	console, err := client.Cloud.Instances.GetConsole(context.Background(), instanceID, params)
+	console, err := client.Cloud.Instances.Console.Get(context.Background(), instanceID, cloud.InstanceConsoleGetParams{})
 	if err != nil {
-		fmt.Printf("Error getting console: %v\n", err)
-		return
+		log.Fatalf("Error getting console: %v", err)
 	}
 
-	fmt.Printf("Console: protocol=%s, type=%s, url=%s\n", console.RemoteConsole.Protocol, console.RemoteConsole.Type, console.RemoteConsole.URL)
+	fmt.Printf("Console: Protocol=%s, Type=%s, URL=%s\n", console.RemoteConsole.Protocol, console.RemoteConsole.Type, console.RemoteConsole.URL)
 	fmt.Println("===================")
 }
 
-func enablePortSecurity(client *gcore.Client, portID string) {
-	fmt.Println("\n=== ENABLE PORT SECURITY ===")
+func runAction(client *gcore.Client, instanceID string, action cloud.InstanceActionParamsAction) {
+	fmt.Printf("\n=== %s INSTANCE ===\n", strings.ToUpper(string(action)))
 
-	if _, err := client.Cloud.Instances.EnablePortSecurity(context.Background(), portID, cloud.InstanceEnablePortSecurityParams{}); err != nil {
-		if strings.Contains(err.Error(), "public network port") {
-			fmt.Printf("Skipping port security enable: Cannot change port security on public network ports (port: %s)\n", portID)
-		} else {
-			fmt.Printf("Error enabling port security: %v\n", err)
-		}
-	} else {
-		fmt.Printf("Enabled port security for port: %s\n", portID)
+	params := cloud.InstanceActionParams{
+		Action: action,
 	}
 
-	fmt.Println("=============================")
+	instance, err := client.Cloud.Instances.ActionAndPoll(context.Background(), instanceID, params)
+	if err != nil {
+		log.Fatalf("Error running action %s: %v", action, err)
+	}
+
+	fmt.Printf("Ran action %s: ID=%s, Status=%s\n", action, instance.ID, instance.Status)
+	fmt.Println("========================")
 }
 
-func disablePortSecurity(client *gcore.Client, portID string) {
-	fmt.Println("\n=== DISABLE PORT SECURITY ===")
+func deleteInstance(client *gcore.Client, instanceID, bootVolumeID, portID string) {
+	fmt.Println("\n=== DELETE INSTANCE ===")
 
-	if _, err := client.Cloud.Instances.DisablePortSecurity(context.Background(), portID, cloud.InstanceDisablePortSecurityParams{}); err != nil {
-		if strings.Contains(err.Error(), "public network port") {
-			fmt.Printf("Skipping port security disable: Cannot change port security on public network ports (port: %s)\n", portID)
-		} else {
-			fmt.Printf("Error disabling port security: %v\n", err)
-		}
-	} else {
-		fmt.Printf("Disabled port security for port: %s\n", portID)
+	// by default the delete keeps the volumes, ports and floating IPs of the instance. Name the ones to
+	// delete, or set AllVolumes, AllPorts and AllFloatingIPs
+	params := cloud.InstanceDeleteParams{
+		VolumeIDs: []string{bootVolumeID},
+		PortIDs:   []string{portID},
 	}
 
-	fmt.Println("==============================")
+	if err := client.Cloud.Instances.DeleteAndPoll(context.Background(), instanceID, params); err != nil {
+		log.Fatalf("Error deleting instance: %v", err)
+	}
+
+	fmt.Printf("Deleted Instance with its boot volume and port: ID=%s, VolumeID=%s, PortID=%s\n", instanceID, bootVolumeID, portID)
+	fmt.Println("=======================")
+}
+
+func printInstanceDetails(instance cloud.Instance) {
+	fmt.Printf("  ID=%s, Name=%s, Status=%s, RegionID=%d\n", instance.ID, instance.Name, instance.Status, instance.RegionID)
+	fmt.Printf("  FlavorName=%s, BootVolumeID=%s\n", instance.FlavorName, instance.BootVolumeID)
+	for _, iface := range instance.Interfaces {
+		fmt.Printf("  Interface: PortID=%s, NetworkID=%s\n", iface.PortID, iface.NetworkID)
+		for _, ipAssignment := range iface.IPAssignments {
+			fmt.Printf("    IP assignment: IPAddress=%s, SubnetID=%s\n", ipAssignment.IPAddress, ipAssignment.SubnetID)
+		}
+	}
 }

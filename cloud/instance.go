@@ -18,11 +18,10 @@ import (
 	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
-	"github.com/G-Core/gcore-go/shared/constant"
 )
 
-// Instances are cloud virtual machines with configurable CPU, memory, storage, and
-// networking, supporting various operating systems and workloads.
+// Instances are cloud virtual machines that boot from a volume and connect to
+// networks through ports, in any region of the project.
 //
 // InstanceService contains methods and other services that help with interacting
 // with the gcore API.
@@ -31,11 +30,12 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewInstanceService] method instead.
 type InstanceService struct {
-	Options []option.RequestOption
-	// Instance flavors define available CPU, memory, and disk configurations for
-	// creating cloud instances.
-	Flavors    InstanceFlavorService
-	Interfaces InstanceInterfaceService
+	Options       []option.RequestOption
+	Console       InstanceConsoleService
+	ResizeFlavors InstanceResizeFlavorService
+	// Instance flavors define the CPU, memory, and OS type of an instance, in all
+	// regions of the project.
+	Flavors InstanceFlavorService
 	// Instance images are operating system images (public, private, or shared) used to
 	// boot cloud instances.
 	Images  InstanceImageService
@@ -48,40 +48,38 @@ type InstanceService struct {
 func NewInstanceService(opts ...option.RequestOption) (r InstanceService) {
 	r = InstanceService{}
 	r.Options = opts
+	r.Console = NewInstanceConsoleService(opts...)
+	r.ResizeFlavors = NewInstanceResizeFlavorService(opts...)
 	r.Flavors = NewInstanceFlavorService(opts...)
-	r.Interfaces = NewInstanceInterfaceService(opts...)
 	r.Images = NewInstanceImageService(opts...)
 	r.Metrics = NewInstanceMetricService(opts...)
 	return
 }
 
-// Use
-// [POST /v1/projects/{`project_id`}/instances](#operation/GlobalInstanceListView.post)
-// instead. This route continues to work. Later, we will deprecate it and then
-// remove it. We will tell you in advance.
+// Create a virtual instance that boots from a volume. The instance uses a volume
+// and ports that you create first, in the region of the instance.
 //
-// Create an instance with specified configuration.
+// To create one:
 //
-// How to get access:
+//  1. Pick an image with [List images](#operation/ImagesViewSet.get).
+//  2. [Create a volume](#operation/VolumeViewSet.post) from the image. Wait until
+//     its status is `available`.
+//  3. Pick a flavor with
+//     [List instance flavors](#operation/GlobalInstanceFlavorListView.get). Send
+//     `compatible_with_boot_volume_id` to get only the flavors that can boot the
+//     volume.
+//  4. [Create a port](#operation/GlobalPortListView.post). A body with only
+//     `region_id` gives one public IPv4 address.
 //
-// For Linux,
+// You can also attach more volumes, put the instance in a
+// [placement group](#operation/GlobalPlacementGroupListView.post), and add an
+// [SSH key](/docs/api-reference/cloud/ssh-keys/add-or-generate-ssh-key).
 //
-//   - Use the `user_data` field to provide a
-//     [cloud-init script](https://cloudinit.readthedocs.io/en/latest/reference/examples.html)
-//     in base64 to apply configurations to the instance.
-//   - Specify the `username` and `password` to create a new user.
-//   - When only `password` is provided, it is set as the password for the default
-//     user of the image.
-//   - The `user_data` is ignored when the `password` is specified.
+// The response holds the IDs of the tasks that create the instance.
 //
-// For Windows,
-//
-//   - Use the `user_data` field to provide a
-//     [cloudbase-init script](https://cloudbase-init.readthedocs.io/en/latest/userdata.html#cloud-config)
-//     in base64 to create new users on Windows.
-//   - Use the `password` field to set the password for the 'Admin' user on Windows.
-//   - The password of the Admin user cannot be updated via `user_data`.
-//   - The `username` cannot be specified in the request.
+// With `?dry_run=true` the request runs every check and changes nothing. The
+// response holds an empty `tasks` array. A failed check returns the same error as
+// the real create.
 func (r *InstanceService) New(ctx context.Context, params InstanceNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -89,58 +87,64 @@ func (r *InstanceService) New(ctx context.Context, params InstanceNewParams, opt
 		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return nil, err
 	}
-	if !params.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("cloud/v2/instances/%v/%v", params.ProjectID.Value, params.RegionID.Value)
+	path := fmt.Sprintf("cloud/v1/projects/%v/instances", params.ProjectID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
-// Use
-// [PATCH /v1/projects/{`project_id`}/instances/{`instance_id`}](#operation/GlobalInstanceDetailView.patch)
-// instead. This route continues to work. Later, we will deprecate it and then
-// remove it. We will tell you in advance.
+// Send only the fields to change. One task makes all the changes. A field with the
+// current value changes nothing.
 //
-// Rename instance or update tags
-func (r *InstanceService) Update(ctx context.Context, instanceID string, params InstanceUpdateParams, opts ...option.RequestOption) (res *Instance, err error) {
+//   - Rename: send `name`.
+//   - Resize: send `flavor_name`. Pick it with
+//     [List instance resize flavors](#operation/GlobalInstanceResizeFlavorListView.get).
+//     A resize restarts the instance.
+//   - Add a port: [create a port](#operation/GlobalPortListView.post). Then send
+//     `interfaces` with the current ports in their current order and the new port at
+//     the end.
+//   - Remove a port: send `interfaces` without that port. The port stays and you can
+//     use it again. For a port change, the instance `status` must be `active` or
+//     `stopped`. Resume a suspended instance first.
+//   - Attach or detach a data volume: send the full list in `data_volume_ids`. A new
+//     volume must be `available`.
+//   - Move to a [placement group](#operation/GlobalPlacementGroupListView.post):
+//     send `placement_group_id`. Send `null` to remove the instance from its group.
+//     The instance `status` must be `active`. The instance can move to another host.
+//   - Change tags: send `tags` as a JSON Merge Patch.
+//
+// To change the security groups,
+// [update the ports](#operation/GlobalPortDetailView.patch). You cannot change
+// `boot_volume_id` or `ssh_key_id`. To change them, create a new instance.
+//
+// With `?dry_run=true` the request runs every check and changes nothing. The
+// response holds an empty `tasks` array. A failed check returns the same error as
+// the real update. If a resize exceeds a quota, the error names every quota that
+// it exceeds.
+func (r *InstanceService) Update(ctx context.Context, instanceID string, params InstanceUpdateParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return nil, err
-	}
-	if !params.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
 		return nil, err
 	}
 	if instanceID == "" {
 		err = errors.New("missing required instance_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("cloud/v1/instances/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, instanceID)
+	path := fmt.Sprintf("cloud/v1/projects/%v/instances/%s", params.ProjectID.Value, instanceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return res, err
 }
 
-// Use
-// [GET /v1/projects/{`project_id`}/instances](#operation/GlobalInstanceListView.get)
-// instead. This route continues to work. Later, we will deprecate it and then
-// remove it. We will tell you in advance.
-//
-// List all instances in the specified project and region. Results can be filtered
-// by various parameters like name, status, and IP address.
+// List a project's instances across all regions.
 func (r *InstanceService) List(ctx context.Context, params InstanceListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Instance], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -150,16 +154,11 @@ func (r *InstanceService) List(ctx context.Context, params InstanceListParams, o
 		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return nil, err
 	}
-	if !params.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("cloud/v1/instances/%v/%v", params.ProjectID.Value, params.RegionID.Value)
+	path := fmt.Sprintf("cloud/v1/projects/%v/instances", params.ProjectID.Value)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -172,62 +171,62 @@ func (r *InstanceService) List(ctx context.Context, params InstanceListParams, o
 	return res, nil
 }
 
-// Use
-// [GET /v1/projects/{`project_id`}/instances](#operation/GlobalInstanceListView.get)
-// instead. This route continues to work. Later, we will deprecate it and then
-// remove it. We will tell you in advance.
-//
-// List all instances in the specified project and region. Results can be filtered
-// by various parameters like name, status, and IP address.
+// List a project's instances across all regions.
 func (r *InstanceService) ListAutoPaging(ctx context.Context, params InstanceListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Instance] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
-// Use
-// [DELETE /v1/projects/{`project_id`}/instances/{`instance_id`}](#operation/GlobalInstanceDetailView.delete)
-// instead. This route continues to work. Later, we will deprecate it and then
-// remove it. We will tell you in advance.
+// Cascade-delete volumes, ports, floating IPs based on preservation params. By
+// default, all are preserved (detached/disassociated).
 //
-// Delete the instance and its ports. A reserved fixed IP stays, unless
-// `reserved_fixed_ips` names it. A port that you
-// [create as a port](#operation/GlobalPortListView.post) is not a reserved fixed
-// IP, so this delete removes it.
+// `resources_to_delete` holds:
 //
-// To keep the ports, use
-// [`DELETE /v1/projects/{project_id}/instances/{instance_id}`](#operation/GlobalInstanceDetailView.delete).
-// That delete keeps every port by default.
-func (r *InstanceService) Delete(ctx context.Context, instanceID string, params InstanceDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+//   - the instance itself;
+//   - the volumes that `volume_ids` names, or every volume if `all_volumes` is
+//     `true`, and the snapshots of these volumes;
+//   - the ports that `port_ids` names, or every port if `all_ports` is `true`, and
+//     the sub-ports of their trunks;
+//   - the floating IPs that `floating_ip_ids` names, or every floating IP if
+//     `all_floating_ips` is `true`.
+//
+// `resources_to_preserve` holds every other volume, port, sub-port and floating IP
+// of the instance. A floating IP on a deleted port stays, with no port.
+//
+// [`DELETE /v1/instances/{project_id}/{region_id}/{instance_id}`](#operation/InstanceInstanceViewSet.delete)
+// is different. It deletes every port, except the reserved fixed IPs that
+// `reserved_fixed_ips` does not name.
+//
+// With `?dry_run=true` the request runs every check and changes nothing. The
+// response holds an empty `tasks` array and the same two lists. A failed check
+// returns the same error as the real delete.
+func (r *InstanceService) Delete(ctx context.Context, instanceID string, params InstanceDeleteParams, opts ...option.RequestOption) (res *InstanceDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return nil, err
-	}
-	if !params.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
 		return nil, err
 	}
 	if instanceID == "" {
 		err = errors.New("missing required instance_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("cloud/v1/instances/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, instanceID)
+	path := fmt.Sprintf("cloud/v1/projects/%v/instances/%s", params.ProjectID.Value, instanceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, params, &res, opts...)
 	return res, err
 }
 
-// Use
-// [POST /v1/projects/{`project_id`}/instances/{`instance_id`}/action](#operation/GlobalInstanceActionView.post)
-// instead. This route continues to work. Later, we will deprecate it and then
-// remove it. We will tell you in advance.
+// Change the power state of an instance. The action is one of: `start`, `stop`,
+// `reboot`, `reboot_hard`, `suspend` or `resume`. The action does not change the
+// Advanced DDoS profile of the instance. Use the DDoS profile resource to activate
+// or to deactivate protection. Returns the ID of the task that runs the action.
 //
-// The action can be one of: start, stop, reboot, `reboot_hard`, suspend or resume.
-// Suspend and resume are not available for bare metal instances.
+// With `?dry_run=true` the request runs every check and changes nothing. The
+// response holds an empty `tasks` array. A failed check returns the same error as
+// the real action.
 func (r *InstanceService) Action(ctx context.Context, instanceID string, params InstanceActionParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -235,162 +234,20 @@ func (r *InstanceService) Action(ctx context.Context, instanceID string, params 
 		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return nil, err
-	}
-	if !params.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
 		return nil, err
 	}
 	if instanceID == "" {
 		err = errors.New("missing required instance_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("cloud/v2/instances/%v/%v/%s/action", params.ProjectID.Value, params.RegionID.Value, instanceID)
+	path := fmt.Sprintf("cloud/v1/projects/%v/instances/%s/action", params.ProjectID.Value, instanceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
-// Use
-// [PATCH /v1/projects/{`project_id`}/instances/{`instance_id`}](#operation/GlobalInstanceDetailView.patch)
-// instead. Send `placement_group_id`. This route continues to work. Later, we will
-// deprecate it and then remove it. We will tell you in advance.
-//
-// Add an instance to a placement group. The instance must not already be in a
-// placement group. Bare metal servers do not support placement groups.
-func (r *InstanceService) AddToPlacementGroup(ctx context.Context, instanceID string, params InstanceAddToPlacementGroupParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return nil, err
-	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.Valid() {
-		err = errors.New("missing required project_id parameter")
-		return nil, err
-	}
-	if !params.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return nil, err
-	}
-	if instanceID == "" {
-		err = errors.New("missing required instance_id parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("cloud/v1/instances/%v/%v/%s/put_into_servergroup", params.ProjectID.Value, params.RegionID.Value, instanceID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return res, err
-}
-
-// Use
-// [PATCH /v1/projects/{`project_id`}/ports/{`port_id`}](#operation/GlobalPortDetailView.patch)
-// instead. Send `security_group_ids`. This route continues to work. Later, we will
-// deprecate it and then remove it. We will tell you in advance.
-//
-// Assign the security group to the server. To assign multiple security groups to
-// all ports, use the NULL value for the `port_id` field
-func (r *InstanceService) AssignSecurityGroup(ctx context.Context, instanceID string, params InstanceAssignSecurityGroupParams, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return err
-	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.Valid() {
-		err = errors.New("missing required project_id parameter")
-		return err
-	}
-	if !params.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return err
-	}
-	if instanceID == "" {
-		err = errors.New("missing required instance_id parameter")
-		return err
-	}
-	path := fmt.Sprintf("cloud/v1/instances/%v/%v/%s/addsecuritygroup", params.ProjectID.Value, params.RegionID.Value, instanceID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, nil, opts...)
-	return err
-}
-
-// Deprecated. Use PATCH /v1/ports/{`project_id`}/{`region_id`}/{`port_id`}
-// instead.
-//
-// Deprecated: deprecated
-func (r *InstanceService) DisablePortSecurity(ctx context.Context, portID string, body InstanceDisablePortSecurityParams, opts ...option.RequestOption) (res *InstanceInterface, err error) {
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return nil, err
-	}
-	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.Valid() {
-		err = errors.New("missing required project_id parameter")
-		return nil, err
-	}
-	if !body.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return nil, err
-	}
-	if portID == "" {
-		err = errors.New("missing required port_id parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("cloud/v1/ports/%v/%v/%s/disable_port_security", body.ProjectID.Value, body.RegionID.Value, portID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return res, err
-}
-
-// Deprecated. Use PATCH /v1/ports/{`project_id`}/{`region_id`}/{`port_id`}
-// instead.
-//
-// Deprecated: deprecated
-func (r *InstanceService) EnablePortSecurity(ctx context.Context, portID string, body InstanceEnablePortSecurityParams, opts ...option.RequestOption) (res *InstanceInterface, err error) {
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return nil, err
-	}
-	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.Valid() {
-		err = errors.New("missing required project_id parameter")
-		return nil, err
-	}
-	if !body.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return nil, err
-	}
-	if portID == "" {
-		err = errors.New("missing required port_id parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("cloud/v1/ports/%v/%v/%s/enable_port_security", body.ProjectID.Value, body.RegionID.Value, portID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return res, err
-}
-
-// Use
-// [GET /v1/projects/{`project_id`}/instances/{`instance_id`}](#operation/GlobalInstanceDetailView.get)
-// instead. This route continues to work. Later, we will deprecate it and then
-// remove it. We will tell you in advance.
-//
-// Retrieve detailed information about a specific instance. The response content
-// language for `ddos_profile` can be controlled via the 'language' cookie
-// parameter.
-//
-// **Cookie Parameters**:
-//
-//   - `language` (str, optional): Language for the response content. Affects the
-//     `ddos_profile` field. Supported values:
-//   - `'en'` (default)
-//   - `'de'`
+// Returns a single instance by ID, resolved across all regions.
 func (r *InstanceService) Get(ctx context.Context, instanceID string, query InstanceGetParams, opts ...option.RequestOption) (res *Instance, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -398,58 +255,16 @@ func (r *InstanceService) Get(ctx context.Context, instanceID string, query Inst
 		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return nil, err
 	}
-	if !query.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return nil, err
-	}
 	if instanceID == "" {
 		err = errors.New("missing required instance_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("cloud/v1/instances/%v/%v/%s", query.ProjectID.Value, query.RegionID.Value, instanceID)
+	path := fmt.Sprintf("cloud/v1/projects/%v/instances/%s", query.ProjectID.Value, instanceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
-}
-
-// Use
-// [GET /v1/projects/{`project_id`}/instances/{`instance_id`}/console](#operation/GlobalInstanceConsoleView.get)
-// instead. For a bare metal server, use
-// [Get bare metal server console URL](#operation/GlobalBaremetalConsoleView.get).
-// For a basic VM, use
-// [Get basic VM console URL](#operation/GlobalBasicVmConsoleView.get). This route
-// continues to work. Later, we will deprecate it and then remove it. We will tell
-// you in advance.
-//
-// Returns a URL to access the remote console for an instance. Supported console
-// types depend on instance type: novnc and spice for virtual instances, vnc and
-// serial for bare metal instances.
-func (r *InstanceService) GetConsole(ctx context.Context, instanceID string, params InstanceGetConsoleParams, opts ...option.RequestOption) (res *Console, err error) {
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return nil, err
-	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.Valid() {
-		err = errors.New("missing required project_id parameter")
-		return nil, err
-	}
-	if !params.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return nil, err
-	}
-	if instanceID == "" {
-		err = errors.New("missing required instance_id parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("cloud/v1/instances/%v/%v/%s/get_console", params.ProjectID.Value, params.RegionID.Value, instanceID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
 	return res, err
 }
 
@@ -479,135 +294,88 @@ func (r *InstanceService) Rebuild(ctx context.Context, instanceID string, params
 	return res, err
 }
 
-// Use
-// [PATCH /v1/projects/{`project_id`}/instances/{`instance_id`}](#operation/GlobalInstanceDetailView.patch)
-// instead. Send `placement_group_id`. This route continues to work. Later, we will
-// deprecate it and then remove it. We will tell you in advance.
-//
-// Remove an instance from its current placement group. The instance must be in a
-// placement group to be removed. Bare metal servers do not support placement
-// groups.
-func (r *InstanceService) RemoveFromPlacementGroup(ctx context.Context, instanceID string, body InstanceRemoveFromPlacementGroupParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return nil, err
-	}
-	requestconfig.UseDefaultParam(&body.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&body.RegionID, precfg.CloudRegionID)
-	if !body.ProjectID.Valid() {
-		err = errors.New("missing required project_id parameter")
-		return nil, err
-	}
-	if !body.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return nil, err
-	}
-	if instanceID == "" {
-		err = errors.New("missing required instance_id parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("cloud/v1/instances/%v/%v/%s/remove_from_servergroup", body.ProjectID.Value, body.RegionID.Value, instanceID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return res, err
+type Instance struct {
+	// Instance ID.
+	ID string `json:"id" api:"required" format:"uuid4"`
+	// Boot volume ID, or null for an image-backed instance.
+	BootVolumeID string `json:"boot_volume_id" api:"required" format:"uuid4"`
+	// Datetime when the instance was created.
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Non-boot attached volume IDs.
+	DataVolumeIDs []string `json:"data_volume_ids" api:"required" format:"uuid4"`
+	// Flavor name.
+	FlavorName string `json:"flavor_name" api:"required"`
+	// Attached network interfaces.
+	Interfaces []InstanceInterface `json:"interfaces" api:"required"`
+	// Service managing this instance, or null if customer-operated.
+	ManagedBy InstanceManagedBy `json:"managed_by" api:"required"`
+	// Instance name.
+	Name string `json:"name" api:"required"`
+	// Placement group this instance belongs to, or null.
+	PlacementGroupID string `json:"placement_group_id" api:"required" format:"uuid4"`
+	// Region ID.
+	RegionID int64 `json:"region_id" api:"required"`
+	// ID of the SSH key of the default user, or null.
+	SSHKeyID string `json:"ssh_key_id" api:"required" format:"uuid4"`
+	// Canonical lifecycle status.
+	//
+	// Any of "active", "deleted", "deleting", "error", "provisioning", "rebooting",
+	// "rebuilding", "resizing", "stopped", "unknown", "updating".
+	Status InstanceStatus `json:"status" api:"required"`
+	// Read-only key-value tags set by the platform.
+	SystemTags map[string]string `json:"system_tags" api:"required"`
+	// Customer-owned key-value tags.
+	Tags map[string]string `json:"tags" api:"required"`
+	// Datetime when the instance was last updated.
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		BootVolumeID     respjson.Field
+		CreatedAt        respjson.Field
+		DataVolumeIDs    respjson.Field
+		FlavorName       respjson.Field
+		Interfaces       respjson.Field
+		ManagedBy        respjson.Field
+		Name             respjson.Field
+		PlacementGroupID respjson.Field
+		RegionID         respjson.Field
+		SSHKeyID         respjson.Field
+		Status           respjson.Field
+		SystemTags       respjson.Field
+		Tags             respjson.Field
+		UpdatedAt        respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
 }
 
-// Use
-// [PATCH /v1/projects/{`project_id`}/instances/{`instance_id`}](#operation/GlobalInstanceDetailView.patch)
-// instead. Send `flavor_name`. This route continues to work. Later, we will
-// deprecate it and then remove it. We will tell you in advance.
-//
-// Change flavor of the instance.
-func (r *InstanceService) Resize(ctx context.Context, instanceID string, params InstanceResizeParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
-	opts = slices.Concat(r.Options, opts)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return nil, err
-	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.Valid() {
-		err = errors.New("missing required project_id parameter")
-		return nil, err
-	}
-	if !params.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return nil, err
-	}
-	if instanceID == "" {
-		err = errors.New("missing required instance_id parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("cloud/v1/instances/%v/%v/%s/changeflavor", params.ProjectID.Value, params.RegionID.Value, instanceID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return res, err
-}
-
-// Use
-// [PATCH /v1/projects/{`project_id`}/ports/{`port_id`}](#operation/GlobalPortDetailView.patch)
-// instead. Send `security_group_ids`. This route continues to work. Later, we will
-// deprecate it and then remove it. We will tell you in advance.
-//
-// Un-assign the security group to the server. To un-assign multiple security
-// groups to all ports, use the NULL value for the `port_id` field
-func (r *InstanceService) UnassignSecurityGroup(ctx context.Context, instanceID string, params InstanceUnassignSecurityGroupParams, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	precfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return err
-	}
-	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
-	if !params.ProjectID.Valid() {
-		err = errors.New("missing required project_id parameter")
-		return err
-	}
-	if !params.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return err
-	}
-	if instanceID == "" {
-		err = errors.New("missing required instance_id parameter")
-		return err
-	}
-	path := fmt.Sprintf("cloud/v1/instances/%v/%v/%s/delsecuritygroup", params.ProjectID.Value, params.RegionID.Value, instanceID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, nil, opts...)
-	return err
+// Returns the unmodified JSON received from the API
+func (r Instance) RawJSON() string { return r.JSON.raw }
+func (r *Instance) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type InstanceInterface struct {
-	// Group of subnet masks and/or IP addresses that share the current IP as VIP
-	AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs" api:"required"`
-	// Bodies of floating IPs that are NAT-ing IPs of this port
-	FloatingipDetails []FloatingIP `json:"floatingip_details" api:"required"`
-	// Interface name. Null when the interface has no name set.
-	InterfaceName string `json:"interface_name" api:"required"`
-	// IP addresses assigned to this port
-	IPAssignments []IPAssignment `json:"ip_assignments" api:"required"`
-	// MAC address of the virtual port
+	// Public floating IP NAT-ing this interface, if any.
+	FloatingIP string `json:"floating_ip" api:"required" format:"ipvanyaddress"`
+	// Fixed IPs assigned to the port.
+	IPAssignments []InstanceInterfaceIPAssignment `json:"ip_assignments" api:"required"`
+	// Port MAC address.
 	MacAddress string `json:"mac_address" api:"required"`
-	// Body of the network this port is attached to
-	NetworkDetails NetworkDetails `json:"network_details" api:"required"`
-	// ID of the network the port is attached to
+	// Network the port is attached to.
 	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
-	// ID of virtual ethernet port object
+	// ID of the port that connects the server to the network.
 	PortID string `json:"port_id" api:"required" format:"uuid4"`
-	// Port security status
-	PortSecurityEnabled bool `json:"port_security_enabled" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AllowedAddressPairs respjson.Field
-		FloatingipDetails   respjson.Field
-		InterfaceName       respjson.Field
-		IPAssignments       respjson.Field
-		MacAddress          respjson.Field
-		NetworkDetails      respjson.Field
-		NetworkID           respjson.Field
-		PortID              respjson.Field
-		PortSecurityEnabled respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
+		FloatingIP    respjson.Field
+		IPAssignments respjson.Field
+		MacAddress    respjson.Field
+		NetworkID     respjson.Field
+		PortID        respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -617,73 +385,188 @@ func (r *InstanceInterface) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type InstanceInterfaceIPAssignment struct {
+	// The IP address assigned to the port from the specified subnet
+	IPAddress string `json:"ip_address" api:"required" format:"ipvanyaddress"`
+	// ID of the subnet that allocated the IP
+	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		IPAddress   respjson.Field
+		SubnetID    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InstanceInterfaceIPAssignment) RawJSON() string { return r.JSON.raw }
+func (r *InstanceInterfaceIPAssignment) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Service managing this instance, or null if customer-operated.
+type InstanceManagedBy struct {
+	// ID of the managing resource. Null when it is not known.
+	ResourceID string `json:"resource_id" api:"required"`
+	// Name of the managing resource.
+	ResourceName string `json:"resource_name" api:"required"`
+	// Type of the managing service.
+	//
+	// Any of "k8s_cluster".
+	Type string `json:"type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ResourceID   respjson.Field
+		ResourceName respjson.Field
+		Type         respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InstanceManagedBy) RawJSON() string { return r.JSON.raw }
+func (r *InstanceManagedBy) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Canonical lifecycle status.
+type InstanceStatus string
+
+const (
+	InstanceStatusActive       InstanceStatus = "active"
+	InstanceStatusDeleted      InstanceStatus = "deleted"
+	InstanceStatusDeleting     InstanceStatus = "deleting"
+	InstanceStatusError        InstanceStatus = "error"
+	InstanceStatusProvisioning InstanceStatus = "provisioning"
+	InstanceStatusRebooting    InstanceStatus = "rebooting"
+	InstanceStatusRebuilding   InstanceStatus = "rebuilding"
+	InstanceStatusResizing     InstanceStatus = "resizing"
+	InstanceStatusStopped      InstanceStatus = "stopped"
+	InstanceStatusUnknown      InstanceStatus = "unknown"
+	InstanceStatusUpdating     InstanceStatus = "updating"
+)
+
+type InstanceDeleteResponse struct {
+	// Every resource that this request deletes: the instance, and each volume,
+	// snapshot, port and floating IP that goes with it. Sorted by `type`, then by
+	// `id`.
+	ResourcesToDelete []InstanceDeleteResponseResourcesToDelete `json:"resources_to_delete" api:"required"`
+	// The volumes, ports and floating IPs of the instance that stay after the delete.
+	// Sorted by `type`, then by `id`.
+	ResourcesToPreserve []InstanceDeleteResponseResourcesToPreserve `json:"resources_to_preserve" api:"required"`
+	// List of task IDs representing asynchronous operations. Use these IDs to monitor
+	// operation progress:
+	//
+	//   - `GET /v1/tasks/{task_id}` - Check individual task status and details Poll task
+	//     status until completion (`FINISHED`/`ERROR`) before proceeding with dependent
+	//     operations.
+	Tasks []string `json:"tasks" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ResourcesToDelete   respjson.Field
+		ResourcesToPreserve respjson.Field
+		Tasks               respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InstanceDeleteResponse) RawJSON() string { return r.JSON.raw }
+func (r *InstanceDeleteResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type InstanceDeleteResponseResourcesToDelete struct {
+	// The ID of the resource.
+	ID string `json:"id" api:"required"`
+	// The name of the resource. For a floating IP, the IP address. `null` for a
+	// volume, and for a resource without a name.
+	Name string `json:"name" api:"required"`
+	// The type of the resource.
+	//
+	// Any of "floating_ips", "instances", "ports", "volume_snapshots", "volumes".
+	Type string `json:"type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InstanceDeleteResponseResourcesToDelete) RawJSON() string { return r.JSON.raw }
+func (r *InstanceDeleteResponseResourcesToDelete) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type InstanceDeleteResponseResourcesToPreserve struct {
+	// The ID of the resource.
+	ID string `json:"id" api:"required"`
+	// The name of the resource. For a floating IP, the IP address. `null` for a
+	// volume, and for a resource without a name.
+	Name string `json:"name" api:"required"`
+	// The type of the resource.
+	//
+	// Any of "floating_ips", "instances", "ports", "volume_snapshots", "volumes".
+	Type string `json:"type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InstanceDeleteResponseResourcesToPreserve) RawJSON() string { return r.JSON.raw }
+func (r *InstanceDeleteResponseResourcesToPreserve) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type InstanceNewParams struct {
-	// Project ID
+	// Project ID.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// The flavor of the instance.
-	Flavor string `json:"flavor" api:"required"`
-	// A list of network interfaces for the instance. You can create one or more
-	// interfaces - private, public, or both.
-	Interfaces []InstanceNewParamsInterfaceUnion `json:"interfaces,omitzero" api:"required"`
-	// List of volumes that will be attached to the instance.
-	Volumes []InstanceNewParamsVolumeUnion `json:"volumes,omitzero" api:"required"`
-	// Specifies the name of the SSH keypair, created via the
-	// [/v1/`ssh_keys` endpoint](/docs/api-reference/cloud/ssh-keys/add-or-generate-ssh-key).
-	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
-	// Set to `true` if creating the instance from an `apptemplate`. This allows
-	// application ports in the security group for instances created from a marketplace
-	// application template.
-	AllowAppPorts param.Opt[bool] `json:"allow_app_ports,omitzero"`
-	// Instance name.
+	// Pre-created boot volume UUID.
+	BootVolumeID string `json:"boot_volume_id" api:"required" format:"uuid4"`
+	// Name of an instance flavor with no GPU. Use
+	// `GET /v1/projects/{project_id}/instances/flavors` to list them.
+	FlavorName string `json:"flavor_name" api:"required"`
+	// Pre-created ports to attach, in NIC/boot order.
+	Interfaces []InstanceNewParamsInterface `json:"interfaces,omitzero" api:"required"`
+	// Region to provision the instance in.
+	RegionID int64 `json:"region_id" api:"required"`
+	// Run every check of the real request and change nothing. The response has the
+	// status code and the schema of the real call, and an empty list of tasks. With
+	// `false`, the default, the request does the operation.
+	DryRun param.Opt[bool] `query:"dry_run,omitzero" json:"-"`
+	// Instance name. If you omit it, the name template of the account gives the name.
+	// Without a template, the name is generated. The account can forbid custom names.
+	// Then the name must be equal to the name that the template gives.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// If you want the instance name to be automatically generated based on IP
-	// addresses, you can provide a name template instead of specifying the name
-	// manually. The template should include a placeholder that will be replaced during
-	// provisioning. Supported placeholders are: `{ip_octets}` (last 3 octets of the
-	// IP), `{two_ip_octets}`, and `{one_ip_octet}`.
-	NameTemplate param.Opt[string] `json:"name_template,omitzero"`
-	// For Linux instances, 'username' and 'password' are used to create a new user.
-	// When only 'password' is provided, it is set as the password for the default user
-	// of the image. For Windows instances, 'username' cannot be specified. Use the
-	// 'password' field to set the password for the 'Admin' user on Windows. Use the
-	// 'user_data' field to provide a script to create new users on Windows. The
-	// password of the Admin user cannot be updated via 'user_data'.
-	Password param.Opt[string] `json:"password,omitzero"`
-	// Placement group ID for instance placement policy.
-	//
-	// Supported group types:
-	//
-	//   - `anti-affinity`: Ensures instances are placed on different hosts for high
-	//     availability.
-	//   - `affinity`: Places instances on the same host for low-latency communication.
-	//   - `soft-anti-affinity`: Tries to place instances on different hosts but allows
-	//     sharing if needed.
-	ServergroupID param.Opt[string] `json:"servergroup_id,omitzero" format:"uuid4"`
-	// String in base64 format. For Linux instances, 'user_data' is ignored when
-	// 'password' field is provided. For Windows instances, Admin user password is set
-	// by 'password' field and cannot be updated via 'user_data'. Examples of the
-	// `user_data`: https://cloudinit.readthedocs.io/en/latest/topics/examples.html
+	// Password of the default user. No response returns it. A Windows image needs a
+	// password. For a Windows image, the create checks these rules: the password has a
+	// minimum of 6 characters, it contains no word 'admin', and it contains 3 of these
+	// character types: digits, lowercase letters, uppercase letters, other characters.
+	// For a Linux image, the password enables SSH login with a password. Send
+	// `password` or `user_data`, not both.
+	Password param.Opt[string] `json:"password,omitzero" format:"password"`
+	// Pre-created placement group UUID for affinity/anti-affinity.
+	PlacementGroupID param.Opt[string] `json:"placement_group_id,omitzero" format:"uuid4"`
+	// ID of the SSH key to add to the default user.
+	SSHKeyID param.Opt[string] `json:"ssh_key_id,omitzero" format:"uuid4"`
+	// cloud-init user data, raw or base64. Up to 65535 bytes once decoded.
 	UserData param.Opt[string] `json:"user_data,omitzero"`
-	// For Linux instances, 'username' and 'password' are used to create a new user.
-	// For Windows instances, 'username' cannot be specified. Use 'password' field to
-	// set the password for the 'Admin' user on Windows.
-	Username param.Opt[string] `json:"username,omitzero"`
-	// Parameters for the application template if creating the instance from an
-	// `apptemplate`.
-	Configuration map[string]any `json:"configuration,omitzero"`
-	// Deprecated. Use per-interface `security_groups` inside `interfaces[]` instead.
-	// Cannot be combined with per-interface `security_groups`. If omitted everywhere,
-	// the project's default security group is applied.
-	SecurityGroups []InstanceNewParamsSecurityGroup `json:"security_groups,omitzero"`
-	// Key-value tags to associate with the resource. A tag is a key-value pair that
-	// can be associated with a resource, enabling efficient filtering and grouping for
-	// better organization and management. Both tag keys and values have a maximum
-	// length of 255 characters. Tag keys and values cannot contain characters from
-	// U+0080 to U+00FF. Some tags are read-only and cannot be modified by the user.
-	// Tags are also integrated with cost reports, allowing cost data to be filtered
-	// based on tag keys or values.
+	// Pre-created data volume UUIDs to attach.
+	DataVolumeIDs []string `json:"data_volume_ids,omitzero" format:"uuid4"`
+	// Customer-owned key-value tags.
 	Tags map[string]string `json:"tags,omitzero"`
 	paramObj
 }
@@ -696,1211 +579,51 @@ func (r *InstanceNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type InstanceNewParamsInterfaceUnion struct {
-	OfExternal        *InstanceNewParamsInterfaceExternal        `json:",omitzero,inline"`
-	OfSubnet          *InstanceNewParamsInterfaceSubnet          `json:",omitzero,inline"`
-	OfAnySubnet       *InstanceNewParamsInterfaceAnySubnet       `json:",omitzero,inline"`
-	OfReservedFixedIP *InstanceNewParamsInterfaceReservedFixedIP `json:",omitzero,inline"`
-	paramUnion
+// URLQuery serializes [InstanceNewParams]'s query parameters as `url.Values`.
+func (r InstanceNewParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
 
-func (u InstanceNewParamsInterfaceUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfExternal, u.OfSubnet, u.OfAnySubnet, u.OfReservedFixedIP)
-}
-func (u *InstanceNewParamsInterfaceUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *InstanceNewParamsInterfaceUnion) asAny() any {
-	if !param.IsOmitted(u.OfExternal) {
-		return u.OfExternal
-	} else if !param.IsOmitted(u.OfSubnet) {
-		return u.OfSubnet
-	} else if !param.IsOmitted(u.OfAnySubnet) {
-		return u.OfAnySubnet
-	} else if !param.IsOmitted(u.OfReservedFixedIP) {
-		return u.OfReservedFixedIP
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsInterfaceUnion) GetSubnetID() *string {
-	if vt := u.OfSubnet; vt != nil {
-		return &vt.SubnetID
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsInterfaceUnion) GetIPAddress() *string {
-	if vt := u.OfAnySubnet; vt != nil && vt.IPAddress.Valid() {
-		return &vt.IPAddress.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsInterfaceUnion) GetPortID() *string {
-	if vt := u.OfReservedFixedIP; vt != nil {
-		return &vt.PortID
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsInterfaceUnion) GetType() *string {
-	if vt := u.OfExternal; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfSubnet; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfAnySubnet; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfReservedFixedIP; vt != nil {
-		return (*string)(&vt.Type)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsInterfaceUnion) GetInterfaceName() *string {
-	if vt := u.OfExternal; vt != nil && vt.InterfaceName.Valid() {
-		return &vt.InterfaceName.Value
-	} else if vt := u.OfSubnet; vt != nil && vt.InterfaceName.Valid() {
-		return &vt.InterfaceName.Value
-	} else if vt := u.OfAnySubnet; vt != nil && vt.InterfaceName.Valid() {
-		return &vt.InterfaceName.Value
-	} else if vt := u.OfReservedFixedIP; vt != nil && vt.InterfaceName.Valid() {
-		return &vt.InterfaceName.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsInterfaceUnion) GetIPFamily() *string {
-	if vt := u.OfExternal; vt != nil {
-		return (*string)(&vt.IPFamily)
-	} else if vt := u.OfAnySubnet; vt != nil {
-		return (*string)(&vt.IPFamily)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsInterfaceUnion) GetNetworkID() *string {
-	if vt := u.OfSubnet; vt != nil {
-		return (*string)(&vt.NetworkID)
-	} else if vt := u.OfAnySubnet; vt != nil {
-		return (*string)(&vt.NetworkID)
-	}
-	return nil
-}
-
-// Returns a subunion which exports methods to access subproperties
-//
-// Or use AsAny() to get the underlying value
-func (u InstanceNewParamsInterfaceUnion) GetSecurityGroups() (res instanceNewParamsInterfaceUnionSecurityGroups) {
-	if vt := u.OfExternal; vt != nil {
-		res.any = &vt.SecurityGroups
-	} else if vt := u.OfSubnet; vt != nil {
-		res.any = &vt.SecurityGroups
-	} else if vt := u.OfAnySubnet; vt != nil {
-		res.any = &vt.SecurityGroups
-	} else if vt := u.OfReservedFixedIP; vt != nil {
-		res.any = &vt.SecurityGroups
-	}
-	return
-}
-
-// Can have the runtime types [_[]InstanceNewParamsInterfaceExternalSecurityGroup],
-// [_[]InstanceNewParamsInterfaceSubnetSecurityGroup],
-// [_[]InstanceNewParamsInterfaceAnySubnetSecurityGroup],
-// [_[]InstanceNewParamsInterfaceReservedFixedIPSecurityGroup]
-type instanceNewParamsInterfaceUnionSecurityGroups struct{ any }
-
-// Use the following switch statement to get the type of the union:
-//
-//	switch u.AsAny().(type) {
-//	case *[]cloud.InstanceNewParamsInterfaceExternalSecurityGroup:
-//	case *[]cloud.InstanceNewParamsInterfaceSubnetSecurityGroup:
-//	case *[]cloud.InstanceNewParamsInterfaceAnySubnetSecurityGroup:
-//	case *[]cloud.InstanceNewParamsInterfaceReservedFixedIPSecurityGroup:
-//	default:
-//	    fmt.Errorf("not present")
-//	}
-func (u instanceNewParamsInterfaceUnionSecurityGroups) AsAny() any { return u.any }
-
-// Returns a subunion which exports methods to access subproperties
-//
-// Or use AsAny() to get the underlying value
-func (u InstanceNewParamsInterfaceUnion) GetFloatingIP() (res instanceNewParamsInterfaceUnionFloatingIP) {
-	if vt := u.OfSubnet; vt != nil {
-		res.any = vt.FloatingIP.asAny()
-	} else if vt := u.OfAnySubnet; vt != nil {
-		res.any = vt.FloatingIP.asAny()
-	} else if vt := u.OfReservedFixedIP; vt != nil {
-		res.any = vt.FloatingIP.asAny()
-	}
-	return
-}
-
-// Can have the runtime types [*InstanceNewParamsInterfaceSubnetFloatingIPNew],
-// [*InstanceNewParamsInterfaceSubnetFloatingIPExisting],
-// [*InstanceNewParamsInterfaceAnySubnetFloatingIPNew],
-// [*InstanceNewParamsInterfaceAnySubnetFloatingIPExisting],
-// [*InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew],
-// [*InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting]
-type instanceNewParamsInterfaceUnionFloatingIP struct{ any }
-
-// Use the following switch statement to get the type of the union:
-//
-//	switch u.AsAny().(type) {
-//	case *cloud.InstanceNewParamsInterfaceSubnetFloatingIPNew:
-//	case *cloud.InstanceNewParamsInterfaceSubnetFloatingIPExisting:
-//	case *cloud.InstanceNewParamsInterfaceAnySubnetFloatingIPNew:
-//	case *cloud.InstanceNewParamsInterfaceAnySubnetFloatingIPExisting:
-//	case *cloud.InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew:
-//	case *cloud.InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting:
-//	default:
-//	    fmt.Errorf("not present")
-//	}
-func (u instanceNewParamsInterfaceUnionFloatingIP) AsAny() any { return u.any }
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u instanceNewParamsInterfaceUnionFloatingIP) GetSource() *string {
-	switch vt := u.any.(type) {
-	case *InstanceNewParamsInterfaceSubnetFloatingIPUnion:
-		return vt.GetSource()
-	case *InstanceNewParamsInterfaceAnySubnetFloatingIPUnion:
-		return vt.GetSource()
-	case *InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion:
-		return vt.GetSource()
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u instanceNewParamsInterfaceUnionFloatingIP) GetExistingFloatingID() *string {
-	switch vt := u.any.(type) {
-	case *InstanceNewParamsInterfaceSubnetFloatingIPUnion:
-		return vt.GetExistingFloatingID()
-	case *InstanceNewParamsInterfaceAnySubnetFloatingIPUnion:
-		return vt.GetExistingFloatingID()
-	case *InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion:
-		return vt.GetExistingFloatingID()
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[InstanceNewParamsInterfaceUnion](
-		"type",
-		apijson.Discriminator[InstanceNewParamsInterfaceExternal]("external"),
-		apijson.Discriminator[InstanceNewParamsInterfaceSubnet]("subnet"),
-		apijson.Discriminator[InstanceNewParamsInterfaceAnySubnet]("any_subnet"),
-		apijson.Discriminator[InstanceNewParamsInterfaceReservedFixedIP]("reserved_fixed_ip"),
-	)
-}
-
-// Instance will be attached to default external network
-//
-// The property Type is required.
-type InstanceNewParamsInterfaceExternal struct {
-	// Interface name. Defaults to `null` and is returned as `null` in the API response
-	// if not set.
-	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// Specify `ipv4`, `ipv6`, or `dual` to enable both.
-	//
-	// Any of "dual", "ipv4", "ipv6".
-	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
-	// Security group UUIDs applied to this interface. If omitted (or empty), the
-	// top-level `security_groups` value applies; if both are omitted, the project's
-	// default security group is applied.
-	SecurityGroups []InstanceNewParamsInterfaceExternalSecurityGroup `json:"security_groups,omitzero"`
-	// A public IP address will be assigned to the instance.
-	//
-	// This field can be elided, and will marshal its zero value as "external".
-	Type constant.External `json:"type" default:"external"`
+// The property PortID is required.
+type InstanceNewParamsInterface struct {
+	// Existing port to attach. Array order is the NIC/boot order.
+	PortID string `json:"port_id" api:"required" format:"uuid4"`
 	paramObj
 }
 
-func (r InstanceNewParamsInterfaceExternal) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceExternal
+func (r InstanceNewParamsInterface) MarshalJSON() (data []byte, err error) {
+	type shadow InstanceNewParamsInterface
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *InstanceNewParamsInterfaceExternal) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The property ID is required.
-type InstanceNewParamsInterfaceExternalSecurityGroup struct {
-	// Resource ID
-	ID string `json:"id" api:"required" format:"uuid4"`
-	paramObj
-}
-
-func (r InstanceNewParamsInterfaceExternalSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceExternalSecurityGroup
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceNewParamsInterfaceExternalSecurityGroup) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The instance will get an IP address from the selected network. If you choose to
-// add a floating IP, the instance will be reachable from the internet. Otherwise,
-// it will only have a private IP within the network.
-//
-// The properties NetworkID, SubnetID, Type are required.
-type InstanceNewParamsInterfaceSubnet struct {
-	// The network where the instance will be connected.
-	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
-	// The instance will get an IP address from this subnet.
-	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
-	// Interface name. Defaults to `null` and is returned as `null` in the API response
-	// if not set.
-	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// Allows the instance to have a public IP that can be reached from the internet.
-	FloatingIP InstanceNewParamsInterfaceSubnetFloatingIPUnion `json:"floating_ip,omitzero"`
-	// Security group UUIDs applied to this interface. If omitted (or empty), the
-	// top-level `security_groups` value applies; if both are omitted, the project's
-	// default security group is applied.
-	SecurityGroups []InstanceNewParamsInterfaceSubnetSecurityGroup `json:"security_groups,omitzero"`
-	// The instance will get an IP address from the selected network. If you choose to
-	// add a floating IP, the instance will be reachable from the internet. Otherwise,
-	// it will only have a private IP within the network.
-	//
-	// This field can be elided, and will marshal its zero value as "subnet".
-	Type constant.Subnet `json:"type" default:"subnet"`
-	paramObj
-}
-
-func (r InstanceNewParamsInterfaceSubnet) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceSubnet
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceNewParamsInterfaceSubnet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type InstanceNewParamsInterfaceSubnetFloatingIPUnion struct {
-	OfNew      *InstanceNewParamsInterfaceSubnetFloatingIPNew      `json:",omitzero,inline"`
-	OfExisting *InstanceNewParamsInterfaceSubnetFloatingIPExisting `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u InstanceNewParamsInterfaceSubnetFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfNew, u.OfExisting)
-}
-func (u *InstanceNewParamsInterfaceSubnetFloatingIPUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *InstanceNewParamsInterfaceSubnetFloatingIPUnion) asAny() any {
-	if !param.IsOmitted(u.OfNew) {
-		return u.OfNew
-	} else if !param.IsOmitted(u.OfExisting) {
-		return u.OfExisting
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsInterfaceSubnetFloatingIPUnion) GetExistingFloatingID() *string {
-	if vt := u.OfExisting; vt != nil {
-		return &vt.ExistingFloatingID
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsInterfaceSubnetFloatingIPUnion) GetSource() *string {
-	if vt := u.OfNew; vt != nil {
-		return (*string)(&vt.Source)
-	} else if vt := u.OfExisting; vt != nil {
-		return (*string)(&vt.Source)
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[InstanceNewParamsInterfaceSubnetFloatingIPUnion](
-		"source",
-		apijson.Discriminator[InstanceNewParamsInterfaceSubnetFloatingIPNew]("new"),
-		apijson.Discriminator[InstanceNewParamsInterfaceSubnetFloatingIPExisting]("existing"),
-	)
-}
-
-func NewInstanceNewParamsInterfaceSubnetFloatingIPNew() InstanceNewParamsInterfaceSubnetFloatingIPNew {
-	return InstanceNewParamsInterfaceSubnetFloatingIPNew{
-		Source: "new",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewInstanceNewParamsInterfaceSubnetFloatingIPNew].
-type InstanceNewParamsInterfaceSubnetFloatingIPNew struct {
-	// A new floating IP will be created and attached to the instance. A floating IP is
-	// a public IP that makes the instance accessible from the internet, even if it
-	// only has a private IP. It works like SNAT, allowing outgoing and incoming
-	// traffic.
-	Source constant.New `json:"source" default:"new"`
-	paramObj
-}
-
-func (r InstanceNewParamsInterfaceSubnetFloatingIPNew) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceSubnetFloatingIPNew
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceNewParamsInterfaceSubnetFloatingIPNew) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties ExistingFloatingID, Source are required.
-type InstanceNewParamsInterfaceSubnetFloatingIPExisting struct {
-	// An existing available floating IP id must be specified if the source is set to
-	// `existing`
-	ExistingFloatingID string `json:"existing_floating_id" api:"required" format:"uuid4"`
-	// An existing available floating IP will be attached to the instance. A floating
-	// IP is a public IP that makes the instance accessible from the internet, even if
-	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
-	// traffic.
-	//
-	// This field can be elided, and will marshal its zero value as "existing".
-	Source constant.Existing `json:"source" default:"existing"`
-	paramObj
-}
-
-func (r InstanceNewParamsInterfaceSubnetFloatingIPExisting) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceSubnetFloatingIPExisting
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceNewParamsInterfaceSubnetFloatingIPExisting) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The property ID is required.
-type InstanceNewParamsInterfaceSubnetSecurityGroup struct {
-	// Resource ID
-	ID string `json:"id" api:"required" format:"uuid4"`
-	paramObj
-}
-
-func (r InstanceNewParamsInterfaceSubnetSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceSubnetSecurityGroup
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceNewParamsInterfaceSubnetSecurityGroup) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties NetworkID, Type are required.
-type InstanceNewParamsInterfaceAnySubnet struct {
-	// The network where the instance will be connected.
-	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
-	// Interface name. Defaults to `null` and is returned as `null` in the API response
-	// if not set.
-	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// You can specify a specific IP address from your subnet.
-	IPAddress param.Opt[string] `json:"ip_address,omitzero" format:"ipvanyaddress"`
-	// Allows the instance to have a public IP that can be reached from the internet.
-	FloatingIP InstanceNewParamsInterfaceAnySubnetFloatingIPUnion `json:"floating_ip,omitzero"`
-	// Specify `ipv4`, `ipv6`, or `dual` to enable both.
-	//
-	// Any of "dual", "ipv4", "ipv6".
-	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
-	// Security group UUIDs applied to this interface. If omitted (or empty), the
-	// top-level `security_groups` value applies; if both are omitted, the project's
-	// default security group is applied.
-	SecurityGroups []InstanceNewParamsInterfaceAnySubnetSecurityGroup `json:"security_groups,omitzero"`
-	// Instance will be attached to a subnet with the largest count of free IPs.
-	//
-	// This field can be elided, and will marshal its zero value as "any_subnet".
-	Type constant.AnySubnet `json:"type" default:"any_subnet"`
-	paramObj
-}
-
-func (r InstanceNewParamsInterfaceAnySubnet) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceAnySubnet
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceNewParamsInterfaceAnySubnet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type InstanceNewParamsInterfaceAnySubnetFloatingIPUnion struct {
-	OfNew      *InstanceNewParamsInterfaceAnySubnetFloatingIPNew      `json:",omitzero,inline"`
-	OfExisting *InstanceNewParamsInterfaceAnySubnetFloatingIPExisting `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u InstanceNewParamsInterfaceAnySubnetFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfNew, u.OfExisting)
-}
-func (u *InstanceNewParamsInterfaceAnySubnetFloatingIPUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *InstanceNewParamsInterfaceAnySubnetFloatingIPUnion) asAny() any {
-	if !param.IsOmitted(u.OfNew) {
-		return u.OfNew
-	} else if !param.IsOmitted(u.OfExisting) {
-		return u.OfExisting
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsInterfaceAnySubnetFloatingIPUnion) GetExistingFloatingID() *string {
-	if vt := u.OfExisting; vt != nil {
-		return &vt.ExistingFloatingID
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsInterfaceAnySubnetFloatingIPUnion) GetSource() *string {
-	if vt := u.OfNew; vt != nil {
-		return (*string)(&vt.Source)
-	} else if vt := u.OfExisting; vt != nil {
-		return (*string)(&vt.Source)
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[InstanceNewParamsInterfaceAnySubnetFloatingIPUnion](
-		"source",
-		apijson.Discriminator[InstanceNewParamsInterfaceAnySubnetFloatingIPNew]("new"),
-		apijson.Discriminator[InstanceNewParamsInterfaceAnySubnetFloatingIPExisting]("existing"),
-	)
-}
-
-func NewInstanceNewParamsInterfaceAnySubnetFloatingIPNew() InstanceNewParamsInterfaceAnySubnetFloatingIPNew {
-	return InstanceNewParamsInterfaceAnySubnetFloatingIPNew{
-		Source: "new",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewInstanceNewParamsInterfaceAnySubnetFloatingIPNew].
-type InstanceNewParamsInterfaceAnySubnetFloatingIPNew struct {
-	// A new floating IP will be created and attached to the instance. A floating IP is
-	// a public IP that makes the instance accessible from the internet, even if it
-	// only has a private IP. It works like SNAT, allowing outgoing and incoming
-	// traffic.
-	Source constant.New `json:"source" default:"new"`
-	paramObj
-}
-
-func (r InstanceNewParamsInterfaceAnySubnetFloatingIPNew) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceAnySubnetFloatingIPNew
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceNewParamsInterfaceAnySubnetFloatingIPNew) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties ExistingFloatingID, Source are required.
-type InstanceNewParamsInterfaceAnySubnetFloatingIPExisting struct {
-	// An existing available floating IP id must be specified if the source is set to
-	// `existing`
-	ExistingFloatingID string `json:"existing_floating_id" api:"required" format:"uuid4"`
-	// An existing available floating IP will be attached to the instance. A floating
-	// IP is a public IP that makes the instance accessible from the internet, even if
-	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
-	// traffic.
-	//
-	// This field can be elided, and will marshal its zero value as "existing".
-	Source constant.Existing `json:"source" default:"existing"`
-	paramObj
-}
-
-func (r InstanceNewParamsInterfaceAnySubnetFloatingIPExisting) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceAnySubnetFloatingIPExisting
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceNewParamsInterfaceAnySubnetFloatingIPExisting) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The property ID is required.
-type InstanceNewParamsInterfaceAnySubnetSecurityGroup struct {
-	// Resource ID
-	ID string `json:"id" api:"required" format:"uuid4"`
-	paramObj
-}
-
-func (r InstanceNewParamsInterfaceAnySubnetSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceAnySubnetSecurityGroup
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceNewParamsInterfaceAnySubnetSecurityGroup) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties PortID, Type are required.
-type InstanceNewParamsInterfaceReservedFixedIP struct {
-	// Network ID the subnet belongs to. Port will be plugged in this network.
-	PortID string `json:"port_id" api:"required"`
-	// Interface name. Defaults to `null` and is returned as `null` in the API response
-	// if not set.
-	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// Allows the instance to have a public IP that can be reached from the internet.
-	FloatingIP InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion `json:"floating_ip,omitzero"`
-	// Security group UUIDs applied to this interface. If omitted (or empty), the
-	// top-level `security_groups` value applies; if both are omitted, the project's
-	// default security group is applied.
-	SecurityGroups []InstanceNewParamsInterfaceReservedFixedIPSecurityGroup `json:"security_groups,omitzero"`
-	// An existing available reserved fixed IP will be attached to the instance. If the
-	// reserved IP is not public and you choose to add a floating IP, the instance will
-	// be accessible from the internet.
-	//
-	// This field can be elided, and will marshal its zero value as
-	// "reserved_fixed_ip".
-	Type constant.ReservedFixedIP `json:"type" default:"reserved_fixed_ip"`
-	paramObj
-}
-
-func (r InstanceNewParamsInterfaceReservedFixedIP) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceReservedFixedIP
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceNewParamsInterfaceReservedFixedIP) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion struct {
-	OfNew      *InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew      `json:",omitzero,inline"`
-	OfExisting *InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfNew, u.OfExisting)
-}
-func (u *InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion) asAny() any {
-	if !param.IsOmitted(u.OfNew) {
-		return u.OfNew
-	} else if !param.IsOmitted(u.OfExisting) {
-		return u.OfExisting
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion) GetExistingFloatingID() *string {
-	if vt := u.OfExisting; vt != nil {
-		return &vt.ExistingFloatingID
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion) GetSource() *string {
-	if vt := u.OfNew; vt != nil {
-		return (*string)(&vt.Source)
-	} else if vt := u.OfExisting; vt != nil {
-		return (*string)(&vt.Source)
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[InstanceNewParamsInterfaceReservedFixedIPFloatingIPUnion](
-		"source",
-		apijson.Discriminator[InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew]("new"),
-		apijson.Discriminator[InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting]("existing"),
-	)
-}
-
-func NewInstanceNewParamsInterfaceReservedFixedIPFloatingIPNew() InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew {
-	return InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew{
-		Source: "new",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewInstanceNewParamsInterfaceReservedFixedIPFloatingIPNew].
-type InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew struct {
-	// A new floating IP will be created and attached to the instance. A floating IP is
-	// a public IP that makes the instance accessible from the internet, even if it
-	// only has a private IP. It works like SNAT, allowing outgoing and incoming
-	// traffic.
-	Source constant.New `json:"source" default:"new"`
-	paramObj
-}
-
-func (r InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceNewParamsInterfaceReservedFixedIPFloatingIPNew) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties ExistingFloatingID, Source are required.
-type InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting struct {
-	// An existing available floating IP id must be specified if the source is set to
-	// `existing`
-	ExistingFloatingID string `json:"existing_floating_id" api:"required" format:"uuid4"`
-	// An existing available floating IP will be attached to the instance. A floating
-	// IP is a public IP that makes the instance accessible from the internet, even if
-	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
-	// traffic.
-	//
-	// This field can be elided, and will marshal its zero value as "existing".
-	Source constant.Existing `json:"source" default:"existing"`
-	paramObj
-}
-
-func (r InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceNewParamsInterfaceReservedFixedIPFloatingIPExisting) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The property ID is required.
-type InstanceNewParamsInterfaceReservedFixedIPSecurityGroup struct {
-	// Resource ID
-	ID string `json:"id" api:"required" format:"uuid4"`
-	paramObj
-}
-
-func (r InstanceNewParamsInterfaceReservedFixedIPSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsInterfaceReservedFixedIPSecurityGroup
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceNewParamsInterfaceReservedFixedIPSecurityGroup) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type InstanceNewParamsVolumeUnion struct {
-	OfNewVolume      *InstanceNewParamsVolumeNewVolume      `json:",omitzero,inline"`
-	OfImage          *InstanceNewParamsVolumeImage          `json:",omitzero,inline"`
-	OfSnapshot       *InstanceNewParamsVolumeSnapshot       `json:",omitzero,inline"`
-	OfApptemplate    *InstanceNewParamsVolumeApptemplate    `json:",omitzero,inline"`
-	OfExistingVolume *InstanceNewParamsVolumeExistingVolume `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u InstanceNewParamsVolumeUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfNewVolume,
-		u.OfImage,
-		u.OfSnapshot,
-		u.OfApptemplate,
-		u.OfExistingVolume)
-}
-func (u *InstanceNewParamsVolumeUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *InstanceNewParamsVolumeUnion) asAny() any {
-	if !param.IsOmitted(u.OfNewVolume) {
-		return u.OfNewVolume
-	} else if !param.IsOmitted(u.OfImage) {
-		return u.OfImage
-	} else if !param.IsOmitted(u.OfSnapshot) {
-		return u.OfSnapshot
-	} else if !param.IsOmitted(u.OfApptemplate) {
-		return u.OfApptemplate
-	} else if !param.IsOmitted(u.OfExistingVolume) {
-		return u.OfExistingVolume
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsVolumeUnion) GetImageID() *string {
-	if vt := u.OfImage; vt != nil {
-		return &vt.ImageID
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsVolumeUnion) GetSnapshotID() *string {
-	if vt := u.OfSnapshot; vt != nil {
-		return &vt.SnapshotID
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsVolumeUnion) GetApptemplateID() *string {
-	if vt := u.OfApptemplate; vt != nil {
-		return &vt.ApptemplateID
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsVolumeUnion) GetVolumeID() *string {
-	if vt := u.OfExistingVolume; vt != nil {
-		return &vt.VolumeID
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsVolumeUnion) GetSize() *int64 {
-	if vt := u.OfNewVolume; vt != nil {
-		return (*int64)(&vt.Size)
-	} else if vt := u.OfImage; vt != nil && vt.Size.Valid() {
-		return &vt.Size.Value
-	} else if vt := u.OfSnapshot; vt != nil {
-		return (*int64)(&vt.Size)
-	} else if vt := u.OfApptemplate; vt != nil && vt.Size.Valid() {
-		return &vt.Size.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsVolumeUnion) GetSource() *string {
-	if vt := u.OfNewVolume; vt != nil {
-		return (*string)(&vt.Source)
-	} else if vt := u.OfImage; vt != nil {
-		return (*string)(&vt.Source)
-	} else if vt := u.OfSnapshot; vt != nil {
-		return (*string)(&vt.Source)
-	} else if vt := u.OfApptemplate; vt != nil {
-		return (*string)(&vt.Source)
-	} else if vt := u.OfExistingVolume; vt != nil {
-		return (*string)(&vt.Source)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsVolumeUnion) GetAttachmentTag() *string {
-	if vt := u.OfNewVolume; vt != nil && vt.AttachmentTag.Valid() {
-		return &vt.AttachmentTag.Value
-	} else if vt := u.OfImage; vt != nil && vt.AttachmentTag.Valid() {
-		return &vt.AttachmentTag.Value
-	} else if vt := u.OfSnapshot; vt != nil && vt.AttachmentTag.Valid() {
-		return &vt.AttachmentTag.Value
-	} else if vt := u.OfApptemplate; vt != nil && vt.AttachmentTag.Valid() {
-		return &vt.AttachmentTag.Value
-	} else if vt := u.OfExistingVolume; vt != nil && vt.AttachmentTag.Valid() {
-		return &vt.AttachmentTag.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsVolumeUnion) GetDeleteOnTermination() *bool {
-	if vt := u.OfNewVolume; vt != nil && vt.DeleteOnTermination.Valid() {
-		return &vt.DeleteOnTermination.Value
-	} else if vt := u.OfImage; vt != nil && vt.DeleteOnTermination.Valid() {
-		return &vt.DeleteOnTermination.Value
-	} else if vt := u.OfSnapshot; vt != nil && vt.DeleteOnTermination.Valid() {
-		return &vt.DeleteOnTermination.Value
-	} else if vt := u.OfApptemplate; vt != nil && vt.DeleteOnTermination.Valid() {
-		return &vt.DeleteOnTermination.Value
-	} else if vt := u.OfExistingVolume; vt != nil && vt.DeleteOnTermination.Valid() {
-		return &vt.DeleteOnTermination.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsVolumeUnion) GetName() *string {
-	if vt := u.OfNewVolume; vt != nil && vt.Name.Valid() {
-		return &vt.Name.Value
-	} else if vt := u.OfImage; vt != nil && vt.Name.Valid() {
-		return &vt.Name.Value
-	} else if vt := u.OfSnapshot; vt != nil && vt.Name.Valid() {
-		return &vt.Name.Value
-	} else if vt := u.OfApptemplate; vt != nil && vt.Name.Valid() {
-		return &vt.Name.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsVolumeUnion) GetTypeName() *string {
-	if vt := u.OfNewVolume; vt != nil {
-		return (*string)(&vt.TypeName)
-	} else if vt := u.OfImage; vt != nil {
-		return (*string)(&vt.TypeName)
-	} else if vt := u.OfSnapshot; vt != nil {
-		return (*string)(&vt.TypeName)
-	} else if vt := u.OfApptemplate; vt != nil {
-		return (*string)(&vt.TypeName)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u InstanceNewParamsVolumeUnion) GetBootIndex() *int64 {
-	if vt := u.OfImage; vt != nil && vt.BootIndex.Valid() {
-		return &vt.BootIndex.Value
-	} else if vt := u.OfSnapshot; vt != nil && vt.BootIndex.Valid() {
-		return &vt.BootIndex.Value
-	} else if vt := u.OfApptemplate; vt != nil && vt.BootIndex.Valid() {
-		return &vt.BootIndex.Value
-	} else if vt := u.OfExistingVolume; vt != nil && vt.BootIndex.Valid() {
-		return &vt.BootIndex.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's Tags property, if present.
-func (u InstanceNewParamsVolumeUnion) GetTags() map[string]string {
-	if vt := u.OfNewVolume; vt != nil {
-		return vt.Tags
-	} else if vt := u.OfImage; vt != nil {
-		return vt.Tags
-	} else if vt := u.OfSnapshot; vt != nil {
-		return vt.Tags
-	} else if vt := u.OfApptemplate; vt != nil {
-		return vt.Tags
-	} else if vt := u.OfExistingVolume; vt != nil {
-		return vt.Tags
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[InstanceNewParamsVolumeUnion](
-		"source",
-		apijson.Discriminator[InstanceNewParamsVolumeNewVolume]("new-volume"),
-		apijson.Discriminator[InstanceNewParamsVolumeImage]("image"),
-		apijson.Discriminator[InstanceNewParamsVolumeSnapshot]("snapshot"),
-		apijson.Discriminator[InstanceNewParamsVolumeApptemplate]("apptemplate"),
-		apijson.Discriminator[InstanceNewParamsVolumeExistingVolume]("existing-volume"),
-	)
-}
-
-// The properties Size, Source are required.
-type InstanceNewParamsVolumeNewVolume struct {
-	// Volume size in GiB.
-	Size int64 `json:"size" api:"required"`
-	// Block device attachment tag (not exposed in the normal tags)
-	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
-	// Set to `true` to automatically delete the volume when the instance is deleted.
-	DeleteOnTermination param.Opt[bool] `json:"delete_on_termination,omitzero"`
-	// The name of the volume. If not specified, a name will be generated
-	// automatically.
-	Name param.Opt[string] `json:"name,omitzero"`
-	// Key-value tags to associate with the resource. A tag is a key-value pair that
-	// can be associated with a resource, enabling efficient filtering and grouping for
-	// better organization and management. Both tag keys and values have a maximum
-	// length of 255 characters. Tag keys and values cannot contain characters from
-	// U+0080 to U+00FF. Some tags are read-only and cannot be modified by the user.
-	// Tags are also integrated with cost reports, allowing cost data to be filtered
-	// based on tag keys or values.
-	Tags map[string]string `json:"tags,omitzero"`
-	// Volume type name. Supported values:
-	//
-	//   - `standard` - Network SSD block storage offering stable performance with high
-	//     random I/O and data reliability (6 IOPS per 1 GiB, 0.4 MB/s per 1 GiB). Max
-	//     IOPS: 4500. Max bandwidth: 300 MB/s.
-	//   - `ssd_hiiops` - High-performance SSD storage for latency-sensitive
-	//     transactional workloads (60 IOPS per 1 GiB, 2.5 MB/s per 1 GiB). Max
-	//     IOPS: 9000. Max bandwidth: 500 MB/s.
-	//   - `ssd_lowlatency` - SSD storage optimized for low-latency and real-time
-	//     processing. Max IOPS: 5000. Average latency: 300 µs. Snapshots and volume
-	//     resizing are **not** supported for `ssd_lowlatency`.
-	//
-	// Any of "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra".
-	TypeName string `json:"type_name,omitzero"`
-	// New volume will be created from scratch and attached to the instance.
-	//
-	// This field can be elided, and will marshal its zero value as "new-volume".
-	Source constant.NewVolume `json:"source" default:"new-volume"`
-	paramObj
-}
-
-func (r InstanceNewParamsVolumeNewVolume) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsVolumeNewVolume
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceNewParamsVolumeNewVolume) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[InstanceNewParamsVolumeNewVolume](
-		"type_name", "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
-	)
-}
-
-// The properties ImageID, Source are required.
-type InstanceNewParamsVolumeImage struct {
-	// Image ID.
-	ImageID string `json:"image_id" api:"required" format:"uuid4"`
-	// Block device attachment tag (not exposed in the normal tags)
-	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
-	// - `0` means that this is the primary boot device;
-	// - A unique positive value is set for the secondary bootable devices;
-	// - A negative number means that the boot is prohibited.
-	BootIndex param.Opt[int64] `json:"boot_index,omitzero"`
-	// Set to `true` to automatically delete the volume when the instance is deleted.
-	DeleteOnTermination param.Opt[bool] `json:"delete_on_termination,omitzero"`
-	// The name of the volume. If not specified, a name will be generated
-	// automatically.
-	Name param.Opt[string] `json:"name,omitzero"`
-	// Volume size in GiB.
-	//
-	// - For instances: **specify the desired volume size explicitly**.
-	// - For basic VMs: the size is set automatically based on the flavor.
-	Size param.Opt[int64] `json:"size,omitzero"`
-	// Key-value tags to associate with the resource. A tag is a key-value pair that
-	// can be associated with a resource, enabling efficient filtering and grouping for
-	// better organization and management. Both tag keys and values have a maximum
-	// length of 255 characters. Tag keys and values cannot contain characters from
-	// U+0080 to U+00FF. Some tags are read-only and cannot be modified by the user.
-	// Tags are also integrated with cost reports, allowing cost data to be filtered
-	// based on tag keys or values.
-	Tags map[string]string `json:"tags,omitzero"`
-	// Volume type name. Supported values:
-	//
-	//   - `standard` - Network SSD block storage offering stable performance with high
-	//     random I/O and data reliability (6 IOPS per 1 GiB, 0.4 MB/s per 1 GiB). Max
-	//     IOPS: 4500. Max bandwidth: 300 MB/s.
-	//   - `ssd_hiiops` - High-performance SSD storage for latency-sensitive
-	//     transactional workloads (60 IOPS per 1 GiB, 2.5 MB/s per 1 GiB). Max
-	//     IOPS: 9000. Max bandwidth: 500 MB/s.
-	//   - `ssd_lowlatency` - SSD storage optimized for low-latency and real-time
-	//     processing. Max IOPS: 5000. Average latency: 300 µs. Snapshots and volume
-	//     resizing are **not** supported for `ssd_lowlatency`.
-	//
-	// Any of "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra".
-	TypeName string `json:"type_name,omitzero"`
-	// New volume will be created from the image and attached to the instance. Specify
-	// `boot_index=0` to boot from this volume.
-	//
-	// This field can be elided, and will marshal its zero value as "image".
-	Source constant.Image `json:"source" default:"image"`
-	paramObj
-}
-
-func (r InstanceNewParamsVolumeImage) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsVolumeImage
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceNewParamsVolumeImage) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[InstanceNewParamsVolumeImage](
-		"type_name", "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
-	)
-}
-
-// The properties Size, SnapshotID, Source are required.
-type InstanceNewParamsVolumeSnapshot struct {
-	// Volume size in GiB.
-	Size int64 `json:"size" api:"required"`
-	// Snapshot ID.
-	SnapshotID string `json:"snapshot_id" api:"required" format:"uuid4"`
-	// Block device attachment tag (not exposed in the normal tags)
-	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
-	// - `0` means that this is the primary boot device;
-	// - A unique positive value is set for the secondary bootable devices;
-	// - A negative number means that the boot is prohibited.
-	BootIndex param.Opt[int64] `json:"boot_index,omitzero"`
-	// Set to `true` to automatically delete the volume when the instance is deleted.
-	DeleteOnTermination param.Opt[bool] `json:"delete_on_termination,omitzero"`
-	// The name of the volume. If not specified, a name will be generated
-	// automatically.
-	Name param.Opt[string] `json:"name,omitzero"`
-	// Key-value tags to associate with the resource. A tag is a key-value pair that
-	// can be associated with a resource, enabling efficient filtering and grouping for
-	// better organization and management. Both tag keys and values have a maximum
-	// length of 255 characters. Tag keys and values cannot contain characters from
-	// U+0080 to U+00FF. Some tags are read-only and cannot be modified by the user.
-	// Tags are also integrated with cost reports, allowing cost data to be filtered
-	// based on tag keys or values.
-	Tags map[string]string `json:"tags,omitzero"`
-	// Specifies the volume type. If omitted, the type from the source volume will be
-	// used by default.
-	//
-	// Any of "ssd_hiiops", "standard".
-	TypeName string `json:"type_name,omitzero"`
-	// New volume will be created from the snapshot and attached to the instance.
-	//
-	// This field can be elided, and will marshal its zero value as "snapshot".
-	Source constant.Snapshot `json:"source" default:"snapshot"`
-	paramObj
-}
-
-func (r InstanceNewParamsVolumeSnapshot) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsVolumeSnapshot
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceNewParamsVolumeSnapshot) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[InstanceNewParamsVolumeSnapshot](
-		"type_name", "ssd_hiiops", "standard",
-	)
-}
-
-// The properties ApptemplateID, Source are required.
-type InstanceNewParamsVolumeApptemplate struct {
-	// App template ID.
-	ApptemplateID string `json:"apptemplate_id" api:"required"`
-	// Block device attachment tag (not exposed in the normal tags)
-	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
-	// - `0` means that this is the primary boot device;
-	// - A unique positive value is set for the secondary bootable devices;
-	// - A negative number means that the boot is prohibited.
-	BootIndex param.Opt[int64] `json:"boot_index,omitzero"`
-	// Set to `true` to automatically delete the volume when the instance is deleted.
-	DeleteOnTermination param.Opt[bool] `json:"delete_on_termination,omitzero"`
-	// The name of the volume. If not specified, a name will be generated
-	// automatically.
-	Name param.Opt[string] `json:"name,omitzero"`
-	// Volume size in GiB.
-	Size param.Opt[int64] `json:"size,omitzero"`
-	// Key-value tags to associate with the resource. A tag is a key-value pair that
-	// can be associated with a resource, enabling efficient filtering and grouping for
-	// better organization and management. Both tag keys and values have a maximum
-	// length of 255 characters. Tag keys and values cannot contain characters from
-	// U+0080 to U+00FF. Some tags are read-only and cannot be modified by the user.
-	// Tags are also integrated with cost reports, allowing cost data to be filtered
-	// based on tag keys or values.
-	Tags map[string]string `json:"tags,omitzero"`
-	// Volume type name. Supported values:
-	//
-	//   - `standard` - Network SSD block storage offering stable performance with high
-	//     random I/O and data reliability (6 IOPS per 1 GiB, 0.4 MB/s per 1 GiB). Max
-	//     IOPS: 4500. Max bandwidth: 300 MB/s.
-	//   - `ssd_hiiops` - High-performance SSD storage for latency-sensitive
-	//     transactional workloads (60 IOPS per 1 GiB, 2.5 MB/s per 1 GiB). Max
-	//     IOPS: 9000. Max bandwidth: 500 MB/s.
-	//   - `ssd_lowlatency` - SSD storage optimized for low-latency and real-time
-	//     processing. Max IOPS: 5000. Average latency: 300 µs. Snapshots and volume
-	//     resizing are **not** supported for `ssd_lowlatency`.
-	//
-	// Any of "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra".
-	TypeName string `json:"type_name,omitzero"`
-	// New volume will be created from the app template and attached to the instance.
-	//
-	// This field can be elided, and will marshal its zero value as "apptemplate".
-	Source constant.Apptemplate `json:"source" default:"apptemplate"`
-	paramObj
-}
-
-func (r InstanceNewParamsVolumeApptemplate) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsVolumeApptemplate
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceNewParamsVolumeApptemplate) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[InstanceNewParamsVolumeApptemplate](
-		"type_name", "cold", "ssd_hiiops", "ssd_local", "ssd_lowlatency", "standard", "ultra",
-	)
-}
-
-// The properties Source, VolumeID are required.
-type InstanceNewParamsVolumeExistingVolume struct {
-	// Volume ID.
-	VolumeID string `json:"volume_id" api:"required" format:"uuid4"`
-	// Block device attachment tag (not exposed in the normal tags)
-	AttachmentTag param.Opt[string] `json:"attachment_tag,omitzero"`
-	// - `0` means that this is the primary boot device;
-	// - A unique positive value is set for the secondary bootable devices;
-	// - A negative number means that the boot is prohibited.
-	BootIndex param.Opt[int64] `json:"boot_index,omitzero"`
-	// Set to `true` to automatically delete the volume when the instance is deleted.
-	DeleteOnTermination param.Opt[bool] `json:"delete_on_termination,omitzero"`
-	// Key-value tags to associate with the resource. A tag is a key-value pair that
-	// can be associated with a resource, enabling efficient filtering and grouping for
-	// better organization and management. Both tag keys and values have a maximum
-	// length of 255 characters. Tag keys and values cannot contain characters from
-	// U+0080 to U+00FF. Some tags are read-only and cannot be modified by the user.
-	// Tags are also integrated with cost reports, allowing cost data to be filtered
-	// based on tag keys or values.
-	Tags map[string]string `json:"tags,omitzero"`
-	// Existing available volume will be attached to the instance.
-	//
-	// This field can be elided, and will marshal its zero value as "existing-volume".
-	Source constant.ExistingVolume `json:"source" default:"existing-volume"`
-	paramObj
-}
-
-func (r InstanceNewParamsVolumeExistingVolume) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsVolumeExistingVolume
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceNewParamsVolumeExistingVolume) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The property ID is required.
-type InstanceNewParamsSecurityGroup struct {
-	// Resource ID
-	ID string `json:"id" api:"required" format:"uuid4"`
-	paramObj
-}
-
-func (r InstanceNewParamsSecurityGroup) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceNewParamsSecurityGroup
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceNewParamsSecurityGroup) UnmarshalJSON(data []byte) error {
+func (r *InstanceNewParamsInterface) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type InstanceUpdateParams struct {
-	// Project ID
+	// Project ID.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// Name
+	// ID of the placement group. Send null to remove the instance from its placement
+	// group.
+	PlacementGroupID param.Opt[string] `json:"placement_group_id,omitzero" format:"uuid4"`
+	// Run every check of the real request and change nothing. The response has the
+	// status code and the schema of the real call, and an empty list of tasks. With
+	// `false`, the default, the request does the operation.
+	DryRun param.Opt[bool] `query:"dry_run,omitzero" json:"-"`
+	// Name of the new flavor. The instance is resized to this flavor.
+	FlavorName param.Opt[string] `json:"flavor_name,omitzero"`
+	// Instance name.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// Update key-value tags using JSON Merge Patch semantics (RFC 7396). Provide
-	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
-	// Unspecified tags remain unchanged. Read-only tags are always preserved and
-	// cannot be modified.
-	//
-	// **Examples:**
-	//
-	//   - **Add/update tags:**
-	//     `{'tags': {'environment': 'production', 'team': 'backend'}}` adds new tags or
-	//     updates existing ones.
-	//   - **Delete tags:** `{'tags': {'old_tag': null}}` removes specific tags.
-	//   - **Remove all tags:** `{'tags': null}` removes all user-managed tags (read-only
-	//     tags are preserved).
-	//   - **Partial update:** `{'tags': {'environment': 'staging'}}` only updates
-	//     specified tags.
-	//   - **Mixed operations:**
-	//     `{'tags': {'environment': 'production', 'cost_center': 'engineering', 'deprecated_tag': null}}`
-	//     adds/updates 'environment' and 'cost_center' while removing 'deprecated_tag',
-	//     preserving other existing tags.
-	//   - **Replace all:** first delete existing tags with null values, then add new
-	//     ones in the same request.
+	// Full list of the data volumes of the instance. Volumes that are not in the list
+	// are detached. New volumes are attached.
+	DataVolumeIDs []string `json:"data_volume_ids,omitzero" format:"uuid4"`
+	// Full list of the ports of the instance. Ports that are not in the list are
+	// detached. New ports are attached. Keep the current ports in their current order.
+	Interfaces []InstanceUpdateParamsInterface `json:"interfaces,omitzero"`
+	// Tags as JSON Merge Patch. A key with the value null removes that tag. The value
+	// null removes all tags.
 	Tags TagUpdateMap `json:"tags,omitzero"`
 	paramObj
 }
@@ -1913,84 +636,86 @@ func (r *InstanceUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// URLQuery serializes [InstanceUpdateParams]'s query parameters as `url.Values`.
+func (r InstanceUpdateParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// The property PortID is required.
+type InstanceUpdateParamsInterface struct {
+	// Existing port to attach. Array order is the NIC/boot order.
+	PortID string `json:"port_id" api:"required" format:"uuid4"`
+	paramObj
+}
+
+func (r InstanceUpdateParamsInterface) MarshalJSON() (data []byte, err error) {
+	type shadow InstanceUpdateParamsInterface
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InstanceUpdateParamsInterface) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type InstanceListParams struct {
-	// Project ID
+	// Project ID.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// Only show instances which are able to handle floating address
-	AvailableFloating param.Opt[bool] `query:"available_floating,omitzero" json:"-"`
-	// Filters the instances by a date and time stamp when the instances last changed.
-	ChangesBefore param.Opt[time.Time] `query:"changes-before,omitzero" format:"date-time" json:"-"`
-	// Filters the instances by a date and time stamp when the instances last changed
-	// status.
-	ChangesSince param.Opt[time.Time] `query:"changes-since,omitzero" format:"date-time" json:"-"`
-	// Exclude instances with specified flavor prefix
-	ExcludeFlavorPrefix param.Opt[string] `query:"exclude_flavor_prefix,omitzero" json:"-"`
-	// Exclude instances with specified security group name
-	ExcludeSecgroup param.Opt[string] `query:"exclude_secgroup,omitzero" json:"-"`
-	// Filter out instances by `flavor_id`. Flavor id must match exactly.
-	FlavorID param.Opt[string] `query:"flavor_id,omitzero" json:"-"`
-	// Filter out instances by `flavor_prefix`.
-	FlavorPrefix param.Opt[string] `query:"flavor_prefix,omitzero" json:"-"`
-	// Include GPU clusters' servers
-	IncludeAI param.Opt[bool] `query:"include_ai,omitzero" json:"-"`
-	// Include bare metal servers. Please, use `GET /v1/bminstances/` instead
-	IncludeBaremetal param.Opt[bool] `query:"include_baremetal,omitzero" json:"-"`
-	// Include managed k8s worker nodes
-	IncludeK8S param.Opt[bool] `query:"include_k8s,omitzero" json:"-"`
-	// An IPv4 address to filter results by. Note: partial matches are allowed. For
-	// example, searching for 192.168.0.1 will return 192.168.0.1, 192.168.0.10,
-	// 192.168.0.110, and so on.
-	IP param.Opt[string] `query:"ip,omitzero" json:"-"`
-	// Optional. Limit the number of returned items
+	// Max items to return.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Filter instances by name. You can provide a full or partial name, instances with
-	// matching names will be returned. For example, entering 'test' will return all
-	// instances that contain 'test' in their name.
-	Name param.Opt[string] `query:"name,omitzero" json:"-"`
-	// Optional. Offset value is used to exclude the first set of records from the
-	// result
+	// Filter by managed status. true = managed by a service, false =
+	// customer-operated.
+	Managed param.Opt[bool] `query:"managed,omitzero" json:"-"`
+	// Items to skip.
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// Include only isolated instances
-	OnlyIsolated param.Opt[bool] `query:"only_isolated,omitzero" json:"-"`
-	// Return bare metals only with external fixed IP addresses.
-	OnlyWithFixedExternalIP param.Opt[bool] `query:"only_with_fixed_external_ip,omitzero" json:"-"`
-	// Filter result by ddos protection profile name. Effective only with `with_ddos`
-	// set to true.
-	ProfileName param.Opt[string] `query:"profile_name,omitzero" json:"-"`
-	// Optional. Filter by tag key-value pairs.
-	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
-	// Filter the server list result by the UUID of the server. Allowed UUID part
-	Uuid param.Opt[string] `query:"uuid,omitzero" json:"-"`
-	// Include DDoS profile information in the response when set to `true`. Otherwise,
-	// the `ddos_profile` field in the response is `null` by default.
-	WithDDOS param.Opt[bool] `query:"with_ddos,omitzero" json:"-"`
-	// Include `interface_name` in the addresses
-	WithInterfacesName param.Opt[bool] `query:"with_interfaces_name,omitzero" json:"-"`
-	// Order by field and direction.
+	// Range filter on creation time.
+	CreatedAt InstanceListParamsCreatedAt `query:"created_at,omitzero" json:"-"`
+	// Operator flavor name filter.
+	FlavorName InstanceListParamsFlavorName `query:"flavor_name,omitzero" json:"-"`
+	// Filter by instance UUID(s).
+	IDs []string `query:"ids,omitzero" format:"uuid4" json:"-"`
+	// Exact IP filter on a fixed IP.
+	IPAddress InstanceListParamsIPAddress `query:"ip_address,omitzero" json:"-"`
+	// Filter by manager type, e.g. `k8s_cluster`.
 	//
-	// Any of "created.asc", "created.desc", "name.asc", "name.desc", "status.asc",
-	// "status.desc".
+	// Any of "k8s_cluster".
+	ManagedBy InstanceListParamsManagedBy `query:"managed_by,omitzero" json:"-"`
+	// Filter by managing resource ID(s).
+	ManagedByResourceIDs []string `query:"managed_by_resource_ids,omitzero" json:"-"`
+	// Filter by managing resource name(s).
+	ManagedByResourceNames []string `query:"managed_by_resource_names,omitzero" json:"-"`
+	// Operator name filter, e.g. name[contains]=web.
+	Name InstanceListParamsName `query:"name,omitzero" json:"-"`
+	// Filter by network ID(s) the instance has a port on.
+	NetworkIDs []string `query:"network_ids,omitzero" format:"uuid4" json:"-"`
+	// Sort field and direction.
+	//
+	// Any of "created_at.asc", "created_at.desc", "name.asc", "name.desc",
+	// "region_id.asc", "region_id.desc", "status.asc", "status.desc".
 	OrderBy InstanceListParamsOrderBy `query:"order_by,omitzero" json:"-"`
-	// Filter result by DDoS `protection_status`. if parameter is provided. Effective
-	// only with `with_ddos` set to true. (Active, Queued or Error)
+	// Filter by region ID(s). Omit = all regions.
+	RegionIDs []int64 `query:"region_ids,omitzero" json:"-"`
+	// Filter by security group ID(s).
+	SecurityGroupIDs []string `query:"security_group_ids,omitzero" format:"uuid4" json:"-"`
+	// Filter by lifecycle status(es).
 	//
-	// Any of "Active", "Queued", "Error".
-	ProtectionStatus InstanceListParamsProtectionStatus `query:"protection_status,omitzero" json:"-"`
-	// Filters instances by status.
-	//
-	// Any of "ACTIVE", "BUILD", "ERROR", "HARD_REBOOT", "MIGRATING", "PAUSED",
-	// "REBOOT", "REBUILD", "RESIZE", "REVERT_RESIZE", "SHELVED", "SHELVED_OFFLOADED",
-	// "SHUTOFF", "SOFT_DELETED", "SUSPENDED", "VERIFY_RESIZE".
-	Status InstanceListParamsStatus `query:"status,omitzero" json:"-"`
-	// Optional. Filter by tag values. ?`tag_value`=value1&`tag_value`=value2
-	TagValue []string `query:"tag_value,omitzero" json:"-"`
-	// Return bare metals either only with advanced or only basic DDoS protection.
-	// Effective only with `with_ddos` set to true. (advanced or basic)
-	//
-	// Any of "basic", "advanced".
-	TypeDDOSProfile InstanceListParamsTypeDDOSProfile `query:"type_ddos_profile,omitzero" json:"-"`
+	// Any of "active", "deleted", "deleting", "error", "provisioning", "rebooting",
+	// "rebuilding", "resizing", "stopped", "unknown", "updating".
+	Statuses []string `query:"statuses,omitzero" json:"-"`
+	// Filter by subnet ID(s).
+	SubnetIDs []string `query:"subnet_ids,omitzero" format:"uuid4" json:"-"`
+	// Filter by tag key regardless of value, e.g. `tag_key[contains]=team`.
+	TagKey InstanceListParamsTagKey `query:"tag_key,omitzero" json:"-"`
+	// Filter by tag value regardless of key, e.g. `tag_value[prefix]=prod`.
+	TagValue InstanceListParamsTagValue `query:"tag_value,omitzero" json:"-"`
+	// Filter by exact tag key-value pairs, e.g. `tags[env]=prod&tags[team]=core`.
+	// Repeat a key to match any of several values for it, e.g.
+	// `tags[env]=prod&tags[env]=dev`. Values for one key are ORed, different keys are
+	// ANDed; values match case-insensitively.
+	Tags map[string][]string `query:"tags,omitzero" json:"-"`
+	// Range filter on last-update time.
+	UpdatedAt InstanceListParamsUpdatedAt `query:"updated_at,omitzero" json:"-"`
 	paramObj
 }
 
@@ -2002,74 +727,213 @@ func (r InstanceListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Order by field and direction.
+// Range filter on creation time.
+type InstanceListParamsCreatedAt struct {
+	// Strictly after this timestamp, e.g. `[gt]=2026-01-01T00:00:00Z`.
+	Gt param.Opt[time.Time] `query:"gt,omitzero" format:"date-time" json:"-"`
+	// At or after this timestamp (inclusive), e.g. `[gte]=2026-01-01T00:00:00Z`.
+	Gte param.Opt[time.Time] `query:"gte,omitzero" format:"date-time" json:"-"`
+	// Strictly before this timestamp, e.g. `[lt]=2026-02-01T00:00:00Z`.
+	Lt param.Opt[time.Time] `query:"lt,omitzero" format:"date-time" json:"-"`
+	// At or before this timestamp (inclusive), e.g. `[lte]=2026-02-01T00:00:00Z`.
+	Lte param.Opt[time.Time] `query:"lte,omitzero" format:"date-time" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [InstanceListParamsCreatedAt]'s query parameters as
+// `url.Values`.
+func (r InstanceListParamsCreatedAt) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Operator flavor name filter.
+type InstanceListParamsFlavorName struct {
+	// Case-insensitive substring, e.g. `[contains]=web`. Repeat the key to match any
+	// substring.
+	Contains []string `query:"contains,omitzero" json:"-"`
+	// Case-insensitive exact match, e.g. `[exact]=web-1`. Repeat the key to match any
+	// of several.
+	Exact []string `query:"exact,omitzero" json:"-"`
+	// Case-insensitive starts-with, e.g. `[prefix]=prod-`. Repeat the key to match any
+	// prefix.
+	Prefix []string `query:"prefix,omitzero" json:"-"`
+	// Case-insensitive ends-with, e.g. `[suffix]=-db`. Repeat the key to match any
+	// suffix.
+	Suffix []string `query:"suffix,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [InstanceListParamsFlavorName]'s query parameters as
+// `url.Values`.
+func (r InstanceListParamsFlavorName) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Exact IP filter on a fixed IP.
+type InstanceListParamsIPAddress struct {
+	// Substring match on IP address, e.g. `[contains]=192.168`. Repeat the key to
+	// match any substring.
+	Contains []string `query:"contains,omitzero" json:"-"`
+	// Exact IP match, e.g. `[exact]=192.168.1.10`. Repeat the key to match any of
+	// several.
+	Exact []string `query:"exact,omitzero" format:"ipvanyaddress" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [InstanceListParamsIPAddress]'s query parameters as
+// `url.Values`.
+func (r InstanceListParamsIPAddress) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Filter by manager type, e.g. `k8s_cluster`.
+type InstanceListParamsManagedBy string
+
+const (
+	InstanceListParamsManagedByK8SCluster InstanceListParamsManagedBy = "k8s_cluster"
+)
+
+// Operator name filter, e.g. name[contains]=web.
+type InstanceListParamsName struct {
+	// Case-insensitive substring, e.g. `[contains]=web`. Repeat the key to match any
+	// substring.
+	Contains []string `query:"contains,omitzero" json:"-"`
+	// Case-insensitive exact match, e.g. `[exact]=web-1`. Repeat the key to match any
+	// of several.
+	Exact []string `query:"exact,omitzero" json:"-"`
+	// Case-insensitive starts-with, e.g. `[prefix]=prod-`. Repeat the key to match any
+	// prefix.
+	Prefix []string `query:"prefix,omitzero" json:"-"`
+	// Case-insensitive ends-with, e.g. `[suffix]=-db`. Repeat the key to match any
+	// suffix.
+	Suffix []string `query:"suffix,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [InstanceListParamsName]'s query parameters as `url.Values`.
+func (r InstanceListParamsName) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Sort field and direction.
 type InstanceListParamsOrderBy string
 
 const (
-	InstanceListParamsOrderByCreatedAsc  InstanceListParamsOrderBy = "created.asc"
-	InstanceListParamsOrderByCreatedDesc InstanceListParamsOrderBy = "created.desc"
-	InstanceListParamsOrderByNameAsc     InstanceListParamsOrderBy = "name.asc"
-	InstanceListParamsOrderByNameDesc    InstanceListParamsOrderBy = "name.desc"
-	InstanceListParamsOrderByStatusAsc   InstanceListParamsOrderBy = "status.asc"
-	InstanceListParamsOrderByStatusDesc  InstanceListParamsOrderBy = "status.desc"
+	InstanceListParamsOrderByCreatedAtAsc  InstanceListParamsOrderBy = "created_at.asc"
+	InstanceListParamsOrderByCreatedAtDesc InstanceListParamsOrderBy = "created_at.desc"
+	InstanceListParamsOrderByNameAsc       InstanceListParamsOrderBy = "name.asc"
+	InstanceListParamsOrderByNameDesc      InstanceListParamsOrderBy = "name.desc"
+	InstanceListParamsOrderByRegionIDAsc   InstanceListParamsOrderBy = "region_id.asc"
+	InstanceListParamsOrderByRegionIDDesc  InstanceListParamsOrderBy = "region_id.desc"
+	InstanceListParamsOrderByStatusAsc     InstanceListParamsOrderBy = "status.asc"
+	InstanceListParamsOrderByStatusDesc    InstanceListParamsOrderBy = "status.desc"
 )
 
-// Filter result by DDoS `protection_status`. if parameter is provided. Effective
-// only with `with_ddos` set to true. (Active, Queued or Error)
-type InstanceListParamsProtectionStatus string
+// Filter by tag key regardless of value, e.g. `tag_key[contains]=team`.
+type InstanceListParamsTagKey struct {
+	// Case-insensitive substring, e.g. `[contains]=web`. Repeat the key to match any
+	// substring.
+	Contains []string `query:"contains,omitzero" json:"-"`
+	// Case-insensitive exact match, e.g. `[exact]=web-1`. Repeat the key to match any
+	// of several.
+	Exact []string `query:"exact,omitzero" json:"-"`
+	// Case-insensitive starts-with, e.g. `[prefix]=prod-`. Repeat the key to match any
+	// prefix.
+	Prefix []string `query:"prefix,omitzero" json:"-"`
+	// Case-insensitive ends-with, e.g. `[suffix]=-db`. Repeat the key to match any
+	// suffix.
+	Suffix []string `query:"suffix,omitzero" json:"-"`
+	paramObj
+}
 
-const (
-	InstanceListParamsProtectionStatusActive InstanceListParamsProtectionStatus = "Active"
-	InstanceListParamsProtectionStatusQueued InstanceListParamsProtectionStatus = "Queued"
-	InstanceListParamsProtectionStatusError  InstanceListParamsProtectionStatus = "Error"
-)
+// URLQuery serializes [InstanceListParamsTagKey]'s query parameters as
+// `url.Values`.
+func (r InstanceListParamsTagKey) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
 
-// Filters instances by status.
-type InstanceListParamsStatus string
+// Filter by tag value regardless of key, e.g. `tag_value[prefix]=prod`.
+type InstanceListParamsTagValue struct {
+	// Case-insensitive substring, e.g. `[contains]=web`. Repeat the key to match any
+	// substring.
+	Contains []string `query:"contains,omitzero" json:"-"`
+	// Case-insensitive exact match, e.g. `[exact]=web-1`. Repeat the key to match any
+	// of several.
+	Exact []string `query:"exact,omitzero" json:"-"`
+	// Case-insensitive starts-with, e.g. `[prefix]=prod-`. Repeat the key to match any
+	// prefix.
+	Prefix []string `query:"prefix,omitzero" json:"-"`
+	// Case-insensitive ends-with, e.g. `[suffix]=-db`. Repeat the key to match any
+	// suffix.
+	Suffix []string `query:"suffix,omitzero" json:"-"`
+	paramObj
+}
 
-const (
-	InstanceListParamsStatusActive           InstanceListParamsStatus = "ACTIVE"
-	InstanceListParamsStatusBuild            InstanceListParamsStatus = "BUILD"
-	InstanceListParamsStatusError            InstanceListParamsStatus = "ERROR"
-	InstanceListParamsStatusHardReboot       InstanceListParamsStatus = "HARD_REBOOT"
-	InstanceListParamsStatusMigrating        InstanceListParamsStatus = "MIGRATING"
-	InstanceListParamsStatusPaused           InstanceListParamsStatus = "PAUSED"
-	InstanceListParamsStatusReboot           InstanceListParamsStatus = "REBOOT"
-	InstanceListParamsStatusRebuild          InstanceListParamsStatus = "REBUILD"
-	InstanceListParamsStatusResize           InstanceListParamsStatus = "RESIZE"
-	InstanceListParamsStatusRevertResize     InstanceListParamsStatus = "REVERT_RESIZE"
-	InstanceListParamsStatusShelved          InstanceListParamsStatus = "SHELVED"
-	InstanceListParamsStatusShelvedOffloaded InstanceListParamsStatus = "SHELVED_OFFLOADED"
-	InstanceListParamsStatusShutoff          InstanceListParamsStatus = "SHUTOFF"
-	InstanceListParamsStatusSoftDeleted      InstanceListParamsStatus = "SOFT_DELETED"
-	InstanceListParamsStatusSuspended        InstanceListParamsStatus = "SUSPENDED"
-	InstanceListParamsStatusVerifyResize     InstanceListParamsStatus = "VERIFY_RESIZE"
-)
+// URLQuery serializes [InstanceListParamsTagValue]'s query parameters as
+// `url.Values`.
+func (r InstanceListParamsTagValue) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
 
-// Return bare metals either only with advanced or only basic DDoS protection.
-// Effective only with `with_ddos` set to true. (advanced or basic)
-type InstanceListParamsTypeDDOSProfile string
+// Range filter on last-update time.
+type InstanceListParamsUpdatedAt struct {
+	// Strictly after this timestamp, e.g. `[gt]=2026-01-01T00:00:00Z`.
+	Gt param.Opt[time.Time] `query:"gt,omitzero" format:"date-time" json:"-"`
+	// At or after this timestamp (inclusive), e.g. `[gte]=2026-01-01T00:00:00Z`.
+	Gte param.Opt[time.Time] `query:"gte,omitzero" format:"date-time" json:"-"`
+	// Strictly before this timestamp, e.g. `[lt]=2026-02-01T00:00:00Z`.
+	Lt param.Opt[time.Time] `query:"lt,omitzero" format:"date-time" json:"-"`
+	// At or before this timestamp (inclusive), e.g. `[lte]=2026-02-01T00:00:00Z`.
+	Lte param.Opt[time.Time] `query:"lte,omitzero" format:"date-time" json:"-"`
+	paramObj
+}
 
-const (
-	InstanceListParamsTypeDDOSProfileBasic    InstanceListParamsTypeDDOSProfile = "basic"
-	InstanceListParamsTypeDDOSProfileAdvanced InstanceListParamsTypeDDOSProfile = "advanced"
-)
+// URLQuery serializes [InstanceListParamsUpdatedAt]'s query parameters as
+// `url.Values`.
+func (r InstanceListParamsUpdatedAt) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
 
 type InstanceDeleteParams struct {
-	// Project ID
+	// Project ID.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// True if it is required to delete floating IPs assigned to the instance. Can't be
-	// used with `floatings`.
-	DeleteFloatings param.Opt[bool] `query:"delete_floatings,omitzero" json:"-"`
-	// Comma separated list of floating ids that should be deleted. Can't be used with
-	// `delete_floatings`.
-	Floatings param.Opt[string] `query:"floatings,omitzero" json:"-"`
-	// Comma separated list of port IDs to be deleted with the instance
-	ReservedFixedIPs param.Opt[string] `query:"reserved_fixed_ips,omitzero" json:"-"`
-	// Comma separated list of volume IDs to be deleted with the instance
-	Volumes param.Opt[string] `query:"volumes,omitzero" json:"-"`
+	// Delete all associated floating IPs (default: preserve).
+	AllFloatingIPs param.Opt[bool] `query:"all_floating_ips,omitzero" json:"-"`
+	// Delete all attached ports (default: preserve).
+	AllPorts param.Opt[bool] `query:"all_ports,omitzero" json:"-"`
+	// Delete all attached volumes (default: preserve).
+	AllVolumes param.Opt[bool] `query:"all_volumes,omitzero" json:"-"`
+	// Run every check of the real request and change nothing. The response has the
+	// status code and the schema of the real call, and an empty list of tasks. With
+	// `false`, the default, the request does the operation.
+	DryRun param.Opt[bool] `query:"dry_run,omitzero" json:"-"`
+	// Delete only these floating IP IDs (mutually exclusive with `all_floating_ips`).
+	FloatingIPIDs []string `query:"floating_ip_ids,omitzero" format:"uuid4" json:"-"`
+	// Delete only these port IDs (mutually exclusive with `all_ports`).
+	PortIDs []string `query:"port_ids,omitzero" format:"uuid4" json:"-"`
+	// Delete only these volume IDs (mutually exclusive with `all_volumes`).
+	VolumeIDs []string `query:"volume_ids,omitzero" format:"uuid4" json:"-"`
 	paramObj
 }
 
@@ -2082,181 +946,54 @@ func (r InstanceDeleteParams) URLQuery() (v url.Values, err error) {
 }
 
 type InstanceActionParams struct {
-	// Project ID
+	// Project ID.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-
+	// Power action to run on the instance. `reboot_hard` replaces the legacy
+	// `powercycle` action.
 	//
-	// Request body variants
-	//
-
-	// This field is a request body variant, only one variant field can be set.
-	OfStartActionInstanceSerializer *InstanceActionParamsBodyStartActionInstanceSerializer `json:",inline"`
-	// This field is a request body variant, only one variant field can be set.
-	OfBasicActionInstanceSerializer *InstanceActionParamsBodyBasicActionInstanceSerializer `json:",inline"`
-
+	// Any of "reboot", "reboot_hard", "resume", "start", "stop", "suspend".
+	Action InstanceActionParamsAction `json:"action,omitzero" api:"required"`
+	// Run every check of the real request and change nothing. The response has the
+	// status code and the schema of the real call, and an empty list of tasks. With
+	// `false`, the default, the request does the operation.
+	DryRun param.Opt[bool] `query:"dry_run,omitzero" json:"-"`
 	paramObj
 }
 
-func (u InstanceActionParams) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfStartActionInstanceSerializer, u.OfBasicActionInstanceSerializer)
+func (r InstanceActionParams) MarshalJSON() (data []byte, err error) {
+	type shadow InstanceActionParams
+	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *InstanceActionParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The property Action is required.
-type InstanceActionParamsBodyStartActionInstanceSerializer struct {
-	// Used on start instance to activate Advanced DDoS profile
-	ActivateProfile param.Opt[bool] `json:"activate_profile,omitzero"`
-	// Instance action name
-	//
-	// This field can be elided, and will marshal its zero value as "start".
-	Action constant.Start `json:"action" default:"start"`
-	paramObj
-}
-
-func (r InstanceActionParamsBodyStartActionInstanceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceActionParamsBodyStartActionInstanceSerializer
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceActionParamsBodyStartActionInstanceSerializer) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The property Action is required.
-type InstanceActionParamsBodyBasicActionInstanceSerializer struct {
-	// Instance action name
-	//
-	// Any of "reboot", "reboot_hard", "resume", "stop", "suspend".
-	Action string `json:"action,omitzero" api:"required"`
-	paramObj
-}
-
-func (r InstanceActionParamsBodyBasicActionInstanceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceActionParamsBodyBasicActionInstanceSerializer
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceActionParamsBodyBasicActionInstanceSerializer) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[InstanceActionParamsBodyBasicActionInstanceSerializer](
-		"action", "reboot", "reboot_hard", "resume", "stop", "suspend",
-	)
-}
-
-type InstanceAddToPlacementGroupParams struct {
-	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// Anti-affinity or affinity or soft-anti-affinity placement group ID.
-	ServergroupID string `json:"servergroup_id" api:"required"`
-	paramObj
-}
-
-func (r InstanceAddToPlacementGroupParams) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceAddToPlacementGroupParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceAddToPlacementGroupParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type InstanceAssignSecurityGroupParams struct {
-	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// Security group name, applies to all ports
-	Name param.Opt[string] `json:"name,omitzero"`
-	// Port security groups mapping
-	PortsSecurityGroupNames []InstanceAssignSecurityGroupParamsPortsSecurityGroupName `json:"ports_security_group_names,omitzero"`
-	paramObj
-}
-
-func (r InstanceAssignSecurityGroupParams) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceAssignSecurityGroupParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceAssignSecurityGroupParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties PortID, SecurityGroupNames are required.
-type InstanceAssignSecurityGroupParamsPortsSecurityGroupName struct {
-	// Port ID. If None, security groups will be applied to all ports
-	PortID param.Opt[string] `json:"port_id,omitzero" api:"required"`
-	// List of security group names
-	SecurityGroupNames []string `json:"security_group_names,omitzero" api:"required"`
-	paramObj
-}
-
-func (r InstanceAssignSecurityGroupParamsPortsSecurityGroupName) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceAssignSecurityGroupParamsPortsSecurityGroupName
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceAssignSecurityGroupParamsPortsSecurityGroupName) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type InstanceDisablePortSecurityParams struct {
-	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	paramObj
-}
-
-type InstanceEnablePortSecurityParams struct {
-	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	paramObj
-}
-
-type InstanceGetParams struct {
-	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	paramObj
-}
-
-type InstanceGetConsoleParams struct {
-	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// Console type
-	//
-	// Any of "novnc", "serial", "spice", "vnc".
-	ConsoleType InstanceGetConsoleParamsConsoleType `query:"console_type,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [InstanceGetConsoleParams]'s query parameters as
-// `url.Values`.
-func (r InstanceGetConsoleParams) URLQuery() (v url.Values, err error) {
+// URLQuery serializes [InstanceActionParams]'s query parameters as `url.Values`.
+func (r InstanceActionParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
 
-// Console type
-type InstanceGetConsoleParamsConsoleType string
+// Power action to run on the instance. `reboot_hard` replaces the legacy
+// `powercycle` action.
+type InstanceActionParamsAction string
 
 const (
-	InstanceGetConsoleParamsConsoleTypeNovnc  InstanceGetConsoleParamsConsoleType = "novnc"
-	InstanceGetConsoleParamsConsoleTypeSerial InstanceGetConsoleParamsConsoleType = "serial"
-	InstanceGetConsoleParamsConsoleTypeSpice  InstanceGetConsoleParamsConsoleType = "spice"
-	InstanceGetConsoleParamsConsoleTypeVnc    InstanceGetConsoleParamsConsoleType = "vnc"
+	InstanceActionParamsActionReboot     InstanceActionParamsAction = "reboot"
+	InstanceActionParamsActionRebootHard InstanceActionParamsAction = "reboot_hard"
+	InstanceActionParamsActionResume     InstanceActionParamsAction = "resume"
+	InstanceActionParamsActionStart      InstanceActionParamsAction = "start"
+	InstanceActionParamsActionStop       InstanceActionParamsAction = "stop"
+	InstanceActionParamsActionSuspend    InstanceActionParamsAction = "suspend"
 )
+
+type InstanceGetParams struct {
+	// Project ID.
+	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
+	paramObj
+}
 
 type InstanceRebuildParams struct {
 	// Project ID
@@ -2282,68 +1019,5 @@ func (r InstanceRebuildParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *InstanceRebuildParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type InstanceRemoveFromPlacementGroupParams struct {
-	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	paramObj
-}
-
-type InstanceResizeParams struct {
-	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// Flavor ID
-	FlavorID string `json:"flavor_id" api:"required"`
-	paramObj
-}
-
-func (r InstanceResizeParams) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceResizeParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceResizeParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type InstanceUnassignSecurityGroupParams struct {
-	// Project ID
-	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// Security group name, applies to all ports
-	Name param.Opt[string] `json:"name,omitzero"`
-	// Port security groups mapping
-	PortsSecurityGroupNames []InstanceUnassignSecurityGroupParamsPortsSecurityGroupName `json:"ports_security_group_names,omitzero"`
-	paramObj
-}
-
-func (r InstanceUnassignSecurityGroupParams) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceUnassignSecurityGroupParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceUnassignSecurityGroupParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties PortID, SecurityGroupNames are required.
-type InstanceUnassignSecurityGroupParamsPortsSecurityGroupName struct {
-	// Port ID. If None, security groups will be applied to all ports
-	PortID param.Opt[string] `json:"port_id,omitzero" api:"required"`
-	// List of security group names
-	SecurityGroupNames []string `json:"security_group_names,omitzero" api:"required"`
-	paramObj
-}
-
-func (r InstanceUnassignSecurityGroupParamsPortsSecurityGroupName) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceUnassignSecurityGroupParamsPortsSecurityGroupName
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceUnassignSecurityGroupParamsPortsSecurityGroupName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

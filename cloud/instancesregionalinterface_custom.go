@@ -14,9 +14,9 @@ import (
 )
 
 // AttachAndPoll attach interface to instance and poll for the completion of the first task. Use the [TaskService.Poll]
-// method if you need to poll for all tasks. The interfaces list is paginated; call [InstanceInterfaceService.List]
-// (or [InstanceInterfaceService.ListAutoPaging]) afterwards to read the resulting interfaces.
-func (r *InstanceInterfaceService) AttachAndPoll(ctx context.Context, instanceID string, params InstanceInterfaceAttachParams, opts ...option.RequestOption) error {
+// method if you need to poll for all tasks. The interfaces list is paginated; call [InstancesRegionalInterfaceService.List]
+// (or [InstancesRegionalInterfaceService.ListAutoPaging]) afterwards to read the resulting interfaces.
+func (r *InstancesRegionalInterfaceService) AttachAndPoll(ctx context.Context, instanceID string, params InstancesRegionalInterfaceAttachParams, opts ...option.RequestOption) error {
 	// Exclude WithResponseBodyInto for the action (Attach returns TaskIDList, must deserialize properly)
 	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
 	resource, err := r.Attach(ctx, instanceID, params, actionOpts...)
@@ -38,9 +38,9 @@ func (r *InstanceInterfaceService) AttachAndPoll(ctx context.Context, instanceID
 }
 
 // DetachAndPoll interface from instance and poll for the completion of the first task. Use the [TaskService.Poll]
-// method if you need to poll for all tasks. The interfaces list is paginated; call [InstanceInterfaceService.List]
-// (or [InstanceInterfaceService.ListAutoPaging]) afterwards to read the resulting interfaces.
-func (r *InstanceInterfaceService) DetachAndPoll(ctx context.Context, instanceID string, params InstanceInterfaceDetachParams, opts ...option.RequestOption) error {
+// method if you need to poll for all tasks. The interfaces list is paginated; call [InstancesRegionalInterfaceService.List]
+// (or [InstancesRegionalInterfaceService.ListAutoPaging]) afterwards to read the resulting interfaces.
+func (r *InstancesRegionalInterfaceService) DetachAndPoll(ctx context.Context, instanceID string, params InstancesRegionalInterfaceDetachParams, opts ...option.RequestOption) error {
 	// Exclude WithResponseBodyInto for the action (Detach returns TaskIDList, must deserialize properly)
 	actionOpts := requestconfig.ExcludeResponseBodyInto(opts...)
 	resource, err := r.Detach(ctx, instanceID, params, actionOpts...)

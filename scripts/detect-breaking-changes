@@ -75,10 +75,14 @@ TEST_PATHS=(
 	cloud/gpuvirtualclusterflavor_test.go
 	cloud/gpuvirtualclusterimage_test.go
 	cloud/instance_test.go
+	cloud/instanceconsole_test.go
+	cloud/instanceresizeflavor_test.go
 	cloud/instanceflavor_test.go
-	cloud/instanceinterface_test.go
 	cloud/instanceimage_test.go
 	cloud/instancemetric_test.go
+	cloud/instancesregional_test.go
+	cloud/instancesregionalflavor_test.go
+	cloud/instancesregionalinterface_test.go
 	cloud/k8s_test.go
 	cloud/k8sflavor_test.go
 	cloud/k8scluster_test.go

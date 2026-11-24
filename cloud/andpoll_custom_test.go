@@ -12,11 +12,13 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"maps"
 	"net/http"
 	"net/http/httptest"
 	"slices"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -46,6 +48,8 @@ type taskFlowConfig struct {
 	// (POST/PATCH/DELETE). nil means the default single task; a non-nil empty
 	// slice emulates a no-op update where the API creates no task.
 	actionTasks *[]string
+	// actionFields holds more fields for the action response, next to tasks
+	actionFields map[string]any
 	// taskState reported for the polled task; defaults to FINISHED.
 	taskState cloud.TaskState
 	// taskError reported when taskState == ERROR.
@@ -53,8 +57,11 @@ type taskFlowConfig struct {
 	// resource is the body of the final resource GET. nil means the superset
 	// described in newTaskFlowServer.
 	resource map[string]any
-	// resourceNotFound is the number of first resource GETs that return 404.
+	// resourceNotFound is the number of first resource GETs that return 404. A
+	// negative value makes every resource GET return 404
 	resourceNotFound int
+	// resourceGet, if set, handles every resource GET in place of the other resource fields
+	resourceGet http.HandlerFunc
 	// requests, if set, records every request the server receives.
 	requests *requestLog
 }
@@ -81,7 +88,8 @@ func (l *requestLog) all() []string {
 //   - a mutating request (the action) returns a TaskIDList
 //   - GET .../tasks/{id} returns a task in the configured state, with every
 //     created_resources field populated so any *AndPoll method finds its resource
-//   - any other GET (the final resource fetch) returns an empty JSON object
+//   - any other GET (the final resource fetch) returns an empty JSON object, or
+//     404 for the first cfg.resourceNotFound requests
 func newTaskFlowServer(cfg taskFlowConfig) *httptest.Server {
 	tasks := []string{"task-1"}
 	if cfg.actionTasks != nil {
@@ -128,7 +136,7 @@ func newTaskFlowServer(cfg taskFlowConfig) *httptest.Server {
 		"created_resources":   created,
 	}
 
-	resourceGets := 0
+	var resourceGets atomic.Int64
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if cfg.requests != nil {
 			cfg.requests.add(r)
@@ -137,8 +145,9 @@ func newTaskFlowServer(cfg taskFlowConfig) *httptest.Server {
 		switch {
 		case r.Method == http.MethodGet && strings.Contains(r.URL.Path, "/tasks/"):
 			_ = json.NewEncoder(w).Encode(task)
-		case r.Method == http.MethodGet && resourceGets < cfg.resourceNotFound:
-			resourceGets++
+		case r.Method == http.MethodGet && cfg.resourceGet != nil:
+			cfg.resourceGet(w, r)
+		case r.Method == http.MethodGet && (cfg.resourceNotFound < 0 || resourceGets.Add(1) <= int64(cfg.resourceNotFound)):
 			w.WriteHeader(http.StatusNotFound)
 			_ = json.NewEncoder(w).Encode(map[string]any{"message": "not found"})
 		case r.Method == http.MethodGet && cfg.resource != nil:
@@ -162,7 +171,9 @@ func newTaskFlowServer(cfg taskFlowConfig) *httptest.Server {
 				"size":                 1,
 			})
 		default: // the action: New/Update/Delete/Resize/Action/...
-			_ = json.NewEncoder(w).Encode(map[string]any{"tasks": tasks})
+			body := map[string]any{"tasks": tasks}
+			maps.Copy(body, cfg.actionFields)
+			_ = json.NewEncoder(w).Encode(body)
 		}
 	}))
 }
@@ -321,10 +332,6 @@ var andPollMethods = []struct {
 		_, err := client.Cloud.Instances.ActionAndPoll(ctx, "id", cloud.InstanceActionParams{})
 		return err
 	}},
-	{"Instance.AddToPlacementGroupAndPoll", func(ctx context.Context, client gcore.Client) error {
-		_, err := client.Cloud.Instances.AddToPlacementGroupAndPoll(ctx, "id", cloud.InstanceAddToPlacementGroupParams{})
-		return err
-	}},
 	{"Instance.DeleteAndPoll", func(ctx context.Context, client gcore.Client) error {
 		return client.Cloud.Instances.DeleteAndPoll(ctx, "id", cloud.InstanceDeleteParams{})
 	}},
@@ -336,12 +343,8 @@ var andPollMethods = []struct {
 		_, err := client.Cloud.Instances.RebuildAndPoll(ctx, "id", cloud.InstanceRebuildParams{})
 		return err
 	}},
-	{"Instance.RemoveFromPlacementGroupAndPoll", func(ctx context.Context, client gcore.Client) error {
-		_, err := client.Cloud.Instances.RemoveFromPlacementGroupAndPoll(ctx, "id", cloud.InstanceRemoveFromPlacementGroupParams{})
-		return err
-	}},
-	{"Instance.ResizeAndPoll", func(ctx context.Context, client gcore.Client) error {
-		_, err := client.Cloud.Instances.ResizeAndPoll(ctx, "id", cloud.InstanceResizeParams{})
+	{"Instance.UpdateAndPoll", func(ctx context.Context, client gcore.Client) error {
+		_, err := client.Cloud.Instances.UpdateAndPoll(ctx, "id", cloud.InstanceUpdateParams{})
 		return err
 	}},
 	{"InstanceImage.DeleteAndPoll", func(ctx context.Context, client gcore.Client) error {
@@ -355,11 +358,34 @@ var andPollMethods = []struct {
 		_, err := client.Cloud.Instances.Images.UploadAndPoll(ctx, cloud.InstanceImageUploadParams{})
 		return err
 	}},
-	{"InstanceInterface.AttachAndPoll", func(ctx context.Context, client gcore.Client) error {
-		return client.Cloud.Instances.Interfaces.AttachAndPoll(ctx, "id", cloud.InstanceInterfaceAttachParams{})
+	{"InstancesRegional.ActionAndPoll", func(ctx context.Context, client gcore.Client) error {
+		_, err := client.Cloud.InstancesRegional.ActionAndPoll(ctx, "id", cloud.InstancesRegionalActionParams{})
+		return err
 	}},
-	{"InstanceInterface.DetachAndPoll", func(ctx context.Context, client gcore.Client) error {
-		return client.Cloud.Instances.Interfaces.DetachAndPoll(ctx, "id", cloud.InstanceInterfaceDetachParams{})
+	{"InstancesRegional.AddToPlacementGroupAndPoll", func(ctx context.Context, client gcore.Client) error {
+		_, err := client.Cloud.InstancesRegional.AddToPlacementGroupAndPoll(ctx, "id", cloud.InstancesRegionalAddToPlacementGroupParams{})
+		return err
+	}},
+	{"InstancesRegional.DeleteAndPoll", func(ctx context.Context, client gcore.Client) error {
+		return client.Cloud.InstancesRegional.DeleteAndPoll(ctx, "id", cloud.InstancesRegionalDeleteParams{})
+	}},
+	{"InstancesRegional.NewAndPoll", func(ctx context.Context, client gcore.Client) error {
+		_, err := client.Cloud.InstancesRegional.NewAndPoll(ctx, cloud.InstancesRegionalNewParams{})
+		return err
+	}},
+	{"InstancesRegional.RemoveFromPlacementGroupAndPoll", func(ctx context.Context, client gcore.Client) error {
+		_, err := client.Cloud.InstancesRegional.RemoveFromPlacementGroupAndPoll(ctx, "id", cloud.InstancesRegionalRemoveFromPlacementGroupParams{})
+		return err
+	}},
+	{"InstancesRegional.ResizeAndPoll", func(ctx context.Context, client gcore.Client) error {
+		_, err := client.Cloud.InstancesRegional.ResizeAndPoll(ctx, "id", cloud.InstancesRegionalResizeParams{})
+		return err
+	}},
+	{"InstancesRegionalInterface.AttachAndPoll", func(ctx context.Context, client gcore.Client) error {
+		return client.Cloud.InstancesRegional.Interfaces.AttachAndPoll(ctx, "id", cloud.InstancesRegionalInterfaceAttachParams{})
+	}},
+	{"InstancesRegionalInterface.DetachAndPoll", func(ctx context.Context, client gcore.Client) error {
+		return client.Cloud.InstancesRegional.Interfaces.DetachAndPoll(ctx, "id", cloud.InstancesRegionalInterfaceDetachParams{})
 	}},
 	{"K8SCluster.DeleteAndPoll", func(ctx context.Context, client gcore.Client) error {
 		return client.Cloud.K8S.Clusters.DeleteAndPoll(ctx, "id", cloud.K8SClusterDeleteParams{})
@@ -591,7 +617,7 @@ func TestAndPollMethodsSucceed(t *testing.T) {
 // TestAndPollMethodsCount is a canary: if codegen or a spec change adds/removes
 // an *AndPoll method, this reminds us to keep the table in sync.
 func TestAndPollMethodsCount(t *testing.T) {
-	const want = 105
+	const want = 109
 	if got := len(andPollMethods); got != want {
 		t.Fatalf("andPollMethods has %d entries, want %d; update the table in this file", got, want)
 	}
@@ -750,6 +776,302 @@ func TestPortAndPoll(t *testing.T) {
 	}
 }
 
+// andPollCase is one row of a test that checks the requests that *AndPoll
+// helpers send, the resource they return and their errors
+type andPollCase[T any] struct {
+	name   string
+	cfg    taskFlowConfig
+	opts   []option.RequestOption
+	invoke func(ctx context.Context, client gcore.Client) (*T, error)
+	// wantResource means that the helper returns the resource with the ID andPollCreatedID
+	wantResource bool
+	wantErr      string
+	wantRequests []string
+	check        func(*testing.T, *T)
+}
+
+// runAndPollCases runs each case against its own fake task server. id returns the ID of a
+// returned resource
+func runAndPollCases[T any](t *testing.T, cases []andPollCase[T], id func(*T) string) {
+	t.Helper()
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			var requests requestLog
+			cfg := tc.cfg
+			if cfg.resource == nil {
+				cfg.resource = map[string]any{"id": andPollCreatedID}
+			}
+			cfg.requests = &requests
+			server := newTaskFlowServer(cfg)
+			defer server.Close()
+
+			res, err := tc.invoke(context.Background(), newTaskFlowClient(server, tc.opts...))
+			switch {
+			case tc.wantErr == "" && err != nil:
+				t.Fatalf("unexpected error: %v", err)
+			case tc.wantErr != "" && (err == nil || !strings.Contains(err.Error(), tc.wantErr)):
+				t.Fatalf("err = %v, want an error that contains %q", err, tc.wantErr)
+			}
+			if tc.wantResource {
+				if res == nil {
+					t.Fatal("returned resource is nil")
+				}
+				if got := id(res); got != andPollCreatedID {
+					t.Errorf("resource ID = %q, want %q", got, andPollCreatedID)
+				}
+				if tc.check != nil {
+					tc.check(t, res)
+				}
+			}
+			if got := requests.all(); !slices.Equal(got, tc.wantRequests) {
+				t.Errorf("requests = %q, want %q", got, tc.wantRequests)
+			}
+		})
+	}
+}
+
+// TestInstanceAndPoll checks the requests that the instance helpers send, the
+// instance they return and the errors for a failed task or an empty task list.
+// Instance routes have no region in the path, but the rebuild route has one
+func TestInstanceAndPoll(t *testing.T) {
+	const (
+		instancePath = "/cloud/v1/projects/1/instances/" + andPollCreatedID
+		createReq    = "POST /cloud/v1/projects/1/instances"
+		updateReq    = "PATCH " + instancePath
+		actionReq    = "POST " + instancePath + "/action"
+		deleteReq    = "DELETE " + instancePath
+		rebuildReq   = "POST /cloud/v3/instances/1/1/" + andPollCreatedID + "/rebuild"
+		getReq       = "GET " + instancePath
+		pollReq      = "GET /cloud/v1/tasks/task-1"
+	)
+	newInstance := func(ctx context.Context, client gcore.Client) (*cloud.Instance, error) {
+		return client.Cloud.Instances.NewAndPoll(ctx, cloud.InstanceNewParams{})
+	}
+	updateInstance := func(ctx context.Context, client gcore.Client) (*cloud.Instance, error) {
+		return client.Cloud.Instances.UpdateAndPoll(ctx, andPollCreatedID, cloud.InstanceUpdateParams{Name: gcore.String("sent")})
+	}
+	actionInstance := func(ctx context.Context, client gcore.Client) (*cloud.Instance, error) {
+		return client.Cloud.Instances.ActionAndPoll(ctx, andPollCreatedID, cloud.InstanceActionParams{Action: cloud.InstanceActionParamsActionStop})
+	}
+	deleteInstance := func(ctx context.Context, client gcore.Client) (*cloud.Instance, error) {
+		return nil, client.Cloud.Instances.DeleteAndPoll(ctx, andPollCreatedID, cloud.InstanceDeleteParams{})
+	}
+	failed := taskFlowConfig{taskState: cloud.TaskStateError, taskError: "boom"}
+	empty := []string{}
+	noTask := taskFlowConfig{actionTasks: &empty}
+	wantStatus := func(want cloud.InstanceStatus) func(*testing.T, *cloud.Instance) {
+		return func(t *testing.T, instance *cloud.Instance) {
+			t.Helper()
+			if instance.Status != want {
+				t.Errorf("instance status = %q, want %q from the GET", instance.Status, want)
+			}
+		}
+	}
+	// the delete response also lists the resources that the delete removes and keeps
+	deleteFields := map[string]any{
+		"resources_to_delete":   []map[string]any{{"id": andPollCreatedID, "name": "vm-1", "type": "instances"}},
+		"resources_to_preserve": []map[string]any{{"id": "00000000-0000-4000-8000-000000000002", "name": nil, "type": "volumes"}},
+	}
+	runAndPollCases(t, []andPollCase[cloud.Instance]{
+		{
+			name:         "NewAndPoll/returns provisioning from the first GET",
+			cfg:          taskFlowConfig{resource: map[string]any{"id": andPollCreatedID, "status": "provisioning"}},
+			invoke:       newInstance,
+			wantResource: true,
+			wantRequests: []string{createReq, pollReq, getReq},
+			check:        wantStatus(cloud.InstanceStatusProvisioning),
+		},
+		{
+			name:         "NewAndPoll/task failed",
+			cfg:          failed,
+			invoke:       newInstance,
+			wantErr:      "boom",
+			wantRequests: []string{createReq, pollReq},
+		},
+		{
+			name:         "NewAndPoll/no task",
+			cfg:          noTask,
+			invoke:       newInstance,
+			wantErr:      "expected at least one task",
+			wantRequests: []string{createReq},
+		},
+		{
+			// a dry run creates no task, so the helper must refuse it before any request
+			name: "NewAndPoll/dry run",
+			invoke: func(ctx context.Context, client gcore.Client) (*cloud.Instance, error) {
+				return client.Cloud.Instances.NewAndPoll(ctx, cloud.InstanceNewParams{DryRun: gcore.Bool(true)})
+			},
+			wantErr: "DryRun",
+		},
+		{
+			name:         "NewAndPoll/GET not found",
+			cfg:          taskFlowConfig{resourceNotFound: 1},
+			invoke:       newInstance,
+			wantErr:      "404",
+			wantRequests: []string{createReq, pollReq, getReq},
+		},
+		{
+			name:         "UpdateAndPoll",
+			invoke:       updateInstance,
+			wantResource: true,
+			wantRequests: []string{updateReq, pollReq, getReq},
+		},
+		{
+			name:         "UpdateAndPoll/task failed",
+			cfg:          failed,
+			invoke:       updateInstance,
+			wantErr:      "boom",
+			wantRequests: []string{updateReq, pollReq},
+		},
+		{
+			// an update that changes nothing creates no task
+			name:         "UpdateAndPoll/no task",
+			cfg:          noTask,
+			invoke:       updateInstance,
+			wantResource: true,
+			wantRequests: []string{updateReq, getReq},
+		},
+		{
+			name:         "ActionAndPoll/returns active after stop",
+			cfg:          taskFlowConfig{resource: map[string]any{"id": andPollCreatedID, "status": "active"}},
+			invoke:       actionInstance,
+			wantResource: true,
+			wantRequests: []string{actionReq, pollReq, getReq},
+			check:        wantStatus(cloud.InstanceStatusActive),
+		},
+		{
+			name:         "ActionAndPoll/task failed",
+			cfg:          failed,
+			invoke:       actionInstance,
+			wantErr:      "boom",
+			wantRequests: []string{actionReq, pollReq},
+		},
+		{
+			name:         "ActionAndPoll/no task",
+			cfg:          noTask,
+			invoke:       actionInstance,
+			wantErr:      "expected at least one task",
+			wantRequests: []string{actionReq},
+		},
+		{
+			name:         "DeleteAndPoll",
+			cfg:          taskFlowConfig{actionFields: deleteFields},
+			invoke:       deleteInstance,
+			wantRequests: []string{deleteReq, pollReq},
+		},
+		{
+			name:         "DeleteAndPoll/task failed",
+			cfg:          taskFlowConfig{actionFields: deleteFields, taskState: cloud.TaskStateError, taskError: "boom"},
+			invoke:       deleteInstance,
+			wantErr:      "boom",
+			wantRequests: []string{deleteReq, pollReq},
+		},
+		{
+			name:         "DeleteAndPoll/no task",
+			cfg:          taskFlowConfig{actionFields: deleteFields, actionTasks: &empty},
+			invoke:       deleteInstance,
+			wantErr:      "expected at least one task",
+			wantRequests: []string{deleteReq},
+		},
+		{
+			name: "RebuildAndPoll",
+			invoke: func(ctx context.Context, client gcore.Client) (*cloud.Instance, error) {
+				return client.Cloud.Instances.RebuildAndPoll(ctx, andPollCreatedID, cloud.InstanceRebuildParams{})
+			},
+			wantResource: true,
+			wantRequests: []string{rebuildReq, pollReq, getReq},
+		},
+	}, func(i *cloud.Instance) string { return i.ID })
+}
+
+// TestInstancesRegionalAndPoll checks that the legacy instance helpers keep the
+// legacy routes with the region in the path, and their errors for a failed task
+// or an empty task list
+func TestInstancesRegionalAndPoll(t *testing.T) {
+	const (
+		instancePath = "/cloud/v1/instances/1/1/" + andPollCreatedID
+		createReq    = "POST /cloud/v2/instances/1/1"
+		actionReq    = "POST /cloud/v2/instances/1/1/" + andPollCreatedID + "/action"
+		deleteReq    = "DELETE " + instancePath
+		getReq       = "GET " + instancePath
+		pollReq      = "GET /cloud/v1/tasks/task-1"
+	)
+	newInstance := func(ctx context.Context, client gcore.Client) (*cloud.InstanceRegional, error) {
+		return client.Cloud.InstancesRegional.NewAndPoll(ctx, cloud.InstancesRegionalNewParams{})
+	}
+	actionInstance := func(ctx context.Context, client gcore.Client) (*cloud.InstanceRegional, error) {
+		return client.Cloud.InstancesRegional.ActionAndPoll(ctx, andPollCreatedID, cloud.InstancesRegionalActionParams{})
+	}
+	deleteInstance := func(ctx context.Context, client gcore.Client) (*cloud.InstanceRegional, error) {
+		return nil, client.Cloud.InstancesRegional.DeleteAndPoll(ctx, andPollCreatedID, cloud.InstancesRegionalDeleteParams{})
+	}
+	failed := taskFlowConfig{taskState: cloud.TaskStateError, taskError: "boom"}
+	empty := []string{}
+	noTask := taskFlowConfig{actionTasks: &empty}
+
+	runAndPollCases(t, []andPollCase[cloud.InstanceRegional]{
+		{
+			name:         "NewAndPoll",
+			invoke:       newInstance,
+			wantResource: true,
+			wantRequests: []string{createReq, pollReq, getReq},
+		},
+		{
+			name:         "NewAndPoll/task failed",
+			cfg:          failed,
+			invoke:       newInstance,
+			wantErr:      "boom",
+			wantRequests: []string{createReq, pollReq},
+		},
+		{
+			name:         "NewAndPoll/no task",
+			cfg:          noTask,
+			invoke:       newInstance,
+			wantErr:      "expected exactly one task",
+			wantRequests: []string{createReq},
+		},
+		{
+			name:         "ActionAndPoll",
+			invoke:       actionInstance,
+			wantResource: true,
+			wantRequests: []string{actionReq, pollReq, getReq},
+		},
+		{
+			name:         "ActionAndPoll/task failed",
+			cfg:          failed,
+			invoke:       actionInstance,
+			wantErr:      "boom",
+			wantRequests: []string{actionReq, pollReq},
+		},
+		{
+			name:         "ActionAndPoll/no task",
+			cfg:          noTask,
+			invoke:       actionInstance,
+			wantErr:      "expected exactly one task",
+			wantRequests: []string{actionReq},
+		},
+		{
+			name:         "DeleteAndPoll",
+			invoke:       deleteInstance,
+			wantRequests: []string{deleteReq, pollReq},
+		},
+		{
+			name:         "DeleteAndPoll/task failed",
+			cfg:          failed,
+			invoke:       deleteInstance,
+			wantErr:      "boom",
+			wantRequests: []string{deleteReq, pollReq},
+		},
+		{
+			name:         "DeleteAndPoll/no task",
+			cfg:          noTask,
+			invoke:       deleteInstance,
+			wantErr:      "expected at least one task",
+			wantRequests: []string{deleteReq},
+		},
+	}, func(i *cloud.InstanceRegional) string { return i.ID })
+}
+
 // TestPortConvertAndPoll checks the requests that ConvertAndPoll sends, the
 // floating IP it returns, and the errors for a failed task or an empty task
 // list. The floating IP GET must use the region of the task (76), not the
@@ -760,57 +1082,35 @@ func TestPortConvertAndPoll(t *testing.T) {
 		pollReq    = "GET /cloud/v1/tasks/task-1"
 		getReq     = "GET /cloud/v1/floatingips/1/76/" + andPollCreatedID
 	)
+	convert := func(ctx context.Context, client gcore.Client) (*cloud.FloatingIP, error) {
+		return client.Cloud.Ports.ConvertAndPoll(ctx, andPollCreatedID, cloud.PortConvertParams{
+			TargetType: cloud.PortConvertParamsTargetTypeFloatingIP,
+		})
+	}
 	empty := []string{}
 
-	cases := []struct {
-		name         string
-		cfg          taskFlowConfig
-		wantErr      string
-		wantRequests []string
-	}{
+	runAndPollCases(t, []andPollCase[cloud.FloatingIP]{
 		{
-			name:         "success",
+			name:         "ConvertAndPoll",
+			invoke:       convert,
+			wantResource: true,
 			wantRequests: []string{convertReq, pollReq, getReq},
 		},
 		{
-			name:         "task failed",
+			name:         "ConvertAndPoll/task failed",
 			cfg:          taskFlowConfig{taskState: cloud.TaskStateError, taskError: "boom"},
+			invoke:       convert,
 			wantErr:      "boom",
 			wantRequests: []string{convertReq, pollReq},
 		},
 		{
-			name:         "no task",
+			name:         "ConvertAndPoll/no task",
 			cfg:          taskFlowConfig{actionTasks: &empty},
+			invoke:       convert,
 			wantErr:      "expected at least one task",
 			wantRequests: []string{convertReq},
 		},
-	}
-	for _, tc := range cases {
-		t.Run(tc.name, func(t *testing.T) {
-			var requests requestLog
-			cfg := tc.cfg
-			cfg.resource = map[string]any{"id": andPollCreatedID}
-			cfg.requests = &requests
-			server := newTaskFlowServer(cfg)
-			defer server.Close()
-
-			client := newTaskFlowClient(server)
-			fip, err := client.Cloud.Ports.ConvertAndPoll(context.Background(), andPollCreatedID, cloud.PortConvertParams{
-				TargetType: cloud.PortConvertParamsTargetTypeFloatingIP,
-			})
-			switch {
-			case tc.wantErr == "" && err != nil:
-				t.Fatalf("unexpected error: %v", err)
-			case tc.wantErr != "" && (err == nil || !strings.Contains(err.Error(), tc.wantErr)):
-				t.Fatalf("err = %v, want an error that contains %q", err, tc.wantErr)
-			case tc.wantErr == "" && (fip == nil || fip.ID != andPollCreatedID):
-				t.Fatalf("floating IP = %+v, want ID %q", fip, andPollCreatedID)
-			}
-			if got := requests.all(); !slices.Equal(got, tc.wantRequests) {
-				t.Errorf("requests = %q, want %q", got, tc.wantRequests)
-			}
-		})
-	}
+	}, func(f *cloud.FloatingIP) string { return f.ID })
 }
 
 // TestTaskServicePoll covers the shared TaskService.Poll loop that every

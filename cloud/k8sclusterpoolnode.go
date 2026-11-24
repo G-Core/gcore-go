@@ -37,7 +37,7 @@ func NewK8SClusterPoolNodeService(opts ...option.RequestOption) (r K8SClusterPoo
 }
 
 // List k8s cluster pool nodes
-func (r *K8SClusterPoolNodeService) List(ctx context.Context, poolName string, params K8SClusterPoolNodeListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Instance], err error) {
+func (r *K8SClusterPoolNodeService) List(ctx context.Context, poolName string, params K8SClusterPoolNodeListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[InstanceRegional], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -77,7 +77,7 @@ func (r *K8SClusterPoolNodeService) List(ctx context.Context, poolName string, p
 }
 
 // List k8s cluster pool nodes
-func (r *K8SClusterPoolNodeService) ListAutoPaging(ctx context.Context, poolName string, params K8SClusterPoolNodeListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Instance] {
+func (r *K8SClusterPoolNodeService) ListAutoPaging(ctx context.Context, poolName string, params K8SClusterPoolNodeListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[InstanceRegional] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, poolName, params, opts...))
 }
 

@@ -15,6 +15,7 @@ import (
 )
 
 func TestInstanceFlavorListWithOptionalParams(t *testing.T) {
+	t.Skip("GCLOUD2-27612: the mock rejects arrays inside object query filters")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,14 +28,35 @@ func TestInstanceFlavorListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Cloud.Instances.Flavors.List(context.TODO(), cloud.InstanceFlavorListParams{
-		ProjectID:      gcore.Int(1),
-		RegionID:       gcore.Int(7),
-		Disabled:       gcore.Bool(true),
-		ExcludeLinux:   gcore.Bool(true),
-		ExcludeWindows: gcore.Bool(true),
-		IncludePrices:  gcore.Bool(true),
-		Limit:          gcore.Int(1000),
-		Offset:         gcore.Int(0),
+		ProjectID:                  gcore.Int(1),
+		Architectures:              []string{"aarch64"},
+		Available:                  gcore.Bool(true),
+		CompatibleWithBootVolumeID: gcore.String("compatible_with_boot_volume_id"),
+		CompatibleWithImageID:      gcore.String("compatible_with_image_id"),
+		CompatibleWithSnapshotID:   gcore.String("compatible_with_snapshot_id"),
+		Limit:                      gcore.Int(1),
+		Name: cloud.InstanceFlavorListParamsName{
+			Contains: []string{"string"},
+			Exact:    []string{"string"},
+			Prefix:   []string{"string"},
+			Suffix:   []string{"string"},
+		},
+		Offset:  gcore.Int(0),
+		OrderBy: cloud.InstanceFlavorListParamsOrderByNameAsc,
+		OsTypes: []string{"linux"},
+		RamMib: cloud.InstanceFlavorListParamsRamMib{
+			Gt:  gcore.Int(0),
+			Gte: gcore.Int(0),
+			Lt:  gcore.Int(0),
+			Lte: gcore.Int(0),
+		},
+		RegionIDs: []int64{0},
+		Vcpus: cloud.InstanceFlavorListParamsVcpus{
+			Gt:  gcore.Int(0),
+			Gte: gcore.Int(0),
+			Lt:  gcore.Int(0),
+			Lte: gcore.Int(0),
+		},
 	})
 	if err != nil {
 		var apierr *gcore.Error

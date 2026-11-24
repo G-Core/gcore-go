@@ -4,7 +4,6 @@ package cloud
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -20,8 +19,8 @@ import (
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
 
-// Instance flavors define available CPU, memory, and disk configurations for
-// creating cloud instances.
+// Instance flavors define the CPU, memory, and OS type of an instance, in all
+// regions of the project.
 //
 // InstanceFlavorService contains methods and other services that help with
 // interacting with the gcore API.
@@ -42,22 +41,8 @@ func NewInstanceFlavorService(opts ...option.RequestOption) (r InstanceFlavorSer
 	return
 }
 
-// Use
-// [GET /v1/projects/{`project_id`}/instances/flavors](#operation/GlobalInstanceFlavorListView.get)
-// instead. This route also returns the basic VM and the bare metal flavors. For
-// them, use [List basic VM flavors](#operation/GlobalBasicVmFlavorListView.get)
-// and [List bare metal flavors](#operation/GlobalBaremetalFlavorListView.get). The
-// new routes do not return prices. For prices, use
-// [List instance flavor prices](#operation/InstanceFlavorPriceListView.get),
-// [List basic VM flavor prices](#operation/BasicVmFlavorPriceListView.get) and
-// [List bare metal flavor prices](#operation/BaremetalFlavorPriceListView.get).
-// This route continues to work. Later, we will deprecate it and then remove it. We
-// will tell you in advance.
-//
-// Retrieve a list of available instance flavors in the project and region. When
-// `include_prices` is specified, the list includes pricing information. Trial mode
-// clients see all prices as 0. Contact support for pricing errors.
-func (r *InstanceFlavorService) List(ctx context.Context, params InstanceFlavorListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[InstanceFlavorDetailedUnion], err error) {
+// List the virtual instance flavors available to the client, across all regions.
+func (r *InstanceFlavorService) List(ctx context.Context, params InstanceFlavorListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[InstanceFlavor], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -66,16 +51,11 @@ func (r *InstanceFlavorService) List(ctx context.Context, params InstanceFlavorL
 		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return nil, err
 	}
-	if !params.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("cloud/v1/flavors/%v/%v", params.ProjectID.Value, params.RegionID.Value)
+	path := fmt.Sprintf("cloud/v1/projects/%v/instances/flavors", params.ProjectID.Value)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -88,227 +68,204 @@ func (r *InstanceFlavorService) List(ctx context.Context, params InstanceFlavorL
 	return res, nil
 }
 
-// Use
-// [GET /v1/projects/{`project_id`}/instances/flavors](#operation/GlobalInstanceFlavorListView.get)
-// instead. This route also returns the basic VM and the bare metal flavors. For
-// them, use [List basic VM flavors](#operation/GlobalBasicVmFlavorListView.get)
-// and [List bare metal flavors](#operation/GlobalBaremetalFlavorListView.get). The
-// new routes do not return prices. For prices, use
-// [List instance flavor prices](#operation/InstanceFlavorPriceListView.get),
-// [List basic VM flavor prices](#operation/BasicVmFlavorPriceListView.get) and
-// [List bare metal flavor prices](#operation/BaremetalFlavorPriceListView.get).
-// This route continues to work. Later, we will deprecate it and then remove it. We
-// will tell you in advance.
-//
-// Retrieve a list of available instance flavors in the project and region. When
-// `include_prices` is specified, the list includes pricing information. Trial mode
-// clients see all prices as 0. Contact support for pricing errors.
-func (r *InstanceFlavorService) ListAutoPaging(ctx context.Context, params InstanceFlavorListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[InstanceFlavorDetailedUnion] {
+// List the virtual instance flavors available to the client, across all regions.
+func (r *InstanceFlavorService) ListAutoPaging(ctx context.Context, params InstanceFlavorListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[InstanceFlavor] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
-// InstanceFlavorDetailedUnion contains all possible properties and values from
-// [InstanceFlavorDetailedInstancesFlavorSchemaWithoutPrice],
-// [InstanceFlavorDetailedInstancesFlavorSchemaWithPrice].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-type InstanceFlavorDetailedUnion struct {
-	Architecture        string  `json:"architecture"`
-	CurrencyCode        string  `json:"currency_code"`
-	Disabled            bool    `json:"disabled"`
-	FlavorID            string  `json:"flavor_id"`
-	FlavorName          string  `json:"flavor_name"`
-	HardwareDescription string  `json:"hardware_description"`
-	OsType              string  `json:"os_type"`
-	PricePerHour        float64 `json:"price_per_hour"`
-	PricePerMonth       float64 `json:"price_per_month"`
-	PriceStatus         string  `json:"price_status"`
-	Ram                 int64   `json:"ram"`
-	Vcpus               int64   `json:"vcpus"`
-	JSON                struct {
-		Architecture        respjson.Field
-		CurrencyCode        respjson.Field
-		Disabled            respjson.Field
-		FlavorID            respjson.Field
-		FlavorName          respjson.Field
-		HardwareDescription respjson.Field
-		OsType              respjson.Field
-		PricePerHour        respjson.Field
-		PricePerMonth       respjson.Field
-		PriceStatus         respjson.Field
-		Ram                 respjson.Field
-		Vcpus               respjson.Field
-		raw                 string
-	} `json:"-"`
-}
-
-func (u InstanceFlavorDetailedUnion) AsInstancesFlavorSchemaWithoutPrice() (v InstanceFlavorDetailedInstancesFlavorSchemaWithoutPrice) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u InstanceFlavorDetailedUnion) AsInstancesFlavorSchemaWithPrice() (v InstanceFlavorDetailedInstancesFlavorSchemaWithPrice) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u InstanceFlavorDetailedUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *InstanceFlavorDetailedUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Instances flavor schema without price information
-type InstanceFlavorDetailedInstancesFlavorSchemaWithoutPrice struct {
-	// Flavor architecture type
-	Architecture string `json:"architecture" api:"required"`
-	// Currency code. The value is null if the price is not available.
-	CurrencyCode string `json:"currency_code" api:"required"`
-	// Disabled flavor flag
-	Disabled bool `json:"disabled" api:"required"`
-	// Flavor ID is the same as name
-	FlavorID string `json:"flavor_id" api:"required"`
-	// Flavor name
-	FlavorName string `json:"flavor_name" api:"required"`
-	// Additional hardware description
-	HardwareDescription map[string]string `json:"hardware_description" api:"required"`
-	// Flavor operating system
-	OsType string `json:"os_type" api:"required"`
-	// Price per hour. The value is null if the price is not available.
-	PricePerHour float64 `json:"price_per_hour" api:"required"`
-	// Price per month. The value is null if the price is not available.
-	PricePerMonth float64 `json:"price_per_month" api:"required"`
-	// Price status for the UI. The value is null if the price is not available.
+type InstanceFlavor struct {
+	// Flavor architecture type.
 	//
-	// Any of "error", "hide", "show".
-	PriceStatus string `json:"price_status" api:"required"`
-	// RAM size in MiB
-	Ram int64 `json:"ram" api:"required"`
-	// Virtual CPU count
+	// Any of "aarch64", "unknown", "x86_64".
+	Architecture InstanceFlavorArchitecture `json:"architecture" api:"required"`
+	// Whether a new server of this flavor can be created in this region now. The value
+	// is false when the flavor is disabled in the region or is out of stock there.
+	Available bool `json:"available" api:"required"`
+	// Flavor name.
+	Name string `json:"name" api:"required"`
+	// Flavor operating system.
+	//
+	// Any of "linux", "unknown", "windows".
+	OsType InstanceFlavorOsType `json:"os_type" api:"required"`
+	// RAM size in MiB.
+	RamMib int64 `json:"ram_mib" api:"required"`
+	// Region ID.
+	RegionID int64 `json:"region_id" api:"required"`
+	// Virtual CPU count.
 	Vcpus int64 `json:"vcpus" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Architecture        respjson.Field
-		CurrencyCode        respjson.Field
-		Disabled            respjson.Field
-		FlavorID            respjson.Field
-		FlavorName          respjson.Field
-		HardwareDescription respjson.Field
-		OsType              respjson.Field
-		PricePerHour        respjson.Field
-		PricePerMonth       respjson.Field
-		PriceStatus         respjson.Field
-		Ram                 respjson.Field
-		Vcpus               respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
+		Architecture respjson.Field
+		Available    respjson.Field
+		Name         respjson.Field
+		OsType       respjson.Field
+		RamMib       respjson.Field
+		RegionID     respjson.Field
+		Vcpus        respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r InstanceFlavorDetailedInstancesFlavorSchemaWithoutPrice) RawJSON() string { return r.JSON.raw }
-func (r *InstanceFlavorDetailedInstancesFlavorSchemaWithoutPrice) UnmarshalJSON(data []byte) error {
+func (r InstanceFlavor) RawJSON() string { return r.JSON.raw }
+func (r *InstanceFlavor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Instances flavor schema with price information
-type InstanceFlavorDetailedInstancesFlavorSchemaWithPrice struct {
-	// Flavor architecture type
-	Architecture string `json:"architecture" api:"required"`
-	// Currency code. The value is null if the price is not available.
-	CurrencyCode string `json:"currency_code" api:"required"`
-	// Disabled flavor flag
-	Disabled bool `json:"disabled" api:"required"`
-	// Flavor ID is the same as name
-	FlavorID string `json:"flavor_id" api:"required"`
-	// Flavor name
-	FlavorName string `json:"flavor_name" api:"required"`
-	// Additional hardware description
-	HardwareDescription map[string]string `json:"hardware_description" api:"required"`
-	// Flavor operating system
-	OsType string `json:"os_type" api:"required"`
-	// Price per hour. The value is null if the price is not available.
-	PricePerHour float64 `json:"price_per_hour" api:"required"`
-	// Price per month. The value is null if the price is not available.
-	PricePerMonth float64 `json:"price_per_month" api:"required"`
-	// Price status for the UI. The value is null if the price is not available.
-	//
-	// Any of "error", "hide", "show".
-	PriceStatus string `json:"price_status" api:"required"`
-	// RAM size in MiB
-	Ram int64 `json:"ram" api:"required"`
-	// Virtual CPU count
-	Vcpus int64 `json:"vcpus" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Architecture        respjson.Field
-		CurrencyCode        respjson.Field
-		Disabled            respjson.Field
-		FlavorID            respjson.Field
-		FlavorName          respjson.Field
-		HardwareDescription respjson.Field
-		OsType              respjson.Field
-		PricePerHour        respjson.Field
-		PricePerMonth       respjson.Field
-		PriceStatus         respjson.Field
-		Ram                 respjson.Field
-		Vcpus               respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
-	} `json:"-"`
-}
+// Flavor architecture type.
+type InstanceFlavorArchitecture string
 
-// Returns the unmodified JSON received from the API
-func (r InstanceFlavorDetailedInstancesFlavorSchemaWithPrice) RawJSON() string { return r.JSON.raw }
-func (r *InstanceFlavorDetailedInstancesFlavorSchemaWithPrice) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
+const (
+	InstanceFlavorArchitectureAarch64 InstanceFlavorArchitecture = "aarch64"
+	InstanceFlavorArchitectureUnknown InstanceFlavorArchitecture = "unknown"
+	InstanceFlavorArchitectureX86_64  InstanceFlavorArchitecture = "x86_64"
+)
 
-type InstanceFlavorList struct {
-	// Number of objects
-	Count int64 `json:"count" api:"required"`
-	// Objects
-	Results []InstanceFlavorDetailedUnion `json:"results" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Count       respjson.Field
-		Results     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
+// Flavor operating system.
+type InstanceFlavorOsType string
 
-// Returns the unmodified JSON received from the API
-func (r InstanceFlavorList) RawJSON() string { return r.JSON.raw }
-func (r *InstanceFlavorList) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
+const (
+	InstanceFlavorOsTypeLinux   InstanceFlavorOsType = "linux"
+	InstanceFlavorOsTypeUnknown InstanceFlavorOsType = "unknown"
+	InstanceFlavorOsTypeWindows InstanceFlavorOsType = "windows"
+)
 
 type InstanceFlavorListParams struct {
-	// Project ID
+	// Project ID.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// Flag for filtering disabled flavors in the region. Defaults to true
-	Disabled param.Opt[bool] `query:"disabled,omitzero" json:"-"`
-	// Set to true to exclude flavors dedicated to linux images
-	ExcludeLinux param.Opt[bool] `query:"exclude_linux,omitzero" json:"-"`
-	// Set to true to exclude flavors dedicated to windows images
-	ExcludeWindows param.Opt[bool] `query:"exclude_windows,omitzero" json:"-"`
-	// Set to true if the response should include flavor prices
-	IncludePrices param.Opt[bool] `query:"include_prices,omitzero" json:"-"`
-	// Optional. Limit the number of returned items
+	// Set to true to return only the available flavors. Set to false to return only
+	// the flavors that are disabled in their region or out of stock there. Omit it to
+	// return all flavors.
+	Available param.Opt[bool] `query:"available,omitzero" json:"-"`
+	// Return only the flavors that can boot from this volume, from its image metadata.
+	// An unknown volume matches no flavor. A non-bootable volume or one without image
+	// metadata is a 400. At most one `compatible_with_`\* parameter per request.
+	CompatibleWithBootVolumeID param.Opt[string] `query:"compatible_with_boot_volume_id,omitzero" format:"uuid4" json:"-"`
+	// Return only the flavors that can boot this image: its region, OS type and CPU
+	// architecture. An unknown image matches no flavor. At most one
+	// `compatible_with_`\* parameter per request.
+	CompatibleWithImageID param.Opt[string] `query:"compatible_with_image_id,omitzero" format:"uuid4" json:"-"`
+	// Return only the flavors that can boot from this snapshot, resolved through its
+	// parent volume's image metadata. An unknown snapshot matches no flavor. A parent
+	// volume with no image metadata is a 400. At most one `compatible_with_`\*
+	// parameter per request.
+	CompatibleWithSnapshotID param.Opt[string] `query:"compatible_with_snapshot_id,omitzero" format:"uuid4" json:"-"`
+	// Max items to return.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Optional. Offset value is used to exclude the first set of records from the
-	// result
+	// Items to skip.
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	// Filter by flavor architecture type(s).
+	//
+	// Any of "aarch64", "unknown", "x86_64".
+	Architectures []string `query:"architectures,omitzero" json:"-"`
+	// Operator flavor name filter, e.g. name[prefix]=g2-.
+	Name InstanceFlavorListParamsName `query:"name,omitzero" json:"-"`
+	// Sort field and direction.
+	//
+	// Any of "name.asc", "name.desc", "ram_mib.asc", "ram_mib.desc", "region_id.asc",
+	// "region_id.desc", "vcpus.asc", "vcpus.desc".
+	OrderBy InstanceFlavorListParamsOrderBy `query:"order_by,omitzero" json:"-"`
+	// Filter by flavor operating system(s).
+	//
+	// Any of "linux", "unknown", "windows".
+	OsTypes []string `query:"os_types,omitzero" json:"-"`
+	// Range filter on RAM size in MiB.
+	RamMib InstanceFlavorListParamsRamMib `query:"ram_mib,omitzero" json:"-"`
+	// Filter by region ID(s). Omit = all regions.
+	RegionIDs []int64 `query:"region_ids,omitzero" json:"-"`
+	// Range filter on virtual CPU count.
+	Vcpus InstanceFlavorListParamsVcpus `query:"vcpus,omitzero" json:"-"`
 	paramObj
 }
 
 // URLQuery serializes [InstanceFlavorListParams]'s query parameters as
 // `url.Values`.
 func (r InstanceFlavorListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Operator flavor name filter, e.g. name[prefix]=g2-.
+type InstanceFlavorListParamsName struct {
+	// Case-insensitive substring, e.g. `[contains]=web`. Repeat the key to match any
+	// substring.
+	Contains []string `query:"contains,omitzero" json:"-"`
+	// Case-insensitive exact match, e.g. `[exact]=web-1`. Repeat the key to match any
+	// of several.
+	Exact []string `query:"exact,omitzero" json:"-"`
+	// Case-insensitive starts-with, e.g. `[prefix]=prod-`. Repeat the key to match any
+	// prefix.
+	Prefix []string `query:"prefix,omitzero" json:"-"`
+	// Case-insensitive ends-with, e.g. `[suffix]=-db`. Repeat the key to match any
+	// suffix.
+	Suffix []string `query:"suffix,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [InstanceFlavorListParamsName]'s query parameters as
+// `url.Values`.
+func (r InstanceFlavorListParamsName) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Sort field and direction.
+type InstanceFlavorListParamsOrderBy string
+
+const (
+	InstanceFlavorListParamsOrderByNameAsc      InstanceFlavorListParamsOrderBy = "name.asc"
+	InstanceFlavorListParamsOrderByNameDesc     InstanceFlavorListParamsOrderBy = "name.desc"
+	InstanceFlavorListParamsOrderByRamMibAsc    InstanceFlavorListParamsOrderBy = "ram_mib.asc"
+	InstanceFlavorListParamsOrderByRamMibDesc   InstanceFlavorListParamsOrderBy = "ram_mib.desc"
+	InstanceFlavorListParamsOrderByRegionIDAsc  InstanceFlavorListParamsOrderBy = "region_id.asc"
+	InstanceFlavorListParamsOrderByRegionIDDesc InstanceFlavorListParamsOrderBy = "region_id.desc"
+	InstanceFlavorListParamsOrderByVcpusAsc     InstanceFlavorListParamsOrderBy = "vcpus.asc"
+	InstanceFlavorListParamsOrderByVcpusDesc    InstanceFlavorListParamsOrderBy = "vcpus.desc"
+)
+
+// Range filter on RAM size in MiB.
+type InstanceFlavorListParamsRamMib struct {
+	// Strictly greater than, e.g. `[gt]=1`.
+	Gt param.Opt[int64] `query:"gt,omitzero" json:"-"`
+	// Greater than or equal, e.g. `[gte]=2`.
+	Gte param.Opt[int64] `query:"gte,omitzero" json:"-"`
+	// Strictly less than, e.g. `[lt]=8`.
+	Lt param.Opt[int64] `query:"lt,omitzero" json:"-"`
+	// Less than or equal, e.g. `[lte]=4`.
+	Lte param.Opt[int64] `query:"lte,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [InstanceFlavorListParamsRamMib]'s query parameters as
+// `url.Values`.
+func (r InstanceFlavorListParamsRamMib) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Range filter on virtual CPU count.
+type InstanceFlavorListParamsVcpus struct {
+	// Strictly greater than, e.g. `[gt]=1`.
+	Gt param.Opt[int64] `query:"gt,omitzero" json:"-"`
+	// Greater than or equal, e.g. `[gte]=2`.
+	Gte param.Opt[int64] `query:"gte,omitzero" json:"-"`
+	// Strictly less than, e.g. `[lt]=8`.
+	Lt param.Opt[int64] `query:"lt,omitzero" json:"-"`
+	// Less than or equal, e.g. `[lte]=4`.
+	Lte param.Opt[int64] `query:"lte,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [InstanceFlavorListParamsVcpus]'s query parameters as
+// `url.Values`.
+func (r InstanceFlavorListParamsVcpus) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

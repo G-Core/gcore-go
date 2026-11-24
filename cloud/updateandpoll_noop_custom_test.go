@@ -103,6 +103,10 @@ var updateAndPollMethods = []struct {
 		_, err := client.Cloud.Inference.Deployments.UpdateAndPoll(ctx, "id", cloud.InferenceDeploymentUpdateParams{})
 		return err
 	}},
+	{"Instance.UpdateAndPoll", func(ctx context.Context, client gcore.Client) error {
+		_, err := client.Cloud.Instances.UpdateAndPoll(ctx, "id", cloud.InstanceUpdateParams{})
+		return err
+	}},
 	{"K8SCluster.UpdateAndPoll", func(ctx context.Context, client gcore.Client) error {
 		_, err := client.Cloud.K8S.Clusters.UpdateAndPoll(ctx, "id", cloud.K8SClusterUpdateParams{})
 		return err
@@ -169,7 +173,7 @@ func TestUpdateAndPollWithTask(t *testing.T) {
 // TestUpdateAndPollMethodsCount is a canary: if codegen or a spec change adds or
 // removes an *UpdateAndPoll method, this reminds us to keep the table in sync.
 func TestUpdateAndPollMethodsCount(t *testing.T) {
-	const want = 11
+	const want = 12
 	if got := len(updateAndPollMethods); got != want {
 		t.Fatalf("updateAndPollMethods has %d entries, want %d; update the table in this file", got, want)
 	}
