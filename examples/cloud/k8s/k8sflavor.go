@@ -10,7 +10,7 @@ import (
 	"github.com/G-Core/gcore-go/cloud"
 )
 
-func listFlavors(client *gcore.Client) []cloud.BaremetalFlavor {
+func listFlavors(client *gcore.Client) []cloud.K8SFlavor {
 	fmt.Println("\n=== LIST K8S FLAVORS ===")
 
 	params := cloud.K8SFlavorListParams{
@@ -43,11 +43,11 @@ func listFlavors(client *gcore.Client) []cloud.BaremetalFlavor {
 	return flavors.Results
 }
 
-func pickPoolFlavor(flavors []cloud.BaremetalFlavor) string {
+func pickPoolFlavor(flavors []cloud.K8SFlavor) string {
 	// Prefer the smallest g1-standard VM flavor with capacity; fall back to
 	// any available non-baremetal flavor. Skip disabled, zero-capacity, and
 	// test/fake flavors.
-	var candidates []cloud.BaremetalFlavor
+	var candidates []cloud.K8SFlavor
 	for _, f := range flavors {
 		if f.Disabled || f.Capacity <= 0 {
 			continue
