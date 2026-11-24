@@ -16,11 +16,12 @@ type BaremetalService struct {
 	Options []option.RequestOption
 	// Bare metal images are operating system images used to boot bare metal servers,
 	// filterable by name, visibility, OS distribution, and architecture.
-	Images  BaremetalImageService
+	Images BaremetalImageService
+	// Bare metal flavors define the CPU, memory, disks, and network cards of a bare
+	// metal server, in all regions of the project.
 	Flavors BaremetalFlavorService
-	// Bare metal servers are dedicated physical machines with direct hardware access,
-	// supporting provisioning, rebuilding, and network configuration within a cloud
-	// region.
+	// Bare metal servers are dedicated physical machines that boot an OS image from a
+	// local disk and connect to networks through ports, in any region of the project.
 	Servers BaremetalServerService
 }
 

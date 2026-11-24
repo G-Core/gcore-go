@@ -1,0 +1,247 @@
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+
+package cloud_test
+
+import (
+	"context"
+	"errors"
+	"os"
+	"testing"
+	"time"
+
+	"github.com/G-Core/gcore-go"
+	"github.com/G-Core/gcore-go/cloud"
+	"github.com/G-Core/gcore-go/internal/testutil"
+	"github.com/G-Core/gcore-go/option"
+)
+
+func TestBaremetalRegionalServerNewWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Cloud.BaremetalRegional.Servers.New(context.TODO(), cloud.BaremetalRegionalServerNewParams{
+		ProjectID: gcore.Int(1),
+		RegionID:  gcore.Int(1),
+		Flavor:    "bm2-hf-medium",
+		Interfaces: []cloud.BaremetalRegionalServerNewParamsInterfaceUnion{{
+			OfExternal: &cloud.BaremetalRegionalServerNewParamsInterfaceExternal{
+				InterfaceName: gcore.String("eth0"),
+				IPFamily:      cloud.InterfaceIPFamilyIpv4,
+				PortGroup:     gcore.Int(0),
+			},
+		}},
+		AppConfig: map[string]any{
+			"foo": "bar",
+		},
+		ApptemplateID: gcore.String("apptemplate_id"),
+		DDOSProfile: cloud.BaremetalRegionalServerNewParamsDDOSProfile{
+			ProfileTemplate: 123,
+			Fields: []cloud.BaremetalRegionalServerNewParamsDDOSProfileField{{
+				BaseField: 10,
+				FieldValue: []float64{
+					45046,
+					45047,
+				},
+			}},
+		},
+		ImageID:      gcore.String("b5b4d65d-945f-4b98-ab6f-332319c724ef"),
+		Name:         gcore.String("my-bare-metal"),
+		NameTemplate: gcore.String("name_template"),
+		Password:     gcore.String("password"),
+		SSHKeyName:   gcore.String("my-ssh-key"),
+		Tags: map[string]string{
+			"my-tag": "my-tag-value",
+		},
+		UserData: gcore.String("user_data"),
+		Username: gcore.String("username"),
+	})
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestBaremetalRegionalServerUpdateWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Cloud.BaremetalRegional.Servers.Update(
+		context.TODO(),
+		"024a29e-b4b7-4c91-9a46-505be123d9f8",
+		cloud.BaremetalRegionalServerUpdateParams{
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
+			Name:      gcore.String("server_name"),
+			Tags: cloud.TagUpdateMap{
+				"my-tag":           gcore.Ptr("my-tag-value"),
+				"my-tag-to-remove": nil,
+			},
+		},
+	)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestBaremetalRegionalServerListWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Cloud.BaremetalRegional.Servers.List(context.TODO(), cloud.BaremetalRegionalServerListParams{
+		ProjectID:               gcore.Int(1),
+		RegionID:                gcore.Int(1),
+		ChangesBefore:           gcore.Time(time.Now()),
+		ChangesSince:            gcore.Time(time.Now()),
+		FlavorID:                gcore.String("bm2-hf-small"),
+		FlavorPrefix:            gcore.String("bm2-"),
+		IncludeK8S:              gcore.Bool(true),
+		IP:                      gcore.String("192.168.0.1"),
+		Limit:                   gcore.Int(1000),
+		Name:                    gcore.String("name"),
+		Offset:                  gcore.Int(0),
+		OnlyIsolated:            gcore.Bool(true),
+		OnlyWithFixedExternalIP: gcore.Bool(true),
+		OrderBy:                 cloud.BaremetalRegionalServerListParamsOrderByNameAsc,
+		ProfileName:             gcore.String("profile_name"),
+		ProtectionStatus:        cloud.BaremetalRegionalServerListParamsProtectionStatusActive,
+		Status:                  cloud.BaremetalRegionalServerListParamsStatusActive,
+		TagKeyValue:             gcore.String("tag_key_value"),
+		TagValue:                []string{"value1", "value2"},
+		TypeDDOSProfile:         cloud.BaremetalRegionalServerListParamsTypeDDOSProfileAdvanced,
+		Uuid:                    gcore.String("b5b4d65d-945f-4b98-ab6f-332319c724ef"),
+		WithDDOS:                gcore.Bool(true),
+		WithInterfacesName:      gcore.Bool(true),
+	})
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestBaremetalRegionalServerDeleteWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Cloud.BaremetalRegional.Servers.Delete(
+		context.TODO(),
+		"024a29e-b4b7-4c91-9a46-505be123d9f8",
+		cloud.BaremetalRegionalServerDeleteParams{
+			ProjectID:           gcore.Int(1),
+			RegionID:            gcore.Int(1),
+			AllFloatingIPs:      gcore.Bool(true),
+			AllReservedFixedIPs: gcore.Bool(true),
+			FloatingIPIDs:       gcore.String("floating_ip_ids"),
+			ReservedFixedIPIDs:  gcore.String("reserved_fixed_ip_ids"),
+		},
+	)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestBaremetalRegionalServerActionWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Cloud.BaremetalRegional.Servers.Action(
+		context.TODO(),
+		"024a29e-b4b7-4c91-9a46-505be123d9f8",
+		cloud.BaremetalRegionalServerActionParams{
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
+			OfStartActionInstanceSerializer: &cloud.BaremetalRegionalServerActionParamsBodyStartActionInstanceSerializer{
+				ActivateProfile: gcore.Bool(true),
+			},
+		},
+	)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestBaremetalRegionalServerGet(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := gcore.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Cloud.BaremetalRegional.Servers.Get(
+		context.TODO(),
+		"024a29e-b4b7-4c91-9a46-505be123d9f8",
+		cloud.BaremetalRegionalServerGetParams{
+			ProjectID: gcore.Int(1),
+			RegionID:  gcore.Int(1),
+		},
+	)
+	if err != nil {
+		var apierr *gcore.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}

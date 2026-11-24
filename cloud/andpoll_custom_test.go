@@ -15,6 +15,7 @@ import (
 	"maps"
 	"net/http"
 	"net/http/httptest"
+	"path"
 	"slices"
 	"strings"
 	"sync"
@@ -25,6 +26,7 @@ import (
 	"github.com/G-Core/gcore-go"
 	"github.com/G-Core/gcore-go/cloud"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/param"
 )
 
 const andPollCreatedID = "00000000-0000-4000-8000-000000000001"
@@ -33,7 +35,7 @@ const andPollCreatedID = "00000000-0000-4000-8000-000000000001"
 // The fake task server populates all of them with a single ID so that any
 // NewAndPoll-style method finds exactly the one created resource it looks for.
 var createdResourceStringFields = []string{
-	"ai_clusters", "api_keys", "caas_containers", "clusters", "faas_functions",
+	"ai_clusters", "api_keys", "baremetal_server", "caas_containers", "clusters", "faas_functions",
 	"faas_namespaces", "file_shares", "floatingips", "healthmonitors", "images",
 	"inference_instances", "instances", "k8s_clusters", "k8s_pools", "l7polices",
 	"l7rules", "laas_topic", "listeners", "loadbalancers", "members", "networks",
@@ -64,6 +66,17 @@ type taskFlowConfig struct {
 	resourceGet http.HandlerFunc
 	// requests, if set, records every request the server receives.
 	requests *requestLog
+	// taskOverrides changes the task with the given ID. Other tasks use taskState, taskError and the
+	// default created resources
+	taskOverrides map[string]taskOverride
+}
+
+// taskOverride changes one task of the fake task server. Zero fields keep the default values
+type taskOverride struct {
+	state cloud.TaskState
+	err   string
+	// created replaces created_resources. Use json.RawMessage("null") for a null value
+	created any
 }
 
 // requestLog records requests as "METHOD /path". It is safe for concurrent use.
@@ -144,7 +157,20 @@ func newTaskFlowServer(cfg taskFlowConfig) *httptest.Server {
 		w.Header().Set("Content-Type", "application/json")
 		switch {
 		case r.Method == http.MethodGet && strings.Contains(r.URL.Path, "/tasks/"):
-			_ = json.NewEncoder(w).Encode(task)
+			body := task
+			if override, ok := cfg.taskOverrides[path.Base(r.URL.Path)]; ok {
+				body = maps.Clone(task)
+				if override.state != "" {
+					body["state"] = override.state
+				}
+				if override.err != "" {
+					body["error"] = override.err
+				}
+				if override.created != nil {
+					body["created_resources"] = override.created
+				}
+			}
+			_ = json.NewEncoder(w).Encode(body)
 		case r.Method == http.MethodGet && cfg.resourceGet != nil:
 			cfg.resourceGet(w, r)
 		case r.Method == http.MethodGet && (cfg.resourceNotFound < 0 || resourceGets.Add(1) <= int64(cfg.resourceNotFound)):
@@ -156,7 +182,7 @@ func newTaskFlowServer(cfg taskFlowConfig) *httptest.Server {
 			// The final resource fetch (or List). Most *AndPoll methods return this
 			// value unmodified, so an empty object suffices; but a few re-fetch the
 			// parent and search a nested collection for the just-created child
-			// (BaremetalServer via List.results, SecurityGroupRule via
+			// (BaremetalRegionalServer via List.results, SecurityGroupRule via
 			// sg.security_group_rules), and
 			// InstanceImage.UploadAndPoll polls the image until it reports
 			// status "active" with a non-zero size. The superset below carries the
@@ -197,6 +223,17 @@ var andPollMethods = []struct {
 	name   string
 	invoke func(ctx context.Context, client gcore.Client) error
 }{
+	{"BaremetalRegionalServer.DeleteAndPoll", func(ctx context.Context, client gcore.Client) error {
+		return client.Cloud.BaremetalRegional.Servers.DeleteAndPoll(ctx, "id", cloud.BaremetalRegionalServerDeleteParams{})
+	}},
+	{"BaremetalRegionalServer.NewAndPoll", func(ctx context.Context, client gcore.Client) error {
+		_, err := client.Cloud.BaremetalRegional.Servers.NewAndPoll(ctx, cloud.BaremetalRegionalServerNewParams{})
+		return err
+	}},
+	{"BaremetalServer.ActionAndPoll", func(ctx context.Context, client gcore.Client) error {
+		_, err := client.Cloud.Baremetal.Servers.ActionAndPoll(ctx, "id", cloud.BaremetalServerActionParams{})
+		return err
+	}},
 	{"BaremetalServer.DeleteAndPoll", func(ctx context.Context, client gcore.Client) error {
 		return client.Cloud.Baremetal.Servers.DeleteAndPoll(ctx, "id", cloud.BaremetalServerDeleteParams{})
 	}},
@@ -206,6 +243,10 @@ var andPollMethods = []struct {
 	}},
 	{"BaremetalServer.RebuildAndPoll", func(ctx context.Context, client gcore.Client) error {
 		_, err := client.Cloud.Baremetal.Servers.RebuildAndPoll(ctx, "id", cloud.BaremetalServerRebuildParams{})
+		return err
+	}},
+	{"BaremetalServer.UpdateAndPoll", func(ctx context.Context, client gcore.Client) error {
+		_, err := client.Cloud.Baremetal.Servers.UpdateAndPoll(ctx, "id", cloud.BaremetalServerUpdateParams{})
 		return err
 	}},
 	{"DatabasePostgresCluster.DeleteAndPoll", func(ctx context.Context, client gcore.Client) error {
@@ -617,7 +658,7 @@ func TestAndPollMethodsSucceed(t *testing.T) {
 // TestAndPollMethodsCount is a canary: if codegen or a spec change adds/removes
 // an *AndPoll method, this reminds us to keep the table in sync.
 func TestAndPollMethodsCount(t *testing.T) {
-	const want = 109
+	const want = 113
 	if got := len(andPollMethods); got != want {
 		t.Fatalf("andPollMethods has %d entries, want %d; update the table in this file", got, want)
 	}
@@ -1070,6 +1111,620 @@ func TestInstancesRegionalAndPoll(t *testing.T) {
 			wantRequests: []string{deleteReq},
 		},
 	}, func(i *cloud.InstanceRegional) string { return i.ID })
+}
+
+// andPollOtherID is a second resource ID for the cases that need two IDs
+const andPollOtherID = "00000000-0000-4000-8000-000000000002"
+
+// TestBaremetalServerAndPoll checks the requests that the global bare metal helpers send, the server they
+// return and their errors. The helpers wait for every task, and they need at least one task. NewAndPoll reads
+// the server ID only from created_resources.instances
+func TestBaremetalServerAndPoll(t *testing.T) {
+	const (
+		serverPath = "/cloud/v1/projects/1/baremetal/servers/" + andPollCreatedID
+		createReq  = "POST /cloud/v1/projects/1/baremetal/servers"
+		updateReq  = "PATCH " + serverPath
+		actionReq  = "POST " + serverPath + "/action"
+		deleteReq  = "DELETE " + serverPath
+		getReq     = "GET " + serverPath
+		poll1Req   = "GET /cloud/v1/tasks/task-1"
+		poll2Req   = "GET /cloud/v1/tasks/task-2"
+	)
+	newServer := func(ctx context.Context, client gcore.Client) (*cloud.BaremetalServer, error) {
+		return client.Cloud.Baremetal.Servers.NewAndPoll(ctx, cloud.BaremetalServerNewParams{})
+	}
+	updateServer := func(ctx context.Context, client gcore.Client) (*cloud.BaremetalServer, error) {
+		return client.Cloud.Baremetal.Servers.UpdateAndPoll(ctx, andPollCreatedID, cloud.BaremetalServerUpdateParams{})
+	}
+	actionServer := func(ctx context.Context, client gcore.Client) (*cloud.BaremetalServer, error) {
+		return client.Cloud.Baremetal.Servers.ActionAndPoll(ctx, andPollCreatedID, cloud.BaremetalServerActionParams{
+			Action: cloud.BaremetalServerActionParamsActionRebootHard,
+		})
+	}
+	deleteServer := func(ctx context.Context, client gcore.Client) (*cloud.BaremetalServer, error) {
+		return nil, client.Cloud.Baremetal.Servers.DeleteAndPoll(ctx, andPollCreatedID, cloud.BaremetalServerDeleteParams{})
+	}
+	empty := []string{}
+	twoTasks := []string{"task-1", "task-2"}
+	failed := taskOverride{state: cloud.TaskStateError, err: "boom"}
+	created := func(ids ...string) taskOverride {
+		return taskOverride{created: map[string]any{"instances": ids, "baremetal_server": []string{}}}
+	}
+	wantStatus := func(want cloud.BaremetalServerStatus) func(*testing.T, *cloud.BaremetalServer) {
+		return func(t *testing.T, server *cloud.BaremetalServer) {
+			t.Helper()
+			if server.Status != want {
+				t.Errorf("server status = %q, want %q from the GET", server.Status, want)
+			}
+		}
+	}
+	// secondFailed has two tasks, and the second one fails
+	secondFailed := taskFlowConfig{actionTasks: &twoTasks, taskOverrides: map[string]taskOverride{"task-2": failed}}
+	deleteFields := map[string]any{
+		"resources_to_delete":   []map[string]any{{"id": andPollCreatedID, "name": "bm-1", "type": "baremetal_servers"}},
+		"resources_to_preserve": []map[string]any{{"id": andPollOtherID, "name": nil, "type": "ports"}},
+	}
+
+	runAndPollCases(t, []andPollCase[cloud.BaremetalServer]{
+		{
+			name: "NewAndPoll/returns provisioning from the first GET",
+			cfg: taskFlowConfig{
+				taskOverrides: map[string]taskOverride{"task-1": created(andPollCreatedID)},
+				resource:      map[string]any{"id": andPollCreatedID, "status": "provisioning"},
+			},
+			invoke:       newServer,
+			wantResource: true,
+			wantRequests: []string{createReq, poll1Req, getReq},
+			check:        wantStatus(cloud.BaremetalServerStatusProvisioning),
+		},
+		{
+			// the server ID can be in any task, and every task must finish first
+			name: "NewAndPoll/two tasks",
+			cfg: taskFlowConfig{actionTasks: &twoTasks, taskOverrides: map[string]taskOverride{
+				"task-1": created(),
+				"task-2": created(andPollCreatedID),
+			}},
+			invoke:       newServer,
+			wantResource: true,
+			wantRequests: []string{createReq, poll1Req, poll2Req, getReq},
+		},
+		{
+			name:         "NewAndPoll/same ID in two tasks",
+			cfg:          taskFlowConfig{actionTasks: &twoTasks},
+			invoke:       newServer,
+			wantResource: true,
+			wantRequests: []string{createReq, poll1Req, poll2Req, getReq},
+		},
+		{
+			name:         "NewAndPoll/task failed",
+			cfg:          taskFlowConfig{taskState: cloud.TaskStateError, taskError: "boom"},
+			invoke:       newServer,
+			wantErr:      "boom",
+			wantRequests: []string{createReq, poll1Req},
+		},
+		{
+			name:         "NewAndPoll/second task failed",
+			cfg:          secondFailed,
+			invoke:       newServer,
+			wantErr:      "boom",
+			wantRequests: []string{createReq, poll1Req, poll2Req},
+		},
+		{
+			name:         "NewAndPoll/no task",
+			cfg:          taskFlowConfig{actionTasks: &empty},
+			invoke:       newServer,
+			wantErr:      "expected at least one task",
+			wantRequests: []string{createReq},
+		},
+		{
+			name: "NewAndPoll/only the baremetal_server key",
+			cfg: taskFlowConfig{taskOverrides: map[string]taskOverride{
+				"task-1": {created: map[string]any{"baremetal_server": []string{andPollCreatedID}}},
+			}},
+			invoke:       newServer,
+			wantErr:      "created_resources.instances of the tasks, got none",
+			wantRequests: []string{createReq, poll1Req},
+		},
+		{
+			name: "NewAndPoll/null created resources",
+			cfg: taskFlowConfig{taskOverrides: map[string]taskOverride{
+				"task-1": {created: json.RawMessage("null")},
+			}},
+			invoke:       newServer,
+			wantErr:      "got none",
+			wantRequests: []string{createReq, poll1Req},
+		},
+		{
+			name: "NewAndPoll/two server IDs in two tasks",
+			cfg: taskFlowConfig{actionTasks: &twoTasks, taskOverrides: map[string]taskOverride{
+				"task-1": created(andPollCreatedID),
+				"task-2": created(andPollOtherID),
+			}},
+			invoke:       newServer,
+			wantErr:      "got 2",
+			wantRequests: []string{createReq, poll1Req, poll2Req},
+		},
+		{
+			name: "NewAndPoll/two server IDs in one task",
+			cfg: taskFlowConfig{taskOverrides: map[string]taskOverride{
+				"task-1": created(andPollCreatedID, andPollOtherID),
+			}},
+			invoke:       newServer,
+			wantErr:      "got 2",
+			wantRequests: []string{createReq, poll1Req},
+		},
+		{
+			name:         "UpdateAndPoll",
+			invoke:       updateServer,
+			wantResource: true,
+			wantRequests: []string{updateReq, poll1Req, getReq},
+		},
+		{
+			name:         "UpdateAndPoll/two tasks",
+			cfg:          taskFlowConfig{actionTasks: &twoTasks},
+			invoke:       updateServer,
+			wantResource: true,
+			wantRequests: []string{updateReq, poll1Req, poll2Req, getReq},
+		},
+		{
+			name:         "UpdateAndPoll/second task failed",
+			cfg:          secondFailed,
+			invoke:       updateServer,
+			wantErr:      "boom",
+			wantRequests: []string{updateReq, poll1Req, poll2Req},
+		},
+		{
+			// every real update of a bare metal server starts a task, so no task is an error
+			name:         "UpdateAndPoll/no task",
+			cfg:          taskFlowConfig{actionTasks: &empty},
+			invoke:       updateServer,
+			wantErr:      "expected at least one task",
+			wantRequests: []string{updateReq},
+		},
+		{
+			name:         "ActionAndPoll/returns stopped after reboot",
+			cfg:          taskFlowConfig{resource: map[string]any{"id": andPollCreatedID, "status": "stopped"}},
+			invoke:       actionServer,
+			wantResource: true,
+			wantRequests: []string{actionReq, poll1Req, getReq},
+			check:        wantStatus(cloud.BaremetalServerStatusStopped),
+		},
+		{
+			name:         "ActionAndPoll/two tasks",
+			cfg:          taskFlowConfig{actionTasks: &twoTasks, resource: map[string]any{"id": andPollCreatedID, "status": "active"}},
+			invoke:       actionServer,
+			wantResource: true,
+			wantRequests: []string{actionReq, poll1Req, poll2Req, getReq},
+		},
+		{
+			name:         "ActionAndPoll/second task failed",
+			cfg:          secondFailed,
+			invoke:       actionServer,
+			wantErr:      "boom",
+			wantRequests: []string{actionReq, poll1Req, poll2Req},
+		},
+		{
+			name:         "ActionAndPoll/no task",
+			cfg:          taskFlowConfig{actionTasks: &empty},
+			invoke:       actionServer,
+			wantErr:      "expected at least one task",
+			wantRequests: []string{actionReq},
+		},
+		{
+			name:         "DeleteAndPoll",
+			cfg:          taskFlowConfig{actionFields: deleteFields},
+			invoke:       deleteServer,
+			wantRequests: []string{deleteReq, poll1Req},
+		},
+		{
+			name:         "DeleteAndPoll/two tasks",
+			cfg:          taskFlowConfig{actionFields: deleteFields, actionTasks: &twoTasks},
+			invoke:       deleteServer,
+			wantRequests: []string{deleteReq, poll1Req, poll2Req},
+		},
+		{
+			name: "DeleteAndPoll/second task failed",
+			cfg: taskFlowConfig{actionFields: deleteFields, actionTasks: &twoTasks, taskOverrides: map[string]taskOverride{
+				"task-2": failed,
+			}},
+			invoke:       deleteServer,
+			wantErr:      "boom",
+			wantRequests: []string{deleteReq, poll1Req, poll2Req},
+		},
+		{
+			name:         "DeleteAndPoll/no task",
+			cfg:          taskFlowConfig{actionFields: deleteFields, actionTasks: &empty},
+			invoke:       deleteServer,
+			wantErr:      "expected at least one task",
+			wantRequests: []string{deleteReq},
+		},
+	}, func(s *cloud.BaremetalServer) string { return s.ID })
+}
+
+// TestBaremetalServerAndPollRejectsDryRun checks that the global helpers refuse a dry run before they send
+// any request. DryRun in the params and a dry_run query option both make a dry run
+func TestBaremetalServerAndPollRejectsDryRun(t *testing.T) {
+	type invokeFunc func(ctx context.Context, client gcore.Client, dryRun param.Opt[bool], opts ...option.RequestOption) error
+	helpers := []struct {
+		name      string
+		rawMethod string
+		invoke    invokeFunc
+	}{
+		{"NewAndPoll", "New", func(ctx context.Context, client gcore.Client, dryRun param.Opt[bool], opts ...option.RequestOption) error {
+			_, err := client.Cloud.Baremetal.Servers.NewAndPoll(ctx, cloud.BaremetalServerNewParams{DryRun: dryRun}, opts...)
+			return err
+		}},
+		{"UpdateAndPoll", "Update", func(ctx context.Context, client gcore.Client, dryRun param.Opt[bool], opts ...option.RequestOption) error {
+			_, err := client.Cloud.Baremetal.Servers.UpdateAndPoll(ctx, andPollCreatedID, cloud.BaremetalServerUpdateParams{DryRun: dryRun}, opts...)
+			return err
+		}},
+		{"ActionAndPoll", "Action", func(ctx context.Context, client gcore.Client, dryRun param.Opt[bool], opts ...option.RequestOption) error {
+			_, err := client.Cloud.Baremetal.Servers.ActionAndPoll(ctx, andPollCreatedID, cloud.BaremetalServerActionParams{DryRun: dryRun}, opts...)
+			return err
+		}},
+		{"DeleteAndPoll", "Delete", func(ctx context.Context, client gcore.Client, dryRun param.Opt[bool], opts ...option.RequestOption) error {
+			return client.Cloud.Baremetal.Servers.DeleteAndPoll(ctx, andPollCreatedID, cloud.BaremetalServerDeleteParams{DryRun: dryRun}, opts...)
+		}},
+	}
+	dryRuns := []struct {
+		name       string
+		dryRun     param.Opt[bool]
+		clientOpts []option.RequestOption
+		callOpts   []option.RequestOption
+	}{
+		{name: "DryRun true", dryRun: gcore.Bool(true)},
+		{name: "query option", callOpts: []option.RequestOption{option.WithQuery("dry_run", "true")}},
+		{name: "query option overrides DryRun false", dryRun: gcore.Bool(false), callOpts: []option.RequestOption{option.WithQuery("dry_run", "true")}},
+		{name: "added query value", dryRun: gcore.Bool(false), callOpts: []option.RequestOption{option.WithQueryAdd("dry_run", "1")}},
+		{name: "client query option", clientOpts: []option.RequestOption{option.WithQuery("dry_run", "True")}},
+	}
+	for _, helper := range helpers {
+		for _, dryRun := range dryRuns {
+			t.Run(helper.name+"/"+dryRun.name, func(t *testing.T) {
+				var requests requestLog
+				server := newTaskFlowServer(taskFlowConfig{requests: &requests})
+				defer server.Close()
+
+				err := helper.invoke(context.Background(), newTaskFlowClient(server, dryRun.clientOpts...), dryRun.dryRun, dryRun.callOpts...)
+				if err == nil || !strings.Contains(err.Error(), "DryRun") || !strings.Contains(err.Error(), "use "+helper.rawMethod+" instead") {
+					t.Fatalf("err = %v, want the dry run error that names %s", err, helper.rawMethod)
+				}
+				if got := requests.all(); len(got) != 0 {
+					t.Errorf("requests = %q, want none", got)
+				}
+			})
+		}
+
+		// a false dry_run query is a real request, so the helper sends it
+		t.Run(helper.name+"/false query value", func(t *testing.T) {
+			var requests requestLog
+			server := newTaskFlowServer(taskFlowConfig{requests: &requests, resource: map[string]any{"id": andPollCreatedID}})
+			defer server.Close()
+
+			err := helper.invoke(context.Background(), newTaskFlowClient(server), gcore.Bool(false), option.WithQuery("dry_run", "false"))
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			if got := requests.all(); len(got) < 2 || got[1] != "GET /cloud/v1/tasks/task-1" {
+				t.Errorf("requests = %q, want the mutation and a task poll", got)
+			}
+		})
+	}
+}
+
+func TestBaremetalServerNewAndPollReturnsGetNotFound(t *testing.T) {
+	var requests requestLog
+	server := newTaskFlowServer(taskFlowConfig{requests: &requests, resourceNotFound: 1})
+	defer server.Close()
+	client := newTaskFlowClient(server, option.WithPollingTimeoutSeconds(4))
+
+	res, err := client.Cloud.Baremetal.Servers.NewAndPoll(context.Background(), cloud.BaremetalServerNewParams{})
+	var apiErr *gcore.Error
+	if res != nil || !errors.As(err, &apiErr) || apiErr.StatusCode != http.StatusNotFound {
+		t.Fatalf("server = %v, err = %v, want nil server and a 404 error", res, err)
+	}
+	want := []string{
+		"POST /cloud/v1/projects/1/baremetal/servers",
+		"GET /cloud/v1/tasks/task-1",
+		"GET /cloud/v1/projects/1/baremetal/servers/" + andPollCreatedID,
+	}
+	if got := requests.all(); !slices.Equal(got, want) {
+		t.Errorf("requests = %q, want %q", got, want)
+	}
+}
+
+func TestBaremetalServerAndPollTaskTimeout(t *testing.T) {
+	var requests requestLog
+	twoTasks := []string{"task-1", "task-2"}
+	server := newTaskFlowServer(taskFlowConfig{
+		requests:      &requests,
+		actionTasks:   &twoTasks,
+		taskOverrides: map[string]taskOverride{"task-2": {state: cloud.TaskStateRunning}},
+	})
+	defer server.Close()
+	client := newTaskFlowClient(server, option.WithPollingIntervalSeconds(2))
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	res, err := client.Cloud.Baremetal.Servers.NewAndPoll(ctx, cloud.BaremetalServerNewParams{}, option.WithPollingTimeoutSeconds(1))
+	if res != nil || !errors.Is(err, context.DeadlineExceeded) || ctx.Err() != nil {
+		t.Fatalf("server = %v, err = %v, caller context = %v, want the polling timeout", res, err, ctx.Err())
+	}
+	want := []string{
+		"POST /cloud/v1/projects/1/baremetal/servers",
+		"GET /cloud/v1/tasks/task-1",
+		"GET /cloud/v1/tasks/task-2",
+	}
+	if got := requests.all(); !slices.Equal(got, want) {
+		t.Errorf("requests = %q, want %q", got, want)
+	}
+}
+
+// baremetalRegionalServer is a legacy bare metal server, as the regional routes return it
+var baremetalRegionalServer = map[string]any{
+	"id":        andPollCreatedID,
+	"name":      "bm-1",
+	"region_id": 1,
+	"status":    "ACTIVE",
+	"vm_state":  "active",
+	"addresses": map[string]any{
+		"public": []map[string]any{{"addr": "203.0.113.5", "type": "fixed", "interface_name": "eth0", "subnet_id": andPollOtherID, "subnet_name": "public"}},
+	},
+	"flavor": map[string]any{"flavor_id": "bm2-hf-small", "flavor_name": "bm2-hf-small", "vcpus": 8, "ram": 65536},
+}
+
+// uuidLog records the uuid filters of the regional List. It is safe for concurrent use
+type uuidLog struct {
+	mu   sync.Mutex
+	list []string
+}
+
+// regionalList returns a handler for the regional List. It answers with one legacy server and records the uuid filter
+func (l *uuidLog) regionalList(w http.ResponseWriter, r *http.Request) {
+	l.mu.Lock()
+	l.list = append(l.list, r.URL.Query().Get("uuid"))
+	l.mu.Unlock()
+	_ = json.NewEncoder(w).Encode(map[string]any{"count": 1, "results": []map[string]any{baremetalRegionalServer}})
+}
+
+func (l *uuidLog) all() []string {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	return slices.Clone(l.list)
+}
+
+// TestBaremetalRegionalServerAndPoll checks that the legacy bare metal helpers keep the regional routes, the
+// legacy task key created_resources.instances and the regional List by UUID
+func TestBaremetalRegionalServerAndPoll(t *testing.T) {
+	const (
+		createReq = "POST /cloud/v1/bminstances/1/1"
+		deleteReq = "DELETE /cloud/v1/bminstances/1/1/" + andPollCreatedID
+		listReq   = "GET /cloud/v1/bminstances/1/1"
+		pollReq   = "GET /cloud/v1/tasks/task-1"
+	)
+	newServer := func(ctx context.Context, client gcore.Client) (*cloud.BaremetalRegionalServer, error) {
+		return client.Cloud.BaremetalRegional.Servers.NewAndPoll(ctx, cloud.BaremetalRegionalServerNewParams{})
+	}
+	deleteServer := func(ctx context.Context, client gcore.Client) (*cloud.BaremetalRegionalServer, error) {
+		return nil, client.Cloud.BaremetalRegional.Servers.DeleteAndPoll(ctx, andPollCreatedID, cloud.BaremetalRegionalServerDeleteParams{})
+	}
+	empty := []string{}
+	var uuids uuidLog
+
+	runAndPollCases(t, []andPollCase[cloud.BaremetalRegionalServer]{
+		{
+			name:         "NewAndPoll",
+			cfg:          taskFlowConfig{resourceGet: uuids.regionalList},
+			invoke:       newServer,
+			wantResource: true,
+			wantRequests: []string{createReq, pollReq, listReq},
+		},
+		{
+			name: "NewAndPoll/only the legacy instances key",
+			cfg: taskFlowConfig{resourceGet: uuids.regionalList, taskOverrides: map[string]taskOverride{
+				"task-1": {created: map[string]any{"instances": []string{andPollCreatedID}}},
+			}},
+			invoke:       newServer,
+			wantResource: true,
+			wantRequests: []string{createReq, pollReq, listReq},
+		},
+		{
+			name: "NewAndPoll/only the baremetal_server key",
+			cfg: taskFlowConfig{resourceGet: uuids.regionalList, taskOverrides: map[string]taskOverride{
+				"task-1": {created: map[string]any{"baremetal_server": []string{andPollCreatedID}}},
+			}},
+			invoke:       newServer,
+			wantErr:      "expected exactly one bare metal server",
+			wantRequests: []string{createReq, pollReq},
+		},
+		{
+			name:         "NewAndPoll/task failed",
+			cfg:          taskFlowConfig{taskState: cloud.TaskStateError, taskError: "boom"},
+			invoke:       newServer,
+			wantErr:      "boom",
+			wantRequests: []string{createReq, pollReq},
+		},
+		{
+			name:         "NewAndPoll/no task",
+			cfg:          taskFlowConfig{actionTasks: &empty},
+			invoke:       newServer,
+			wantErr:      "expected exactly one task",
+			wantRequests: []string{createReq},
+		},
+		{
+			name:         "DeleteAndPoll",
+			invoke:       deleteServer,
+			wantRequests: []string{deleteReq, pollReq},
+		},
+		{
+			name:         "DeleteAndPoll/task failed",
+			cfg:          taskFlowConfig{taskState: cloud.TaskStateError, taskError: "boom"},
+			invoke:       deleteServer,
+			wantErr:      "boom",
+			wantRequests: []string{deleteReq, pollReq},
+		},
+		{
+			name:         "DeleteAndPoll/no task",
+			cfg:          taskFlowConfig{actionTasks: &empty},
+			invoke:       deleteServer,
+			wantErr:      "expected at least one task",
+			wantRequests: []string{deleteReq},
+		},
+	}, func(s *cloud.BaremetalRegionalServer) string { return s.ID })
+
+	if got, want := uuids.all(), []string{andPollCreatedID, andPollCreatedID}; !slices.Equal(got, want) {
+		t.Errorf("uuid filters of the regional List = %q, want %q", got, want)
+	}
+}
+
+// TestBaremetalRegionalServerNewAndPollCapture checks that the legacy NewAndPoll writes the legacy server
+// JSON, not the task JSON, to the WithResponseBodyInto destination
+func TestBaremetalRegionalServerNewAndPollCapture(t *testing.T) {
+	var uuids uuidLog
+	server := newTaskFlowServer(taskFlowConfig{resourceGet: uuids.regionalList})
+	defer server.Close()
+	client := newTaskFlowClient(server)
+
+	var raw []byte
+	res, err := client.Cloud.BaremetalRegional.Servers.NewAndPoll(context.Background(), cloud.BaremetalRegionalServerNewParams{}, option.WithResponseBodyInto(&raw))
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	wantRegionalServerJSON(t, raw)
+	if res.VmState != cloud.BaremetalRegionalServerVmStateActive {
+		t.Errorf("VmState = %q, want %q", res.VmState, cloud.BaremetalRegionalServerVmStateActive)
+	}
+}
+
+// TestBaremetalServerRebuildAndPoll checks that RebuildAndPoll keeps the regional rebuild route and waits
+// only for the first task. It reads the server with the regional List, returns the legacy server and writes
+// the legacy server JSON to the WithResponseBodyInto destination
+// TestBaremetalServerAndPollClientCapture checks a WithResponseBodyInto of the client. The helpers must still
+// decode the task lists, and the capture must get only the final server JSON
+func TestBaremetalServerAndPollClientCapture(t *testing.T) {
+	server := map[string]any{"id": andPollCreatedID, "name": "bm-1", "flavor_name": "bm2-hf-small", "status": "stopped"}
+	for name, invoke := range map[string]func(context.Context, gcore.Client) (string, error){
+		"NewAndPoll": func(ctx context.Context, client gcore.Client) (string, error) {
+			res, err := client.Cloud.Baremetal.Servers.NewAndPoll(ctx, cloud.BaremetalServerNewParams{})
+			if err != nil {
+				return "", err
+			}
+			return res.ID, nil
+		},
+		"UpdateAndPoll": func(ctx context.Context, client gcore.Client) (string, error) {
+			res, err := client.Cloud.Baremetal.Servers.UpdateAndPoll(ctx, andPollCreatedID, cloud.BaremetalServerUpdateParams{})
+			if err != nil {
+				return "", err
+			}
+			return res.ID, nil
+		},
+		"ActionAndPoll": func(ctx context.Context, client gcore.Client) (string, error) {
+			res, err := client.Cloud.Baremetal.Servers.ActionAndPoll(ctx, andPollCreatedID, cloud.BaremetalServerActionParams{
+				Action: cloud.BaremetalServerActionParamsActionStop,
+			})
+			if err != nil {
+				return "", err
+			}
+			return res.ID, nil
+		},
+		"DeleteAndPoll": func(ctx context.Context, client gcore.Client) (string, error) {
+			return andPollCreatedID, client.Cloud.Baremetal.Servers.DeleteAndPoll(ctx, andPollCreatedID, cloud.BaremetalServerDeleteParams{})
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			ts := newTaskFlowServer(taskFlowConfig{resource: server})
+			defer ts.Close()
+			var raw []byte
+			client := newTaskFlowClient(ts, option.WithResponseBodyInto(&raw))
+
+			id, err := invoke(context.Background(), client)
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			if id != andPollCreatedID {
+				t.Errorf("server ID = %q, want %q", id, andPollCreatedID)
+			}
+			if name == "DeleteAndPoll" {
+				if len(raw) != 0 {
+					t.Errorf("captured body = %s, want none for a delete", raw)
+				}
+				return
+			}
+			var captured map[string]any
+			if err := json.Unmarshal(raw, &captured); err != nil {
+				t.Fatalf("captured body %q is not JSON: %v", raw, err)
+			}
+			if captured["flavor_name"] != "bm2-hf-small" || captured["tasks"] != nil || captured["task_type"] != nil {
+				t.Errorf("captured body = %s, want the server JSON", raw)
+			}
+		})
+	}
+
+	t.Run("RebuildAndPoll", func(t *testing.T) {
+		var uuids uuidLog
+		ts := newTaskFlowServer(taskFlowConfig{resourceGet: uuids.regionalList})
+		defer ts.Close()
+		var raw []byte
+		client := newTaskFlowClient(ts, option.WithResponseBodyInto(&raw))
+		res, err := client.Cloud.Baremetal.Servers.RebuildAndPoll(context.Background(), andPollCreatedID, cloud.BaremetalServerRebuildParams{})
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		if res.ID != andPollCreatedID {
+			t.Errorf("server = %+v, want the legacy server", res)
+		}
+		wantRegionalServerJSON(t, raw)
+	})
+}
+
+func TestBaremetalServerRebuildAndPoll(t *testing.T) {
+	const (
+		rebuildReq = "POST /cloud/v1/bminstances/1/1/" + andPollCreatedID + "/rebuild"
+		pollReq    = "GET /cloud/v1/tasks/task-1"
+		listReq    = "GET /cloud/v1/bminstances/1/1"
+	)
+	twoTasks := []string{"task-1", "task-2"}
+	var requests requestLog
+	var uuids uuidLog
+	server := newTaskFlowServer(taskFlowConfig{actionTasks: &twoTasks, requests: &requests, resourceGet: uuids.regionalList})
+	defer server.Close()
+	client := newTaskFlowClient(server)
+
+	var raw []byte
+	res, err := client.Cloud.Baremetal.Servers.RebuildAndPoll(context.Background(), andPollCreatedID, cloud.BaremetalServerRebuildParams{
+		ImageID: gcore.String(andPollOtherID),
+	}, option.WithResponseBodyInto(&raw))
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if got, want := requests.all(), []string{rebuildReq, pollReq, listReq}; !slices.Equal(got, want) {
+		t.Errorf("requests = %q, want %q", got, want)
+	}
+	if got, want := uuids.all(), []string{andPollCreatedID}; !slices.Equal(got, want) {
+		t.Errorf("uuid filters of the regional List = %q, want %q", got, want)
+	}
+	if res.ID != andPollCreatedID || res.VmState != cloud.BaremetalRegionalServerVmStateActive || res.Flavor.FlavorID != "bm2-hf-small" {
+		t.Errorf("server = %+v, want the legacy server", res)
+	}
+	if addresses := res.Addresses["public"]; len(addresses) != 1 || addresses[0].Addr != "203.0.113.5" {
+		t.Errorf("Addresses = %+v, want the legacy addresses", res.Addresses)
+	}
+	wantRegionalServerJSON(t, raw)
+}
+
+// wantRegionalServerJSON checks that raw is the JSON of baremetalRegionalServer
+func wantRegionalServerJSON(t *testing.T, raw []byte) {
+	t.Helper()
+	var captured map[string]any
+	if err := json.Unmarshal(raw, &captured); err != nil {
+		t.Fatalf("captured body %q is not JSON: %v", raw, err)
+	}
+	if captured["id"] != andPollCreatedID || captured["vm_state"] != "active" || captured["addresses"] == nil {
+		t.Errorf("captured body = %s, want the legacy server JSON", raw)
+	}
+	if _, ok := captured["task_type"]; ok {
+		t.Errorf("captured body = %s, want the server JSON, not the task JSON", raw)
+	}
 }
 
 // TestPortConvertAndPoll checks the requests that ConvertAndPoll sends, the

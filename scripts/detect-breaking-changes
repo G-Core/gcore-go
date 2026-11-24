@@ -55,6 +55,9 @@ TEST_PATHS=(
 	cloud/baremetalimage_test.go
 	cloud/baremetalflavor_test.go
 	cloud/baremetalserver_test.go
+	cloud/baremetalserverconsole_test.go
+	cloud/baremetalregionalflavor_test.go
+	cloud/baremetalregionalserver_test.go
 	cloud/registry_test.go
 	cloud/registryrepository_test.go
 	cloud/registryartifact_test.go

@@ -22,9 +22,8 @@ import (
 	"github.com/G-Core/gcore-go/shared/constant"
 )
 
-// Bare metal servers are dedicated physical machines with direct hardware access,
-// supporting provisioning, rebuilding, and network configuration within a cloud
-// region.
+// Bare metal servers are dedicated physical machines that boot an OS image from a
+// local disk and connect to networks through ports, in any region of the project.
 //
 // BaremetalServerService contains methods and other services that help with
 // interacting with the gcore API.
@@ -34,6 +33,7 @@ import (
 // the [NewBaremetalServerService] method instead.
 type BaremetalServerService struct {
 	Options []option.RequestOption
+	Console BaremetalServerConsoleService
 }
 
 // NewBaremetalServerService generates a new service that applies the given options
@@ -42,36 +42,34 @@ type BaremetalServerService struct {
 func NewBaremetalServerService(opts ...option.RequestOption) (r BaremetalServerService) {
 	r = BaremetalServerService{}
 	r.Options = opts
+	r.Console = NewBaremetalServerConsoleService(opts...)
 	return
 }
 
-// Use
-// [POST /v1/projects/{`project_id`}/baremetal/servers](#operation/GlobalBaremetalListView.post)
-// instead. This route continues to work. Later, we will deprecate it and then
-// remove it. We will tell you in advance.
+// Create a bare metal server. The server writes an OS image to its local disk and
+// boots from it. The server uses ports that you create first, in the region of the
+// server.
 //
-// Create a new bare metal server with the specified configuration.
+// To create one:
 //
-// How to get access:
+//  1. Pick an image with [List bare metal images](#operation/BmImagesViewSet.get).
+//  2. Pick a flavor with
+//     [List bare metal flavors](#operation/GlobalBaremetalFlavorListView.get). Send
+//     `compatible_with_image_id` to get only the flavors that can boot the image.
+//     The `networking_capabilities` of the flavor tell which port settings it
+//     accepts.
+//  3. [Create a port](#operation/GlobalPortListView.post) for each interface. A
+//     body with only `region_id` gives one public IPv4 address.
 //
-// For Linux,
+// The order of `interfaces` is the NIC order and the boot order. Omit `port_group`
+// to put all interfaces in the first bond. You can also add an
+// [SSH key](/docs/api-reference/cloud/ssh-keys/add-or-generate-ssh-key).
 //
-//   - Use the `user_data` field to provide a
-//     [cloud-init script](https://cloudinit.readthedocs.io/en/latest/reference/examples.html)
-//     in base64 to apply configurations to the instance.
-//   - Specify the `username` and `password` to create a new user.
-//   - When only `password` is provided, it is set as the password for the default
-//     user of the image.
-//   - The `user_data` is ignored when the `password` is specified.
+// The response holds the IDs of the tasks that create the server.
 //
-// For Windows,
-//
-//   - Use the `user_data` field to provide a
-//     [cloudbase-init script](https://cloudbase-init.readthedocs.io/en/latest/userdata.html#cloud-config)
-//     in base64 to create new users on Windows.
-//   - Use the `password` field to set the password for the 'Admin' user on Windows.
-//   - The password of the Admin user cannot be updated via `user_data`.
-//   - The `username` cannot be specified in the request.
+// With `?dry_run=true` the request runs every check and changes nothing. The
+// response holds an empty `tasks` array. A failed check returns the same error as
+// the real create.
 func (r *BaremetalServerService) New(ctx context.Context, params BaremetalServerNewParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -79,58 +77,54 @@ func (r *BaremetalServerService) New(ctx context.Context, params BaremetalServer
 		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return nil, err
 	}
-	if !params.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("cloud/v1/bminstances/%v/%v", params.ProjectID.Value, params.RegionID.Value)
+	path := fmt.Sprintf("cloud/v1/projects/%v/baremetal/servers", params.ProjectID.Value)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
-// Use
-// [PATCH /v1/projects/{`project_id`}/baremetal/servers/{`server_id`}](#operation/GlobalBaremetalDetailView.patch)
-// instead. This route continues to work. Later, we will deprecate it and then
-// remove it. We will tell you in advance.
+// Send only the fields to change. The response holds the IDs of the tasks that
+// make the changes.
 //
-// Rename bare metal server or update tags
-func (r *BaremetalServerService) Update(ctx context.Context, serverID string, params BaremetalServerUpdateParams, opts ...option.RequestOption) (res *BaremetalServer, err error) {
+//   - Rename: send `name`.
+//   - Add an interface: [create a port](#operation/GlobalPortListView.post). Then
+//     send `interfaces` with the current interfaces in their current order and the
+//     new port at the end.
+//   - Remove an interface: send `interfaces` without it. The port stays and you can
+//     use it again. The server keeps at least one interface.
+//   - Change tags: send `tags` as a JSON Merge Patch.
+//
+// To change the security groups,
+// [update the ports](#operation/GlobalPortDetailView.patch). The update does not
+// change the flavor or the image.
+//
+// With `?dry_run=true` the request runs every check and changes nothing. The
+// response holds an empty `tasks` array. A failed check returns the same error as
+// the real update.
+func (r *BaremetalServerService) Update(ctx context.Context, serverID string, params BaremetalServerUpdateParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return nil, err
-	}
-	if !params.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
 		return nil, err
 	}
 	if serverID == "" {
 		err = errors.New("missing required server_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("cloud/v1/bminstances/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, serverID)
+	path := fmt.Sprintf("cloud/v1/projects/%v/baremetal/servers/%s", params.ProjectID.Value, serverID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return res, err
 }
 
-// Use
-// [GET /v1/projects/{`project_id`}/baremetal/servers](#operation/GlobalBaremetalListView.get)
-// instead. This route continues to work. Later, we will deprecate it and then
-// remove it. We will tell you in advance.
-//
-// List all bare metal servers in the specified project and region. Results can be
-// filtered by various parameters like name, status, and IP address.
+// List a project's bare metal servers across all regions.
 func (r *BaremetalServerService) List(ctx context.Context, params BaremetalServerListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[BaremetalServer], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -140,16 +134,11 @@ func (r *BaremetalServerService) List(ctx context.Context, params BaremetalServe
 		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
 		return nil, err
 	}
-	if !params.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("cloud/v1/bminstances/%v/%v", params.ProjectID.Value, params.RegionID.Value)
+	path := fmt.Sprintf("cloud/v1/projects/%v/baremetal/servers", params.ProjectID.Value)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -162,61 +151,62 @@ func (r *BaremetalServerService) List(ctx context.Context, params BaremetalServe
 	return res, nil
 }
 
-// Use
-// [GET /v1/projects/{`project_id`}/baremetal/servers](#operation/GlobalBaremetalListView.get)
-// instead. This route continues to work. Later, we will deprecate it and then
-// remove it. We will tell you in advance.
-//
-// List all bare metal servers in the specified project and region. Results can be
-// filtered by various parameters like name, status, and IP address.
+// List a project's bare metal servers across all regions.
 func (r *BaremetalServerService) ListAutoPaging(ctx context.Context, params BaremetalServerListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[BaremetalServer] {
 	return pagination.NewOffsetPageAutoPager(r.List(ctx, params, opts...))
 }
 
-// Use
-// [DELETE /v1/projects/{`project_id`}/baremetal/servers/{`server_id`}](#operation/GlobalBaremetalDetailView.delete)
-// instead. This route continues to work. Later, we will deprecate it and then
-// remove it. We will tell you in advance.
+// Delete a bare metal server. Ports and floating IPs are preserved by default:
+// ports are detached (the trunk is dissolved, each port survives standalone) and
+// floating IPs are disassociated. Asynchronous - returns the ID of the task
+// performing the deletion.
 //
-// Delete the bare metal server and its ports. A reserved fixed IP stays, unless
-// `reserved_fixed_ip_ids` names it or `all_reserved_fixed_ips` is `true`. A port
-// that you [create as a port](#operation/GlobalPortListView.post) is not a
-// reserved fixed IP, so this delete removes it.
+// `resources_to_delete` holds:
 //
-// To keep the ports, use
-// [`DELETE /v1/projects/{project_id}/baremetal/servers/{server_id}`](#operation/GlobalBaremetalDetailView.delete).
-// That delete keeps every port by default.
-func (r *BaremetalServerService) Delete(ctx context.Context, serverID string, params BaremetalServerDeleteParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
+//   - the server itself;
+//   - the ports and sub-ports that `port_ids` names, or every port if `all_ports` is
+//     `true`;
+//   - the floating IPs that `floating_ip_ids` names, or every floating IP if
+//     `all_floating_ips` is `true`.
+//
+// `resources_to_preserve` holds every other port, sub-port and floating IP of the
+// server. A floating IP on a deleted port stays, with no port.
+//
+// [`DELETE /v1/bminstances/{project_id}/{region_id}/{server_id}`](#operation/BMInstancesViewSet.delete)
+// is different. It deletes every port, except the reserved fixed IPs that
+// `reserved_fixed_ip_ids` and `all_reserved_fixed_ips` do not select.
+//
+// With `?dry_run=true` the request runs every check and changes nothing. The
+// response holds an empty `tasks` array and the same two lists. A failed check
+// returns the same error as the real delete.
+func (r *BaremetalServerService) Delete(ctx context.Context, serverID string, params BaremetalServerDeleteParams, opts ...option.RequestOption) (res *BaremetalServerDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return nil, err
-	}
-	if !params.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
 		return nil, err
 	}
 	if serverID == "" {
 		err = errors.New("missing required server_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("cloud/v1/bminstances/%v/%v/%s", params.ProjectID.Value, params.RegionID.Value, serverID)
+	path := fmt.Sprintf("cloud/v1/projects/%v/baremetal/servers/%s", params.ProjectID.Value, serverID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, params, &res, opts...)
 	return res, err
 }
 
-// Use
-// [POST /v1/projects/{`project_id`}/baremetal/servers/{`server_id`}/action](#operation/GlobalBaremetalActionView.post)
-// instead. This route continues to work. Later, we will deprecate it and then
-// remove it. We will tell you in advance.
+// Change the power state of a bare metal server. The action is one of: `start`,
+// `stop`, `reboot` or `reboot_hard`. The action does not change the Advanced DDoS
+// profile of the server. Use the DDoS profile resource to activate or to
+// deactivate protection. Returns the ID of the task that runs the action.
 //
-// The action can be one of: start, stop, reboot or `reboot_hard`.
+// With `?dry_run=true` the request runs every check and changes nothing. The
+// response holds an empty `tasks` array. A failed check returns the same error as
+// the real action.
 func (r *BaremetalServerService) Action(ctx context.Context, serverID string, params BaremetalServerActionParams, opts ...option.RequestOption) (res *TaskIDList, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -224,32 +214,20 @@ func (r *BaremetalServerService) Action(ctx context.Context, serverID string, pa
 		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return nil, err
-	}
-	if !params.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
 		return nil, err
 	}
 	if serverID == "" {
 		err = errors.New("missing required server_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("cloud/v2/baremetal/%v/%v/%s/action", params.ProjectID.Value, params.RegionID.Value, serverID)
+	path := fmt.Sprintf("cloud/v1/projects/%v/baremetal/servers/%s/action", params.ProjectID.Value, serverID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
-// Use
-// [GET /v1/projects/{`project_id`}/baremetal/servers/{`server_id`}](#operation/GlobalBaremetalDetailView.get)
-// instead. This route continues to work. Later, we will deprecate it and then
-// remove it. We will tell you in advance.
-//
-// Retrieve detailed information about a specific baremetal instance. This endpoint
-// always returns `ddos_profile` (if present) and therefore always requires
-// `DDOS_READ`.
+// Returns a single bare metal server by ID, resolved across all regions.
 func (r *BaremetalServerService) Get(ctx context.Context, serverID string, query BaremetalServerGetParams, opts ...option.RequestOption) (res *BaremetalServer, err error) {
 	opts = slices.Concat(r.Options, opts)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
@@ -257,20 +235,15 @@ func (r *BaremetalServerService) Get(ctx context.Context, serverID string, query
 		return nil, err
 	}
 	requestconfig.UseDefaultParam(&query.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&query.RegionID, precfg.CloudRegionID)
 	if !query.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return nil, err
-	}
-	if !query.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
 		return nil, err
 	}
 	if serverID == "" {
 		err = errors.New("missing required server_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("cloud/v1/bminstances/%v/%v/%s", query.ProjectID.Value, query.RegionID.Value, serverID)
+	path := fmt.Sprintf("cloud/v1/projects/%v/baremetal/servers/%s", query.ProjectID.Value, serverID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -301,137 +274,53 @@ func (r *BaremetalServerService) Rebuild(ctx context.Context, serverID string, p
 	return res, err
 }
 
-// IP addresses of the trunk port and its subports.
-type BaremetalFixedAddress struct {
-	// Address
-	Addr string `json:"addr" api:"required"`
-	// Interface name. This field will be `null` if `with_interfaces_name=true` is not
-	// set in the request when listing servers. It will also be `null` if the
-	// `interface_name` was not specified during server creation or when attaching the
-	// interface.
-	InterfaceName string `json:"interface_name" api:"required"`
-	// The unique identifier of the subnet associated with this address.
-	SubnetID string `json:"subnet_id" api:"required"`
-	// The name of the subnet associated with this address.
-	SubnetName string `json:"subnet_name" api:"required"`
-	// Type of the address
-	Type constant.Fixed `json:"type" default:"fixed"`
+type BaremetalServer struct {
+	// Baremetal server ID.
+	ID string `json:"id" api:"required" format:"uuid4"`
+	// Datetime when the server was created.
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Flavor name.
+	FlavorName string `json:"flavor_name" api:"required"`
+	// Image ID the server was provisioned from.
+	ImageID string `json:"image_id" api:"required" format:"uuid4"`
+	// Attached network interfaces with trunk/bond metadata.
+	Interfaces []BaremetalServerInterface `json:"interfaces" api:"required"`
+	// Service managing this server, or null if customer-operated.
+	ManagedBy BaremetalServerManagedBy `json:"managed_by" api:"required"`
+	// Baremetal server name.
+	Name string `json:"name" api:"required"`
+	// Region ID.
+	RegionID int64 `json:"region_id" api:"required"`
+	// ID of the SSH key of the default user, or null.
+	SSHKeyID string `json:"ssh_key_id" api:"required" format:"uuid4"`
+	// Canonical lifecycle status.
+	//
+	// Any of "active", "deleted", "deleting", "error", "provisioning", "rebooting",
+	// "rebuilding", "resizing", "stopped", "unknown", "updating".
+	Status BaremetalServerStatus `json:"status" api:"required"`
+	// Read-only key-value tags set by the platform.
+	SystemTags map[string]string `json:"system_tags" api:"required"`
+	// Customer-owned key-value tags.
+	Tags map[string]string `json:"tags" api:"required"`
+	// Datetime when the server was last updated.
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Addr          respjson.Field
-		InterfaceName respjson.Field
-		SubnetID      respjson.Field
-		SubnetName    respjson.Field
-		Type          respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BaremetalFixedAddress) RawJSON() string { return r.JSON.raw }
-func (r *BaremetalFixedAddress) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type BaremetalFloatingAddress struct {
-	// Address
-	Addr string `json:"addr" api:"required"`
-	// Type of the address
-	Type constant.Floating `json:"type" default:"floating"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Addr        respjson.Field
-		Type        respjson.Field
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		FlavorName  respjson.Field
+		ImageID     respjson.Field
+		Interfaces  respjson.Field
+		ManagedBy   respjson.Field
+		Name        respjson.Field
+		RegionID    respjson.Field
+		SSHKeyID    respjson.Field
+		Status      respjson.Field
+		SystemTags  respjson.Field
+		Tags        respjson.Field
+		UpdatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BaremetalFloatingAddress) RawJSON() string { return r.JSON.raw }
-func (r *BaremetalFloatingAddress) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type BaremetalServer struct {
-	// Bare metal server ID
-	ID string `json:"id" api:"required" format:"uuid4"`
-	// Map of `network_name` to list of addresses in that network
-	Addresses map[string][]BaremetalServerAddressUnion `json:"addresses" api:"required"`
-	// IP addresses of the instances that are blackholed by DDoS mitigation system
-	BlackholePorts []BlackholePort `json:"blackhole_ports" api:"required"`
-	// Datetime when bare metal server was created
-	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
-	// Task that created this entity. The value is null if the server has no creator
-	// task ID.
-	CreatorTaskID string `json:"creator_task_id" api:"required"`
-	// Bare metal advanced DDoS protection profile. It is always `null` if query
-	// parameter `with_ddos=true` is not set.
-	DDOSProfile DDOSProfile `json:"ddos_profile" api:"required"`
-	// Fixed IP assigned to instance
-	FixedIPAssignments []BaremetalServerFixedIPAssignment `json:"fixed_ip_assignments" api:"required"`
-	// Flavor details
-	Flavor BaremetalServerFlavor `json:"flavor" api:"required"`
-	// Instance isolation information. The value is null if the server is not isolated.
-	InstanceIsolation InstanceIsolation `json:"instance_isolation" api:"required"`
-	// Bare metal server name
-	Name string `json:"name" api:"required"`
-	// Project ID
-	ProjectID int64 `json:"project_id" api:"required"`
-	// Region name
-	Region string `json:"region" api:"required"`
-	// Region ID
-	RegionID int64 `json:"region_id" api:"required"`
-	// SSH key assigned to bare metal server. The value is null if no key pair is set.
-	SSHKeyName string `json:"ssh_key_name" api:"required"`
-	// Bare metal server status
-	//
-	// Any of "ACTIVE", "BUILD", "DELETED", "ERROR", "HARD_REBOOT", "MIGRATING",
-	// "PASSWORD", "PAUSED", "REBOOT", "REBUILD", "RESCUE", "RESIZE", "REVERT_RESIZE",
-	// "SHELVED", "SHELVED_OFFLOADED", "SHUTOFF", "SOFT_DELETED", "SUSPENDED",
-	// "UNKNOWN", "VERIFY_RESIZE".
-	Status BaremetalServerStatus `json:"status" api:"required"`
-	// List of key-value tags associated with the resource. A tag is a key-value pair
-	// that can be associated with a resource, enabling efficient filtering and
-	// grouping for better organization and management. Some tags are read-only and
-	// cannot be modified by the user. Tags are also integrated with cost reports,
-	// allowing cost data to be filtered based on tag keys or values.
-	Tags []Tag `json:"tags" api:"required"`
-	// The UUID of the active task that currently holds a lock on the resource. This
-	// lock prevents concurrent modifications to ensure consistency. If `null`, the
-	// resource is not locked.
-	TaskID string `json:"task_id" api:"required"`
-	// Task state. The value is null if no operation is in progress.
-	TaskState string `json:"task_state" api:"required"`
-	// Bare metal server state
-	//
-	// Any of "active", "building", "deleted", "error", "paused", "rescued", "resized",
-	// "shelved", "shelved_offloaded", "soft-deleted", "stopped", "suspended".
-	VmState BaremetalServerVmState `json:"vm_state" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                 respjson.Field
-		Addresses          respjson.Field
-		BlackholePorts     respjson.Field
-		CreatedAt          respjson.Field
-		CreatorTaskID      respjson.Field
-		DDOSProfile        respjson.Field
-		FixedIPAssignments respjson.Field
-		Flavor             respjson.Field
-		InstanceIsolation  respjson.Field
-		Name               respjson.Field
-		ProjectID          respjson.Field
-		Region             respjson.Field
-		RegionID           respjson.Field
-		SSHKeyName         respjson.Field
-		Status             respjson.Field
-		Tags               respjson.Field
-		TaskID             respjson.Field
-		TaskState          respjson.Field
-		VmState            respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
 	} `json:"-"`
 }
 
@@ -441,56 +330,52 @@ func (r *BaremetalServer) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// BaremetalServerAddressUnion contains all possible properties and values from
-// [BaremetalFloatingAddress], [BaremetalFixedAddress].
+// Bare-metal interface: the VM interface fields plus trunk/bond metadata.
 //
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-type BaremetalServerAddressUnion struct {
-	Addr string `json:"addr"`
-	Type string `json:"type"`
-	// This field is from variant [BaremetalFixedAddress].
-	InterfaceName string `json:"interface_name"`
-	// This field is from variant [BaremetalFixedAddress].
-	SubnetID string `json:"subnet_id"`
-	// This field is from variant [BaremetalFixedAddress].
-	SubnetName string `json:"subnet_name"`
-	JSON       struct {
-		Addr          respjson.Field
-		Type          respjson.Field
-		InterfaceName respjson.Field
-		SubnetID      respjson.Field
-		SubnetName    respjson.Field
+// `port_group` is the 0-based bond index (`null` for DPU/SmartNIC, which has no
+// trunk). `trunk` conveys the role within the bond.
+type BaremetalServerInterface struct {
+	// Public floating IP NAT-ing this interface, if any.
+	FloatingIP string `json:"floating_ip" api:"required" format:"ipvanyaddress"`
+	// Fixed IPs assigned to the port.
+	IPAssignments []BaremetalServerInterfaceIPAssignment `json:"ip_assignments" api:"required"`
+	// Port MAC address.
+	MacAddress string `json:"mac_address" api:"required"`
+	// Network the port is attached to.
+	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
+	// 0-based bond index. `null` on DPU/SmartNIC bare metal (no trunk).
+	PortGroup int64 `json:"port_group" api:"required"`
+	// ID of the port that connects the server to the network.
+	PortID string `json:"port_id" api:"required" format:"uuid4"`
+	// Trunk role within the bond. `null` when the port is not part of a trunk.
+	Trunk BaremetalServerInterfaceTrunkUnion `json:"trunk" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		FloatingIP    respjson.Field
+		IPAssignments respjson.Field
+		MacAddress    respjson.Field
+		NetworkID     respjson.Field
+		PortGroup     respjson.Field
+		PortID        respjson.Field
+		Trunk         respjson.Field
+		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
 }
 
-func (u BaremetalServerAddressUnion) AsFloatingIPAddress() (v BaremetalFloatingAddress) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u BaremetalServerAddressUnion) AsFixedIPAddress() (v BaremetalFixedAddress) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
 // Returns the unmodified JSON received from the API
-func (u BaremetalServerAddressUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *BaremetalServerAddressUnion) UnmarshalJSON(data []byte) error {
+func (r BaremetalServerInterface) RawJSON() string { return r.JSON.raw }
+func (r *BaremetalServerInterface) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type BaremetalServerFixedIPAssignment struct {
-	// Is network external
-	External bool `json:"external" api:"required"`
-	// Ip address
-	IPAddress string `json:"ip_address" api:"required"`
-	// Interface subnet id
-	SubnetID string `json:"subnet_id" api:"required"`
+type BaremetalServerInterfaceIPAssignment struct {
+	// The IP address assigned to the port from the specified subnet
+	IPAddress string `json:"ip_address" api:"required" format:"ipvanyaddress"`
+	// ID of the subnet that allocated the IP
+	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		External    respjson.Field
 		IPAddress   respjson.Field
 		SubnetID    respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -499,170 +384,270 @@ type BaremetalServerFixedIPAssignment struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r BaremetalServerFixedIPAssignment) RawJSON() string { return r.JSON.raw }
-func (r *BaremetalServerFixedIPAssignment) UnmarshalJSON(data []byte) error {
+func (r BaremetalServerInterfaceIPAssignment) RawJSON() string { return r.JSON.raw }
+func (r *BaremetalServerInterfaceIPAssignment) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Flavor details
-type BaremetalServerFlavor struct {
-	// CPU architecture
-	Architecture string `json:"architecture" api:"required"`
-	// Flavor ID is the same as name
-	FlavorID string `json:"flavor_id" api:"required"`
-	// Flavor name
-	FlavorName string `json:"flavor_name" api:"required"`
-	// Additional hardware description
-	HardwareDescription BaremetalServerFlavorHardwareDescription `json:"hardware_description" api:"required"`
-	// Operating system
-	OsType string `json:"os_type" api:"required"`
-	// RAM size in MiB
-	Ram int64 `json:"ram" api:"required"`
-	// Flavor resource class for mapping to hardware capacity
-	ResourceClass string `json:"resource_class" api:"required"`
-	// Virtual CPU count. For bare metal flavors, it's a physical CPU count
-	Vcpus int64 `json:"vcpus" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Architecture        respjson.Field
-		FlavorID            respjson.Field
-		FlavorName          respjson.Field
-		HardwareDescription respjson.Field
-		OsType              respjson.Field
-		Ram                 respjson.Field
-		ResourceClass       respjson.Field
-		Vcpus               respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
+// BaremetalServerInterfaceTrunkUnion contains all possible properties and values
+// from [BaremetalServerInterfaceTrunkParent],
+// [BaremetalServerInterfaceTrunkSubPort].
+//
+// Use the [BaremetalServerInterfaceTrunkUnion.AsAny] method to switch on the
+// variant.
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type BaremetalServerInterfaceTrunkUnion struct {
+	// Any of "parent", "sub_port".
+	Role string `json:"role"`
+	// This field is from variant [BaremetalServerInterfaceTrunkSubPort].
+	ParentPortID string `json:"parent_port_id"`
+	JSON         struct {
+		Role         respjson.Field
+		ParentPortID respjson.Field
+		raw          string
 	} `json:"-"`
 }
 
+// anyBaremetalServerInterfaceTrunk is implemented by each variant of
+// [BaremetalServerInterfaceTrunkUnion] to add type safety for the return type of
+// [BaremetalServerInterfaceTrunkUnion.AsAny]
+type anyBaremetalServerInterfaceTrunk interface {
+	implBaremetalServerInterfaceTrunkUnion()
+}
+
+func (BaremetalServerInterfaceTrunkParent) implBaremetalServerInterfaceTrunkUnion()  {}
+func (BaremetalServerInterfaceTrunkSubPort) implBaremetalServerInterfaceTrunkUnion() {}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := BaremetalServerInterfaceTrunkUnion.AsAny().(type) {
+//	case cloud.BaremetalServerInterfaceTrunkParent:
+//	case cloud.BaremetalServerInterfaceTrunkSubPort:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u BaremetalServerInterfaceTrunkUnion) AsAny() anyBaremetalServerInterfaceTrunk {
+	switch u.Role {
+	case "parent":
+		return u.AsParent()
+	case "sub_port":
+		return u.AsSubPort()
+	}
+	return nil
+}
+
+func (u BaremetalServerInterfaceTrunkUnion) AsParent() (v BaremetalServerInterfaceTrunkParent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u BaremetalServerInterfaceTrunkUnion) AsSubPort() (v BaremetalServerInterfaceTrunkSubPort) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 // Returns the unmodified JSON received from the API
-func (r BaremetalServerFlavor) RawJSON() string { return r.JSON.raw }
-func (r *BaremetalServerFlavor) UnmarshalJSON(data []byte) error {
+func (u BaremetalServerInterfaceTrunkUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *BaremetalServerInterfaceTrunkUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Additional hardware description
-type BaremetalServerFlavorHardwareDescription struct {
-	// Human-readable CPU description
-	CPU string `json:"cpu" api:"required"`
-	// Human-readable disk description
-	Disk string `json:"disk" api:"required"`
-	// If the flavor is licensed, this field contains the license type
-	License string `json:"license" api:"required"`
-	// Human-readable NIC description
-	Network string `json:"network" api:"required"`
-	// Human-readable RAM description
-	Ram string `json:"ram" api:"required"`
+type BaremetalServerInterfaceTrunkParent struct {
+	// Role of this interface within its bond/trunk.
+	Role constant.Parent `json:"role" default:"parent"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		CPU         respjson.Field
-		Disk        respjson.Field
-		License     respjson.Field
-		Network     respjson.Field
-		Ram         respjson.Field
+		Role        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r BaremetalServerFlavorHardwareDescription) RawJSON() string { return r.JSON.raw }
-func (r *BaremetalServerFlavorHardwareDescription) UnmarshalJSON(data []byte) error {
+func (r BaremetalServerInterfaceTrunkParent) RawJSON() string { return r.JSON.raw }
+func (r *BaremetalServerInterfaceTrunkParent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Bare metal server status
+type BaremetalServerInterfaceTrunkSubPort struct {
+	// Parent (bond) port ID.
+	ParentPortID string `json:"parent_port_id" api:"required" format:"uuid4"`
+	// Role of this interface within its bond/trunk.
+	Role constant.SubPort `json:"role" default:"sub_port"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ParentPortID respjson.Field
+		Role         respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BaremetalServerInterfaceTrunkSubPort) RawJSON() string { return r.JSON.raw }
+func (r *BaremetalServerInterfaceTrunkSubPort) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Service managing this server, or null if customer-operated.
+type BaremetalServerManagedBy struct {
+	// ID of the managing resource. Null when it is not known.
+	ResourceID string `json:"resource_id" api:"required"`
+	// Name of the managing resource.
+	ResourceName string `json:"resource_name" api:"required"`
+	// Type of the managing service.
+	//
+	// Any of "k8s_cluster".
+	Type string `json:"type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ResourceID   respjson.Field
+		ResourceName respjson.Field
+		Type         respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BaremetalServerManagedBy) RawJSON() string { return r.JSON.raw }
+func (r *BaremetalServerManagedBy) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Canonical lifecycle status.
 type BaremetalServerStatus string
 
 const (
-	BaremetalServerStatusActive           BaremetalServerStatus = "ACTIVE"
-	BaremetalServerStatusBuild            BaremetalServerStatus = "BUILD"
-	BaremetalServerStatusDeleted          BaremetalServerStatus = "DELETED"
-	BaremetalServerStatusError            BaremetalServerStatus = "ERROR"
-	BaremetalServerStatusHardReboot       BaremetalServerStatus = "HARD_REBOOT"
-	BaremetalServerStatusMigrating        BaremetalServerStatus = "MIGRATING"
-	BaremetalServerStatusPassword         BaremetalServerStatus = "PASSWORD"
-	BaremetalServerStatusPaused           BaremetalServerStatus = "PAUSED"
-	BaremetalServerStatusReboot           BaremetalServerStatus = "REBOOT"
-	BaremetalServerStatusRebuild          BaremetalServerStatus = "REBUILD"
-	BaremetalServerStatusRescue           BaremetalServerStatus = "RESCUE"
-	BaremetalServerStatusResize           BaremetalServerStatus = "RESIZE"
-	BaremetalServerStatusRevertResize     BaremetalServerStatus = "REVERT_RESIZE"
-	BaremetalServerStatusShelved          BaremetalServerStatus = "SHELVED"
-	BaremetalServerStatusShelvedOffloaded BaremetalServerStatus = "SHELVED_OFFLOADED"
-	BaremetalServerStatusShutoff          BaremetalServerStatus = "SHUTOFF"
-	BaremetalServerStatusSoftDeleted      BaremetalServerStatus = "SOFT_DELETED"
-	BaremetalServerStatusSuspended        BaremetalServerStatus = "SUSPENDED"
-	BaremetalServerStatusUnknown          BaremetalServerStatus = "UNKNOWN"
-	BaremetalServerStatusVerifyResize     BaremetalServerStatus = "VERIFY_RESIZE"
+	BaremetalServerStatusActive       BaremetalServerStatus = "active"
+	BaremetalServerStatusDeleted      BaremetalServerStatus = "deleted"
+	BaremetalServerStatusDeleting     BaremetalServerStatus = "deleting"
+	BaremetalServerStatusError        BaremetalServerStatus = "error"
+	BaremetalServerStatusProvisioning BaremetalServerStatus = "provisioning"
+	BaremetalServerStatusRebooting    BaremetalServerStatus = "rebooting"
+	BaremetalServerStatusRebuilding   BaremetalServerStatus = "rebuilding"
+	BaremetalServerStatusResizing     BaremetalServerStatus = "resizing"
+	BaremetalServerStatusStopped      BaremetalServerStatus = "stopped"
+	BaremetalServerStatusUnknown      BaremetalServerStatus = "unknown"
+	BaremetalServerStatusUpdating     BaremetalServerStatus = "updating"
 )
 
-// Bare metal server state
-type BaremetalServerVmState string
+type BaremetalServerDeleteResponse struct {
+	// Every resource that this request deletes: the server, and each port and floating
+	// IP that goes with it. Sorted by `type`, then by `id`.
+	ResourcesToDelete []BaremetalServerDeleteResponseResourcesToDelete `json:"resources_to_delete" api:"required"`
+	// The ports and floating IPs of the server that stay after the delete. Sorted by
+	// `type`, then by `id`.
+	ResourcesToPreserve []BaremetalServerDeleteResponseResourcesToPreserve `json:"resources_to_preserve" api:"required"`
+	// List of task IDs representing asynchronous operations. Use these IDs to monitor
+	// operation progress:
+	//
+	//   - `GET /v1/tasks/{task_id}` - Check individual task status and details Poll task
+	//     status until completion (`FINISHED`/`ERROR`) before proceeding with dependent
+	//     operations.
+	Tasks []string `json:"tasks" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ResourcesToDelete   respjson.Field
+		ResourcesToPreserve respjson.Field
+		Tasks               respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
 
-const (
-	BaremetalServerVmStateActive           BaremetalServerVmState = "active"
-	BaremetalServerVmStateBuilding         BaremetalServerVmState = "building"
-	BaremetalServerVmStateDeleted          BaremetalServerVmState = "deleted"
-	BaremetalServerVmStateError            BaremetalServerVmState = "error"
-	BaremetalServerVmStatePaused           BaremetalServerVmState = "paused"
-	BaremetalServerVmStateRescued          BaremetalServerVmState = "rescued"
-	BaremetalServerVmStateResized          BaremetalServerVmState = "resized"
-	BaremetalServerVmStateShelved          BaremetalServerVmState = "shelved"
-	BaremetalServerVmStateShelvedOffloaded BaremetalServerVmState = "shelved_offloaded"
-	BaremetalServerVmStateSoftDeleted      BaremetalServerVmState = "soft-deleted"
-	BaremetalServerVmStateStopped          BaremetalServerVmState = "stopped"
-	BaremetalServerVmStateSuspended        BaremetalServerVmState = "suspended"
-)
+// Returns the unmodified JSON received from the API
+func (r BaremetalServerDeleteResponse) RawJSON() string { return r.JSON.raw }
+func (r *BaremetalServerDeleteResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type BaremetalServerDeleteResponseResourcesToDelete struct {
+	// The ID of the resource.
+	ID string `json:"id" api:"required"`
+	// The name of the resource. For a floating IP, the IP address. `null` for a
+	// volume, and for a resource without a name.
+	Name string `json:"name" api:"required"`
+	// The type of the resource.
+	//
+	// Any of "baremetal_servers", "floating_ips", "ports".
+	Type string `json:"type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BaremetalServerDeleteResponseResourcesToDelete) RawJSON() string { return r.JSON.raw }
+func (r *BaremetalServerDeleteResponseResourcesToDelete) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type BaremetalServerDeleteResponseResourcesToPreserve struct {
+	// The ID of the resource.
+	ID string `json:"id" api:"required"`
+	// The name of the resource. For a floating IP, the IP address. `null` for a
+	// volume, and for a resource without a name.
+	Name string `json:"name" api:"required"`
+	// The type of the resource.
+	//
+	// Any of "baremetal_servers", "floating_ips", "ports".
+	Type string `json:"type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BaremetalServerDeleteResponseResourcesToPreserve) RawJSON() string { return r.JSON.raw }
+func (r *BaremetalServerDeleteResponseResourcesToPreserve) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type BaremetalServerNewParams struct {
-	// Project ID
+	// Project ID.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// The flavor of the instance.
-	Flavor string `json:"flavor" api:"required"`
-	// A list of network interfaces for the server. You can create one or more
-	// interfaces - private, public, or both.
-	Interfaces []BaremetalServerNewParamsInterfaceUnion `json:"interfaces,omitzero" api:"required"`
-	// Specifies the name of the SSH keypair, created via the
-	// [/v1/`ssh_keys` endpoint](/docs/api-reference/cloud/ssh-keys/add-or-generate-ssh-key).
-	SSHKeyName param.Opt[string] `json:"ssh_key_name,omitzero"`
-	// Apptemplate ID. Either `image_id` or `apptemplate_id` is required.
-	ApptemplateID param.Opt[string] `json:"apptemplate_id,omitzero"`
-	// Image ID. Either `image_id` or `apptemplate_id` is required.
-	ImageID param.Opt[string] `json:"image_id,omitzero" format:"uuid4"`
-	// Server name.
+	// Name of a bare metal flavor. The flavor sets the CPU, the memory, the disks and
+	// the network cards of the server.
+	// `GET /v1/projects/{project_id}/baremetal/flavors` lists the flavors.
+	FlavorName string `json:"flavor_name" api:"required"`
+	// OS image to write to the server's local disk.
+	ImageID string `json:"image_id" api:"required" format:"uuid4"`
+	// Pre-created ports to attach, in NIC/boot order.
+	Interfaces []BaremetalServerNewParamsInterface `json:"interfaces,omitzero" api:"required"`
+	// Region to provision the server in.
+	RegionID int64 `json:"region_id" api:"required"`
+	// Run every check of the real request and change nothing. The response has the
+	// status code and the schema of the real call, and an empty list of tasks. With
+	// `false`, the default, the request does the operation.
+	DryRun param.Opt[bool] `query:"dry_run,omitzero" json:"-"`
+	// Server name. Auto-generated if omitted.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// If you want server names to be automatically generated based on IP addresses,
-	// you can provide a name template instead of specifying the name manually. The
-	// template should include a placeholder that will be replaced during provisioning.
-	// Supported placeholders are: `{ip_octets}` (last 3 octets of the IP),
-	// `{two_ip_octets}`, and `{one_ip_octet}`.
-	NameTemplate param.Opt[string] `json:"name_template,omitzero"`
-	// For Linux instances, 'username' and 'password' are used to create a new user.
-	// When only 'password' is provided, it is set as the password for the default user
-	// of the image. For Windows instances, 'username' cannot be specified. Use the
-	// 'password' field to set the password for the 'Admin' user on Windows. Use the
-	// 'user_data' field to provide a script to create new users on Windows. The
-	// password of the Admin user cannot be updated via 'user_data'.
-	Password param.Opt[string] `json:"password,omitzero"`
-	// String in base64 format. For Linux instances, 'user_data' is ignored when
-	// 'password' field is provided. For Windows instances, Admin user password is set
-	// by 'password' field and cannot be updated via 'user_data'. Examples of the
-	// `user_data`: https://cloudinit.readthedocs.io/en/latest/topics/examples.html
+	// Password of the default user. No response returns it. A Windows image needs a
+	// password. For a Windows image, the create checks these rules: the password has a
+	// minimum of 6 characters, it contains no word 'admin', and it contains 3 of these
+	// character types: digits, lowercase letters, uppercase letters, other characters.
+	// For a Linux image, the password enables SSH login with a password. Send
+	// `password` or `user_data`, not both.
+	Password param.Opt[string] `json:"password,omitzero" format:"password"`
+	// ID of the SSH key to add to the default user.
+	SSHKeyID param.Opt[string] `json:"ssh_key_id,omitzero" format:"uuid4"`
+	// cloud-init user data (raw or base64). Windows: may be combined with password
+	// (password sets the Administrator account). Linux: mutually exclusive with
+	// password.
 	UserData param.Opt[string] `json:"user_data,omitzero"`
-	// For Linux instances, 'username' and 'password' are used to create a new user.
-	// For Windows instances, 'username' cannot be specified. Use 'password' field to
-	// set the password for the 'Admin' user on Windows.
-	Username param.Opt[string] `json:"username,omitzero"`
-	// Parameters for the application template if creating the instance from an
-	// `apptemplate`.
-	AppConfig map[string]any `json:"app_config,omitzero"`
-	// Enable advanced DDoS protection for the server
-	DDOSProfile BaremetalServerNewParamsDDOSProfile `json:"ddos_profile,omitzero"`
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
 	// can be associated with a resource, enabling efficient filtering and grouping for
 	// better organization and management. Both tag keys and values have a maximum
@@ -682,667 +667,46 @@ func (r *BaremetalServerNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type BaremetalServerNewParamsInterfaceUnion struct {
-	OfExternal        *BaremetalServerNewParamsInterfaceExternal        `json:",omitzero,inline"`
-	OfSubnet          *BaremetalServerNewParamsInterfaceSubnet          `json:",omitzero,inline"`
-	OfAnySubnet       *BaremetalServerNewParamsInterfaceAnySubnet       `json:",omitzero,inline"`
-	OfReservedFixedIP *BaremetalServerNewParamsInterfaceReservedFixedIP `json:",omitzero,inline"`
-	paramUnion
+// URLQuery serializes [BaremetalServerNewParams]'s query parameters as
+// `url.Values`.
+func (r BaremetalServerNewParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
 
-func (u BaremetalServerNewParamsInterfaceUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfExternal, u.OfSubnet, u.OfAnySubnet, u.OfReservedFixedIP)
-}
-func (u *BaremetalServerNewParamsInterfaceUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *BaremetalServerNewParamsInterfaceUnion) asAny() any {
-	if !param.IsOmitted(u.OfExternal) {
-		return u.OfExternal
-	} else if !param.IsOmitted(u.OfSubnet) {
-		return u.OfSubnet
-	} else if !param.IsOmitted(u.OfAnySubnet) {
-		return u.OfAnySubnet
-	} else if !param.IsOmitted(u.OfReservedFixedIP) {
-		return u.OfReservedFixedIP
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u BaremetalServerNewParamsInterfaceUnion) GetSubnetID() *string {
-	if vt := u.OfSubnet; vt != nil {
-		return &vt.SubnetID
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u BaremetalServerNewParamsInterfaceUnion) GetIPAddress() *string {
-	if vt := u.OfAnySubnet; vt != nil && vt.IPAddress.Valid() {
-		return &vt.IPAddress.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u BaremetalServerNewParamsInterfaceUnion) GetPortID() *string {
-	if vt := u.OfReservedFixedIP; vt != nil {
-		return &vt.PortID
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u BaremetalServerNewParamsInterfaceUnion) GetType() *string {
-	if vt := u.OfExternal; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfSubnet; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfAnySubnet; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfReservedFixedIP; vt != nil {
-		return (*string)(&vt.Type)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u BaremetalServerNewParamsInterfaceUnion) GetInterfaceName() *string {
-	if vt := u.OfExternal; vt != nil && vt.InterfaceName.Valid() {
-		return &vt.InterfaceName.Value
-	} else if vt := u.OfSubnet; vt != nil && vt.InterfaceName.Valid() {
-		return &vt.InterfaceName.Value
-	} else if vt := u.OfAnySubnet; vt != nil && vt.InterfaceName.Valid() {
-		return &vt.InterfaceName.Value
-	} else if vt := u.OfReservedFixedIP; vt != nil && vt.InterfaceName.Valid() {
-		return &vt.InterfaceName.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u BaremetalServerNewParamsInterfaceUnion) GetIPFamily() *string {
-	if vt := u.OfExternal; vt != nil {
-		return (*string)(&vt.IPFamily)
-	} else if vt := u.OfAnySubnet; vt != nil {
-		return (*string)(&vt.IPFamily)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u BaremetalServerNewParamsInterfaceUnion) GetPortGroup() *int64 {
-	if vt := u.OfExternal; vt != nil && vt.PortGroup.Valid() {
-		return &vt.PortGroup.Value
-	} else if vt := u.OfSubnet; vt != nil && vt.PortGroup.Valid() {
-		return &vt.PortGroup.Value
-	} else if vt := u.OfAnySubnet; vt != nil && vt.PortGroup.Valid() {
-		return &vt.PortGroup.Value
-	} else if vt := u.OfReservedFixedIP; vt != nil && vt.PortGroup.Valid() {
-		return &vt.PortGroup.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u BaremetalServerNewParamsInterfaceUnion) GetNetworkID() *string {
-	if vt := u.OfSubnet; vt != nil {
-		return (*string)(&vt.NetworkID)
-	} else if vt := u.OfAnySubnet; vt != nil {
-		return (*string)(&vt.NetworkID)
-	}
-	return nil
-}
-
-// Returns a subunion which exports methods to access subproperties
-//
-// Or use AsAny() to get the underlying value
-func (u BaremetalServerNewParamsInterfaceUnion) GetFloatingIP() (res baremetalServerNewParamsInterfaceUnionFloatingIP) {
-	if vt := u.OfSubnet; vt != nil {
-		res.any = vt.FloatingIP.asAny()
-	} else if vt := u.OfAnySubnet; vt != nil {
-		res.any = vt.FloatingIP.asAny()
-	} else if vt := u.OfReservedFixedIP; vt != nil {
-		res.any = vt.FloatingIP.asAny()
-	}
-	return
-}
-
-// Can have the runtime types
-// [*BaremetalServerNewParamsInterfaceSubnetFloatingIPNew],
-// [*BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting],
-// [*BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew],
-// [*BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting],
-// [*BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew],
-// [*BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting]
-type baremetalServerNewParamsInterfaceUnionFloatingIP struct{ any }
-
-// Use the following switch statement to get the type of the union:
-//
-//	switch u.AsAny().(type) {
-//	case *cloud.BaremetalServerNewParamsInterfaceSubnetFloatingIPNew:
-//	case *cloud.BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting:
-//	case *cloud.BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew:
-//	case *cloud.BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting:
-//	case *cloud.BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew:
-//	case *cloud.BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting:
-//	default:
-//	    fmt.Errorf("not present")
-//	}
-func (u baremetalServerNewParamsInterfaceUnionFloatingIP) AsAny() any { return u.any }
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u baremetalServerNewParamsInterfaceUnionFloatingIP) GetSource() *string {
-	switch vt := u.any.(type) {
-	case *BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion:
-		return vt.GetSource()
-	case *BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion:
-		return vt.GetSource()
-	case *BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion:
-		return vt.GetSource()
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u baremetalServerNewParamsInterfaceUnionFloatingIP) GetExistingFloatingID() *string {
-	switch vt := u.any.(type) {
-	case *BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion:
-		return vt.GetExistingFloatingID()
-	case *BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion:
-		return vt.GetExistingFloatingID()
-	case *BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion:
-		return vt.GetExistingFloatingID()
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[BaremetalServerNewParamsInterfaceUnion](
-		"type",
-		apijson.Discriminator[BaremetalServerNewParamsInterfaceExternal]("external"),
-		apijson.Discriminator[BaremetalServerNewParamsInterfaceSubnet]("subnet"),
-		apijson.Discriminator[BaremetalServerNewParamsInterfaceAnySubnet]("any_subnet"),
-		apijson.Discriminator[BaremetalServerNewParamsInterfaceReservedFixedIP]("reserved_fixed_ip"),
-	)
-}
-
-// Instance will be attached to default external network
-//
-// The property Type is required.
-type BaremetalServerNewParamsInterfaceExternal struct {
-	// Interface name. Defaults to `null` and is returned as `null` in the API response
-	// if not set.
-	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// Specifies the trunk group to which this interface belongs. Applicable only for
-	// bare metal servers. Each unique port group is mapped to a separate trunk port.
-	// Use this to control how interfaces are grouped across trunks.
+// The property PortID is required.
+type BaremetalServerNewParamsInterface struct {
+	// Existing port to attach. Array order is the NIC/boot order.
+	PortID string `json:"port_id" api:"required" format:"uuid4"`
+	// 0-based bond/trunk group, dense across all interfaces. Omitted defaults to
+	// group 0. Must be omitted on DPU/SmartNIC flavors.
 	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// Specify `ipv4`, `ipv6`, or `dual` to enable both.
-	//
-	// Any of "dual", "ipv4", "ipv6".
-	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
-	// A public IP address will be assigned to the instance.
-	//
-	// This field can be elided, and will marshal its zero value as "external".
-	Type constant.External `json:"type" default:"external"`
 	paramObj
 }
 
-func (r BaremetalServerNewParamsInterfaceExternal) MarshalJSON() (data []byte, err error) {
-	type shadow BaremetalServerNewParamsInterfaceExternal
+func (r BaremetalServerNewParamsInterface) MarshalJSON() (data []byte, err error) {
+	type shadow BaremetalServerNewParamsInterface
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *BaremetalServerNewParamsInterfaceExternal) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The instance will get an IP address from the selected network. If you choose to
-// add a floating IP, the instance will be reachable from the internet. Otherwise,
-// it will only have a private IP within the network.
-//
-// The properties NetworkID, SubnetID, Type are required.
-type BaremetalServerNewParamsInterfaceSubnet struct {
-	// The network where the instance will be connected.
-	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
-	// The instance will get an IP address from this subnet.
-	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
-	// Interface name. Defaults to `null` and is returned as `null` in the API response
-	// if not set.
-	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// Specifies the trunk group to which this interface belongs. Applicable only for
-	// bare metal servers. Each unique port group is mapped to a separate trunk port.
-	// Use this to control how interfaces are grouped across trunks.
-	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// Allows the instance to have a public IP that can be reached from the internet.
-	FloatingIP BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion `json:"floating_ip,omitzero"`
-	// The instance will get an IP address from the selected network. If you choose to
-	// add a floating IP, the instance will be reachable from the internet. Otherwise,
-	// it will only have a private IP within the network.
-	//
-	// This field can be elided, and will marshal its zero value as "subnet".
-	Type constant.Subnet `json:"type" default:"subnet"`
-	paramObj
-}
-
-func (r BaremetalServerNewParamsInterfaceSubnet) MarshalJSON() (data []byte, err error) {
-	type shadow BaremetalServerNewParamsInterfaceSubnet
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BaremetalServerNewParamsInterfaceSubnet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion struct {
-	OfNew      *BaremetalServerNewParamsInterfaceSubnetFloatingIPNew      `json:",omitzero,inline"`
-	OfExisting *BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfNew, u.OfExisting)
-}
-func (u *BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion) asAny() any {
-	if !param.IsOmitted(u.OfNew) {
-		return u.OfNew
-	} else if !param.IsOmitted(u.OfExisting) {
-		return u.OfExisting
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion) GetExistingFloatingID() *string {
-	if vt := u.OfExisting; vt != nil {
-		return &vt.ExistingFloatingID
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion) GetSource() *string {
-	if vt := u.OfNew; vt != nil {
-		return (*string)(&vt.Source)
-	} else if vt := u.OfExisting; vt != nil {
-		return (*string)(&vt.Source)
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[BaremetalServerNewParamsInterfaceSubnetFloatingIPUnion](
-		"source",
-		apijson.Discriminator[BaremetalServerNewParamsInterfaceSubnetFloatingIPNew]("new"),
-		apijson.Discriminator[BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting]("existing"),
-	)
-}
-
-func NewBaremetalServerNewParamsInterfaceSubnetFloatingIPNew() BaremetalServerNewParamsInterfaceSubnetFloatingIPNew {
-	return BaremetalServerNewParamsInterfaceSubnetFloatingIPNew{
-		Source: "new",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewBaremetalServerNewParamsInterfaceSubnetFloatingIPNew].
-type BaremetalServerNewParamsInterfaceSubnetFloatingIPNew struct {
-	// A new floating IP will be created and attached to the instance. A floating IP is
-	// a public IP that makes the instance accessible from the internet, even if it
-	// only has a private IP. It works like SNAT, allowing outgoing and incoming
-	// traffic.
-	Source constant.New `json:"source" default:"new"`
-	paramObj
-}
-
-func (r BaremetalServerNewParamsInterfaceSubnetFloatingIPNew) MarshalJSON() (data []byte, err error) {
-	type shadow BaremetalServerNewParamsInterfaceSubnetFloatingIPNew
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BaremetalServerNewParamsInterfaceSubnetFloatingIPNew) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties ExistingFloatingID, Source are required.
-type BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting struct {
-	// An existing available floating IP id must be specified if the source is set to
-	// `existing`
-	ExistingFloatingID string `json:"existing_floating_id" api:"required" format:"uuid4"`
-	// An existing available floating IP will be attached to the instance. A floating
-	// IP is a public IP that makes the instance accessible from the internet, even if
-	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
-	// traffic.
-	//
-	// This field can be elided, and will marshal its zero value as "existing".
-	Source constant.Existing `json:"source" default:"existing"`
-	paramObj
-}
-
-func (r BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting) MarshalJSON() (data []byte, err error) {
-	type shadow BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BaremetalServerNewParamsInterfaceSubnetFloatingIPExisting) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties NetworkID, Type are required.
-type BaremetalServerNewParamsInterfaceAnySubnet struct {
-	// The network where the instance will be connected.
-	NetworkID string `json:"network_id" api:"required" format:"uuid4"`
-	// Interface name. Defaults to `null` and is returned as `null` in the API response
-	// if not set.
-	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// You can specify a specific IP address from your subnet.
-	IPAddress param.Opt[string] `json:"ip_address,omitzero" format:"ipvanyaddress"`
-	// Specifies the trunk group to which this interface belongs. Applicable only for
-	// bare metal servers. Each unique port group is mapped to a separate trunk port.
-	// Use this to control how interfaces are grouped across trunks.
-	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// Allows the instance to have a public IP that can be reached from the internet.
-	FloatingIP BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion `json:"floating_ip,omitzero"`
-	// Specify `ipv4`, `ipv6`, or `dual` to enable both.
-	//
-	// Any of "dual", "ipv4", "ipv6".
-	IPFamily InterfaceIPFamily `json:"ip_family,omitzero"`
-	// Instance will be attached to a subnet with the largest count of free IPs.
-	//
-	// This field can be elided, and will marshal its zero value as "any_subnet".
-	Type constant.AnySubnet `json:"type" default:"any_subnet"`
-	paramObj
-}
-
-func (r BaremetalServerNewParamsInterfaceAnySubnet) MarshalJSON() (data []byte, err error) {
-	type shadow BaremetalServerNewParamsInterfaceAnySubnet
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BaremetalServerNewParamsInterfaceAnySubnet) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion struct {
-	OfNew      *BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew      `json:",omitzero,inline"`
-	OfExisting *BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfNew, u.OfExisting)
-}
-func (u *BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion) asAny() any {
-	if !param.IsOmitted(u.OfNew) {
-		return u.OfNew
-	} else if !param.IsOmitted(u.OfExisting) {
-		return u.OfExisting
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion) GetExistingFloatingID() *string {
-	if vt := u.OfExisting; vt != nil {
-		return &vt.ExistingFloatingID
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion) GetSource() *string {
-	if vt := u.OfNew; vt != nil {
-		return (*string)(&vt.Source)
-	} else if vt := u.OfExisting; vt != nil {
-		return (*string)(&vt.Source)
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[BaremetalServerNewParamsInterfaceAnySubnetFloatingIPUnion](
-		"source",
-		apijson.Discriminator[BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew]("new"),
-		apijson.Discriminator[BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting]("existing"),
-	)
-}
-
-func NewBaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew() BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew {
-	return BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew{
-		Source: "new",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewBaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew].
-type BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew struct {
-	// A new floating IP will be created and attached to the instance. A floating IP is
-	// a public IP that makes the instance accessible from the internet, even if it
-	// only has a private IP. It works like SNAT, allowing outgoing and incoming
-	// traffic.
-	Source constant.New `json:"source" default:"new"`
-	paramObj
-}
-
-func (r BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew) MarshalJSON() (data []byte, err error) {
-	type shadow BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BaremetalServerNewParamsInterfaceAnySubnetFloatingIPNew) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties ExistingFloatingID, Source are required.
-type BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting struct {
-	// An existing available floating IP id must be specified if the source is set to
-	// `existing`
-	ExistingFloatingID string `json:"existing_floating_id" api:"required" format:"uuid4"`
-	// An existing available floating IP will be attached to the instance. A floating
-	// IP is a public IP that makes the instance accessible from the internet, even if
-	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
-	// traffic.
-	//
-	// This field can be elided, and will marshal its zero value as "existing".
-	Source constant.Existing `json:"source" default:"existing"`
-	paramObj
-}
-
-func (r BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting) MarshalJSON() (data []byte, err error) {
-	type shadow BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BaremetalServerNewParamsInterfaceAnySubnetFloatingIPExisting) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties PortID, Type are required.
-type BaremetalServerNewParamsInterfaceReservedFixedIP struct {
-	// Network ID the subnet belongs to. Port will be plugged in this network.
-	PortID string `json:"port_id" api:"required"`
-	// Interface name. Defaults to `null` and is returned as `null` in the API response
-	// if not set.
-	InterfaceName param.Opt[string] `json:"interface_name,omitzero"`
-	// Specifies the trunk group to which this interface belongs. Applicable only for
-	// bare metal servers. Each unique port group is mapped to a separate trunk port.
-	// Use this to control how interfaces are grouped across trunks.
-	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
-	// Allows the instance to have a public IP that can be reached from the internet.
-	FloatingIP BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion `json:"floating_ip,omitzero"`
-	// An existing available reserved fixed IP will be attached to the instance. If the
-	// reserved IP is not public and you choose to add a floating IP, the instance will
-	// be accessible from the internet.
-	//
-	// This field can be elided, and will marshal its zero value as
-	// "reserved_fixed_ip".
-	Type constant.ReservedFixedIP `json:"type" default:"reserved_fixed_ip"`
-	paramObj
-}
-
-func (r BaremetalServerNewParamsInterfaceReservedFixedIP) MarshalJSON() (data []byte, err error) {
-	type shadow BaremetalServerNewParamsInterfaceReservedFixedIP
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BaremetalServerNewParamsInterfaceReservedFixedIP) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion struct {
-	OfNew      *BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew      `json:",omitzero,inline"`
-	OfExisting *BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfNew, u.OfExisting)
-}
-func (u *BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion) asAny() any {
-	if !param.IsOmitted(u.OfNew) {
-		return u.OfNew
-	} else if !param.IsOmitted(u.OfExisting) {
-		return u.OfExisting
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion) GetExistingFloatingID() *string {
-	if vt := u.OfExisting; vt != nil {
-		return &vt.ExistingFloatingID
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion) GetSource() *string {
-	if vt := u.OfNew; vt != nil {
-		return (*string)(&vt.Source)
-	} else if vt := u.OfExisting; vt != nil {
-		return (*string)(&vt.Source)
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPUnion](
-		"source",
-		apijson.Discriminator[BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew]("new"),
-		apijson.Discriminator[BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting]("existing"),
-	)
-}
-
-func NewBaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew() BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew {
-	return BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew{
-		Source: "new",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewBaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew].
-type BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew struct {
-	// A new floating IP will be created and attached to the instance. A floating IP is
-	// a public IP that makes the instance accessible from the internet, even if it
-	// only has a private IP. It works like SNAT, allowing outgoing and incoming
-	// traffic.
-	Source constant.New `json:"source" default:"new"`
-	paramObj
-}
-
-func (r BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew) MarshalJSON() (data []byte, err error) {
-	type shadow BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPNew) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties ExistingFloatingID, Source are required.
-type BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting struct {
-	// An existing available floating IP id must be specified if the source is set to
-	// `existing`
-	ExistingFloatingID string `json:"existing_floating_id" api:"required" format:"uuid4"`
-	// An existing available floating IP will be attached to the instance. A floating
-	// IP is a public IP that makes the instance accessible from the internet, even if
-	// it only has a private IP. It works like SNAT, allowing outgoing and incoming
-	// traffic.
-	//
-	// This field can be elided, and will marshal its zero value as "existing".
-	Source constant.Existing `json:"source" default:"existing"`
-	paramObj
-}
-
-func (r BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting) MarshalJSON() (data []byte, err error) {
-	type shadow BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BaremetalServerNewParamsInterfaceReservedFixedIPFloatingIPExisting) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Enable advanced DDoS protection for the server
-//
-// The property ProfileTemplate is required.
-type BaremetalServerNewParamsDDOSProfile struct {
-	// Unique identifier of the DDoS protection template to use for this profile
-	ProfileTemplate int64 `json:"profile_template" api:"required"`
-	// List of field configurations that customize the protection parameters for this
-	// profile
-	Fields []BaremetalServerNewParamsDDOSProfileField `json:"fields,omitzero"`
-	paramObj
-}
-
-func (r BaremetalServerNewParamsDDOSProfile) MarshalJSON() (data []byte, err error) {
-	type shadow BaremetalServerNewParamsDDOSProfile
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BaremetalServerNewParamsDDOSProfile) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The property BaseField is required.
-type BaremetalServerNewParamsDDOSProfileField struct {
-	// Unique identifier of the DDoS protection field being configured
-	BaseField  int64 `json:"base_field" api:"required"`
-	FieldValue any   `json:"field_value,omitzero"`
-	paramObj
-}
-
-func (r BaremetalServerNewParamsDDOSProfileField) MarshalJSON() (data []byte, err error) {
-	type shadow BaremetalServerNewParamsDDOSProfileField
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BaremetalServerNewParamsDDOSProfileField) UnmarshalJSON(data []byte) error {
+func (r *BaremetalServerNewParamsInterface) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type BaremetalServerUpdateParams struct {
-	// Project ID
+	// Project ID.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// Name
+	// Run every check of the real request and change nothing. The response has the
+	// status code and the schema of the real call, and an empty list of tasks. With
+	// `false`, the default, the request does the operation.
+	DryRun param.Opt[bool] `query:"dry_run,omitzero" json:"-"`
+	// Server name.
 	Name param.Opt[string] `json:"name,omitzero"`
+	// Full list of the interfaces of the server. Interfaces that are not in the list
+	// are detached. Keep the current interfaces in their current order. Add new
+	// interfaces at the end of the list. Send at least one interface.
+	Interfaces []BaremetalServerUpdateParamsInterface `json:"interfaces,omitzero"`
 	// Update key-value tags using JSON Merge Patch semantics (RFC 7396). Provide
 	// key-value pairs to add or update tags. Set tag values to `null` to remove tags.
 	// Unspecified tags remain unchanged. Read-only tags are always preserved and
@@ -1376,74 +740,88 @@ func (r *BaremetalServerUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// URLQuery serializes [BaremetalServerUpdateParams]'s query parameters as
+// `url.Values`.
+func (r BaremetalServerUpdateParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// The property PortID is required.
+type BaremetalServerUpdateParamsInterface struct {
+	// Existing port to attach. Array order is the NIC/boot order.
+	PortID string `json:"port_id" api:"required" format:"uuid4"`
+	// 0-based bond/trunk group, dense across all interfaces. Omitted defaults to
+	// group 0. Must be omitted on DPU/SmartNIC flavors.
+	PortGroup param.Opt[int64] `json:"port_group,omitzero"`
+	paramObj
+}
+
+func (r BaremetalServerUpdateParamsInterface) MarshalJSON() (data []byte, err error) {
+	type shadow BaremetalServerUpdateParamsInterface
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BaremetalServerUpdateParamsInterface) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type BaremetalServerListParams struct {
-	// Project ID
+	// Project ID.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// Filters the instances by a date and time stamp when the instances last changed.
-	ChangesBefore param.Opt[time.Time] `query:"changes-before,omitzero" format:"date-time" json:"-"`
-	// Filters the instances by a date and time stamp when the instances last changed
-	// status.
-	ChangesSince param.Opt[time.Time] `query:"changes-since,omitzero" format:"date-time" json:"-"`
-	// Filter out instances by `flavor_id`. Flavor id must match exactly.
-	FlavorID param.Opt[string] `query:"flavor_id,omitzero" json:"-"`
-	// Filter out instances by `flavor_prefix`.
-	FlavorPrefix param.Opt[string] `query:"flavor_prefix,omitzero" json:"-"`
-	// Include managed k8s worker nodes
-	IncludeK8S param.Opt[bool] `query:"include_k8s,omitzero" json:"-"`
-	// An IPv4 address to filter results by. Note: partial matches are allowed. For
-	// example, searching for 192.168.0.1 will return 192.168.0.1, 192.168.0.10,
-	// 192.168.0.110, and so on.
-	IP param.Opt[string] `query:"ip,omitzero" json:"-"`
-	// Optional. Limit the number of returned items
+	// Max items to return.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Filter instances by name. You can provide a full or partial name, instances with
-	// matching names will be returned. For example, entering 'test' will return all
-	// instances that contain 'test' in their name.
-	Name param.Opt[string] `query:"name,omitzero" json:"-"`
-	// Optional. Offset value is used to exclude the first set of records from the
-	// result
+	// Filter by managed status. true = managed by a service, false =
+	// customer-operated.
+	Managed param.Opt[bool] `query:"managed,omitzero" json:"-"`
+	// Items to skip.
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// Include only isolated instances
-	OnlyIsolated param.Opt[bool] `query:"only_isolated,omitzero" json:"-"`
-	// Return bare metals only with external fixed IP addresses.
-	OnlyWithFixedExternalIP param.Opt[bool] `query:"only_with_fixed_external_ip,omitzero" json:"-"`
-	// Filter result by ddos protection profile name. Effective only with `with_ddos`
-	// set to true.
-	ProfileName param.Opt[string] `query:"profile_name,omitzero" json:"-"`
-	// Optional. Filter by tag key-value pairs.
-	TagKeyValue param.Opt[string] `query:"tag_key_value,omitzero" json:"-"`
-	// Filter the server list result by the UUID of the server. Allowed UUID part
-	Uuid param.Opt[string] `query:"uuid,omitzero" json:"-"`
-	// Include DDoS profile information for bare-metal servers in the response when set
-	// to `true`. Otherwise, the `ddos_profile` field in the response is `null` by
-	// default.
-	WithDDOS param.Opt[bool] `query:"with_ddos,omitzero" json:"-"`
-	// Include `interface_name` in the addresses
-	WithInterfacesName param.Opt[bool] `query:"with_interfaces_name,omitzero" json:"-"`
-	// Order by field and direction.
+	// Range filter on creation time.
+	CreatedAt BaremetalServerListParamsCreatedAt `query:"created_at,omitzero" json:"-"`
+	// Operator flavor name filter.
+	FlavorName BaremetalServerListParamsFlavorName `query:"flavor_name,omitzero" json:"-"`
+	// Filter by baremetal server UUID(s).
+	IDs []string `query:"ids,omitzero" format:"uuid4" json:"-"`
+	// Exact IP filter on a fixed IP.
+	IPAddress BaremetalServerListParamsIPAddress `query:"ip_address,omitzero" json:"-"`
+	// Filter by manager type, e.g. `k8s_cluster`.
 	//
-	// Any of "created.asc", "created.desc", "name.asc", "name.desc", "status.asc",
-	// "status.desc".
+	// Any of "k8s_cluster".
+	ManagedBy BaremetalServerListParamsManagedBy `query:"managed_by,omitzero" json:"-"`
+	// Filter by managing resource ID(s).
+	ManagedByResourceIDs []string `query:"managed_by_resource_ids,omitzero" json:"-"`
+	// Filter by managing resource name(s).
+	ManagedByResourceNames []string `query:"managed_by_resource_names,omitzero" json:"-"`
+	// Operator name filter, e.g. name[contains]=web.
+	Name BaremetalServerListParamsName `query:"name,omitzero" json:"-"`
+	// Filter by network ID(s) the server has a port on.
+	NetworkIDs []string `query:"network_ids,omitzero" format:"uuid4" json:"-"`
+	// Sort field and direction.
+	//
+	// Any of "created_at.asc", "created_at.desc", "name.asc", "name.desc",
+	// "region_id.asc", "region_id.desc", "status.asc", "status.desc".
 	OrderBy BaremetalServerListParamsOrderBy `query:"order_by,omitzero" json:"-"`
-	// Filter result by DDoS `protection_status`. Effective only with `with_ddos` set
-	// to true. (Active, Queued or Error)
+	// Filter by region ID(s). Omit = all regions.
+	RegionIDs []int64 `query:"region_ids,omitzero" json:"-"`
+	// Filter by lifecycle status(es).
 	//
-	// Any of "Active", "Queued", "Error".
-	ProtectionStatus BaremetalServerListParamsProtectionStatus `query:"protection_status,omitzero" json:"-"`
-	// Filters instances by a server status, as a string.
-	//
-	// Any of "ACTIVE", "BUILD", "ERROR", "HARD_REBOOT", "REBOOT", "REBUILD", "RESCUE",
-	// "SHUTOFF", "SUSPENDED".
-	Status BaremetalServerListParamsStatus `query:"status,omitzero" json:"-"`
-	// Optional. Filter by tag values. ?`tag_value`=value1&`tag_value`=value2
-	TagValue []string `query:"tag_value,omitzero" json:"-"`
-	// Return bare metals either only with advanced or only basic DDoS protection.
-	// Effective only with `with_ddos` set to true. (advanced or basic)
-	//
-	// Any of "basic", "advanced".
-	TypeDDOSProfile BaremetalServerListParamsTypeDDOSProfile `query:"type_ddos_profile,omitzero" json:"-"`
+	// Any of "active", "deleted", "deleting", "error", "provisioning", "rebooting",
+	// "rebuilding", "resizing", "stopped", "unknown", "updating".
+	Statuses []string `query:"statuses,omitzero" json:"-"`
+	// Filter by subnet ID(s).
+	SubnetIDs []string `query:"subnet_ids,omitzero" format:"uuid4" json:"-"`
+	// Filter by tag key regardless of value, e.g. `tag_key[contains]=team`.
+	TagKey BaremetalServerListParamsTagKey `query:"tag_key,omitzero" json:"-"`
+	// Filter by tag value regardless of key, e.g. `tag_value[prefix]=prod`.
+	TagValue BaremetalServerListParamsTagValue `query:"tag_value,omitzero" json:"-"`
+	// Filter by exact tag key-value pairs, e.g. `tags[env]=prod&tags[team]=core`.
+	// Repeat a key to match any of several values for it, e.g.
+	// `tags[env]=prod&tags[env]=dev`. Values for one key are ORed, different keys are
+	// ANDed; values match case-insensitively.
+	Tags map[string][]string `query:"tags,omitzero" json:"-"`
+	// Range filter on last-update time.
+	UpdatedAt BaremetalServerListParamsUpdatedAt `query:"updated_at,omitzero" json:"-"`
 	paramObj
 }
 
@@ -1456,68 +834,214 @@ func (r BaremetalServerListParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Order by field and direction.
+// Range filter on creation time.
+type BaremetalServerListParamsCreatedAt struct {
+	// Strictly after this timestamp, e.g. `[gt]=2026-01-01T00:00:00Z`.
+	Gt param.Opt[time.Time] `query:"gt,omitzero" format:"date-time" json:"-"`
+	// At or after this timestamp (inclusive), e.g. `[gte]=2026-01-01T00:00:00Z`.
+	Gte param.Opt[time.Time] `query:"gte,omitzero" format:"date-time" json:"-"`
+	// Strictly before this timestamp, e.g. `[lt]=2026-02-01T00:00:00Z`.
+	Lt param.Opt[time.Time] `query:"lt,omitzero" format:"date-time" json:"-"`
+	// At or before this timestamp (inclusive), e.g. `[lte]=2026-02-01T00:00:00Z`.
+	Lte param.Opt[time.Time] `query:"lte,omitzero" format:"date-time" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [BaremetalServerListParamsCreatedAt]'s query parameters as
+// `url.Values`.
+func (r BaremetalServerListParamsCreatedAt) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Operator flavor name filter.
+type BaremetalServerListParamsFlavorName struct {
+	// Case-insensitive substring, e.g. `[contains]=web`. Repeat the key to match any
+	// substring.
+	Contains []string `query:"contains,omitzero" json:"-"`
+	// Case-insensitive exact match, e.g. `[exact]=web-1`. Repeat the key to match any
+	// of several.
+	Exact []string `query:"exact,omitzero" json:"-"`
+	// Case-insensitive starts-with, e.g. `[prefix]=prod-`. Repeat the key to match any
+	// prefix.
+	Prefix []string `query:"prefix,omitzero" json:"-"`
+	// Case-insensitive ends-with, e.g. `[suffix]=-db`. Repeat the key to match any
+	// suffix.
+	Suffix []string `query:"suffix,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [BaremetalServerListParamsFlavorName]'s query parameters as
+// `url.Values`.
+func (r BaremetalServerListParamsFlavorName) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Exact IP filter on a fixed IP.
+type BaremetalServerListParamsIPAddress struct {
+	// Substring match on IP address, e.g. `[contains]=192.168`. Repeat the key to
+	// match any substring.
+	Contains []string `query:"contains,omitzero" json:"-"`
+	// Exact IP match, e.g. `[exact]=192.168.1.10`. Repeat the key to match any of
+	// several.
+	Exact []string `query:"exact,omitzero" format:"ipvanyaddress" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [BaremetalServerListParamsIPAddress]'s query parameters as
+// `url.Values`.
+func (r BaremetalServerListParamsIPAddress) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Filter by manager type, e.g. `k8s_cluster`.
+type BaremetalServerListParamsManagedBy string
+
+const (
+	BaremetalServerListParamsManagedByK8SCluster BaremetalServerListParamsManagedBy = "k8s_cluster"
+)
+
+// Operator name filter, e.g. name[contains]=web.
+type BaremetalServerListParamsName struct {
+	// Case-insensitive substring, e.g. `[contains]=web`. Repeat the key to match any
+	// substring.
+	Contains []string `query:"contains,omitzero" json:"-"`
+	// Case-insensitive exact match, e.g. `[exact]=web-1`. Repeat the key to match any
+	// of several.
+	Exact []string `query:"exact,omitzero" json:"-"`
+	// Case-insensitive starts-with, e.g. `[prefix]=prod-`. Repeat the key to match any
+	// prefix.
+	Prefix []string `query:"prefix,omitzero" json:"-"`
+	// Case-insensitive ends-with, e.g. `[suffix]=-db`. Repeat the key to match any
+	// suffix.
+	Suffix []string `query:"suffix,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [BaremetalServerListParamsName]'s query parameters as
+// `url.Values`.
+func (r BaremetalServerListParamsName) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Sort field and direction.
 type BaremetalServerListParamsOrderBy string
 
 const (
-	BaremetalServerListParamsOrderByCreatedAsc  BaremetalServerListParamsOrderBy = "created.asc"
-	BaremetalServerListParamsOrderByCreatedDesc BaremetalServerListParamsOrderBy = "created.desc"
-	BaremetalServerListParamsOrderByNameAsc     BaremetalServerListParamsOrderBy = "name.asc"
-	BaremetalServerListParamsOrderByNameDesc    BaremetalServerListParamsOrderBy = "name.desc"
-	BaremetalServerListParamsOrderByStatusAsc   BaremetalServerListParamsOrderBy = "status.asc"
-	BaremetalServerListParamsOrderByStatusDesc  BaremetalServerListParamsOrderBy = "status.desc"
+	BaremetalServerListParamsOrderByCreatedAtAsc  BaremetalServerListParamsOrderBy = "created_at.asc"
+	BaremetalServerListParamsOrderByCreatedAtDesc BaremetalServerListParamsOrderBy = "created_at.desc"
+	BaremetalServerListParamsOrderByNameAsc       BaremetalServerListParamsOrderBy = "name.asc"
+	BaremetalServerListParamsOrderByNameDesc      BaremetalServerListParamsOrderBy = "name.desc"
+	BaremetalServerListParamsOrderByRegionIDAsc   BaremetalServerListParamsOrderBy = "region_id.asc"
+	BaremetalServerListParamsOrderByRegionIDDesc  BaremetalServerListParamsOrderBy = "region_id.desc"
+	BaremetalServerListParamsOrderByStatusAsc     BaremetalServerListParamsOrderBy = "status.asc"
+	BaremetalServerListParamsOrderByStatusDesc    BaremetalServerListParamsOrderBy = "status.desc"
 )
 
-// Filter result by DDoS `protection_status`. Effective only with `with_ddos` set
-// to true. (Active, Queued or Error)
-type BaremetalServerListParamsProtectionStatus string
+// Filter by tag key regardless of value, e.g. `tag_key[contains]=team`.
+type BaremetalServerListParamsTagKey struct {
+	// Case-insensitive substring, e.g. `[contains]=web`. Repeat the key to match any
+	// substring.
+	Contains []string `query:"contains,omitzero" json:"-"`
+	// Case-insensitive exact match, e.g. `[exact]=web-1`. Repeat the key to match any
+	// of several.
+	Exact []string `query:"exact,omitzero" json:"-"`
+	// Case-insensitive starts-with, e.g. `[prefix]=prod-`. Repeat the key to match any
+	// prefix.
+	Prefix []string `query:"prefix,omitzero" json:"-"`
+	// Case-insensitive ends-with, e.g. `[suffix]=-db`. Repeat the key to match any
+	// suffix.
+	Suffix []string `query:"suffix,omitzero" json:"-"`
+	paramObj
+}
 
-const (
-	BaremetalServerListParamsProtectionStatusActive BaremetalServerListParamsProtectionStatus = "Active"
-	BaremetalServerListParamsProtectionStatusQueued BaremetalServerListParamsProtectionStatus = "Queued"
-	BaremetalServerListParamsProtectionStatusError  BaremetalServerListParamsProtectionStatus = "Error"
-)
+// URLQuery serializes [BaremetalServerListParamsTagKey]'s query parameters as
+// `url.Values`.
+func (r BaremetalServerListParamsTagKey) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
 
-// Filters instances by a server status, as a string.
-type BaremetalServerListParamsStatus string
+// Filter by tag value regardless of key, e.g. `tag_value[prefix]=prod`.
+type BaremetalServerListParamsTagValue struct {
+	// Case-insensitive substring, e.g. `[contains]=web`. Repeat the key to match any
+	// substring.
+	Contains []string `query:"contains,omitzero" json:"-"`
+	// Case-insensitive exact match, e.g. `[exact]=web-1`. Repeat the key to match any
+	// of several.
+	Exact []string `query:"exact,omitzero" json:"-"`
+	// Case-insensitive starts-with, e.g. `[prefix]=prod-`. Repeat the key to match any
+	// prefix.
+	Prefix []string `query:"prefix,omitzero" json:"-"`
+	// Case-insensitive ends-with, e.g. `[suffix]=-db`. Repeat the key to match any
+	// suffix.
+	Suffix []string `query:"suffix,omitzero" json:"-"`
+	paramObj
+}
 
-const (
-	BaremetalServerListParamsStatusActive     BaremetalServerListParamsStatus = "ACTIVE"
-	BaremetalServerListParamsStatusBuild      BaremetalServerListParamsStatus = "BUILD"
-	BaremetalServerListParamsStatusError      BaremetalServerListParamsStatus = "ERROR"
-	BaremetalServerListParamsStatusHardReboot BaremetalServerListParamsStatus = "HARD_REBOOT"
-	BaremetalServerListParamsStatusReboot     BaremetalServerListParamsStatus = "REBOOT"
-	BaremetalServerListParamsStatusRebuild    BaremetalServerListParamsStatus = "REBUILD"
-	BaremetalServerListParamsStatusRescue     BaremetalServerListParamsStatus = "RESCUE"
-	BaremetalServerListParamsStatusShutoff    BaremetalServerListParamsStatus = "SHUTOFF"
-	BaremetalServerListParamsStatusSuspended  BaremetalServerListParamsStatus = "SUSPENDED"
-)
+// URLQuery serializes [BaremetalServerListParamsTagValue]'s query parameters as
+// `url.Values`.
+func (r BaremetalServerListParamsTagValue) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
 
-// Return bare metals either only with advanced or only basic DDoS protection.
-// Effective only with `with_ddos` set to true. (advanced or basic)
-type BaremetalServerListParamsTypeDDOSProfile string
+// Range filter on last-update time.
+type BaremetalServerListParamsUpdatedAt struct {
+	// Strictly after this timestamp, e.g. `[gt]=2026-01-01T00:00:00Z`.
+	Gt param.Opt[time.Time] `query:"gt,omitzero" format:"date-time" json:"-"`
+	// At or after this timestamp (inclusive), e.g. `[gte]=2026-01-01T00:00:00Z`.
+	Gte param.Opt[time.Time] `query:"gte,omitzero" format:"date-time" json:"-"`
+	// Strictly before this timestamp, e.g. `[lt]=2026-02-01T00:00:00Z`.
+	Lt param.Opt[time.Time] `query:"lt,omitzero" format:"date-time" json:"-"`
+	// At or before this timestamp (inclusive), e.g. `[lte]=2026-02-01T00:00:00Z`.
+	Lte param.Opt[time.Time] `query:"lte,omitzero" format:"date-time" json:"-"`
+	paramObj
+}
 
-const (
-	BaremetalServerListParamsTypeDDOSProfileBasic    BaremetalServerListParamsTypeDDOSProfile = "basic"
-	BaremetalServerListParamsTypeDDOSProfileAdvanced BaremetalServerListParamsTypeDDOSProfile = "advanced"
-)
+// URLQuery serializes [BaremetalServerListParamsUpdatedAt]'s query parameters as
+// `url.Values`.
+func (r BaremetalServerListParamsUpdatedAt) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
 
 type BaremetalServerDeleteParams struct {
-	// Project ID
+	// Project ID.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// True if it is required to delete floating IPs assigned to the instance. Can't be
-	// used with `floating_ip_ids`.
+	// Delete all floating IPs associated with the server's ports. Default preserves
+	// them (disassociate only). Mutually exclusive with `floating_ip_ids`.
 	AllFloatingIPs param.Opt[bool] `query:"all_floating_ips,omitzero" json:"-"`
-	// True if it is required to delete reserved fixed IPs assigned to the instance.
-	// Can't be used with `reserved_fixed_ip_ids`.
-	AllReservedFixedIPs param.Opt[bool] `query:"all_reserved_fixed_ips,omitzero" json:"-"`
-	// Comma separated list of floating ids that should be deleted. Can't be used with
+	// Delete all ports attached to the bare metal server. Default preserves them
+	// (detach only; the trunk is dissolved but every port survives, reusable
+	// elsewhere). Mutually exclusive with `port_ids`.
+	AllPorts param.Opt[bool] `query:"all_ports,omitzero" json:"-"`
+	// Run every check of the real request and change nothing. The response has the
+	// status code and the schema of the real call, and an empty list of tasks. With
+	// `false`, the default, the request does the operation.
+	DryRun param.Opt[bool] `query:"dry_run,omitzero" json:"-"`
+	// Floating IP IDs to delete; the rest are preserved. Mutually exclusive with
 	// `all_floating_ips`.
-	FloatingIPIDs param.Opt[string] `query:"floating_ip_ids,omitzero" json:"-"`
-	// Comma separated list of port IDs to be deleted with the instance
-	ReservedFixedIPIDs param.Opt[string] `query:"reserved_fixed_ip_ids,omitzero" json:"-"`
+	FloatingIPIDs []string `query:"floating_ip_ids,omitzero" format:"uuid4" json:"-"`
+	// Port IDs to delete; the rest are preserved. Mutually exclusive with `all_ports`.
+	PortIDs []string `query:"port_ids,omitzero" format:"uuid4" json:"-"`
 	paramObj
 }
 
@@ -1531,77 +1055,49 @@ func (r BaremetalServerDeleteParams) URLQuery() (v url.Values, err error) {
 }
 
 type BaremetalServerActionParams struct {
-	// Project ID
+	// Project ID.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-
+	// Power action to run on the bare metal server.
 	//
-	// Request body variants
-	//
-
-	// This field is a request body variant, only one variant field can be set.
-	OfStartActionInstanceSerializer *BaremetalServerActionParamsBodyStartActionInstanceSerializer `json:",inline"`
-	// This field is a request body variant, only one variant field can be set.
-	OfBasicBareMetalActionInstanceSerializer *BaremetalServerActionParamsBodyBasicBareMetalActionInstanceSerializer `json:",inline"`
-
+	// Any of "reboot", "reboot_hard", "start", "stop".
+	Action BaremetalServerActionParamsAction `json:"action,omitzero" api:"required"`
+	// Run every check of the real request and change nothing. The response has the
+	// status code and the schema of the real call, and an empty list of tasks. With
+	// `false`, the default, the request does the operation.
+	DryRun param.Opt[bool] `query:"dry_run,omitzero" json:"-"`
 	paramObj
 }
 
-func (u BaremetalServerActionParams) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfStartActionInstanceSerializer, u.OfBasicBareMetalActionInstanceSerializer)
+func (r BaremetalServerActionParams) MarshalJSON() (data []byte, err error) {
+	type shadow BaremetalServerActionParams
+	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *BaremetalServerActionParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The property Action is required.
-type BaremetalServerActionParamsBodyStartActionInstanceSerializer struct {
-	// Used on start instance to activate Advanced DDoS profile
-	ActivateProfile param.Opt[bool] `json:"activate_profile,omitzero"`
-	// Instance action name
-	//
-	// This field can be elided, and will marshal its zero value as "start".
-	Action constant.Start `json:"action" default:"start"`
-	paramObj
+// URLQuery serializes [BaremetalServerActionParams]'s query parameters as
+// `url.Values`.
+func (r BaremetalServerActionParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
 
-func (r BaremetalServerActionParamsBodyStartActionInstanceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow BaremetalServerActionParamsBodyStartActionInstanceSerializer
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BaremetalServerActionParamsBodyStartActionInstanceSerializer) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
+// Power action to run on the bare metal server.
+type BaremetalServerActionParamsAction string
 
-// The property Action is required.
-type BaremetalServerActionParamsBodyBasicBareMetalActionInstanceSerializer struct {
-	// Instance action name
-	//
-	// Any of "reboot", "reboot_hard", "stop".
-	Action string `json:"action,omitzero" api:"required"`
-	paramObj
-}
-
-func (r BaremetalServerActionParamsBodyBasicBareMetalActionInstanceSerializer) MarshalJSON() (data []byte, err error) {
-	type shadow BaremetalServerActionParamsBodyBasicBareMetalActionInstanceSerializer
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BaremetalServerActionParamsBodyBasicBareMetalActionInstanceSerializer) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[BaremetalServerActionParamsBodyBasicBareMetalActionInstanceSerializer](
-		"action", "reboot", "reboot_hard", "stop",
-	)
-}
+const (
+	BaremetalServerActionParamsActionReboot     BaremetalServerActionParamsAction = "reboot"
+	BaremetalServerActionParamsActionRebootHard BaremetalServerActionParamsAction = "reboot_hard"
+	BaremetalServerActionParamsActionStart      BaremetalServerActionParamsAction = "start"
+	BaremetalServerActionParamsActionStop       BaremetalServerActionParamsAction = "stop"
+)
 
 type BaremetalServerGetParams struct {
-	// Project ID
+	// Project ID.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	paramObj
 }
 

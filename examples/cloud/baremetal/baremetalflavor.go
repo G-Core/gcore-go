@@ -9,80 +9,82 @@ import (
 	"github.com/G-Core/gcore-go/cloud"
 )
 
-func listBaremetalFlavors(client *gcore.Client) []cloud.BaremetalFlavor {
+// listBaremetalFlavors lists the flavors of the region that can boot the image. With flavorName, it lists
+// only that flavor
+func listBaremetalFlavors(client *gcore.Client, regionID int64, imageID, flavorName string) []cloud.BaremetalFlavor {
 	fmt.Println("\n=== LIST BAREMETAL FLAVORS ===")
 
+	// without RegionIDs the list holds the flavors of all regions
 	params := cloud.BaremetalFlavorListParams{
-		IncludeCapacity: gcore.Bool(true),
+		RegionIDs:             []int64{regionID},
+		CompatibleWithImageID: gcore.String(imageID),
+		OrderBy:               cloud.BaremetalFlavorListParamsOrderByRamMibAsc,
+	}
+	if flavorName != "" {
+		params.Name = cloud.BaremetalFlavorListParamsName{Exact: []string{flavorName}}
 	}
 
-	flavors, err := client.Cloud.Baremetal.Flavors.List(context.Background(), params)
-	if err != nil {
-		fmt.Printf("Error listing baremetal flavors: %v\n", err)
-		return nil
+	var flavors []cloud.BaremetalFlavor
+	iter := client.Cloud.Baremetal.Flavors.ListAutoPaging(context.Background(), params)
+	for iter.Next() {
+		flavors = append(flavors, iter.Current())
+	}
+	if err := iter.Err(); err != nil {
+		log.Fatalf("Error listing baremetal flavors: %v", err)
 	}
 
 	displayCount := 3
-	if len(flavors.Results) < displayCount {
-		displayCount = len(flavors.Results)
+	if len(flavors) < displayCount {
+		displayCount = len(flavors)
 	}
 
 	for i := 0; i < displayCount; i++ {
-		printFlavorDetails(flavors.Results[i], i+1)
+		printFlavorDetails(flavors[i], i+1)
 	}
 
-	printTruncationMessage(len(flavors.Results), displayCount, "flavors")
+	printTruncationMessage(len(flavors), displayCount, "flavors")
 
-	fmt.Printf("Total baremetal flavors: %d\n", len(flavors.Results))
+	fmt.Printf("Total baremetal flavors: %d\n", len(flavors))
 	fmt.Println("===============================")
-	return flavors.Results
+	return flavors
 }
 
-func getSmallestFlavor(flavors []cloud.BaremetalFlavor) string {
-	var availableFlavors []cloud.BaremetalFlavor
-	for _, f := range flavors {
-		if !f.Disabled && f.Capacity > 0 {
-			availableFlavors = append(availableFlavors, f)
+// pickFlavor returns the flavor with the smallest RAM that can boot the image and has capacity in the region
+func pickFlavor(client *gcore.Client, regionID int64, imageID, flavorName string) cloud.BaremetalFlavor {
+	flavors := listBaremetalFlavors(client, regionID, imageID, flavorName)
+
+	// the list is in RAM order, so the first flavor with capacity is the smallest
+	for _, flavor := range flavors {
+		if flavor.Capacity > 0 {
+			fmt.Printf("Selected flavor: %s (RAM: %d MiB, CPU threads: %d, Capacity: %d)\n",
+				flavor.Name, flavor.RamMib, flavor.CPUThreads, flavor.Capacity)
+			printNetworkingCapabilities(flavor)
+			return flavor
 		}
 	}
 
-	if len(availableFlavors) == 0 {
-		log.Fatalf("No available flavors with capacity found")
-	}
+	log.Fatalf("No flavor with capacity can boot image %s in region %d", imageID, regionID)
+	return cloud.BaremetalFlavor{}
+}
 
-	smallestFlavor := availableFlavors[0]
-	for _, f := range availableFlavors {
-		if f.Ram < smallestFlavor.Ram {
-			smallestFlavor = f
-		}
-	}
-
-	fmt.Printf("Selected smallest flavor: %s (RAM: %d MB, Capacity: %d)\n", smallestFlavor.FlavorName, smallestFlavor.Ram, smallestFlavor.Capacity)
-	return smallestFlavor.FlavorID
+// printNetworkingCapabilities prints the port features that the flavor supports. The ports of the server
+// must use only these features
+func printNetworkingCapabilities(flavor cloud.BaremetalFlavor) {
+	capabilities := flavor.NetworkingCapabilities
+	fmt.Printf("Networking capabilities: SecurityGroups=%t, PortSecurity=%t, AllowedAddressPairs=%t\n",
+		capabilities.SecurityGroups, capabilities.PortSecurity, capabilities.AllowedAddressPairs)
 }
 
 func printFlavorDetails(flavor cloud.BaremetalFlavor, index int) {
-	fmt.Printf("  %d. Flavor: ID=%s, name=%s\n", index, flavor.FlavorID, flavor.FlavorName)
-	fmt.Printf("     RAM: %d MB, VCPUs: %d\n", flavor.Ram, flavor.Vcpus)
+	fmt.Printf("  %d. Flavor: Name=%s, RegionID=%d\n", index, flavor.Name, flavor.RegionID)
+	fmt.Printf("     RAM: %d MiB, CPU threads: %d\n", flavor.RamMib, flavor.CPUThreads)
 	fmt.Printf("     Architecture: %s, OS: %s\n", flavor.Architecture, flavor.OsType)
 	fmt.Printf("     Resource Class: %s\n", flavor.ResourceClass)
+	fmt.Printf("     Capacity: %d (reserved: %d)\n", flavor.Capacity, flavor.ReservedCapacity)
 
-	status := "AVAILABLE"
-	if flavor.Disabled {
-		status = "DISABLED"
-	}
-	fmt.Printf("     Status: %s\n", status)
-
-	if flavor.Capacity != 0 {
-		fmt.Printf("     Capacity: %d\n", flavor.Capacity)
-	}
-
-	if flavor.PricePerHour != 0 {
-		fmt.Printf("     Price per Hour: %.4f %s\n", flavor.PricePerHour, flavor.CurrencyCode)
-	}
-
-	if flavor.PricePerMonth != 0 {
-		fmt.Printf("     Price per Month: %.2f %s\n", flavor.PricePerMonth, flavor.CurrencyCode)
+	if flavor.JSON.HardwareDescription.Valid() {
+		hardware := flavor.HardwareDescription
+		fmt.Printf("     Hardware: CPU=%s, RAM=%s, Disk=%s, Network=%s\n", hardware.CPU, hardware.Ram, hardware.Disk, hardware.Network)
 	}
 
 	fmt.Println()

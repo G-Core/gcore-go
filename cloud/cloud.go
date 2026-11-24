@@ -66,7 +66,10 @@ type CloudService struct {
 	// virtual machines are hosted on the same or different physical servers.
 	PlacementGroups PlacementGroupService
 	Baremetal       BaremetalService
-	Registries      RegistryService
+	// Region-pathed bare metal servers and flavors. This client is temporary, and a
+	// future release will remove it. Use `cloud.baremetal` in new code.
+	BaremetalRegional BaremetalRegionalService
+	Registries        RegistryService
 	// File shares provide NFS-based shared storage that can be mounted by virtual
 	// machines and Kubernetes clusters for persistent data.
 	FileShares          FileShareService
@@ -116,6 +119,7 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r.Inference = NewInferenceService(opts...)
 	r.PlacementGroups = NewPlacementGroupService(opts...)
 	r.Baremetal = NewBaremetalService(opts...)
+	r.BaremetalRegional = NewBaremetalRegionalService(opts...)
 	r.Registries = NewRegistryService(opts...)
 	r.FileShares = NewFileShareService(opts...)
 	r.BillingReservations = NewBillingReservationService(opts...)
@@ -155,7 +159,7 @@ func (r *AllowedAddressPairs) UnmarshalJSON(data []byte) error {
 }
 
 // Bare metal flavor schema
-type BaremetalFlavor struct {
+type BaremetalRegionalFlavor struct {
 	// Flavor architecture type
 	Architecture string `json:"architecture" api:"required"`
 	// Number of available instances of given configuration. The value is null if it is
@@ -180,7 +184,7 @@ type BaremetalFlavor struct {
 	// Price status for the UI. The value is null if the price is not available.
 	//
 	// Any of "error", "hide", "show".
-	PriceStatus BaremetalFlavorPriceStatus `json:"price_status" api:"required"`
+	PriceStatus BaremetalRegionalFlavorPriceStatus `json:"price_status" api:"required"`
 	// RAM size in MiB
 	Ram int64 `json:"ram" api:"required"`
 	// Number of available instances of given flavor from reservations. The value is
@@ -214,18 +218,18 @@ type BaremetalFlavor struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r BaremetalFlavor) RawJSON() string { return r.JSON.raw }
-func (r *BaremetalFlavor) UnmarshalJSON(data []byte) error {
+func (r BaremetalRegionalFlavor) RawJSON() string { return r.JSON.raw }
+func (r *BaremetalRegionalFlavor) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Price status for the UI. The value is null if the price is not available.
-type BaremetalFlavorPriceStatus string
+type BaremetalRegionalFlavorPriceStatus string
 
 const (
-	BaremetalFlavorPriceStatusError BaremetalFlavorPriceStatus = "error"
-	BaremetalFlavorPriceStatusHide  BaremetalFlavorPriceStatus = "hide"
-	BaremetalFlavorPriceStatusShow  BaremetalFlavorPriceStatus = "show"
+	BaremetalRegionalFlavorPriceStatusError BaremetalRegionalFlavorPriceStatus = "error"
+	BaremetalRegionalFlavorPriceStatusHide  BaremetalRegionalFlavorPriceStatus = "hide"
+	BaremetalRegionalFlavorPriceStatusShow  BaremetalRegionalFlavorPriceStatus = "show"
 )
 
 type BlackholePort struct {
