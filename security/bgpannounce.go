@@ -90,7 +90,7 @@ type BgpAnnounceListParams struct {
 func (r BgpAnnounceListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
-		NestedFormat: apiquery.NestedQueryFormatDots,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
 
@@ -117,6 +117,6 @@ func (r *BgpAnnounceToggleParams) UnmarshalJSON(data []byte) error {
 func (r BgpAnnounceToggleParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
-		NestedFormat: apiquery.NestedQueryFormatDots,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }

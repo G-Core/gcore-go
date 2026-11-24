@@ -639,7 +639,7 @@ type CDNListAlibabaRegionsParams struct {
 func (r CDNListAlibabaRegionsParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
-		NestedFormat: apiquery.NestedQueryFormatDots,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
 
@@ -656,7 +656,7 @@ type CDNListAwsRegionsParams struct {
 func (r CDNListAwsRegionsParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
-		NestedFormat: apiquery.NestedQueryFormatDots,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
 
@@ -712,7 +712,7 @@ type CDNListPurgeStatusesParams struct {
 func (r CDNListPurgeStatusesParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
-		NestedFormat: apiquery.NestedQueryFormatDots,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
 

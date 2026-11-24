@@ -546,7 +546,7 @@ type InstanceImageListParams struct {
 func (r InstanceImageListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
-		NestedFormat: apiquery.NestedQueryFormatDots,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
 
@@ -691,7 +691,7 @@ type InstanceImageGetParams struct {
 func (r InstanceImageGetParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
-		NestedFormat: apiquery.NestedQueryFormatDots,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
 

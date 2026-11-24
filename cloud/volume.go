@@ -756,7 +756,7 @@ type VolumeListParams struct {
 func (r VolumeListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
-		NestedFormat: apiquery.NestedQueryFormatDots,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
 
@@ -774,7 +774,7 @@ type VolumeDeleteParams struct {
 func (r VolumeDeleteParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
-		NestedFormat: apiquery.NestedQueryFormatDots,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
 

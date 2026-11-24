@@ -1638,7 +1638,7 @@ type K8SClusterListParams struct {
 func (r K8SClusterListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
-		NestedFormat: apiquery.NestedQueryFormatDots,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
 
@@ -1656,7 +1656,7 @@ type K8SClusterDeleteParams struct {
 func (r K8SClusterDeleteParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
-		NestedFormat: apiquery.NestedQueryFormatDots,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
 
@@ -1694,7 +1694,7 @@ type K8SClusterListVersionsForUpgradeParams struct {
 func (r K8SClusterListVersionsForUpgradeParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
-		NestedFormat: apiquery.NestedQueryFormatDots,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
 
