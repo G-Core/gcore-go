@@ -680,12 +680,15 @@ func (r *PageStreaming[T]) GetNextPage() (res *PageStreaming[T], err error) {
 	if len(r.Items) == 0 {
 		return nil, nil
 	}
-	// This page represents a response that isn't actually paginated at the API level
-	// so there will never be a next page.
-	cfg := (*requestconfig.RequestConfig)(nil)
-	if cfg == nil {
-		return nil, nil
+	u := r.cfg.Request.URL
+	currentPage, err := strconv.ParseInt(u.Query().Get("page"), 10, 64)
+	if err != nil {
+		currentPage = 1
 	}
+	cfg := r.cfg.Clone(context.Background())
+	query := cfg.Request.URL.Query()
+	query.Set("page", fmt.Sprintf("%d", currentPage+1))
+	cfg.Request.URL.RawQuery = query.Encode()
 	var raw *http.Response
 	cfg.ResponseInto = &raw
 	cfg.ResponseBodyInto = &res
