@@ -34,7 +34,7 @@ SDK package: `cloud/`
 
 | Sub-Product | File patterns |
 |---|---|
-| Bare Metal | `cloud/baremetal*` |
+| Bare Metal | `cloud/baremetal*` (includes `baremetalregional*`) |
 | Container as a Service | `cloud/caas*`, `cloud/container*` |
 | Cost Reports | `cloud/costreport*`, `cloud/usagereport*` |
 | DDoS Protection | `cloud/ddos*` |
@@ -46,7 +46,7 @@ SDK package: `cloud/`
 | GPU Bare Metal | `cloud/gpubaremetal*` |
 | GPU Virtual | `cloud/gpuvirtual*` |
 | Images | `cloud/instanceimage*`, `cloud/baremetalimage*` |
-| Instances | `cloud/instance*` (not `instanceimage*`) |
+| Instances | `cloud/instance*` (not `instanceimage*`; includes `instancesregional*`) |
 | IP Ranges | `cloud/iprange*` |
 | Load Balancers | `cloud/loadbalancer*` |
 | Logging | `cloud/logging*` |
@@ -54,6 +54,8 @@ SDK package: `cloud/`
 | Managed PostgreSQL | `cloud/database*` |
 | Networks | `cloud/network*` (not `networkrouter*`) |
 | Placement Groups | `cloud/placementgroup*` |
+| Ports | `cloud/port*` |
+| Pricing | `cloud/pricing*` |
 | Projects | `cloud/project*` |
 | Quotas | `cloud/quota*` |
 | Regions | `cloud/region*` |
