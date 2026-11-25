@@ -1167,6 +1167,57 @@ Methods:
 
 - <code title="post /cloud/v1/usage_report">client.Cloud.UsageReports.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#UsageReportService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#UsageReportGetParams">UsageReportGetParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#UsageReport">UsageReport</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+## Pricing
+
+Params Types:
+
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#IPAssignmentRequestParam">IPAssignmentRequestParam</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PriceFloatingIPParam">PriceFloatingIPParam</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PricePortReferenceParam">PricePortReferenceParam</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PricePortSpecParam">PricePortSpecParam</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PriceVolumeReferenceParam">PriceVolumeReferenceParam</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PriceVolumeSpecParam">PriceVolumeSpecParam</a>
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#FlavorPrice">FlavorPrice</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PortPrice">PortPrice</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#ServerPrice">ServerPrice</a>
+
+### Instances
+
+Methods:
+
+- <code title="get /cloud/v1/projects/{project_id}/pricing/instances/{instance_id}">client.Cloud.Pricing.Instances.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PricingInstanceService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, instanceID <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PricingInstanceGetParams">PricingInstanceGetParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#ServerPrice">ServerPrice</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /cloud/v1/projects/{project_id}/pricing/instances">client.Cloud.Pricing.Instances.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PricingInstanceService.Preview">Preview</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PricingInstancePreviewParams">PricingInstancePreviewParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#ServerPrice">ServerPrice</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+#### Flavors
+
+Methods:
+
+- <code title="get /cloud/v1/projects/{project_id}/pricing/instances/flavors">client.Cloud.Pricing.Instances.Flavors.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PricingInstanceFlavorService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PricingInstanceFlavorListParams">PricingInstanceFlavorListParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination#OffsetPage">OffsetPage</a>[<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#FlavorPrice">FlavorPrice</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+### Baremetal
+
+#### Servers
+
+Methods:
+
+- <code title="get /cloud/v1/projects/{project_id}/pricing/baremetal/servers/{server_id}">client.Cloud.Pricing.Baremetal.Servers.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PricingBaremetalServerService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, serverID <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PricingBaremetalServerGetParams">PricingBaremetalServerGetParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#ServerPrice">ServerPrice</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /cloud/v1/projects/{project_id}/pricing/baremetal/servers">client.Cloud.Pricing.Baremetal.Servers.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PricingBaremetalServerService.Preview">Preview</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PricingBaremetalServerPreviewParams">PricingBaremetalServerPreviewParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#ServerPrice">ServerPrice</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+#### Flavors
+
+Methods:
+
+- <code title="get /cloud/v1/projects/{project_id}/pricing/baremetal/flavors">client.Cloud.Pricing.Baremetal.Flavors.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PricingBaremetalFlavorService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PricingBaremetalFlavorListParams">PricingBaremetalFlavorListParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/packages/pagination#OffsetPage">OffsetPage</a>[<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#FlavorPrice">FlavorPrice</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+### Ports
+
+Methods:
+
+- <code title="post /cloud/v1/projects/{project_id}/pricing/ports">client.Cloud.Pricing.Ports.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PricingPortService.Preview">Preview</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PricingPortPreviewParams">PricingPortPreviewParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PortPrice">PortPrice</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 ## Databases
 
 ### Postgres

@@ -34,7 +34,7 @@ func TestPortNewWithOptionalParams(t *testing.T) {
 		AllowedAddressPairs: []cloud.PortNewParamsAllowedAddressPair{{
 			IPAddress: "192.168.123.20",
 		}},
-		IPAssignments: []cloud.PortNewParamsIPAssignment{{
+		IPAssignments: []cloud.IPAssignmentRequestParam{{
 			SubnetID:  "b39792c3-3160-4356-912e-ba396c95cdcf",
 			IPAddress: gcore.String("192.168.123.20"),
 		}},
@@ -76,7 +76,7 @@ func TestPortUpdateWithOptionalParams(t *testing.T) {
 			}, {
 				IPAddress: "192.168.0.0/17",
 			}},
-			IPAssignments: []cloud.PortUpdateParamsIPAssignment{{
+			IPAssignments: []cloud.IPAssignmentRequestParam{{
 				SubnetID:  "b39792c3-3160-4356-912e-ba396c95cdcf",
 				IPAddress: gcore.String("192.168.123.20"),
 			}},

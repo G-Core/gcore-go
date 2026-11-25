@@ -657,7 +657,7 @@ type PortNewParams struct {
 	// IP addresses to assign. All subnets must belong to the same network. Repeat a
 	// subnet to get several addresses from it. Omit the field to get one address from
 	// an IPv4 subnet.
-	IPAssignments []PortNewParamsIPAssignment `json:"ip_assignments,omitzero"`
+	IPAssignments []IPAssignmentRequestParam `json:"ip_assignments,omitzero"`
 	// List of security group IDs to attach to the port.
 	SecurityGroupIDs []string `json:"security_group_ids,omitzero" format:"uuid4"`
 	// Key-value tags to associate with the resource. A tag is a key-value pair that
@@ -702,24 +702,6 @@ func (r *PortNewParamsAllowedAddressPair) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The property SubnetID is required.
-type PortNewParamsIPAssignment struct {
-	// ID of the subnet
-	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
-	// IP address to assign. Omit it to get any free address of the subnet, which is
-	// the only option when the subnet's free addresses are not known to the caller.
-	IPAddress param.Opt[string] `json:"ip_address,omitzero" format:"ipv4"`
-	paramObj
-}
-
-func (r PortNewParamsIPAssignment) MarshalJSON() (data []byte, err error) {
-	type shadow PortNewParamsIPAssignment
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *PortNewParamsIPAssignment) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type PortUpdateParams struct {
 	// Project ID
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
@@ -736,7 +718,7 @@ type PortUpdateParams struct {
 	// An entry without `ip_address` keeps an address the port already has in that
 	// subnet, in the order the port reports them, or takes a free one when the port
 	// has none. Addresses that no entry keeps are released.
-	IPAssignments []PortUpdateParamsIPAssignment `json:"ip_assignments,omitzero"`
+	IPAssignments []IPAssignmentRequestParam `json:"ip_assignments,omitzero"`
 	// List of security group IDs. Replaces the full set of security groups attached to
 	// the port. Send `[]` to detach all groups; omit the field to leave existing
 	// groups unchanged.
@@ -786,24 +768,6 @@ func (r PortUpdateParamsAllowedAddressPair) MarshalJSON() (data []byte, err erro
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *PortUpdateParamsAllowedAddressPair) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The property SubnetID is required.
-type PortUpdateParamsIPAssignment struct {
-	// ID of the subnet
-	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
-	// IP address to assign. Omit it to get any free address of the subnet, which is
-	// the only option when the subnet's free addresses are not known to the caller.
-	IPAddress param.Opt[string] `json:"ip_address,omitzero" format:"ipv4"`
-	paramObj
-}
-
-func (r PortUpdateParamsIPAssignment) MarshalJSON() (data []byte, err error) {
-	type shadow PortUpdateParamsIPAssignment
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *PortUpdateParamsIPAssignment) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

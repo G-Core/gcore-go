@@ -166,7 +166,7 @@ func createPort(client *gcore.Client, settings portSettings, name string) (*clou
 	if settings.networkID != "" {
 		params.NetworkID = gcore.String(settings.networkID)
 		if settings.subnetID != "" {
-			params.IPAssignments = []cloud.PortNewParamsIPAssignment{{SubnetID: settings.subnetID}}
+			params.IPAssignments = []cloud.IPAssignmentRequestParam{{SubnetID: settings.subnetID}}
 		}
 	}
 	// a flavor without security group support refuses a port with groups. An empty list keeps the default

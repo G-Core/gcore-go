@@ -81,7 +81,7 @@ func createPort(client *gcore.Client, regionID int64, networkID, subnetID string
 	params := cloud.PortNewParams{
 		RegionID:  regionID,
 		NetworkID: gcore.String(networkID),
-		IPAssignments: []cloud.PortNewParamsIPAssignment{
+		IPAssignments: []cloud.IPAssignmentRequestParam{
 			{SubnetID: subnetID},
 		},
 		Tags: map[string]string{"name": "gcore-go-example"},

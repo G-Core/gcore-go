@@ -86,7 +86,11 @@ type CloudService struct {
 	AuditLogs         AuditLogService
 	CostReports       CostReportService
 	UsageReports      UsageReportService
-	Databases         DatabaseService
+	// Pricing gives the prices of instances, bare metal servers and ports in all
+	// regions of the project: flavor prices, the price of a configuration before you
+	// create it, and the price of an existing server.
+	Pricing   PricingService
+	Databases DatabaseService
 	// Snapshot schedule policies describe when volume snapshots are taken and which
 	// volumes they cover. Volume membership is owned by the policy: attach and detach
 	// are policy-side operations, so a volume can join or leave a policy without being
@@ -131,6 +135,7 @@ func NewCloudService(opts ...option.RequestOption) (r CloudService) {
 	r.AuditLogs = NewAuditLogService(opts...)
 	r.CostReports = NewCostReportService(opts...)
 	r.UsageReports = NewUsageReportService(opts...)
+	r.Pricing = NewPricingService(opts...)
 	r.Databases = NewDatabaseService(opts...)
 	r.SnapshotSchedules = NewSnapshotScheduleService(opts...)
 	r.VolumeSnapshots = NewVolumeSnapshotService(opts...)
