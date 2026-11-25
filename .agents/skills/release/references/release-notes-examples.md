@@ -11,9 +11,8 @@ We're excited to announce version 0.32.0!
 ### **CDN**
 
 * **CDN Resources**
+  * ⚠ BREAKING CHANGE: `CDNResourceNewParams` fields `Origin` and `OriginGroup` are now optional — exactly one must be provided
   * Added `DeactivateAndDelete()` convenience method — deactivates a CDN resource then deletes it
-  * ⚠ BREAKING CHANGE: `CDNResourceNewParams.Origin` changed from `string` (required) to `param.Opt[string]` (optional)
-  * ⚠ BREAKING CHANGE: `CDNResourceNewParams.OriginGroup` changed from `int64` (required) to `param.Opt[int64]` (optional) — exactly one of `Origin` or `OriginGroup` must be provided
 
 * **Logs Uploader**
   * Added `Endpoint` field to S3 OSS config — custom S3 endpoint now supported in `LogsUploaderTarget` and related params
@@ -21,25 +20,23 @@ We're excited to announce version 0.32.0!
 ### **Cloud**
 
 * **Load Balancers**
+  * ⚠ BREAKING CHANGE: `SecretID` in load balancer and listener create params changed from `param.Opt[string]` to a `string` type with empty-string enum validation
   * Added `AdminStateUp` field across all load balancer, listener, pool, and health monitor response and param types
-  * ⚠ BREAKING CHANGE: `LoadBalancerNewParamsListener.SecretID` changed from `param.Opt[string]` to `string` with empty-string enum validation
-  * ⚠ BREAKING CHANGE: `LoadBalancerListenerNewParams.SecretID` changed from `param.Opt[string]` to `LoadBalancerListenerNewParamsSecretID` string type
   * Deprecated `LoadBalancers.Update()` — use PATCH `/v2/loadbalancers/...` instead
   * Deprecated `NetworkRouters.Update()` — use PATCH `/v2/routers/...` instead
 
 * **Managed Kubernetes**
+  * ⚠ BREAKING CHANGE: `K8SClusterKubeconfig.CreatedAt` and `ExpiresAt` changed from nullable to required
   * Added `IncludeCapacity` param to `K8SFlavorListParams` for flavor capacity info
   * Added `ClusterRebuild` and `ClusterServerRebuild` task states
-  * ⚠ BREAKING CHANGE: `K8SClusterKubeconfig.CreatedAt` and `ExpiresAt` changed from `nullable` to `required`
 
 ### **FastEdge**
 
-* ⚠ BREAKING CHANGE: `App.Stores` type changed from `map[string]int64` to `map[string]AppStore` — stores now carry `ID`, `Name`, and `Comment`
-* ⚠ BREAKING CHANGE: `KvStore` response restructured — `ID` field removed, `Name` is now primary identifier, `Updated` renamed to `UpdatedAt`, added `Revision` and `Size` fields
-* ⚠ BREAKING CHANGE: `KvStoreService.New` return type changed from `*KvStore` to `*KvStoreNewResponse`
-* ⚠ BREAKING CHANGE: `KvStoreService.Get` return type changed from `*KvStoreGetResponse` to `*KvStore`
-* ⚠ BREAKING CHANGE: Removed `KvStoreStats` and `KvStoreGetResponse` types
-* ⚠ BREAKING CHANGE: Removed `AppLimit`, `DailyLimit`, `HourlyLimit` fields from `Client` type
+* ⚠ BREAKING CHANGE: Edge Storage API changes
+  * `App.Stores` changed from `map[string]int64` to `map[string]AppStore` — stores now carry `ID`, `Name`, and `Comment`
+  * `KvStore` restructured — `ID` removed, `Name` is now the primary identifier, `Updated` renamed to `UpdatedAt`, `Revision` and `Size` added
+  * `KvStoreService.New` and `Get` now return `*KvStoreNewResponse` and `*KvStore`
+  * Removed `KvStoreStats`, `KvStoreGetResponse`, and the `AppLimit`, `DailyLimit`, `HourlyLimit` fields from `Client`
 * Renamed "KV Storage" to "Edge Storage" across all endpoints
 * Added `store` as new `TemplateParameterDataType` enum value
 
@@ -59,8 +56,9 @@ We're excited to announce version 0.31.0!
 ### **CDN**
 
 * **API Naming**
-  * ⚠ BREAKING CHANGE: Renamed all `Cdn*` types to `CDN*` for consistent Go naming conventions - `CdnService` is now `CDNService`, `CdnAccount` is now `CDNAccount`, `CdnAccountLimits` is now `CDNAccountLimits`, etc.
-  * ⚠ BREAKING CHANGE: Renamed `Resources` service to `CDNResources` - access CDN resources via `client.CDN.CDNResources` instead of `client.CDN.Resources`
+  * ⚠ BREAKING CHANGE: Renamed types and services for consistent Go naming
+    * All `Cdn*` types are now `CDN*` (for example, `CdnService` is now `CDNService`)
+    * The `Resources` service is now `CDNResources` — use `client.CDN.CDNResources` instead of `client.CDN.Resources`
 
 * **User-Agent ACL**
   * Added regex pattern support - you can now use regular expressions in User-Agent ACL rules with `~` (case-sensitive) or `~*` (case-insensitive) prefix
@@ -122,7 +120,7 @@ We're excited to announce version 0.33.0!
 2. **Product area headers**: `### **{Area}**` — bold inside h3
 3. **Sub-area items**: `* **{Sub-area}**` — bold bullet, followed by indented child bullets
 4. **When a product area has no sub-areas** (e.g., FastEdge above): list items directly under the product header without a sub-area bullet
-5. **Breaking changes**: Inline with `⚠ BREAKING CHANGE:` prefix, include old type/value -> new type/value
+5. **Breaking changes**: One `⚠ BREAKING CHANGE:` bullet per sub-area with a short summary; details go in nested bullets without the prefix. Include old type/value -> new type/value. Never repeat the prefix on each bullet
 6. **Deprecations**: Use format `Deprecated \`Method()\` — use \`Alternative()\` instead`
 7. **New fields/methods**: Use format `Added \`FieldName\` field to \`TypeName\` — description`
 8. **Fixes**: Use format `Fixed {description} — {detail}`
@@ -130,3 +128,24 @@ We're excited to announce version 0.33.0!
 10. **Descriptions**: Short, specific, user-actionable. No commit hashes in Part 1.
 11. **Product area order**: Alphabetical. Place "Other" last.
 12. **Sub-area order**: Alphabetical within each product area.
+
+## Breaking Changes Example
+
+Preferred (one marker, nested details, few identifiers):
+
+```markdown
+* **Users**
+  * ⚠ BREAKING CHANGE: User methods and response models now follow the IAM v2 API
+    * `Get()` now returns `*User` instead of `*UserGetResponse`
+    * `Update()` now returns `*UserUpdated` instead of `*User`
+  * Added `GetMe()` — returns the authenticated user's profile, clients, and roles
+```
+
+Avoid (prefix on every bullet, too many types):
+
+```markdown
+* **Users**
+  * ⚠ BREAKING CHANGE: `Get()` now returns `*User` instead of `*UserGetResponse`
+  * ⚠ BREAKING CHANGE: `Update()` now returns `*UserUpdated` instead of `*User`
+  * ⚠ BREAKING CHANGE: Removed `UserGetResponse`, `UserStats`, and `UserLimits` types
+```
