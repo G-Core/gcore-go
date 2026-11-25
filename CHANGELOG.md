@@ -6,12 +6,11 @@
 ### ⚠ BREAKING CHANGES
 
 * **cloud:** move bare metal to the global view API
+* **cloud:** move placement groups to the global API
 * **cloud:** move instances to the global view API
 * **cloud:** add global view ports
 * **sdk:** send nested query filters with brackets
 * **cdn:** make proxy_next_upstream a set and mark CDN rule options computed_optional
-* **terraform:** manage placement group membership on instances
-* **cloud:** remove read-only noise fields from the terraform schemas
 * **streaming:** wrap directory create and get responses
 * **fastedge:** page app logs on count instead of deprecated total_count
 * **cloud:** name volume bandwidth limits mbps in all SDKs
@@ -21,6 +20,7 @@
 * **cloud:** add global view ports ([44a3834](https://github.com/G-Core/gcore-go/commit/44a38340033938de5bfd47c3189530b3effc2681))
 * **cloud:** add global view pricing ([99c67e4](https://github.com/G-Core/gcore-go/commit/99c67e44893df7535936b9a9ba2fed8df8ae6f56))
 * **cloud:** move bare metal to the global view API ([4e7d066](https://github.com/G-Core/gcore-go/commit/4e7d066d35f8fe147ab0313521df374baf572fce))
+* **cloud:** move placement groups to the global API ([7b3e144](https://github.com/G-Core/gcore-go/commit/7b3e1440d22b92ccd807a2bc091040eca9491482))
 * **cloud:** move instances to the global view API ([00c902d](https://github.com/G-Core/gcore-go/commit/00c902d5cdf7fa316ee1d11d43e10024a53f8002))
 * **iam:** add assign_default_policy to API token creation ([bef3920](https://github.com/G-Core/gcore-go/commit/bef3920cdb001f87a1e5d7ee0bd43b63c9d46cd5))
 * **security:** add deprecated field to client profile template ([645657c](https://github.com/G-Core/gcore-go/commit/645657c8576758fa17618ee400b8c4e45974bfc7))
@@ -30,12 +30,10 @@
 
 * **cdn:** make proxy_next_upstream a set and mark CDN rule options computed_optional ([f5f99bb](https://github.com/G-Core/gcore-go/commit/f5f99bb7789a9880748a8bda88e464111f7c840f))
 * **cloud:** name volume bandwidth limits mbps in all SDKs ([c39822a](https://github.com/G-Core/gcore-go/commit/c39822a65217f96d9b9f6fdd3aedbbc3d579e436))
-* **cloud:** remove read-only noise fields from the terraform schemas ([3997d39](https://github.com/G-Core/gcore-go/commit/3997d39aa0a537fda8c042e6e749ebba5ef596ec))
 * **cloud:** update cloud examples for regenerated types ([4e561bd](https://github.com/G-Core/gcore-go/commit/4e561bd1d1ec032d9b034cef107002accc133700))
 * **fastedge:** page app logs on count instead of deprecated total_count ([172c4ae](https://github.com/G-Core/gcore-go/commit/172c4ae57021ae3a782735ec842eae8706e4140e))
 * **sdk:** send nested query filters with brackets ([270ec53](https://github.com/G-Core/gcore-go/commit/270ec5342b972a92196d7917b971bb4306160474))
 * **streaming:** wrap directory create and get responses ([661d5da](https://github.com/G-Core/gcore-go/commit/661d5da3d0bed8eba6d0a536a0d1f7a5700638b1))
-* **terraform:** manage placement group membership on instances ([5b98a6f](https://github.com/G-Core/gcore-go/commit/5b98a6f20584f4334f45410e97b17aa45b8722e3))
 * **waap:** use the v2 API Discovery settings endpoints ([7119586](https://github.com/G-Core/gcore-go/commit/7119586b9939d9c99c0ca2e9155e8a732e3fdb0b))
 
 
