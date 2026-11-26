@@ -860,9 +860,16 @@ type LoadBalancerListenerDetail struct {
 	ConnectionLimit int64 `json:"connection_limit" api:"required"`
 	// Task that created this entity
 	CreatorTaskID string `json:"creator_task_id" api:"required" format:"uuid4"`
+	// ID of the default pool of the listener. The value is null if the listener has no
+	// default pool.
+	DefaultPoolID string `json:"default_pool_id" api:"required" format:"uuid4"`
 	// Dictionary of additional header insertion into HTTP headers. Only used with HTTP
 	// and `TERMINATED_HTTPS` protocols.
 	InsertHeaders map[string]any `json:"insert_headers" api:"required"`
+	// The value is true if the listener adds all three headers: X-Forwarded-For,
+	// X-Forwarded-Port and X-Forwarded-Proto. Only HTTP and `TERMINATED_HTTPS`
+	// listeners can add these headers.
+	InsertXForwarded bool `json:"insert_x_forwarded" api:"required"`
 	// Load balancer ID
 	LoadBalancerID string `json:"load_balancer_id" api:"required" format:"uuid4"`
 	// Load balancer listener name
@@ -916,7 +923,9 @@ type LoadBalancerListenerDetail struct {
 		AllowedCidrs         respjson.Field
 		ConnectionLimit      respjson.Field
 		CreatorTaskID        respjson.Field
+		DefaultPoolID        respjson.Field
 		InsertHeaders        respjson.Field
+		InsertXForwarded     respjson.Field
 		LoadBalancerID       respjson.Field
 		Name                 respjson.Field
 		OperatingStatus      respjson.Field

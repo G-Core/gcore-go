@@ -14,6 +14,7 @@ import (
 	"github.com/G-Core/gcore-go/internal/apiquery"
 	"github.com/G-Core/gcore-go/internal/requestconfig"
 	"github.com/G-Core/gcore-go/option"
+	"github.com/G-Core/gcore-go/packages/pagination"
 	"github.com/G-Core/gcore-go/packages/param"
 	"github.com/G-Core/gcore-go/packages/respjson"
 )
@@ -37,30 +38,42 @@ func NewInstanceMetricService(opts ...option.RequestOption) (r InstanceMetricSer
 	return
 }
 
-// Get instance metrics, including cpu, memory, network and disk metrics
-func (r *InstanceMetricService) List(ctx context.Context, instanceID string, params InstanceMetricListParams, opts ...option.RequestOption) (res *MetricsList, err error) {
+// Returns the CPU, memory, network and disk metrics of an instance for a time
+// range. The results are in ascending order of `time`.
+func (r *InstanceMetricService) List(ctx context.Context, instanceID string, params InstanceMetricListParams, opts ...option.RequestOption) (res *pagination.OffsetPage[Metrics], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	precfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err
 	}
 	requestconfig.UseDefaultParam(&params.ProjectID, precfg.CloudProjectID)
-	requestconfig.UseDefaultParam(&params.RegionID, precfg.CloudRegionID)
 	if !params.ProjectID.Valid() {
 		err = errors.New("missing required project_id parameter")
-		return nil, err
-	}
-	if !params.RegionID.Valid() {
-		err = errors.New("missing required region_id parameter")
 		return nil, err
 	}
 	if instanceID == "" {
 		err = errors.New("missing required instance_id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("cloud/v1/instances/%v/%v/%s/metrics", params.ProjectID.Value, params.RegionID.Value, instanceID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return res, err
+	path := fmt.Sprintf("cloud/v1/projects/%v/instances/%s/metrics", params.ProjectID.Value, instanceID)
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, params, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Returns the CPU, memory, network and disk metrics of an instance for a time
+// range. The results are in ascending order of `time`.
+func (r *InstanceMetricService) ListAutoPaging(ctx context.Context, instanceID string, params InstanceMetricListParams, opts ...option.RequestOption) *pagination.OffsetPageAutoPager[Metrics] {
+	return pagination.NewOffsetPageAutoPager(r.List(ctx, instanceID, params, opts...))
 }
 
 // Instance metrics item
@@ -161,30 +174,20 @@ func (r *MetricsList) UnmarshalJSON(data []byte) error {
 }
 
 type InstanceMetricListParams struct {
-	// Project ID
+	// Project ID.
 	ProjectID param.Opt[int64] `path:"project_id,omitzero" api:"required" json:"-"`
-	// Region ID
-	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
-	// Time interval.
-	TimeInterval int64 `json:"time_interval" api:"required"`
-	// Time interval unit.
+	// Length of the time range, in the `time_unit`. The range is 1, 6 or 24 hours, or
+	// 1, 7 or 14 days.
+	TimeInterval int64 `query:"time_interval" api:"required" json:"-"`
+	// Unit of the `time_interval`.
 	//
 	// Any of "day", "hour".
-	TimeUnit InstanceMetricsTimeUnit `json:"time_unit,omitzero" api:"required"`
-	// Optional. Limit the number of returned items
+	TimeUnit InstanceMetricsTimeUnit `query:"time_unit,omitzero" api:"required" json:"-"`
+	// Max items to return.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Optional. Offset value is used to exclude the first set of records from the
-	// result
+	// Items to skip.
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	paramObj
-}
-
-func (r InstanceMetricListParams) MarshalJSON() (data []byte, err error) {
-	type shadow InstanceMetricListParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InstanceMetricListParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 // URLQuery serializes [InstanceMetricListParams]'s query parameters as

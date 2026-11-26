@@ -22,7 +22,7 @@ func listMetrics(client *gcore.Client, instanceID string) {
 		return
 	}
 
-	fmt.Printf("Metrics for instance: %d entries\n", len(metrics.Results))
+	fmt.Printf("Metrics for instance: %d entries\n", metrics.Count)
 	displayCount := 3
 	if len(metrics.Results) < displayCount {
 		displayCount = len(metrics.Results)
@@ -31,8 +31,8 @@ func listMetrics(client *gcore.Client, instanceID string) {
 		metric := metrics.Results[i]
 		fmt.Printf("  %d. Metric: %+v\n", i+1, metric)
 	}
-	if len(metrics.Results) > displayCount {
-		fmt.Printf("  ... and %d more metrics\n", len(metrics.Results)-displayCount)
+	if metrics.Count > int64(displayCount) {
+		fmt.Printf("  ... and %d more metrics\n", metrics.Count-int64(displayCount))
 	}
 	fmt.Println("====================")
 }

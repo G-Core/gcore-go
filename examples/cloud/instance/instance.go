@@ -52,7 +52,7 @@ func main() {
 	// TODO set SSH key ID before running, or leave it empty to create the instance without a key
 	sshKeyID := os.Getenv("GCORE_CLOUD_SSH_KEY_ID")
 
-	// instances and ports take the region from their parameters. Volumes, images and metrics still take
+	// instances, ports and instance metrics do not take a region. Volumes and images still take
 	// it from the client
 	client := gcore.NewClient(
 		//option.WithAPIKey(apiKey),
