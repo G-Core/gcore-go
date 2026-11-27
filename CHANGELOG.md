@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.65.0](https://github.com/G-Core/gcore-go/compare/v0.64.0...v0.65.0) (2026-11-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* **cloud:** update cloud OpenAPI spec
+* **cloud:** refresh listener fields and map global instance metrics
+
+### Features
+
+* **cloud:** add GPU pricing examples ([bb21750](https://github.com/G-Core/gcore-go/commit/bb217502d28ec59dd3b074c138276db29aa8b6a3))
+* **cloud:** add GPU pricing list endpoint ([214da46](https://github.com/G-Core/gcore-go/commit/214da46ea27b5eb9a0e501c7bad67d3e071a09c1))
+* **cloud:** refresh listener fields and map global instance metrics ([64cc49e](https://github.com/G-Core/gcore-go/commit/64cc49ee597626a9c3d91a3aaf63bd1e5bb3ef26))
+* **cloud:** update cloud OpenAPI spec ([80e3050](https://github.com/G-Core/gcore-go/commit/80e305048a9f6ca7378392dd71591c5b4eebbdbc))
+
+
+### Bug Fixes
+
+* **streaming:** auto-page streaming lists ([b28977d](https://github.com/G-Core/gcore-go/commit/b28977d65801b17721f8f4a51b8f9bc0b3abc8b2))
+
+
+### Chores
+
+* **skills:** add Ports and Pricing to Cloud sub-products ([#71](https://github.com/G-Core/gcore-go/issues/71)) ([0be5f29](https://github.com/G-Core/gcore-go/commit/0be5f29cc4fa03ffdb805b0b487244f9c234bd95))
+* **skills:** analyze compare diff, not the release PR diff ([#68](https://github.com/G-Core/gcore-go/issues/68)) ([da4d336](https://github.com/G-Core/gcore-go/commit/da4d336717584105186685559b9297fd7a3338e1))
+* **skills:** check approval and merge only the reviewed commit ([#69](https://github.com/G-Core/gcore-go/issues/69)) ([bf7d232](https://github.com/G-Core/gcore-go/commit/bf7d232356c2d2d17b0f4fa09b360fcf51e9b926))
+* **skills:** group breaking changes in release notes ([#72](https://github.com/G-Core/gcore-go/issues/72)) ([30d04db](https://github.com/G-Core/gcore-go/commit/30d04dba3e2d59d80a6f50a94385ca9e7ca28692))
+* **skills:** wait longer for the release and avoid double notes ([#70](https://github.com/G-Core/gcore-go/issues/70)) ([fd41c7a](https://github.com/G-Core/gcore-go/commit/fd41c7a9d2f9a15f1eee8d610969aff7d935efaa))
+
 ## [0.64.0](https://github.com/G-Core/gcore-go/compare/v0.63.0...v0.64.0) (2026-11-25)
 
 
