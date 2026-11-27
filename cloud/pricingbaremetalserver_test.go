@@ -62,7 +62,7 @@ func TestPricingBaremetalServerPreviewWithOptionalParams(t *testing.T) {
 			OfPricePortReference: &cloud.PricePortReferenceParam{
 				PortID: "port_id",
 				FloatingIP: cloud.PriceFloatingIPParam{
-					FloatingIPID: gcore.String("floating_ip_id"),
+					ID: gcore.String("id"),
 				},
 			},
 		}},

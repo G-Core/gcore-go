@@ -246,6 +246,7 @@ func TestK8SClusterListWithOptionalParams(t *testing.T) {
 		ProjectID: gcore.Int(1),
 		RegionID:  gcore.Int(7),
 		Limit:     gcore.Int(1000),
+		Name:      gcore.String("my-cluster"),
 		Offset:    gcore.Int(0),
 	})
 	if err != nil {

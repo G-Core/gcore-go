@@ -126,8 +126,8 @@ func (r *PortPrice) UnmarshalJSON(data []byte) error {
 }
 
 type PriceFloatingIPParam struct {
-	// Existing floating IP. Omit it for a new floating IP.
-	FloatingIPID param.Opt[string] `json:"floating_ip_id,omitzero" format:"uuid4"`
+	// ID of an existing floating IP. Omit it for a new floating IP.
+	ID param.Opt[string] `json:"id,omitzero" format:"uuid4"`
 	paramObj
 }
 
@@ -165,7 +165,7 @@ type PricePortSpecParam struct {
 	FloatingIP PriceFloatingIPParam `json:"floating_ip,omitzero"`
 	// IP addresses of the new port. Omit the field to get one address from an IPv4
 	// subnet.
-	IPAssignments []IPAssignmentRequestParam `json:"ip_assignments,omitzero"`
+	IPAssignments []PricePortSpecIPAssignmentParam `json:"ip_assignments,omitzero"`
 	paramObj
 }
 
@@ -174,6 +174,26 @@ func (r PricePortSpecParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *PricePortSpecParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property SubnetID is required.
+type PricePortSpecIPAssignmentParam struct {
+	// ID of the subnet
+	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
+	// IP address to assign. Omit it to get any free address of the subnet, which is
+	// the only option when the subnet's free addresses are not known to the caller.
+	IPAddress param.Opt[string] `json:"ip_address,omitzero" format:"ipv4"`
+	// Floating IP of this address of the new port.
+	FloatingIP PriceFloatingIPParam `json:"floating_ip,omitzero"`
+	paramObj
+}
+
+func (r PricePortSpecIPAssignmentParam) MarshalJSON() (data []byte, err error) {
+	type shadow PricePortSpecIPAssignmentParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PricePortSpecIPAssignmentParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

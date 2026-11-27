@@ -1146,7 +1146,7 @@ func (r *K8SClusterNewParamsCsiNfs) UnmarshalJSON(data []byte) error {
 type K8SClusterNewParamsDDOSProfile struct {
 	// Enable advanced DDoS protection
 	Enabled bool `json:"enabled" api:"required"`
-	// DDoS profile template ID
+	// DDoS profile template ID. Required when 'enabled' is true.
 	ProfileTemplate param.Opt[int64] `json:"profile_template,omitzero"`
 	// DDoS profile template name
 	ProfileTemplateName param.Opt[string] `json:"profile_template_name,omitzero"`
@@ -1567,7 +1567,7 @@ func init() {
 type K8SClusterUpdateParamsDDOSProfile struct {
 	// Enable advanced DDoS protection
 	Enabled bool `json:"enabled" api:"required"`
-	// DDoS profile template ID
+	// DDoS profile template ID. Required when 'enabled' is true.
 	ProfileTemplate param.Opt[int64] `json:"profile_template,omitzero"`
 	// DDoS profile template name
 	ProfileTemplateName param.Opt[string] `json:"profile_template_name,omitzero"`
@@ -1628,6 +1628,8 @@ type K8SClusterListParams struct {
 	RegionID param.Opt[int64] `path:"region_id,omitzero" api:"required" json:"-"`
 	// Optional. Limit the number of returned items
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Cluster name to filter the results by. Exact, case-sensitive match.
+	Name param.Opt[string] `query:"name,omitzero" json:"-"`
 	// Optional. Offset value is used to exclude the first set of records from the
 	// result
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`

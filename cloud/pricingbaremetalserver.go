@@ -137,7 +137,7 @@ func (u PricingBaremetalServerPreviewParamsInterfaceUnion) GetPortID() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u PricingBaremetalServerPreviewParamsInterfaceUnion) GetIPAssignments() []IPAssignmentRequestParam {
+func (u PricingBaremetalServerPreviewParamsInterfaceUnion) GetIPAssignments() []PricePortSpecIPAssignmentParam {
 	if vt := u.OfPricePortSpec; vt != nil {
 		return vt.IPAssignments
 	}

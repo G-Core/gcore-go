@@ -1337,6 +1337,8 @@ type LoadBalancerPoolListResultMemberUnion struct {
 	// This field is from variant [Member].
 	Backup bool `json:"backup"`
 	// This field is from variant [Member].
+	InstanceID string `json:"instance_id"`
+	// This field is from variant [Member].
 	MonitorAddress string `json:"monitor_address"`
 	// This field is from variant [Member].
 	MonitorPort int64 `json:"monitor_port"`
@@ -1355,6 +1357,7 @@ type LoadBalancerPoolListResultMemberUnion struct {
 		Address            respjson.Field
 		AdminStateUp       respjson.Field
 		Backup             respjson.Field
+		InstanceID         respjson.Field
 		MonitorAddress     respjson.Field
 		MonitorPort        respjson.Field
 		OperatingStatus    respjson.Field
@@ -1475,6 +1478,11 @@ type Member struct {
 	// realize ACTIVE-BACKUP load balancing without thinking about VRRP and VIP
 	// configuration. Default is false
 	Backup bool `json:"backup" api:"required"`
+	// ID of the instance that was last given for this member when it was created or
+	// when the pool members were replaced. It does not change if the instance changes
+	// later. Null for a member that was added by address without `instance_id`, or
+	// that was created before this field was added.
+	InstanceID string `json:"instance_id" api:"required" format:"uuid4"`
 	// An alternate IP address used for health monitoring of a backend member. Default
 	// is null which monitors the member address.
 	MonitorAddress string `json:"monitor_address" api:"required" format:"ipvanyaddress"`
@@ -1517,6 +1525,7 @@ type Member struct {
 		Address            respjson.Field
 		AdminStateUp       respjson.Field
 		Backup             respjson.Field
+		InstanceID         respjson.Field
 		MonitorAddress     respjson.Field
 		MonitorPort        respjson.Field
 		OperatingStatus    respjson.Field

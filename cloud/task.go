@@ -263,6 +263,10 @@ type TaskCreatedResources struct {
 	SecurityGroups []string `json:"security_groups"`
 	// IDs of created placement groups
 	Servergroups []string `json:"servergroups"`
+	// IDs of created Slurm clusters
+	SlurmClusters []string `json:"slurm_clusters"`
+	// IDs of created Slurm node sets
+	SlurmNodeSets []string `json:"slurm_node_sets"`
 	// IDs of created volume snapshots
 	Snapshots []string `json:"snapshots"`
 	// IDs of created subnets
@@ -306,6 +310,8 @@ type TaskCreatedResources struct {
 		SecurityGroupRules respjson.Field
 		SecurityGroups     respjson.Field
 		Servergroups       respjson.Field
+		SlurmClusters      respjson.Field
+		SlurmNodeSets      respjson.Field
 		Snapshots          respjson.Field
 		Subnets            respjson.Field
 		Volumes            respjson.Field

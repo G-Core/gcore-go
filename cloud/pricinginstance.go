@@ -169,7 +169,7 @@ func (u PricingInstancePreviewParamsBodyInstancePricePreviewReferenceBodyInterfa
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u PricingInstancePreviewParamsBodyInstancePricePreviewReferenceBodyInterfaceUnion) GetIPAssignments() []IPAssignmentRequestParam {
+func (u PricingInstancePreviewParamsBodyInstancePricePreviewReferenceBodyInterfaceUnion) GetIPAssignments() []PricePortSpecIPAssignmentParam {
 	if vt := u.OfPricePortSpec; vt != nil {
 		return vt.IPAssignments
 	}
@@ -305,7 +305,7 @@ func (u PricingInstancePreviewParamsBodyInstancePricePreviewWorkflowBodyInterfac
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u PricingInstancePreviewParamsBodyInstancePricePreviewWorkflowBodyInterfaceUnion) GetIPAssignments() []IPAssignmentRequestParam {
+func (u PricingInstancePreviewParamsBodyInstancePricePreviewWorkflowBodyInterfaceUnion) GetIPAssignments() []PricePortSpecIPAssignmentParam {
 	if vt := u.OfPricePortSpec; vt != nil {
 		return vt.IPAssignments
 	}

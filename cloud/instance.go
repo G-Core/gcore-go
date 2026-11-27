@@ -357,9 +357,7 @@ func (r *Instance) UnmarshalJSON(data []byte) error {
 }
 
 type InstanceInterface struct {
-	// Public floating IP NAT-ing this interface, if any.
-	FloatingIP string `json:"floating_ip" api:"required" format:"ipvanyaddress"`
-	// Fixed IPs assigned to the port.
+	// Fixed IPs assigned to the port, each with its floating IP.
 	IPAssignments []InstanceInterfaceIPAssignment `json:"ip_assignments" api:"required"`
 	// Port MAC address.
 	MacAddress string `json:"mac_address" api:"required"`
@@ -369,7 +367,6 @@ type InstanceInterface struct {
 	PortID string `json:"port_id" api:"required" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		FloatingIP    respjson.Field
 		IPAssignments respjson.Field
 		MacAddress    respjson.Field
 		NetworkID     respjson.Field
@@ -386,12 +383,16 @@ func (r *InstanceInterface) UnmarshalJSON(data []byte) error {
 }
 
 type InstanceInterfaceIPAssignment struct {
+	// Floating IP that translates this address. `null` when the address has no
+	// floating IP. An IPv6 address always has `null`.
+	FloatingIP InstanceInterfaceIPAssignmentFloatingIP `json:"floating_ip" api:"required"`
 	// The IP address assigned to the port from the specified subnet
 	IPAddress string `json:"ip_address" api:"required" format:"ipvanyaddress"`
 	// ID of the subnet that allocated the IP
 	SubnetID string `json:"subnet_id" api:"required" format:"uuid4"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FloatingIP  respjson.Field
 		IPAddress   respjson.Field
 		SubnetID    respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -402,6 +403,28 @@ type InstanceInterfaceIPAssignment struct {
 // Returns the unmodified JSON received from the API
 func (r InstanceInterfaceIPAssignment) RawJSON() string { return r.JSON.raw }
 func (r *InstanceInterfaceIPAssignment) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Floating IP that translates this address. `null` when the address has no
+// floating IP. An IPv6 address always has `null`.
+type InstanceInterfaceIPAssignmentFloatingIP struct {
+	// Floating IP ID.
+	ID string `json:"id" api:"required" format:"uuid4"`
+	// Public IP address of the floating IP.
+	IPAddress string `json:"ip_address" api:"required" format:"ipvanyaddress"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		IPAddress   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InstanceInterfaceIPAssignmentFloatingIP) RawJSON() string { return r.JSON.raw }
+func (r *InstanceInterfaceIPAssignmentFloatingIP) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -675,7 +698,8 @@ type InstanceListParams struct {
 	FlavorName InstanceListParamsFlavorName `query:"flavor_name,omitzero" json:"-"`
 	// Filter by instance UUID(s).
 	IDs []string `query:"ids,omitzero" format:"uuid4" json:"-"`
-	// Exact IP filter on a fixed IP.
+	// Filter by an IP address of a port of the instance. The filter compares the fixed
+	// IPs and the floating IPs of the port.
 	IPAddress InstanceListParamsIPAddress `query:"ip_address,omitzero" json:"-"`
 	// Filter by manager type, e.g. `k8s_cluster`.
 	//
@@ -775,7 +799,8 @@ func (r InstanceListParamsFlavorName) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Exact IP filter on a fixed IP.
+// Filter by an IP address of a port of the instance. The filter compares the fixed
+// IPs and the floating IPs of the port.
 type InstanceListParamsIPAddress struct {
 	// Substring match on IP address, e.g. `[contains]=192.168`. Repeat the key to
 	// match any substring.
