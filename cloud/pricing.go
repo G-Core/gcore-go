@@ -24,6 +24,9 @@ type PricingService struct {
 	Instances PricingInstanceService
 	Baremetal PricingBaremetalService
 	Ports     PricingPortService
+	// GPU pricing lists the public list prices of bare metal and virtual GPUs in EUR
+	// and USD.
+	GPU PricingGPUService
 }
 
 // NewPricingService generates a new service that applies the given options to each
@@ -35,6 +38,7 @@ func NewPricingService(opts ...option.RequestOption) (r PricingService) {
 	r.Instances = NewPricingInstanceService(opts...)
 	r.Baremetal = NewPricingBaremetalService(opts...)
 	r.Ports = NewPricingPortService(opts...)
+	r.GPU = NewPricingGPUService(opts...)
 	return
 }
 

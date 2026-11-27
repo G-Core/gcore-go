@@ -101,6 +101,7 @@ TEST_PATHS=(
 	cloud/pricingbaremetalserver_test.go
 	cloud/pricingbaremetalflavor_test.go
 	cloud/pricingport_test.go
+	cloud/pricinggpu_test.go
 	cloud/databasepostgrescluster_test.go
 	cloud/databasepostgresclusterusercredential_test.go
 	cloud/databasepostgresconfiguration_test.go

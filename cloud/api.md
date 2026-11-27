@@ -1218,6 +1218,20 @@ Methods:
 
 - <code title="post /cloud/v1/projects/{project_id}/pricing/ports">client.Cloud.Pricing.Ports.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PricingPortService.Preview">Preview</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PricingPortPreviewParams">PricingPortPreviewParams</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PortPrice">PortPrice</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+### GPU
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#GPUCurrency">GPUCurrency</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#GPUDeploymentType">GPUDeploymentType</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#GPUPrice">GPUPrice</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#GPUPriceCatalog">GPUPriceCatalog</a>
+- <a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#GPUPriceDetail">GPUPriceDetail</a>
+
+Methods:
+
+- <code title="get /cloud/public/v1/pricing/gpu">client.Cloud.Pricing.GPU.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#PricingGPUService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud">cloud</a>.<a href="https://pkg.go.dev/github.com/G-Core/gcore-go/cloud#GPUPriceCatalog">GPUPriceCatalog</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 ## Databases
 
 ### Postgres
